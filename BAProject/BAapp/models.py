@@ -64,7 +64,7 @@ class Proveedor(Persona):
     observaciones = models.CharField(max_length=50,null=False)
 
 class Pedido(models.Model):
-    cliente = models.ForeignKey(Cliente, null=False)
+    cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
     nombre_articulo = models.CharField(max_length=50, null=False)
     precio_max = models.FloatField(null=False)
     fecha = models.DateTimeField(null=False)
@@ -73,7 +73,7 @@ class Pedido(models.Model):
         return 'Pedido Nro: {} - Cliente {} {}'.format(self.id, self.apellido, self.nombre)
 
 class Articulo(models.Model):
-    proveedor = models.ForeignKey(Proveedor, null=False)
+    proveedor = models.ForeignKey(Proveedor, null=False, on_delete=models.CASCADE)
     codigo_rubro = models.CharField(max_length=50, null=False)
     codigo_subrubro = models.CharField(max_length=50, null=False)
     codigo_articulo = models.CharField(max_length=50, null=False)
@@ -87,9 +87,9 @@ class Articulo(models.Model):
         return 'Articulo: {}'.format(self.codigo_articulo)
 
 class Propuesta(models.Model):
-    pedido = models.ForeignKey(Pedido, null=False)
-    vendedor = models.ForeignKey(Vendedor, null=False)
-    articulo = models.ForeignKey(Articulo, null=False)
+    pedido = models.ForeignKey(Pedido, null=False, on_delete=models.CASCADE)
+    vendedor = models.ForeignKey(Vendedor, null=False, on_delete=models.CASCADE)
+    articulo = models.ForeignKey(Articulo, null=False, on_delete=models.CASCADE)
     cantidad = models.IntegerField(null=False)
     comision_usd = models.FloatField(null=False)
     comision = models.FloatField(null=False)
@@ -100,7 +100,7 @@ class Propuesta(models.Model):
         return 'Propuesta Nro: {} - Vendedor {} {} - Articulo {}'.format(self.id, self.vendedor.apellido, self.vendedor.nombre, self.articulo.codigo_articulo)
 
 class Presupuesto(models.Model):
-    propuesta = models.ForeignKey(Propuesta, null=False)
+    propuesta = models.ForeignKey(Propuesta, null=False, on_delete=models.CASCADE)
     area = models.CharField(max_length=50, null=False)
     fecha = models.DateTimeField(null=False)
     razon_social = models.CharField(max_length=30, null=False)
