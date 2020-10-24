@@ -1,23 +1,22 @@
 <!DOCTYPE html>
   <html>
     <head>
+	{% load static %}
       <!--Import Google Icon Font-->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--Import materialize.css-->
-      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+
       <!--Let browser know website is optimized for mobile-->
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
 
     <body>
-
-      <!--JavaScript at end of body for optimized loading-->
-      <script type="text/javascript" src="js/materialize.min.js"></script>
-        
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>	    
       <nav >
         <div class="nav-wrapper grey darken-3 ">
-          <a href="#!" class="brand-logo"><img width="95" src="images/logo.png"></a>
+		<a href="#!" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
             <li><a href="sass.html">Sass</a></li>
@@ -35,7 +34,7 @@
       </ul>
     
       <div class="parallax-container">
-        <div class="parallax"><img src="images/parallax.jpg"></div>
+        <div class="parallax"><img src="{% static 'images/parallax.jpg' %}"></div>
       </div>
       <div class="section white">
         <div class="row container">
@@ -100,7 +99,7 @@
             <div class="col s12 m4">
                 <div class="card  grey" >
                   <div class="card-image waves-effect waves-block waves-light">
-                    <img class="activator" src="images/agro.png">
+                    <img class="activator" src="{% static 'images/agro.png' %}">
                   </div>
                   <div class="card-content">
                     <span class="card-title activator grey-text text-darken-4">Provedores<i class="material-icons right">more_vert</i></span>
@@ -116,7 +115,7 @@
             <div class="col s12 m4">
                 <div class="card  grey" >
                   <div class="card-image waves-effect waves-block waves-light">
-                    <img class="activator" src="images/agro.png">
+                    <img class="activator" src="{% static 'images/agro.png' %}">
                   </div>
                   <div class="card-content">
                     <span class="card-title activator grey-text text-darken-4">Articulos<i class="material-icons right">more_vert</i></span>
@@ -131,7 +130,7 @@
             <div class="col s12 m4">
               <div class="card  grey" >
                 <div class="card-image waves-effect waves-block waves-light">
-                  <img class="activator" src="images/agro.png">
+			<img class="activator"  src="{% static 'images/agro.png' %}">
                 </div>
                 <div class="card-content">
                   <span class="card-title activator grey-text text-darken-4">Clientes<i class="material-icons right">more_vert</i></span>
@@ -149,7 +148,7 @@
     
     </div>
       <div class="parallax-container">
-        <div class="parallax"><img src="images/parallax2.jpg"></div>
+	      <div class="parallax"><img src="{% static 'images/parallax2.jpg' %}"></div>
       </div>
           
         <!-- Modal Structure -->

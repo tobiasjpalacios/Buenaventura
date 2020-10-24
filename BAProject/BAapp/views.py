@@ -3,7 +3,7 @@ from .forms import *
 from .models import *
 
 def landing_page(request):
-	return render(request,'landingpage.html')
+	return render(request,'Principal.html')
 
 def crear_proveedor(request):
     if request.method == 'POST':
