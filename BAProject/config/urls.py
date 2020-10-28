@@ -21,5 +21,6 @@ urlpatterns = [
     path('', landing_page),
     path('admin/', admin.site.urls),
     path('crearProveedor/', crear_proveedor, name = "crear_proveedor"),
+    path('logout/', logout_user, name = "logout"),
     path('registrarCliente/', registrar_cliente, name="registrar_cliente"),
 ]

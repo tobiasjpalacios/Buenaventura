@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-
+from .choices import *
 class Persona(models.Model):
 
-    HO = 'Hombre'
-    MU = 'Mujer'
-
-    GENERO_CHOICES = (
-        (HO , 'Hombre'),
-        (MU , 'Mujer'),
-    )
 
     nombre = models.CharField(max_length=40)
     apellido = models.CharField(max_length=40)
@@ -23,15 +16,6 @@ class Persona(models.Model):
         abstract = True
 
 class Cliente(Persona):
-
-    AU = 'Autonomo'
-    PR = 'Particular'
-
-    CATEGORIA_CHOICES = (
-        (AU , 'Autonomo'),
-        (PR , 'Particular'),
-    )
-
 
     codigo = models.IntegerField(null=False)
     cuil_cuit = models.IntegerField(null=False)

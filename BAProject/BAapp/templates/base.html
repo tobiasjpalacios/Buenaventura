@@ -38,7 +38,12 @@
           <ul class="right hide-on-med-and-down">
             <li><a href="sass.html">Opcion 1</a></li>
             <li><a href="badges.html">Opcion 2</a></li>
-            <li><a class="waves-effect waves-light btn modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+            {% if user.is_authenticated %}
+                <li>{{user.username|title}}</li>
+                <li><a href="{% url 'logout' %}" class="dropdown-item">Logout</a></li>
+            {% else %}
+                <li><a class="waves-effect waves-light btn modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+            {% endif %}
           </ul>
         </div>
       </nav>

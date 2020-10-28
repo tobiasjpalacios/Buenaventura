@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate, logout
 from .forms import *
 from .models import *
 
@@ -9,23 +8,21 @@ def landing_page(request):
 	return render(request,'Principal.html')
 
 def crear_proveedor(request):
+    form = ProveedorForm()
     if request.method == 'POST':
         form = ProveedorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('crear_proveedor')
-    else:
-        form = ProveedorForm()
+            return redirect('/')
     return render(request,'crear_proveedor.html',{'form': form})
 
 def registrar_cliente(request):
+    form = ClienteForm()
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-    else:
-        form = ClienteForm()
     return render(request, 'registrar_cliente.html', {'form':form})
 
 def login_usuario(request):
@@ -39,3 +36,7 @@ def login_usuario(request):
         else:
             messages.error(request, 'Password or Username incorrect, please try again.')
         return render(request, '')
+
+def logout_user(request):
+    logout(request)
+    return redirect('/')

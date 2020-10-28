@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block imports %}
    {% load static %}
@@ -8,7 +9,7 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
-
+{% load crispy_forms_tags %}
 <div class="container">
 <div id="login-page" class="row container">
     <div class="col s12 z-depth-4 card-panel">
@@ -20,19 +21,32 @@ BuenaVentura Agronegocios
             <p class="center login-form-text">Buenaventura</p>
           </div>
         </div>
-        {{ form.as_table }}
+     	{{form|crispy}}
         <div class="row">
           <div class="input-field col s12">
-            <button type="submit" class="btn waves-effect waves-light col s12"> Registrarme </button>
-          </div>
-          <div class="input-field col s6 m6 l6">
-              <p class= "medium-small"><a href="page-forgot-password.html">¿Olvidó su contraseña?</a></p>
-          </div>          
+            <input type="submit" class="btn waves-effect waves-light col s12" name="Registrarme"> 
+          </div>  
         </div>
       </form>
     </div>
   </div>
 </div>
 
+<script type="text/javascript">
+// select initialization
+$(document).ready(function(){
+	$('select').formSelect();
+});
+
+// datepicker initialization and conf
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+    	format: 'dd/mm/yyyy',
+    	yearRange: [1920,2020]
+    });
+  });
+
+
+</script>
 
 {% endblock body %}    
