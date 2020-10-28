@@ -18,19 +18,15 @@ def crear_proveedor(request):
         form = ProveedorForm()
     return render(request,'crear_proveedor.html',{'form': form})
 
-def crear_usuario(request):
+def registrar_cliente(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = ClienteForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            return redirect('')
+            return redirect('/')
     else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form':form})
+        form = ClienteForm()
+    return render(request, 'registrar_cliente.html', {'form':form})
 
 def login_usuario(request):
     if request.method == 'POST':

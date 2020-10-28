@@ -12,8 +12,8 @@ class ProveedorForm(ModelForm):
         	'Apellido' : forms.TextInput(attrs={'class':'form-control'}),
         	'Dni' : forms.TextInput(attrs={'class':'form-control'}),
         	'Email' : forms.TextInput(attrs={'class':'form-control'}),
-        	'Fecha nacimiento' : forms.TextInput(attrs={'class':'form-control'}),
-        	'Sexo' : forms.Select(),
+        	'Fecha nacimiento' : forms.DateTimeField(),
+        	'Sexo' : forms.ChoiceField(),
         	'Telefono' : forms.TextInput(attrs={'class':'form-control'}),
         	'Codigo' : forms.TextInput(attrs={'class':'form-control'}),
         	'Fax' : forms.TextInput(attrs={'class':'form-control'}),
@@ -27,4 +27,18 @@ class ProveedorForm(ModelForm):
         	'Numero cai' : forms.TextInput(attrs={'class':'form-control'}),
         	'Vencimiento cai' : forms.TextInput(attrs={'class':'form-control'}),
         	'Observaciones' : forms.Textarea(attrs={'class':'form-control'}),
+        }
+
+class ClienteForm(ModelForm):
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+
+
+        widget = {
+            'Nombre' : forms.TextInput(attrs={'class':'form-control'}),
+            'Apellido' : forms.TextInput(attrs={'class':'form-control'}),
+            'Dni' : forms.TextInput(attrs={'class':'form-control'}),
+            'Email' : forms.TextInput(attrs={'class':'form-control'}),
+            'Fecha nacimiento' : forms.DateTimeField(),
         }
