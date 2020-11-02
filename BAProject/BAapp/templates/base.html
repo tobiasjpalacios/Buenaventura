@@ -32,44 +32,59 @@
     </head>
 <body>
    <nav >
-        <div class="nav-wrapper grey darken-3 ">
+        <div style="background-color: #198d2d;" class="nav-wrapper ">
         <a href="#!" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
-            <li><a href="sass.html">Opcion 1</a></li>
-            <li><a href="badges.html">Opcion 2</a></li>
+            <li><a  href="sass.html">Opcion 1</a></li>
+            <li><a  href="badges.html">Opcion 2</a></li>
+            <!------aca en vez de title tendria que decir el tipo de cuenta que es -->
             {% if user.is_authenticated %}
-                <li>{{user.username|title}}</li>
-                <li><a href="{% url 'logout' %}" class="dropdown-item">Logout</a></li>
-            {% else %}
-                <li><a class="waves-effect waves-light btn modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+                <li><a>{{user.username|title}}</a></li>
+                <li><a  href="{% url 'logout' %}" class="dropdown-item">Logout</a></li>
+            
+                {% else %}
+                <li><a style="border-radius: 2em; color: #000000;" class="waves-effect waves-light btn modal-trigger green" href="#modal1" > Iniciar Sesion</a></li>
             {% endif %}
           </ul>
         </div>
       </nav>
     
-      <ul class="sidenav" id="mobile-demo">
-        <li><a>Opion 1</a></li>
-        <li><a>Opcion 2</a></li>
-        <li><a class="waves-effect waves-light grey darken-4  modal-trigger" href="#modal1" > Iniciar Sesion</a>
+
+      <!--  sidenav ---------------------------------------------------------------------------------------------------------------- -->
+      <ul class="sidenav" id="mobile-demo"  style="background-color: #4cbd38;"   >
+        {% if user.is_authenticated %}
+        <a href="#!" class="brand-logo center-align"><img width="200" src="{% static 'images/logo.png' %}"></a>
+        <li><h4 class="center-align"> {{user.username|title}} </h4></li>
+        <li><hr class="black"></li>
+        <li><h5 class="center-align" >{{ user.get_full_name }} </h5></li>
+        <li><hr></li>
+        <li><h5 class="center-align" >{{ user.email }} </h5></li>
+        <li><hr></li>
+        <li><a style="border-radius: 2em;"  >Opion 1</a><hr style="color: grey;"></li>
+        <li><a style="border-radius: 2em;" >Opcion 2</a><hr style="color: grey;"></li>
+        <li><a style="border-radius: 2em;" class="waves-effect waves-light   modal-trigger" href="#modal1" > Iniciar Sesion</a>
         </li>
+        {% else %}
+        <li><a style="border-radius: 2em;"  >Opion 1</a><hr style="color: grey;"></li>
+        <li><a style="border-radius: 2em;" >Opcion 2</a><hr style="color: grey;"></li>
+        <li><a style="border-radius: 2em;" class="waves-effect waves-light   modal-trigger" href="#modal1" > Iniciar Sesion</a>
+        </li>
+        {% endif %}
       </ul>
 
 {% block body %}
 {% endblock body %}
-<div id="modal1" class="modal">
+<!--  modal de inicio de sesion --------------------------------------------------------------------------------------- -->
+<div style="border-radius: 2em;" id="modal1" class="modal">
         <div class="modal-content">
         <h4>Inicio de sesion</h4>
         <div class="row">
             <form class="col s12">
               <div class="row">
-                <div class="input-field col s6">
-                    <input id="last_name" type="text" class="validate">
-                    <label for="last_name">Nombre</label>
-                  </div>
-                <div class="input-field col s6">
-                  <input id="last_name" type="text" class="validate">
-                  <label for="last_name">Apellido</label>
+                <div class="input-field col s12">
+                  <input id="email" type="email" class="validate">
+                  <label for="email">Username</label>
                 </div>
               </div>
               <div class="row">
@@ -79,29 +94,37 @@
                 </div>
               </div>
               <div class="row">
-                <div class="input-field col s12">
-                  <input id="email" type="email" class="validate">
-                  <label for="email">Email</label>
-                </div>
-              </div>
-              <div class="row">
                 <div class="center">
                 <a class="waves-effect waves-light btn-large green lighten-2  center">iniciar sesion</a>
-            </div>
+            
               </div>
+              </div>
+              
+              <div class="row">
+                <div class="center">
+                
+                <span >olvidaste tu contraseña </span><a href="#">haz click aqui </a>
+                </div>
+              
+              </div>
+            
+            
+            
             </form>
           </div>
                 
         </div>
         <div class="modal-footer">
+          <div>
         <a href="#!" class="modal-close waves-effect waves-green btn-flat  red-text ">Cancelar</a>
         </div>
+      </div>
     </div>
 
 
 
-
-      <footer class="page-footer grey darken-3">
+      <!--  footer pagina  --------------------------------------------------------------------------------------------------->
+      <footer style= "background-color: #004e20 ;" class="page-footer  ">
           <div class="container">
             <div class="row">
               <div class="col l6 s12">
