@@ -33,11 +33,19 @@
 <body>
    <nav >
         <div style="background-color: #198d2d;" class="nav-wrapper ">
-        <a href="#!" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
+        <a href="{% url 'home' %}" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
           <ul class="right hide-on-med-and-down">
-            <li><a  href="sass.html">Opcion 1</a></li>
-            <li><a  href="badges.html">Opcion 2</a></li>
+          {% if user.is_superuser %}  
+            <li><a class='dropdown-trigger btn waves-effect waves-light green' href='#' data-target='dropdown1'>Administrar</a>
+                  <!-- Dropdown Structure -->
+                  <ul id='dropdown1' class='dropdown-content'>
+                    <li><a  href="{% url 'registrar_cliente' %}">Crear cliente</a></li>
+                    <li><a  href="{% url 'mostrar_clientes' %}">Ver clientes</a></li>
+                  </ul>                  
+                
+            </li>
+            {% endif %}
             <!------aca en vez de title tendria que decir el tipo de cuenta que es -->
             {% if user.is_authenticated %}
                 <li><a>{{user.username|title}}</a></li>
@@ -153,16 +161,20 @@
     
     
     
-    <script>
-         $(document).ready(function(){
-        $('.sidenav').sidenav();
-            });
-       
-        $(document).ready(function(){
-        $('.modal').modal();
-     });
-        
-    </script>
+<script>
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
+  });
+
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+
+
+// Or with jQuery
+
+$('.dropdown-trigger').dropdown();   
+</script>
 
 </body>
 </html>

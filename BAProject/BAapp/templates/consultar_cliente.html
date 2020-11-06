@@ -1,0 +1,53 @@
+
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+<div class="container">
+    <table class="centered bordered">
+      <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Dni</th>
+            <th>Email</th>
+            <th>Fecha de nacimiento</th>
+            <th>Sexo</th>
+            <th>Telefono</th>
+            <th>Codigo</th>
+            <th>Cuil/Cuit</th>
+            <th>Categoria Iva</th>
+            <th>Cuenta contable</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in Clientes %}
+          <tr>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.apellido }}</td>
+            <td>{{ cliente.dni }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.fecha_nacimiento }}</td>
+            <td>{{ cliente.sexo }}</td>
+            <td>{{ cliente.telefono }}</td>
+            <td>{{ cliente.codigo }}</td>
+            <td>{{ cliente.cuil_cuit }}</td>
+            <td>{{ cliente.categoria_iva }}</td>
+            <td>{{ cliente.cuenta_contable }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="container center">
+      {% if user.is_superuser %}
+        <a class='btn waves-effect waves-light green' href="{% url 'modificar_clientes' None %}" >Modificar Clientes</a>
+      {% endif %}
+    </div><br>
+</div>
+{% endblock body %}    

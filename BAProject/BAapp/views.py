@@ -37,6 +37,26 @@ def login_usuario(request):
             messages.error(request, 'Password or Username incorrect, please try again.')
         return render(request, '')
 
+
+def mostrar_clientes(request):
+    all_clientes = Cliente.objects.all()
+    return render(request, 'consultar_cliente.html', {'Clientes':all_clientes})    
+
+
+def modificar_clientes(request, pk):
+    form = ClienteForm()
+    if request.method == 'POST':
+        cliente = Ciente.objects.get(pk=pk)
+        form = ClienteForm(request.POST or None, instance = cliente)
+        if form.is_valid():
+            form.save()
+        return redirect('/')
+
+    else:
+        all_clientes = Cliente.objects.all() 
+        context = {'Clientes':all_clientes, 'form':form}
+    return render(request, 'modificar_clientes.html', context)
+
 def logout_user(request):
     logout(request)
     return redirect('/')

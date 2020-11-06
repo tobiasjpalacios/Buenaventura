@@ -18,9 +18,11 @@ from django.urls import path
 from BAapp.views import *
 
 urlpatterns = [
-    path('', landing_page),
+    path('', landing_page, name='home'),
     path('admin/', admin.site.urls),
     path('crearProveedor/', crear_proveedor, name = "crear_proveedor"),
     path('logout/', logout_user, name = "logout"),
     path('registrarCliente/', registrar_cliente, name="registrar_cliente"),
+    path('clientes/', mostrar_clientes, name="mostrar_clientes"),
+    path('modificarCliente/<str:pk>', modificar_clientes, name="modificar_clientes"),
 ]
