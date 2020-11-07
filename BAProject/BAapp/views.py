@@ -25,17 +25,17 @@ def registrar_cliente(request):
             return redirect('/')
     return render(request, 'registrar_cliente.html', {'form':form})
 
-def login_usuario(request):
+def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('')
+            return redirect('home')
         else:
             messages.error(request, 'Password or Username incorrect, please try again.')
-        return render(request, '')
+        return render(request, 'home')
 
 
 def mostrar_clientes(request):

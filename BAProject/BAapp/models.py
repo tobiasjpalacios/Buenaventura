@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.conf import settings
+
 from .choices import *
+
 class Persona(models.Model):
-
-
     nombre = models.CharField(max_length=40)
     apellido = models.CharField(max_length=40)
-    dni = models.IntegerField(primary_key=True)
+    dni = models.IntegerField()
     email = models.EmailField(max_length=50, null=False)
-    fecha_nacimiento = models.DateTimeField(null=False)
+    fecha_nacimiento = models.DateField(null=False)
     sexo = models.CharField('Sexo', max_length=6, choices=GENERO_CHOICES)
-    telefono = models.IntegerField(null=False)
+    telefono = models.CharField(max_length=99, null=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
 
-class Cliente(Persona):
 
+class Cliente(Persona):
     codigo = models.IntegerField(null=False)
     cuil_cuit = models.IntegerField(null=False)
     categoria_iva = models.CharField('Categoria Iva', max_length=15, choices=CATEGORIA_CHOICES)
@@ -25,11 +27,13 @@ class Cliente(Persona):
     def __str__(self):
         return '{} {}'.format(self.nombre, self.apellido)
 
+
 class Vendedor(Persona):
     fecha_ingreso = models.DateTimeField(null=False)
 
     def __str__(self):
         return 'Vendedor {} {}'.format(self.apellido, self.nombre)
+
 
 class Proveedor(Persona):
     codigo = models.IntegerField(null=False)
@@ -47,6 +51,7 @@ class Proveedor(Persona):
     vencimiento_cai = models.DateTimeField(null=False)
     observaciones = models.CharField(max_length=50,null=False)
 
+
 class Pedido(models.Model):
     cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
     nombre_articulo = models.CharField(max_length=50, null=False)
@@ -55,6 +60,7 @@ class Pedido(models.Model):
 
     def __str__(self):
         return 'Pedido Nro: {} - Cliente {} {}'.format(self.id, self.apellido, self.nombre)
+
 
 class Articulo(models.Model):
     proveedor = models.ForeignKey(Proveedor, null=False, on_delete=models.CASCADE)
@@ -70,6 +76,7 @@ class Articulo(models.Model):
     def __str__(self):
         return 'Articulo: {}'.format(self.codigo_articulo)
 
+
 class Propuesta(models.Model):
     pedido = models.ForeignKey(Pedido, null=False, on_delete=models.CASCADE)
     vendedor = models.ForeignKey(Vendedor, null=False, on_delete=models.CASCADE)
@@ -82,6 +89,7 @@ class Propuesta(models.Model):
 
     def __str__(self):
         return 'Propuesta Nro: {} - Vendedor {} {} - Articulo {}'.format(self.id, self.vendedor.apellido, self.vendedor.nombre, self.articulo.codigo_articulo)
+
 
 class Presupuesto(models.Model):
     propuesta = models.ForeignKey(Propuesta, null=False, on_delete=models.CASCADE)

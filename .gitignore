@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Subl Project
+*.sublime-project
+*.sublime-workspace
+
+#Django
+*/**/migrations/
+*.sqlite3

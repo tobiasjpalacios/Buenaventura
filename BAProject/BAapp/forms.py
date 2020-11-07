@@ -4,8 +4,8 @@ from .models import *
 from .choices import *
 
 class ProveedorForm(ModelForm):
-    fecha_nacimiento = forms.DateTimeField(widget = forms.DateTimeInput(attrs={'class':'datepicker'}))
-    vencimiento_cai = forms.DateTimeField(widget = forms.DateTimeInput(attrs={'class':'datepicker'}))
+    fecha_nacimiento = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+    vencimiento_cai = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
     class Meta:
         model = Proveedor
         fields = '__all__'
@@ -17,7 +17,8 @@ class ProveedorForm(ModelForm):
 
 
 class ClienteForm(ModelForm):
-    fecha_nacimiento = forms.DateTimeField(widget = forms.DateTimeInput(attrs={'class':'datepicker'}))
+    fecha_nacimiento = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+
     class Meta:
         model = Cliente
         fields = '__all__'
