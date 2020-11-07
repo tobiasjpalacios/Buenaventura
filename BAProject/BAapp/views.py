@@ -44,18 +44,23 @@ def mostrar_clientes(request):
 
 
 def modificar_clientes(request, pk):
-    form = ClienteForm()
+    cliente = Cliente.objects.get(pk=pk)
+    form = ClienteForm( instance = cliente)
     if request.method == 'POST':
-        cliente = Ciente.objects.get(pk=pk)
-        form = ClienteForm(request.POST or None, instance = cliente)
+        form = ClienteForm(request.POST or None, instance=cliente)
         if form.is_valid():
             form.save()
-        return redirect('/')
-
-    else:
-        all_clientes = Cliente.objects.all() 
-        context = {'Clientes':all_clientes, 'form':form}
+            return redirect('/clientes')
+    context = {'form':form, 'cliente':cliente}
     return render(request, 'modificar_clientes.html', context)
+
+def eliminar_cliente(request, pk):
+    cliente = Cliente.objects.get(pk=pk)
+    if request.method == 'POST':
+        cliente.delete()
+        return redirect('/clientes')
+    context = {'cliente':cliente}
+    return render(request, 'eliminar_cliente.html', context)
 
 def logout_user(request):
     logout(request)

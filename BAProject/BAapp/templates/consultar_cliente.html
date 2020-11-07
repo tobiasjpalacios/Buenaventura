@@ -9,7 +9,6 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
-<div class="container">
     <table class="centered bordered">
       <thead>
         <tr>
@@ -33,21 +32,42 @@ BuenaVentura Agronegocios
             <td>{{ cliente.apellido }}</td>
             <td>{{ cliente.dni }}</td>
             <td>{{ cliente.email }}</td>
-            <td>{{ cliente.fecha_nacimiento }}</td>
+            <td>{{ cliente.fecha_nacimiento|date:"M d, Y" }}</td>
             <td>{{ cliente.sexo }}</td>
             <td>{{ cliente.telefono }}</td>
             <td>{{ cliente.codigo }}</td>
             <td>{{ cliente.cuil_cuit }}</td>
             <td>{{ cliente.categoria_iva }}</td>
             <td>{{ cliente.cuenta_contable }}</td>
+            {% if user.is_superuser %}
+              <th>
+                <div>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'modificar_clientes' cliente.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small  waves-effect waves-light red' onclick="abrirmodal('{% url 'eliminar_cliente' cliente.pk %}')" ><i class="material-icons">delete</i></a>
+              </th>
+            {% endif %}
           </tr>
         {% endfor %}
       </tbody>
     </table>
-    <div class="container center">
-      {% if user.is_superuser %}
-        <a class='btn waves-effect waves-light green' href="{% url 'modificar_clientes' None %}" >Modificar Clientes</a>
-      {% endif %}
-    </div><br>
-</div>
-{% endblock body %}    
+
+<!-- Modal Structure -->
+  <div id="delete" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  function abrirmodal(url){
+    $('#delete').load(url, function(){
+      $(this).modal('open');
+    });
+  }
+
+</script>
+{% endblock body %}

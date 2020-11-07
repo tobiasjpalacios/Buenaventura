@@ -23,7 +23,7 @@ class Cliente(Persona):
     cuenta_contable = models.IntegerField(null=False)
 
     def __str__(self):
-        return 'El Cliente {} {} con el Codigo {} posee la Categoria {}'.format(self.apellido, self.nombre, self.codigo, self.categoria_iva)
+        return '{} {}'.format(self.nombre, self.apellido)
 
 class Vendedor(Persona):
     fecha_ingreso = models.DateTimeField(null=False)
