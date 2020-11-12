@@ -4,34 +4,37 @@
    {% load static %}
 {% endblock imports %}
 {% block style%}
+body {
+  background-color: #96f291;
+}
 {% endblock style%}
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
 {% load crispy_forms_tags %}
-<div class="container">
 <div id="login-page" class="row container">
-    <div class="col s12 z-depth-4 card-panel">
+    <div class="col s12 z-depth-4 card-panel light-green lighten-5" >
       {%if proveedor %}
-      <form class="col s12 login-form" method="PUT" action="{% url 'proveedor' proveedor.pk %}">
+      <form class="col s12 login-form" method="POST" action="{% url 'proveedor' proveedor.pk %}">
       {% else %} 
       <form class="col s12 login-form" method="POST" action="{% url 'crear_proveedor' %}">
       {% endif %}
         {% csrf_token %}
         <div class="row">
-          <div class="input-field col s12 center">
-            <img src="{% static 'images/logo.png' %}" alt="" class="circle responsive-img valign profile-image-login">
-            <p class="center login-form-text">Buenaventura</p>
-          </div>
+        <div class="center">
+          <span class="card-title">
+            <h4>Registar nuevo proveedor</h4>
+          </span>
         </div>
-        {{form|crispy}}
-        <div class="row">
-          <div class="input-field col s12">
-            <input type="submit" class="btn waves-effect waves-light col s12" name="Registrarme"> 
-          </div>  
-        </div>
-      </form>
+      </div>
+      {{form|crispy}}
+      <div class="row">
+        <div class="input-field col s12">
+          <button type="submit" class="btn waves-effect waves-light col s12" name="Crear"> Registrar</button>
+        </div>  
+      </div>
+    </form>
     </div>
   </div>
 </div>

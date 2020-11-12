@@ -61,22 +61,19 @@ class ClienteView(View):
         return render(request, 'cliente.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = ClienteForm(request.POST)
+        cliente = None
+        if ("pk" in kwargs):
+            cliente = Cliente.objects.get(pk=kwargs["pk"])
+        form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
-            form.save()
-            return redirect('/')
-
-    def put(self, request, *args, **kwargs):
-        cliente = Cliente.objects.get(pk=kwargs["pk"])
-        form = ClienteForm(request.POST or None, instance=cliente)
-        if form.is_valid():
-            form.save()
-            return redirect('/clientes')
+            cliente = form.save()
+            return redirect("cliente", pk=cliente.pk)
+        return render(request, 'cliente.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
         cliente = Cliente.objects.get(pk=kwargs["pk"])
         cliente.delete()
-        return HttpResponse(code=200)
+        return HttpResponse(status=200)
 
 # def modificar_clientes(request, pk):
 #     cliente = Cliente.objects.get(pk=pk)
