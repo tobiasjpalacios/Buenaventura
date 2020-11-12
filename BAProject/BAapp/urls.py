@@ -10,5 +10,4 @@ urlpatterns = [
     path('clientes/', ListClienteView.as_view(), name="mostrar_clientes"),
     path('cliente/<int:pk>', ClienteView.as_view(), name="cliente"),
     path('cliente/', ClienteView.as_view(), name="registrar_cliente"),
-    path('eliminarCliente/<str:pk>', eliminar_cliente, name="eliminar_cliente"),
 ]
