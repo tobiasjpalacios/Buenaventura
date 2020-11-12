@@ -8,54 +8,48 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}      
-    <div class="parallax-container">
-      <div class="parallax"><img src="{% static 'images/parallax.jpg' %}"></div>
-    </div>
-    <div class="section white">
-      <div style="border-radius: 2em;" class="row container">
-          <h2 class="header center green-text  "> Cuenta administrador </h2>
-          <div class="row ">
-              <div class="col m4"><a>Clientes</a></div>
-              <div class="col m4"><a>Articulos</a></div>
-              <div class="col m4"><a>Provedores</a></div>
-            </div>
-            <div class = "row"> 
-                
-               <div class="col m4 ">
-                <ul>
-                <li><a class="button">agregar clientes</a></li>
-                <li><a class="button">ver clientes</a></li>
-                </ul>
-                </div>
-            
-                <div class="col m4 ">
-                    <ul>
-                    <li><a class="button">agregar Articulos</a></li>
-                    <li><a  class="button"> ver articulos</a></li>
-                    </ul>
-                    </div>
+<!-- <div class="parallax-container">
+  <div class="parallax"><img src="{% static 'images/parallax.jpg' %}"></div>
+</div> -->
+<div class="container">
+  <div class="section white">
+    <div style="border-radius: 2em;" class="row container">
+      <h2 class="header center green-text  "> Cuenta administrador </h2>
+      <div class="row ">
+        <div class="col m4"><a>Clientes</a></div>
+        <div class="col m4"><a>Articulos</a></div>
+        <div class="col m4"><a>Provedores</a></div>
+      </div>
+      <div class = "row"> 
+        <div class="col m4 ">
+          <ul>
+            <li><a class="btn waves-effect waves-light green" href="{% url 'registrar_cliente' %}">Crear cliente</a></li><br>
+            <li><a class="btn waves-effect waves-light green" href="{% url 'mostrar_clientes' %}">Ver clientes</a></li>
+          </ul>
+        </div>
+        <div class="col m4 ">
+          <ul>
+            <li><a class="btn waves-effect waves-light green">agregar Articulos</a></li><br>
+            <li><a  class="btn waves-effect waves-light green"> ver articulos</a></li>
+          </ul>
+        </div>
 
-                    <div class="col m4 ">
-                        <ul>
-                        <li><a class="button">agregar proveedores</a></li>
-                        <li><a class="button">ver provedores</a></li>
-                        </ul>
-                        </div>
+        <div class="col m4 ">
+          <ul>
+            <li><a class="btn waves-effect waves-light green" href="{% url 'crear_proveedor' %}">Crear proveedores</a></li><br>
+            <li><a class="btn waves-effect waves-light green" href="{% url 'mostrar_proveedores' %}">Ver provedores</a></li>
+          </ul>
         </div>
-        </div>
-      
-      
-     
-  
-  
+      </div>
+    </div>
   </div>
-    
-     
-          $(document).ready(function(){
-      $('.parallax').parallax();
-      });
-      
-  </script>
+</div>
+<script>
+
+$(document).ready(function(){
+  $('.parallax').parallax();
+});
+
+</script>
+
 {%endblock body%}         
-    </body>
-  </html>

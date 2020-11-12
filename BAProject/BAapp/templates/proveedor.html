@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block imports %}
    {% load static %}
@@ -12,18 +13,22 @@ BuenaVentura Agronegocios
 <div class="container">
 <div id="login-page" class="row container">
     <div class="col s12 z-depth-4 card-panel">
-       <form class="col s12 login-form" method="POST" action="{% url 'crear_proveedor' %}">
-            {% csrf_token %}
+      {%if proveedor %}
+      <form class="col s12 login-form" method="PUT" action="{% url 'proveedor' proveedor.pk %}">
+      {% else %} 
+      <form class="col s12 login-form" method="POST" action="{% url 'crear_proveedor' %}">
+      {% endif %}
+        {% csrf_token %}
         <div class="row">
           <div class="input-field col s12 center">
             <img src="{% static 'images/logo.png' %}" alt="" class="circle responsive-img valign profile-image-login">
             <p class="center login-form-text">Buenaventura</p>
           </div>
         </div>
-     	{{form|crispy}}
+        {{form|crispy}}
         <div class="row">
           <div class="input-field col s12">
-            <input type="submit" class="btn waves-effect waves-light col s12" name="Crear"> 
+            <input type="submit" class="btn waves-effect waves-light col s12" name="Registrarme"> 
           </div>  
         </div>
       </form>
@@ -31,21 +36,21 @@ BuenaVentura Agronegocios
   </div>
 </div>
 
-
 <script type="text/javascript">
 // select initialization
 $(document).ready(function(){
-	$('select').formSelect();
+    $('select').formSelect();
 });
 
 // datepicker initialization and conf
 $(document).ready(function(){
     $('.datepicker').datepicker({
-    	format: 'dd/mm/yyyy',
-    	yearRange: [1920,2020]
+        format: 'dd/mm/yyyy',
+        yearRange: [1920,2020]
     });
   });
 
+
 </script>
 
-{% endblock body %}    
+{% endblock body %}
