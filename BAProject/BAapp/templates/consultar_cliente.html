@@ -26,7 +26,7 @@ BuenaVentura Agronegocios
         </tr>
       </thead>
       <tbody>
-        {% for cliente in Clientes %}
+        {% for cliente in clientes %}
           <tr>
             <td>{{ cliente.nombre }}</td>
             <td>{{ cliente.apellido }}</td>
@@ -42,8 +42,9 @@ BuenaVentura Agronegocios
             {% if user.is_superuser %}
               <th>
                 <div>
-                  <a class='btn-small waves-effect waves-light green' href="{% url 'modificar_clientes' cliente.pk %}"><i class="material-icons">edit</i></a>
-                  <a class='btn-small  waves-effect waves-light red' onclick="abrirmodal('{% url 'eliminar_cliente' cliente.pk %}')" ><i class="material-icons">delete</i></a>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'cliente' cliente.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small waves-effect waves-light red' 
+                    onclick="abrirmodal('{{ cliente.id }}', '{{ cliente.apellido }}, {{cliente.nombre }}')"><i class="material-icons">delete</i></a>
               </th>
             {% endif %}
           </tr>
@@ -54,19 +55,35 @@ BuenaVentura Agronegocios
 <!-- Modal Structure -->
   <div id="delete" class="modal">
     <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
+      <h4>Confirmacion</h4>
+      <p>Esta seguro que quiere eliminar a <span id="removeName"></span></p>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
+      <a onClick="eliminarCliente()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
     </div>
   </div>
 
 <script type="text/javascript">
-  function abrirmodal(url){
-    $('#delete').load(url, function(){
-      $(this).modal('open');
-    });
+  var currentId;
+  function abrirmodal(id, name){
+    $("#removeName")[0].innerText = name;
+    currentId = id;
+    $("#delete").modal('open');
+  }
+
+  function eliminarCliente(){
+    headers = {}
+    headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
+    fetch("/cliente/"+currentId, 
+      {
+        method: 'delete',
+        "headers": headers
+      }
+    ).then( function(result){
+      location.reload();
+    }
+    )
   }
 
 </script>

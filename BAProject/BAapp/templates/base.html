@@ -171,6 +171,11 @@
     $('.modal').modal();
   });
 
+  window.drf = {
+    csrfHeaderName: "{{csrf_header_name|default:'X-CSRFToken'}}",
+    csrfToken: "{% if request %}{{csrf_token}}{% endif %}"
+  };  // Generar Header y Token para Ajax
+
 
 // Or with jQuery
 

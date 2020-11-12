@@ -13,8 +13,12 @@ BuenaVentura Agronegocios
 <div class="container">
 <div id="login-page" class="row container">
     <div class="col s12 z-depth-4 card-panel">
-       <form class="col s12 login-form" method="POST" action="{% url 'modificar_clientes' cliente.pk %}">
-            {% csrf_token %}
+      {%if cliente %}
+      <form class="col s12 login-form" method="PUT" action="{% url 'cliente' cliente.pk %}">
+      {% else %} 
+      <form class="col s12 login-form" method="POST" action="{% url 'registrar_cliente' %}">
+      {% endif %}
+        {% csrf_token %}
         <div class="row">
           <div class="input-field col s12 center">
             <img src="{% static 'images/logo.png' %}" alt="" class="circle responsive-img valign profile-image-login">
