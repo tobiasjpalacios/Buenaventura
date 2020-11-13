@@ -14,6 +14,10 @@ urlpatterns = [
         
     path('proveedores/', ListProveedorView.as_view(), name = "mostrar_proveedores"),
     path('proveedor/<int:pk>', ProveedorView.as_view(), name="proveedor"),
-    path('crearProveedor/', ProveedorView.as_view(), name="crear_proveedor"),
+    path('proveedor/', ProveedorView.as_view(), name="crear_proveedor"),
+
+    path('articulos/', ListArticuloView.as_view(), name = "mostrar_articulos"),
+    path('articulo/<int:pk>', ArticuloView.as_view(), name="articulo"),
+    path('articulo/', ArticuloView.as_view(), name="crear_articulo"),
 
 ]

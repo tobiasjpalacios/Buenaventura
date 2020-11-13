@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+    <table class="centered bordered">
+      <thead>
+        <tr>
+            <th>Proveedor</th>
+            <th>Codigo Rubro</th>
+            <th>Codigo Subrubro</th>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Rubro</th>
+            <th>Subrubro</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for articulo in articulos %}
+          <tr>
+            <td>{{ articulo.proveedor }}</td>
+            <td>{{ articulo.codigo_rubro }}</td>
+            <td>{{ articulo.codigo_subrubro }}</td>
+            <td>{{ articulo.codigo_articulo }}</td>
+            <td>{{ articulo.descripcion }}</td>
+            <td>{{ articulo.precio_compra }}</td>
+            <td>{{ articulo.rubro }}</td>
+            <td>{{ articulo.subrubro }}</td>
+            {% if user.is_superuser %}
+              <th>
+                <div>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'articulo' articulo.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small waves-effect waves-light red' 
+                    onclick="abrirmodal('{{ articulo.id }}', '{{ articulo.apellido }}, {{articulo.nombre }}')"><i class="material-icons">delete</i></a>
+              </th>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+<!-- Modal Structure -->
+  <div id="delete" class="modal">
+    <div class="modal-content">
+      <h4>Confirmacion</h4>
+      <p>Esta seguro que quiere eliminar a <span id="removeName"></span></p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
+      <a onClick="eliminararticulo()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  var currentId;
+  function abrirmodal(id, name){
+    $("#removeName")[0].innerText = name;
+    currentId = id;
+    $("#delete").modal('open');
+  }
+
+  function eliminararticulo(){
+    headers = {}
+    headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
+    fetch("/articulo/"+currentId, 
+      {
+        method: 'delete',
+        "headers": headers
+      }
+    ).then( function(result){
+      location.reload();
+    }
+    )
+  }
+
+</script>
+{% endblock body %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+body {
+  background-color: #96f291;
+}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+{% load crispy_forms_tags %}
+<div id="login-page" class="row container">
+    <div class="col s12 z-depth-4 card-panel light-green lighten-5" >
+      {%if articulo %}
+      <form class="col s12 login-form" method="POST" action="{% url 'articulo' articulo.pk %}">
+      {% else %} 
+      <form class="col s12 login-form" method="POST" action="{% url 'crear_articulo' %}">
+      {% endif %}
+        {% csrf_token %}
+        <div class="row">
+        <div class="center">
+          <span class="card-title">
+            <h4>Registar nuevo articulo</h4>
+          </span>
+        </div>
+      </div>
+      {{form|crispy}}
+      <div class="row">
+        <div class="input-field col s12">
+          <button type="submit" class="btn waves-effect waves-light col s12" name="Crear"> Registrar</button>
+        </div>  
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+// select initialization
+$(document).ready(function(){
+    $('select').formSelect();
+});
+
+// datepicker initialization and conf
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        yearRange: [1920,2020]
+    });
+  });
+
+
+</script>
+
+{% endblock body %}
