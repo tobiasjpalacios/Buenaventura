@@ -44,10 +44,11 @@
       <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
       {% if user.is_authenticated %}
       <li><a>{{user.username|title}}</a></li>
-      <li><a  href="{% url 'logout' %}" class="dropdown-item">Logout</a></li>
+      <li><a  href="{% url 'logout' %}" class="dropdown-item ">Cerrar Sesion</a></li>
 
       {% else %}
       <li><a style="border-radius: 2em; color: #000000;" class="waves-effect waves-light btn modal-trigger green" href="#modal1" > Iniciar Sesion</a></li>
+
       {% endif %}
     </ul>
   </div>
@@ -57,18 +58,34 @@
 <!--  sidenav -->
 <ul class="sidenav" id="mobile-demo"  >
   {% if user.is_authenticated %}
-  <a  href="#!" class="brand-logo right-align"><img width="200" src="{% static 'images/logo.png' %}"></a>
-  <li><h4 class="center-align grey-text"> {{user.username|title}} </h4></li>
+  <li><div class="user-view">
+    <div class="background">
+      <img src="{% static 'images/campos.jpg' %}">
+    </div>
+    <a ><img class="circle" src="{% static 'images/logo.png' %}"></a>
+    <div style=" background-color: rgba(199, 202, 18, 0.5); border-radius: 2em;" >
+      <div class="container">
+    <a href="#name"><span  class=" grey-text text-darken-1 name"> {{user.username|title}}</span></a>
+    <a href="#email"><span class="black-text   email">{{ user.get_full_name }}</span></a>
+    <a href="#email"><span class= "black-text email">{{ user.email }}</span></a>
+   
+    </div>
+  </div>
+  <div class="divider"></div>
+</div></li>
   <li><div class="divider"></div></li>
-  <li><h5 class="center-align grey-text " >{{ user.get_full_name }} </h5></li>
-  <li><div class="divider"></div></li>
-  <li><h5 class="center-align grey-text " >{{ user.email }} </h5></li>
-  <li><div class="divider"></div></li>
+  <li><a class=' btn waves-effect waves-light green modal-trigger'  href="{% url 'home' %}"  >Pagina de Inicio</a></li>
   <li><a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a></li>
   <li><a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'logout' %}">Cerrar Sesion</a></li>
-  </li>
+  <li><div class="divider"></div></li>
   {% else %}
-  <a  href="#!" class="brand-logo right-align"><img width="200" src="{% static 'images/logo.png' %}"></a>
+  <li><div class="user-view">
+    <div class="background">
+      <img src="{% static 'images/campos.jpg' %}">
+    </div>
+    <a ><img class="circle" src="{% static 'images/logo.png' %}"></a> 
+</div></li>
+
   <li><a class=' btn waves-effect waves-light green modal-trigger'  href="#modal1">Iniciar Sesion</a></li>
   <li><a class=' btn waves-effect waves-light green modal-trigger' >Quienes somos</a></li>
   <li><a class=' btn waves-effect waves-light green modal-trigger' >Nuestros Socios</a></li>
