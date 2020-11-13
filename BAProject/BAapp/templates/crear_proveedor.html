@@ -149,25 +149,8 @@ BuenaVentura Agronegocios
          {{form.moneda}}
         </div>
 
-        <div class="input-field col s6">
-          {{ form.numero_cai.errors }}
-          <label for="{{ form.numero_cai.id_for_label }}">Número CAI.</label>
-         <input name="{{form.numero_cai.name}}" id="{{ form.numero_cai.id_for_label }}" type="number" min="0" class="validate">
-        </div>
 
-        <div class="input-field col s6">
-          {{ form.vencimiento_cai.errors }}
-          <label for="{{ form.vencimiento_cai.id_for_label }}">Vencimiento CAI</label>
-         {{form.vencimiento_cai}}
-        </div>
-
-        <div class="input-field col s12">
-          {{ form.observaciones.errors }}
-          <label for="{{ form.observaciones.id_for_label }}">Observaciones</label>
-         {{form.observaciones}}
-        </div>
-
-      
+      </div>
 
       </div>
       <div class="row">
@@ -184,26 +167,81 @@ BuenaVentura Agronegocios
 <script type="text/javascript">
 // select initialization
 $(document).ready(function(){
-  $('select').formSelect();
+	$('select').formSelect();
 });
 
 // datepicker initialization and conf
 $(document).ready(function(){
     $('.datepicker').datepicker({
-      format: 'dd/mm/yyyy',
-      yearRange: [1920,2020]
+    	format: 'dd/mm/yyyy',
+    	yearRange: [1920,2020]
     });
   });
-
-$('form').on('focus', 'input[type=number]', function (e) {
-  $(this).on('wheel.disableScroll', function (e) {
-    e.preventDefault()
-  })
-})
-$('form').on('blur', 'input[type=number]', function (e) {
-  $(this).off('wheel.disableScroll')
-});
 
 </script>
 
 {% endblock body %}    
+
+
+
+
+
+
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+body {
+  background-color: #96f291;
+}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+{% load crispy_forms_tags %}
+<div id="login-page" class="row container">
+    <div class="col s12 z-depth-4 card-panel light-green lighten-5" >
+      {%if proveedor %}
+      <form class="col s12 login-form" method="POST" action="{% url 'proveedor' proveedor.pk %}">
+      {% else %} 
+      <form class="col s12 login-form" method="POST" action="{% url 'crear_proveedor' %}">
+      {% endif %}
+        {% csrf_token %}
+        <div class="row">
+        <div class="center">
+          <span class="card-title">
+            <h4>Registar nuevo proveedor</h4>
+          </span>
+        </div>
+      </div>
+      {{form|crispy}}
+      <div class="row">
+        <div class="input-field col s12">
+          <button type="submit" class="btn waves-effect waves-light col s12" name="Crear"> Registrar</button>
+        </div>  
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+// select initialization
+$(document).ready(function(){
+    $('select').formSelect();
+});
+
+// datepicker initialization and conf
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        yearRange: [1920,2020]
+    });
+  });
+
+
+</script>
+
+{% endblock body %}

@@ -51,6 +51,9 @@ class Proveedor(Persona):
     vencimiento_cai = models.DateTimeField(null=False)
     observaciones = models.CharField(max_length=50,null=False)
 
+    def __str__(self):
+        return 'Proveedor {} {}'.format(self.apellido, self.nombre)
+
 
 class Pedido(models.Model):
     cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
