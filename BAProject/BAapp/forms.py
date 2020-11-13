@@ -27,7 +27,3 @@ class ClienteForm(ModelForm):
             'fecha_nacimiento' : forms.TextInput(attrs={'class':'datepicker'}),
         }
 
-class ArticuloForm(ModelForm):
-    class Meta:
-        model = Articulo
-        fields = '__all__'

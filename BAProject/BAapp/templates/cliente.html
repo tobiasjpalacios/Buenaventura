@@ -86,13 +86,13 @@ BuenaVentura Agronegocios
           
           <div class="input-field col s6">
             {{ form.sexo.errors }}
-            <label for="{{ form.nombre.id_for_label }}">Sexo</label>
+            <label class="active" for="{{ form.nombre.id_for_label }}">Sexo</label>
             {{form.sexo}}
           </div>
           
           <div class="input-field col s6">
             {{ form.user.errors }}
-            <label for="{{ form.nombre.id_for_label }}">Usuario</label>
+            <label class="active" for="{{ form.nombre.id_for_label }}">Usuario</label>
             {{form.user}}
           </div>
                     
@@ -110,7 +110,7 @@ BuenaVentura Agronegocios
                     
           <div class="input-field col s6">
             {{ form.categoria_iva.errors }}
-            <label for="{{ form.categoria_iva.id_for_label }}">Categoria IVA</label>
+            <label class="active" for="{{ form.categoria_iva.id_for_label }}">Categoria IVA</label>
             {{form.categoria_iva}}
           </div>
                     
@@ -152,7 +152,7 @@ $('form').on('focus', 'input[type=number]', function (e) {
 })
 $('form').on('blur', 'input[type=number]', function (e) {
   $(this).off('wheel.disableScroll')
-})
+});
 </script>
 
 {% endblock body %}
