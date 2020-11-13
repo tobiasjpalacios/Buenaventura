@@ -56,14 +56,14 @@
 
 
 <!--  sidenav -->
-<ul class="sidenav" id="mobile-demo"  >
+<ul  style="background-color: rgba(25, 141, 45, 0.5);" class="sidenav" id="mobile-demo"  >
   {% if user.is_authenticated %}
   <li><div class="user-view">
     <div class="background">
       <img src="{% static 'images/campos.jpg' %}">
     </div>
     <a ><img class="circle" src="{% static 'images/logo.png' %}"></a>
-    <div style=" background-color: rgba(199, 202, 18, 0.5); border-radius: 2em;" >
+    <div style=" background-color: rgba(25, 141, 45, 0.5); border-radius: 2em;" >
       <div class="container">
     <a href="#name"><span  class=" grey-text text-darken-1 name"> {{user.username|title}}</span></a>
     <a href="#email"><span class="black-text   email">{{ user.get_full_name }}</span></a>
