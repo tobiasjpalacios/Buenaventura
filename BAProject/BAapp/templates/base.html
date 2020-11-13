@@ -37,13 +37,8 @@
     <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     <ul class="right hide-on-med-and-down">
       {% if user.is_superuser %}  
-      <li><a class='dropdown-trigger btn waves-effect waves-light green' href='#' data-target='dropdown1'>Administrar</a>
-        <!-- Dropdown Structure -->
-        <ul id='dropdown1' class='dropdown-content'>
-          <li><a  href="{% url 'registrar_cliente' %}">Crear cliente</a></li>
-          <li><a  href="{% url 'mostrar_clientes' %}">Ver clientes</a></li>
-        </ul>                  
-
+      <li>
+        <a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a>
       </li>
       {% endif %}
       <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->

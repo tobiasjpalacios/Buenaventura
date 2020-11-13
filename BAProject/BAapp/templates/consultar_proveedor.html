@@ -1,0 +1,92 @@
+
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+    <table class="centered bordered">
+      <thead>
+        <tr>
+            <th>Codigo</th>
+            <th>Fax</th>
+            <th>Cuil/Cuit</th>
+            <th>Codigo cuenta</th>
+            <th>Saldo inicial</th>
+            <th>Alicuota</th>
+            <th>Desde iibb</th>
+            <th>Hasta iibb</th>
+            <th>Moneda</th>
+            <th>Numero cai</th>
+            <th>Vencimiento cai</th>
+            <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for proveedor in proveedores %}
+          <tr>
+            <td>{{ proveedor.codigo }}</td>
+            <td>{{ proveedor.fax }}</td>
+            <td>{{ proveedor.cuil_cuit }}</td>
+            <td>{{ proveedor.codigo_cta }}</td>
+            <td>{{ proveedor.saldo_inicial }}</td>
+            <td>{{ proveedor.alicuota }}</td>
+            <td>{{ proveedor.desde_iibb }}</td>
+            <td>{{ proveedor.hasta_iibb }}</td>
+            <td>{{ proveedor.moneda }}</td>
+            <td>{{ proveedor.numero_cai }}</td>
+            <td>{{ proveedor.vencimiento_cai|date:"M d, Y" }}</td>
+            <td>{{ proveedor.observaciones }}</td>
+            {% if user.is_superuser %}
+              <th>
+                <div>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'proveedor' proveedor.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small waves-effect waves-light red' 
+                    onclick="abrirmodal('{{ proveedor.id }}', '{{ proveedor.apellido }}, {{proveedor.nombre }}')"><i class="material-icons">delete</i></a>
+              </th>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+<!-- Modal Structure -->
+  <div id="delete" class="modal">
+    <div class="modal-content">
+      <h4>Confirmacion</h4>
+      <p>Esta seguro que quiere eliminar a <span id="removeName"></span></p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
+      <a onClick="eliminarproveedor()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  var currentId;
+  function abrirmodal(id, name){
+    $("#removeName")[0].innerText = name;
+    currentId = id;
+    $("#delete").modal('open');
+  }
+
+  function eliminarproveedor(){
+    headers = {}
+    headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
+    fetch("/proveedor/"+currentId, 
+      {
+        method: 'delete',
+        "headers": headers
+      }
+    ).then( function(result){
+      location.reload();
+    }
+    )
+  }
+
+</script>
+{% endblock body %}

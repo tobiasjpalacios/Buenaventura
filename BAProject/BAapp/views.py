@@ -11,14 +11,38 @@ from .models import *
 def landing_page(request):
 	return render(request, 'Principal.html')
 
-def crear_proveedor(request):
-    form = ProveedorForm()
-    if request.method == 'POST':
+
+class ProveedorView(View):
+    def get(self, request, *args, **kwargs):
+        context = {
+        "form": ProveedorForm()}
+        if ("pk" in kwargs):
+            context["proveedor"] = Proveedor.objects.get(pk=kwargs["pk"])
+            context["form"] = ProveedorForm(instance=context["proveedor"])
+        return render(request, 'proveedor.html', context)
+
+    def post(self, request, *args, **kwargs):
         form = ProveedorForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-    return render(request,'crear_proveedor.html',{'form': form})
+
+    def put(self, request, *args, **kwargs):
+        proveedor = Proveedor.objects.get(pk=kwargs["pk"])
+        form = ProveedorForm(request.POST or None, instance=proveedor)
+        if form.is_valid():
+            form.save()
+            return redirect('/proveedores')
+
+    def delete(self, request, *args, **kwargs):
+        proveedor = Proveedor.objects.get(pk=kwargs["pk"])
+        proveedor.delete()
+        return HttpResponse(code=200)
+
+class ListProveedorView(View):
+    def get(self, request, *args, **kwargs):
+        all_proveedores = Proveedor.objects.all()
+        return render(request, 'consultar_proveedor.html', {'proveedores':all_proveedores})    
 
 
 class ListClienteView(View):
@@ -37,22 +61,19 @@ class ClienteView(View):
         return render(request, 'cliente.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = ClienteForm(request.POST)
+        cliente = None
+        if ("pk" in kwargs):
+            cliente = Cliente.objects.get(pk=kwargs["pk"])
+        form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
-            form.save()
-            return redirect('/')
-
-    def put(self, request, *args, **kwargs):
-        cliente = Cliente.objects.get(pk=kwargs["pk"])
-        form = ClienteForm(request.POST or None, instance=cliente)
-        if form.is_valid():
-            form.save()
-            return redirect('/clientes')
+            cliente = form.save()
+            return redirect("cliente", pk=cliente.pk)
+        return render(request, 'cliente.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
         cliente = Cliente.objects.get(pk=kwargs["pk"])
         cliente.delete()
-        return HttpResponse(code=200)
+        return HttpResponse(status=200)
 
 # def modificar_clientes(request, pk):
 #     cliente = Cliente.objects.get(pk=pk)
@@ -72,3 +93,6 @@ def eliminar_cliente(request, pk):
         return redirect('/clientes')
     context = {'cliente':cliente}
     return render(request, 'eliminar_cliente.html', context)
+
+def admin(request):
+    return render(request,'admin.html')

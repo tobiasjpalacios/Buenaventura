@@ -30,7 +30,7 @@ BuenaVentura Agronegocios
 <div id="login-page" class="row container">
     <div class="col s12 z-depth-4 card-panel light-green lighten-5">
       {%if cliente %}
-      <form class="col s12 login-form" method="PUT" action="{% url 'cliente' cliente.pk %}">
+      <form class="col s12 login-form" method="POST" action="{% url 'cliente' cliente.pk %}">
       {% else %} 
       <form class="col s12 login-form" method="POST" action="{% url 'registrar_cliente' %}">
       {% endif %}
