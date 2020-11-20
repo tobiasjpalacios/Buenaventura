@@ -70,12 +70,18 @@ BuenaVentura Agronegocios
           <input name="{{form.telefono.name}}" id="{{ form.telefono.id_for_label }}" type="text" class="validate">
         </div>
 
-        <div class="input-field col s12">
+        <div class="input-field col s6">
           {{ form.email.errors }}
           <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
           {{form.email}}
         </div>
         
+        <div class="input-field col s6">
+          {{ form.categoria_iva.errors }}
+          <label class="active" for="{{ form.categoria_iva.id_for_label }}">Categoria Iva</label>
+          {{form.categoria_iva}}
+        </div>
+
         
         <div class="input-field col s6">
           {{ form.fecha_nacimiento.errors }}
@@ -113,10 +119,16 @@ BuenaVentura Agronegocios
           {{form.fax}}
         </div>
                   
-        <div class="input-field col s12">
+        <div class="input-field col s6">
           {{ form.codigo_cta.errors }}
           <label for="{{ form.codigo_cta.id_for_label }}">Código Cuenta</label>
          <input name="{{form.codigo_cta.name}}" id="{{ form.codigo_cta.id_for_label }}" type="number" min="0" class="validate">
+        </div>
+
+          <div class="input-field col s6">
+          {{ form.sujeto_retencion.errors }}
+          <label class="active" for="{{ form.sujeto_retencion.id_for_label }}">Sujeto de retención</label>
+          {{form.sujeto_retencion}}
         </div>
 
         <div class="input-field col s6">
@@ -166,6 +178,7 @@ BuenaVentura Agronegocios
           <label for="{{ form.observaciones.id_for_label }}">Observaciones</label>
          {{form.observaciones}}
         </div>
+
 
       
 

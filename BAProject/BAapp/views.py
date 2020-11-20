@@ -107,3 +107,35 @@ class ClienteView(View):
         cliente = Cliente.objects.get(pk=kwargs["pk"])
         cliente.delete()
         return HttpResponse(status=200)
+
+class ListPresupuestoView(View):
+    def get(self, request, *args, **kwargs):
+        all_presupuestos = Presupuesto.objects.all()
+        return render(request, 'consultar_presupuestos.html', {'presupuestos':all_presupuestos})    
+
+
+class PresupuestoView(View):
+
+    def get(self, request, *args, **kwargs):
+        context = {
+        "form": PresupuestoForm()}
+        if ("pk" in kwargs):
+            context["presupuesto"] = Presupuesto.objects.get(pk=kwargs["pk"])
+            context["form"] = PresupuestoForm(instance=context["presupuesto"])
+        return render(request, 'presupuesto.html', context)
+
+    def post(self, request, *args, **kwargs):
+        presupuesto = None
+        if ("pk" in kwargs):
+            presupuesto = Presupuesto.objects.get(pk=kwargs["pk"])
+        form = PresupuestoForm(request.POST, instance=presupuesto)
+        if form.is_valid():
+            presupuesto = form.save()
+            return redirect('presupuesto', pk=presupuesto.pk)
+        return render(request, 'presupuesto.html', context={"form":form})
+
+    def delete(self, request, *args, **kwargs):
+        presupuesto = Presupuesto.objects.get(pk=kwargs["pk"])
+        presupuesto.delete()
+        return HttpResponse(code=200)
+

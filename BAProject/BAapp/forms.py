@@ -27,3 +27,22 @@ class ClienteForm(ModelForm):
             'fecha_nacimiento' : forms.TextInput(attrs={'class':'datepicker'}),
         }
 
+class ArticuloForm(ModelForm):
+
+    class Meta:
+        model = Articulo
+        fields = '__all__'
+
+class PresupuestoForm(ModelForm):
+    fecha = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+    mes_de_pago = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+
+    class Meta:
+        model = Presupuesto
+        fields = '__all__'
+
+
+        widget = {
+            'fecha' : forms.TextInput(attrs={'class':'datepicker'}),
+            'fecha_de_pago' : forms.TextInput(attrs={'class':'datepicker'}),
+        }

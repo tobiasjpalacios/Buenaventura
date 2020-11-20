@@ -12,38 +12,28 @@ BuenaVentura Agronegocios
     <table class="centered bordered">
       <thead>
         <tr>
-            <th>Codigo</th>
-            <th>Fax</th>
-            <th>Cuil/Cuit</th>
-            <th>Codigo cuenta</th>
-            <th>Saldo inicial</th>
-            <th>Alicuota</th>
-            <th>Desde iibb</th>
-            <th>Hasta iibb</th>
-            <th>Moneda</th>
-            <th>Numero cai</th>
-            <th>Vencimiento cai</th>
-            <th>Observaciones</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Dni</th>
+            <th>Email</th>
+            <th>Fecha de nacimiento</th>
+            <th>Sexo</th>
+
         </tr>
       </thead>
       <tbody>
         {% for proveedor in proveedores %}
           <tr>
-            <td>{{ proveedor.codigo }}</td>
-            <td>{{ proveedor.fax }}</td>
-            <td>{{ proveedor.cuil_cuit }}</td>
-            <td>{{ proveedor.codigo_cta }}</td>
-            <td>{{ proveedor.saldo_inicial }}</td>
-            <td>{{ proveedor.alicuota }}</td>
-            <td>{{ proveedor.desde_iibb }}</td>
-            <td>{{ proveedor.hasta_iibb }}</td>
-            <td>{{ proveedor.moneda }}</td>
-            <td>{{ proveedor.numero_cai }}</td>
-            <td>{{ proveedor.vencimiento_cai|date:"M d, Y" }}</td>
-            <td>{{ proveedor.observaciones }}</td>
+            <td>{{ proveedor.nombre }}</td>
+            <td>{{ proveedor.apellido }}</td>
+            <td>{{ proveedor.dni }}</td>
+            <td>{{ proveedor.email }}</td>
+            <td>{{ proveedor.fecha_nacimiento|date:"M d, Y" }}</td>
+            <td>{{ proveedor.sexo }}</td>
             {% if user.is_superuser %}
               <th>
                 <div>
+                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer('{{proveedor}}')"><i class="material-icons">remove_red_eye</i></a>
                   <a class='btn-small waves-effect waves-light green' href="{% url 'proveedor' proveedor.pk %}"><i class="material-icons">edit</i></a>
                   <a class='btn-small waves-effect waves-light red' 
                     onclick="abrirmodal('{{ proveedor.id }}', '{{ proveedor.apellido }}, {{proveedor.nombre }}')"><i class="material-icons">delete</i></a>
@@ -54,6 +44,7 @@ BuenaVentura Agronegocios
       </tbody>
     </table>
 
+
 <!-- Modal Structure -->
   <div id="delete" class="modal">
     <div class="modal-content">
@@ -63,6 +54,52 @@ BuenaVentura Agronegocios
     <div class="modal-footer">
       <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
       <a onClick="eliminarproveedor()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+    </div>
+  </div>
+
+   <div id="datos" class="modal">
+    <div class="modal-content">
+          <table class="centered bordered">
+      <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Dni</th>
+            <th>Email</th>
+            <th>Fecha de nacimiento</th>
+            <th>Sexo</th>
+            <th>Telefono</th>
+            <th>Usuario</th>
+            <th>Codigo</th>
+            <th>Cuil/Cuit</th>
+            <th>Categoria Iva</th>
+            <th>Cuenta contable</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <p><span id="nombre"></span></p>
+            <td><span id="apellido"></span></td>
+            <td><span id="dni"></span></td>
+            <td><span id="email"></span></td>
+            <td><span id="fecha"></span></td>
+            <td><span id="sexo"></span></td>
+            <td><span id="telefono"></span></td>
+            <td><span id="codigo"></span></td>
+            <td><span id="fax"></span></td>
+            <td><span id="cuil_cuit"></span></td>
+            <td><span id="codigo_cta"></span></td>
+            <td><span id="saldo_inicial"></span></td>
+            <td><span id="alicuota"></span></td>
+            <td><span id="sujeto_retencion"></span></td>
+            <td><span id="categoria_iva"></span></td>
+            <td><span id="cuenta_contable"></span></td>
+          </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
     </div>
   </div>
 
@@ -86,6 +123,10 @@ BuenaVentura Agronegocios
       location.reload();
     }
     )
+  }
+
+  function modalVer(proveedor){
+    console.log(proveedor);
   }
 
 </script>

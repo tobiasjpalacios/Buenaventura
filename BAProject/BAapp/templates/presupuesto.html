@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+
+body {
+  background-color: #96f291;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+<div id="login-page" class="row container">
+    <div class="col s12 z-depth-4 card-panel light-green lighten-5">
+      {%if prespuesto %}
+      <form class="col s12 login-form" method="POST" action="{% url 'prespuesto' prespuesto.pk %}">
+      {% else %} 
+      <form class="col s12 login-form" method="POST" action="{% url 'crear_presupuesto' %}">
+      {% endif %}
+        {% csrf_token %}
+        <div class="row">
+          <div class="center">
+            <span class="card-title">
+              {%if presuúesto %}
+                <h4>Modificar presupuesto</h4>
+              {% else %} 
+                <h4>Crear nuevo prespuesto</h4>
+              {% endif %}
+             </span>
+          </div>
+        </div>
+        <div>
+          {{ form.non_field_errors }}
+          
+          <div class="input-field col s6">
+            {{ form.propuesta.errors }}
+            <label for="{{ form.propuesta.id_for_label }}">Propuesta</label>
+            {{form.propuesta}}
+          </div>
+
+          <div class="input-field col s6">
+            {{ form.area.errors }}
+            <label for="{{ form.area.id_for_label }}" id="{{ form.area.id_for_label }}" type="text" class="validate">Area</label>
+            <input name="{{form.area.name}}" id="{{ form.area.id_for_label }}" type="text" class="validate">
+          </div>
+
+           <div class="input-field col s6">
+            {{ form.fecha.errors }}
+            <label for="{{ form.fecha.id_for_label }}">Fecha</label>
+            {{form.fecha}}
+          </div>
+          
+          
+          <div class="input-field col s6">
+            {{ form.razon_social.errors }}
+            <label for="{{ form.razon_social.id_for_label }}">Razón social</label>
+            <input name="{{form.razon_social.name}}" id="{{ form.razon_social.id_for_label }}" type="text" class="validate">
+          </div>
+
+          <div class="input-field col s6">
+            {{ form.total.errors }}
+            <label for="{{ form.total.id_for_label }}">Total</label>
+            <input name="{{form.total.name}}" id="{{ form.total.id_for_label }}" type="number" min="0"  step="0.01" class="validate">
+          </div>
+
+          <div class="input-field col s6">
+            {{ form.user.errors }}
+            <label class="active" for="{{ form.nombre.id_for_label }}">Usuario</label>
+            <input name="{{form.user.name}}" id="{{ form.user.id_for_label }}" type="text" class="validate">          
+          </div>
+                    
+           <div class="input-field col s6">
+            {{ form.mes_de_pago.errors }}
+            <label for="{{ form.mes_de_pago.id_for_label }}">Mes de pago</label>
+            {{form.mes_de_pago}}
+          </div>
+          
+
+          <div class="input-field col s6">
+            {{ form.observaciones.errors }}
+            <label for="{{ form.observaciones.id_for_label }}">Observaciones</label>
+            <input name="{{form.observaciones.name}}" id="{{ form.observaciones.id_for_label }}" type="text" class="validate">            
+          </div>
+
+           <div class="input-field col s6">
+            {{ form.cobrado.errors }}
+            <label>
+              <input type="checkbox" name="{{form.cobrado.name}}" class="validate" />
+              <span>Cobrado</span>
+            </label>
+          </div>    
+        </div>
+        <div class="row">
+          <div class="input-field col s6 offset-s3">
+            <button type="submit" class="btn waves-effect waves-light col s12" name="Registrarme">Guardar</button>
+          </div>  
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script type="text/javascript">
+// select initialization
+$(document).ready(function(){
+    $('select').formSelect();
+});
+
+// datepicker initialization and conf
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        yearRange: [1920,2020]
+    });
+  });
+
+
+$('form').on('focus', 'input[type=number]', function (e) {
+  $(this).on('wheel.disableScroll', function (e) {
+    e.preventDefault()
+  })
+})
+$('form').on('blur', 'input[type=number]', function (e) {
+  $(this).off('wheel.disableScroll')
+});
+</script>
+
+{% endblock body %}

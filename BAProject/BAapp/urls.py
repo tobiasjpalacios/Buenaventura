@@ -20,4 +20,8 @@ urlpatterns = [
     path('articulo/<int:pk>', ArticuloView.as_view(), name="articulo"),
     path('articulo/', ArticuloView.as_view(), name="crear_articulo"),
 
+    path('presupuestos/', ListPresupuestoView.as_view(), name = "mostrar_presupuestos"),
+    path('presupuesto/<int:pk>', PresupuestoView.as_view(), name="presupuesto"),
+    path('presupuesto/', PresupuestoView.as_view(), name="crear_presupuesto"),
+
 ]

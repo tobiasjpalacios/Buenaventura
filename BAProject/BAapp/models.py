@@ -21,7 +21,7 @@ class Persona(models.Model):
 class Cliente(Persona):
     codigo = models.IntegerField(null=False)
     cuil_cuit = models.IntegerField(null=False)
-    categoria_iva = models.CharField('Categoria Iva', max_length=15, choices=CATEGORIA_CHOICES)
+    categoria_iva = models.CharField('Categoria Iva', max_length=25, choices=IVA_CHOICES)
     cuenta_contable = models.IntegerField(null=False)
 
     def __str__(self):
@@ -42,8 +42,8 @@ class Proveedor(Persona):
     codigo_cta = models.IntegerField(null=False)
     saldo_inicial = models.FloatField(null=False)
     alicuota = models.FloatField(null=False)
-    #Sujeto de Retencion
-    #Categoria
+    sujeto_retencion = models.CharField(max_length=15, choices=RET_GANANCIA_CHOICES)
+    categoria_iva = models.CharField('Categoria Iva', max_length=25, choices=IVA_CHOICES)
     desde_iibb = models.FloatField(null=False)
     hasta_iibb = models.FloatField(null=False)
     moneda = models.CharField(max_length=50,null=False)
@@ -62,7 +62,7 @@ class Pedido(models.Model):
     fecha = models.DateTimeField(null=False)
 
     def __str__(self):
-        return 'Pedido Nro: {} - Cliente {} {}'.format(self.id, self.apellido, self.nombre)
+        return 'Pedido Nro: {} - Cliente {} {}'.format(self.id, self.cliente.apellido, self.cliente.nombre)
 
 
 class Articulo(models.Model):
@@ -71,7 +71,7 @@ class Articulo(models.Model):
     codigo_subrubro = models.CharField(max_length=50, null=False)
     codigo_articulo = models.CharField(max_length=50, null=False)
     descripcion = models.CharField(max_length=50, null=False)
-    #unidad_de
+    unidad_de =  models.CharField(max_length=20, choices=UNIDAD_CHOICES)
     precio_compra = models.FloatField(null=False)
     rubro = models.CharField(max_length=50, null=False)
     subrubro = models.CharField(max_length=50, null=False)
@@ -97,11 +97,11 @@ class Propuesta(models.Model):
 class Presupuesto(models.Model):
     propuesta = models.ForeignKey(Propuesta, null=False, on_delete=models.CASCADE)
     area = models.CharField(max_length=50, null=False)
-    fecha = models.DateTimeField(null=False)
+    fecha = models.DateField(null=False)
     razon_social = models.CharField(max_length=30, null=False)
     total = models.FloatField(null=False)
-    mes_de_pago = models.DateTimeField(null=False)
-    #Cobrado
+    mes_de_pago = models.DateField(null=False)
+    cobrado = models.BooleanField(default=False)
     observaciones = models.CharField(max_length=300,null=False)
 
     def __str__(self):
