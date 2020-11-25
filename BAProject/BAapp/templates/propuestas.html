@@ -14,6 +14,28 @@ BuenaVentura Agronegocios
     <h2 class="center-align">Propuestas</h2>
 </div>
 <div class="row">
+    <div class="input-field col s6">
+        <select>
+          <option value="" disabled selected>Elija su opcion</option>
+          <option value="1">carlos perez</option>
+          <option value="2">pedro almada </option>
+          <option value="3">Ricky fort</option>
+        </select>
+        <label>cliente</label>
+      </div>
+      <div class="input-field col s6">
+        <select>
+          <option value="" disabled selected>Elija su opcion</option>
+          <option value="1">tecnocampo</option>
+          <option value="2">agroar</option>
+          <option value="3">roagro</option>
+        </select>
+        <label>Provedor</label>
+      </div>
+</div>
+
+
+<div class="row">
 <div class="col s4">
     <div class="row">
         <div class="card green  col s10 center-align "> <h5 class="center-alingn ">Articulos</h5></div>
@@ -114,13 +136,33 @@ BuenaVentura Agronegocios
           </div>
           <div class="input-field col s4">
             <input id="first_name" type="number" class="validate">
-            <label for="first_name">Comision</label>
+            <label for="first_name">tasa</label>
         </div>
         <div class="input-field col s4">
             <input id="first_name" type="number" class="validate">
             <label for="first_name"> precio venta</label>
         </div>
-    
+        <div class="input-field col s4">
+            <select>
+              <option value="" disabled selected>Elija su opcion</option>
+              <option value="1">Contado</option>
+              <option value="2">Enero TCA</option>
+              <option value="3">etc</option>
+            </select>
+            <label>Condicion y plazo</label>
+          </div>
+          <div class="input-field col s4">
+            <input id="first_name" type="text" class="datepicker">
+            <label for="first_name">fecha de entrega</label>
+        </div>
+        <div class="input-field col s4">
+            <input id="first_name" type="text" class="validate">
+            <label for="first_name"> Lugar</label>
+        </div>
+        <div class="input-field col s12">
+            <textarea id="textarea1" class="materialize-textarea"></textarea>
+            <label for="textarea1">Descripcion</label>
+        </div>
     </div>
    
 </form>
@@ -226,7 +268,9 @@ $(document).ready(function(){
     $('select').formSelect();
   });
 
-
+  $(document).ready(function(){
+    $('.datepicker').datepicker();
+  });
 </script>
 
 {%endblock body%}         
