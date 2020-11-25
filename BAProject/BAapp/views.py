@@ -14,6 +14,8 @@ def landing_page(request):
 def admin(request):
     return render(request,'admin.html')
 
+def propuesta(request):
+    return render(request,'propuestas.html')
 
 class ListArticuloView(View):
     def get(self, request, *args, **kwargs):

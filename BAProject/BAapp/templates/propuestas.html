@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+
+<div class="container">
+<div >
+    <h2 class="center-align">Propuestas</h2>
+</div>
+<div class="row">
+<div class="col s4">
+    <div class="row">
+        <div class="card green  col s10 center-align "> <h5 class="center-alingn ">Articulos</h5></div>
+    </div>
+    <div class="row">
+        <a class="waves-effect waves-light btn  col s10 modal-trigger green" href="#modal1"> agregar </a>
+    </div>
+    <div class="row">
+        <a class="waves-effect waves-light btn  col s10 red"> remover </a>
+    </div>
+    <div class="row">
+        <a class="waves-effect waves-light btn  col s10 blue"> modificar</a>
+    </div>
+
+
+</div>
+<div class="col s8">
+    <table>
+        <thead>
+          <tr>
+              <th>Articulo</th>
+              <th>Codigo</th>
+              <th>Precio Unitario</th>
+              <th>Cantidad</th>
+              <th>Total</th>
+              <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Temoclina</td>
+            <td>4566879-456</td>
+            <td>$0.87</td>
+            <td>100 unidades</td>
+            <td>$80.70</td>
+            <td> <label>
+                <input type="checkbox"  class="validate" />
+                <span >Selecionado</span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>Sulfetrazone</td>
+            <td>4566879-456</td>
+            <td>$1.50</td>
+            <td> 50 kilos</td>
+            <td>$80.70</td>
+            <td> <label>
+                <input type="checkbox"  class="validate" />
+                <span >Selecionado</span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>Temoclina</td>
+            <td>4566879-456</td>
+            <td>$0.87</td>
+            <td>100 unidades</td>
+            <td>$80.70</td>
+            <td> <label>
+                <input type="checkbox"  class="validate" />
+                <span >Selecionado</span>
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>Temoclina</td>
+            <td>4566879-456</td>
+            <td>$0.87</td>
+            <td>100 unidades</td>
+            <td>$80.70</td>
+            <td> <label>
+                <input type="checkbox"  class="validate" />
+                <span >Selecionado</span>
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+            
+
+</div>
+
+
+</div>
+<div class="row">
+    <form>
+    <div class="row">
+        <div class="input-field col s4">
+            <select>
+              <option value="" disabled selected>Elija su opcion</option>
+              <option value="1">Dolar</option>
+              <option value="2">Dolar Blue</option>
+              <option value="3">Peso</option>
+            </select>
+            <label>Divisa</label>
+          </div>
+          <div class="input-field col s4">
+            <input id="first_name" type="number" class="validate">
+            <label for="first_name">Comision</label>
+        </div>
+        <div class="input-field col s4">
+            <input id="first_name" type="number" class="validate">
+            <label for="first_name"> precio venta</label>
+        </div>
+    
+    </div>
+   
+</form>
+</div>
+<div class="row">
+<div class="col s12">
+    <a class="waves-effect waves-light btn  col s12 green"> Confirmar Propuestas </a>
+</div>
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+ <!-- Modal Structure -->
+ <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Selecione los articulos </h4>
+        
+            <table class="center-align col s12">
+                <thead>
+                  <tr>
+                      <th>Proveedor</th>
+                      <th>Codigo Rubro</th>
+                      <th>Codigo Subrubro</th>
+                      <th>Codigo</th>
+                      <th>Descripcion</th>
+                      <th>Precio</th>
+                      <th>Rubro</th>
+                      <th>Subrubro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                      <td>proveedor </td>
+                      <td>codigo_rubro</td>
+                      <td>codigo_subrubro </td>
+                      <td> codigo_articulo </td>
+                      <td>descripcion </td>
+                      <td> precio_compra </td>
+                      <td> rubro </td>
+                      <td>subrubro </td>
+                      
+                        <th>
+                          <div class="row">
+                            <div class="col s2"> <a class='btn-small waves-effect waves-light green modal-trigger' href="#modal2" ><i class="material-icons">add</i></a> </div>
+                            
+                            
+                          </div>
+                        </th>
+                      
+                    </tr>
+                </tbody>
+              </table>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green green-text btn-flat">Terminar</a>
+    </div>
+  </div>
+
+<!-- Modal Structure -->
+<div id="modal2" class="modal">
+    <div class="modal-content">
+      <h4> Cantidad articulos</h4>
+      <form>
+        <div class="row">
+            <div class="input-field col s4">
+                <input id="first_name" type="number" class="validate">
+                <label for="first_name">Cantidad</label>
+              </div>
+              <div class="input-field col s4">
+                <input id="first_name" type="number" class="validate">
+                <label for="first_name">Unidad</label>
+            </div>
+            <div class="input-field col s4">
+                <input id="first_name" type="number" class="validate">
+                <label for="first_name"> valor venta</label>
+            </div>
+        
+        </div>
+       
+    </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat green-text">Confirmar</a>
+    </div>
+  </div>
+
+
+
+
+
+
+<script>
+
+
+$(document).ready(function(){
+    $('select').formSelect();
+  });
+
+
+</script>
+
+{%endblock body%}         
