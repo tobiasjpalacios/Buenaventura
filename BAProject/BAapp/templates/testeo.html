@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}  
+
+<div class="container">
+<div class="row"> 
+   <div class="col s12">
+        <h5>clientes</h5>
+   </div>
+    </div>
+   <div class="col l6 m6 s6">
+    <nav>
+        <div class="nav-wrapper ">
+          <form>
+            <div class="input-field">
+              <input id="search" type="search" required>
+              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+              <i class="material-icons">close</i>
+            </div>
+          </form>
+        </div>
+      </nav>  
+    </div>
+    <div class="col s12">
+        <table class="centered bordered">
+            <thead>
+              <tr>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Dni</th>
+                  <th>Email</th>
+                  <th>Fecha de nacimiento</th>
+                  <th>Sexo</th>
+                  <th>Telefono</th>
+                  <th>Usuario</th>
+                  <th>Codigo</th>
+                  <th>Cuil/Cuit</th>
+                  <th>Categoria Iva</th>
+                  <th>Cuenta contable</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cliente in clientes %}
+                <tr>
+                  <td>{{ cliente.nombre }}</td>
+                  <td>{{ cliente.apellido }}</td>
+                  <td>{{ cliente.dni }}</td>
+                  <td>{{ cliente.email }}</td>
+                  <td>{{ cliente.fecha_nacimiento|date:"M d, Y" }}</td>
+                  <td>{{ cliente.sexo }}</td>
+                  <td>{{ cliente.telefono }}</td>
+                  <td>{{ cliente.codigo }}</td>
+                  <td>{{ cliente.cuil_cuit }}</td>
+                  <td>{{ cliente.categoria_iva }}</td>
+                  <td>{{ cliente.cuenta_contable }}</td>
+                  {% if user.is_superuser %}
+                    <th>
+                      <div>
+                        <a class='btn-small waves-effect waves-light green' href="{% url 'cliente' cliente.pk %}"><i class="material-icons">edit</i></a>
+                        <a class='btn-small waves-effect waves-light red' 
+                          onclick="abrirmodal('{{ cliente.id }}', '{{ cliente.apellido }}, {{cliente.nombre }}')"><i class="material-icons">delete</i></a>
+                    </th>
+                  {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+
+    </div>
+
+
+</div>
+</div>
+
+
+
+{%endblock body%} 

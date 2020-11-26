@@ -17,6 +17,9 @@ def admin(request):
 def propuesta(request):
     return render(request,'propuestas.html')
 
+def testeo(request):
+    return render(request, 'testeo.html')
+
 class ListArticuloView(View):
     def get(self, request, *args, **kwargs):
         all_articulos = Articulo.objects.all()
