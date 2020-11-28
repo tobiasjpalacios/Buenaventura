@@ -35,7 +35,16 @@ class Vendedor(Persona):
         return 'Vendedor {} {}'.format(self.apellido, self.nombre)
 
 
+#Aca falta que nos pasen los datos de lo que tiene un Proveedor 
+#Con Proveedor me refiero a la entidad que tiene los productos, se confunde el nombre por eso le puse EmpresaProveedor
+#Cambienlo a cualquiera solo lo dejo para que lo puedan distinguir
+class EmpresaProveedor():
+    nombre = models.CharField(max_length=50,null=False) 
+    
 class Proveedor(Persona):
+    #Estos campos los comente pq no corresponden a esta tabla
+    #Son una mezcla de ORganizacion transaccion y persona que emplea el rol de proveedor 
+    """
     codigo = models.IntegerField(null=False)
     fax = models.CharField(max_length=50,null=False)
     cuil_cuit = models.IntegerField(null=False)
@@ -50,9 +59,11 @@ class Proveedor(Persona):
     numero_cai = models.IntegerField(null=False)
     vencimiento_cai = models.DateTimeField(null=False)
     observaciones = models.CharField(max_length=50,null=False)
-
+    """
+    empresa = models.ForeignKey(EmpresaProveedor, null=False, on_delete=models.CASCADE)
+    
     def __str__(self):
-        return 'Proveedor {} {}'.format(self.apellido, self.nombre)
+        return 'Proveedor {} {} - Empresa {}'.format(self.apellido, self.nombre, self.empresa.nombre)
 
 
 class Pedido(models.Model):
@@ -79,19 +90,41 @@ class Articulo(models.Model):
     def __str__(self):
         return 'Articulo: {}'.format(self.codigo_articulo)
 
-
-class Propuesta(models.Model):
-    pedido = models.ForeignKey(Pedido, null=False, on_delete=models.CASCADE)
-    vendedor = models.ForeignKey(Vendedor, null=False, on_delete=models.CASCADE)
+class registroArticulo(models.Model):
     articulo = models.ForeignKey(Articulo, null=False, on_delete=models.CASCADE)
     cantidad = models.IntegerField(null=False)
-    comision_usd = models.FloatField(null=False)
-    comision = models.FloatField(null=False)
-    precio_venta = models.FloatField(null=False)
+    precio = models.FloatField(null=False)
+    
+    def __str__(self):
+        return 'Articulo: {} - Cantidad: {} - Precio: $ {}'.format(self.articulo.codigo_articulo, self.cantidad, self.precio)
+    
+class Propuesta(models.Model):
+    #Aca tengo la duda de si es mejor seleccionar la persona que dio los datos sobre la disponibilidad de productos
+    #O seleccionar la Empresa y a partir de eso el proveedor con el que se llego al acuerdo
+    #Para mi es mejor la empresa y a partir de eso los empleados pero se lo dejo a ustedes que son los que lo van a programar
+    proveedor = models.ForeignKey(Proveedor, null=False, on_delete=models.CASCADE)
+    #Registro tiene que ser One To Many
+    registro = models.ForeignKey(registroArticulo, null=False, on_delete=models.CASCADE)
+    fecha_entrega = models.DateField(null=False)
+    lugar_entrega = models.CharField(max_length=40)
+    observaciones = models.CharField(max_length=300,null=False)
     aceptada = models.BooleanField()
-
+    #El campo Fecha Creacion se me ocurrio como un extra para registrar cuando se realizo la Propuesta
+    #No estaria de mas teniendo en cuenta que es un pedido formal pero si creen que es al pedo saquenlo.
+    #fecha_creacion = models.DateField(null=False) 
+    
     def __str__(self):
         return 'Propuesta Nro: {} - Vendedor {} {} - Articulo {}'.format(self.id, self.vendedor.apellido, self.vendedor.nombre, self.articulo.codigo_articulo)
+    
+    #Mi idea con este metodo era calcular el precio total de la Propuesta
+    #Pero no esta aclarado si el precio es por Unidad de Articulo o el total del precio unitario por la cantidad
+    #Cualquer cosa cambien la formula a: total += a.precio si el precio es respecto a la cantidad por precio unitario
+    def calcularPrecio(self):
+        total = 0
+        for a in range(len(self.registro)):
+            total += a.precio * a.cantidad
+            
+        return total
 
 
 class Presupuesto(models.Model):
