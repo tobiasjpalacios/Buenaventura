@@ -95,4 +95,13 @@ UNIDAD_CHOICES = {
 	(OU,'Otras Unidades'),
 }
 
+DO = 'Dolar'
+DOB = 'Dolar Blue'
+PA = 'Peso Argentino'
 
+DIVISA_CHOICES = {
+	(DO,''),
+	(DOB,''),
+	(PA,''),
+
+}

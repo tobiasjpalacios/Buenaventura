@@ -14,9 +14,6 @@ def landing_page(request):
 def admin(request):
     return render(request,'admin.html')
 
-def propuesta(request):
-    return render(request,'propuestas.html')
-
 def testeo(request):
     return render(request, 'testeo.html')
 
@@ -142,5 +139,33 @@ class PresupuestoView(View):
     def delete(self, request, *args, **kwargs):
         presupuesto = Presupuesto.objects.get(pk=kwargs["pk"])
         presupuesto.delete()
+        return HttpResponse(code=200)
+
+class PropuestaView(View):
+
+    def get(self, request, *args, **kwargs):
+        context = {
+        "form": PropuestaForm(),
+        "clientes": Cliente.objects.all(),
+        "proveedores": Proveedor.objects.all(),
+        "articulos": Articulo.objects.all()}
+        if ("pk" in kwargs):
+            context["propuesta"] = Propuesta.objects.get(pk=kwargs["pk"])
+            context["form"] = PropuestaForm(instance=context["propuesta"])
+        return render(request, 'propuestas.html', context)
+
+    def post(self, request, *args, **kwargs):
+        propuesta = None
+        if ("pk" in kwargs):
+            propuesta = Propuesta.objects.get(pk=kwargs["pk"])
+        form = PropuestaForm(request.POST, instance=propuesta)
+        if form.is_valid():
+            propuesta = form.save()
+            return redirect('propuesta', pk=propuesta.pk)
+        return render(request, 'propuesta.html', context={"form":form})
+
+    def delete(self, request, *args, **kwargs):
+        propuesta = Propuesta.objects.get(pk=kwargs["pk"])
+        propuesta.delete()
         return HttpResponse(code=200)
 

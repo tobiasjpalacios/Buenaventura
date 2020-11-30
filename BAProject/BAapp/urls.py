@@ -7,7 +7,6 @@ from BAapp.views import *
 urlpatterns = [
     path('', landing_page, name='home'),
     path('administrar/', admin, name="admin"),
-    path('propuesta/', propuesta, name="propuesta"),
     path('testeo/', testeo, name="testeo"),
 
     path('clientes/', ListClienteView.as_view(), name="mostrar_clientes"),
@@ -25,6 +24,10 @@ urlpatterns = [
     path('presupuestos/', ListPresupuestoView.as_view(), name = "mostrar_presupuestos"),
     path('presupuesto/<int:pk>', PresupuestoView.as_view(), name="presupuesto"),
     path('presupuesto/', PresupuestoView.as_view(), name="crear_presupuesto"),
+
+    #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
+    path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),
+    path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
 
 
 ]

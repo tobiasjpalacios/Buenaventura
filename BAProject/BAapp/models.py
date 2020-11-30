@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.conf import settings
+from django.contrib import admin
 
 from .choices import *
 
 class Persona(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=30)
+    apellido = models.CharField(max_length=30)
     dni = models.IntegerField()
     fecha_nacimiento = models.DateField(null=False)
     sexo = models.CharField('Sexo', max_length=6, choices=GENERO_CHOICES)
@@ -25,6 +28,11 @@ class Cliente(Persona):
         max_length=25, 
         choices=IVA_CHOICES)
     cuenta_contable = models.IntegerField(null=False)
+
+    def __str__(self):
+        return 'Cliente {} {}'.format(
+            self.apellido, 
+            self.nombre)
 
 
 class Vendedor(Persona):
@@ -102,13 +110,16 @@ class Articulo(models.Model):
 
     
 class Propuesta(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, default=None)
     proveedor = models.ForeignKey(EmpresaProveedor, on_delete=models.CASCADE)
     items = models.ManyToManyField(Articulo, through="ItemPropuesta")
-    vendedor = models.ForeignKey(Vendedor, null=False, on_delete=models.DO_NOTHING)
+    divisa = models.CharField(max_length=40, default=None, choices=DIVISA_CHOICES)
+    tasa = models.IntegerField(default=0, null=False)
+    precio_venta = models.IntegerField(null=False, default=None)
+    condicion_plazo = models.CharField(max_length=40, default=None)
     fecha_entrega = models.DateField(null=False)
+    fecha_creacion = models.DateField(auto_now=True)
     lugar_entrega = models.CharField(max_length=40)
-    aceptada = models.BooleanField(default=False)
-    fecha_creacion = models.DateField(auto_now_add=True)
     observaciones = models.CharField(max_length=300, null=False)
      
     def calcularPrecio(self):
@@ -118,10 +129,10 @@ class Propuesta(models.Model):
         return total
     
     def __str__(self):
-        return 'Propuesta Nro: {} - Vendedor {} {} - Articulo {}'.format(
+        return 'Propuesta Nro: {} - Cliente {} {} - Articulo {}'.format(
             self.id, 
-            self.vendedor.apellido, 
-            self.vendedor.nombre, 
+            self.cliente.apellido, 
+            self.cliente.nombre, 
             self.articulo.codigo_articulo)
 
 class ItemPropuesta(models.Model):
@@ -151,3 +162,13 @@ class Presupuesto(models.Model):
 
     def total(self):
         return propuesta.calcularPrecio()
+
+class ItemPropuestaInline(admin.TabularInline):
+    model = ItemPropuesta
+    extra = 1
+
+class PropuestaAdmin(admin.ModelAdmin):
+    inlines = (ItemPropuestaInline,)
+
+class ArticuloAdmin(admin.ModelAdmin):
+    inlines = (ItemPropuestaInline,)
