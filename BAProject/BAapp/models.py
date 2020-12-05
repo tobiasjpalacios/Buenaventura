@@ -1,114 +1,147 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.conf import settings
+from django.contrib import admin
 
 from .choices import *
 
 class Persona(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    dni = models.IntegerField()
+    """
+    EL USUARIO TIENE NOMBRE Y APELLIDO
+    NO HACEN FALTA ESOS CAMPOS
+    """
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.DO_NOTHING)
     fecha_nacimiento = models.DateField(null=False)
-    sexo = models.CharField('Sexo', max_length=6, choices=GENERO_CHOICES)
-    telefono = models.CharField(max_length=99, null=False)
-    cuil_cuit = models.IntegerField(null=False)
-
-    class Meta:
-        abstract = True
+    sexo = models.CharField(max_length=6, choices=GENERO_CHOICES)
+    telefono = models.ForeignKey(
+        "Telefono", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return '{} {}'.format(self.user.first_name, self.user.last_name)
 
 
-class Cliente(Persona):
+class Empleado(models.Model):
+    persona = models.ForeignKey(
+        "Persona",
+        on_delete=models.DO_NOTHING)
+
+    class Meta():
+        abstract = True
+
+class Cliente(Empleado):
     codigo = models.IntegerField(null=False)
+    categoria_iva = models.CharField(
+        max_length=25,
+        choices=IVA_CHOICES)
+
+    def __str__(self):
+        return 'Cliente {} {}'.format(str(persona))
+
+
+class Gerente(Empleado):
+    empresa = models.ForeignKey(
+        "Empresa", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+
+class Vendedor(Empleado):
+    def __str__(self):
+        return 'Vendedor {}'.format(str(persona))
+
+
+class Proveedor(Empleado):
+    def __str__(self):
+        return 'Proveedor {} {} - Empresa {}'.format(str(persona), str(empresa))
+
+
+class Empresa(models.Model):
+    razon_social = models.CharField(max_length=50)
+    cuit = models.CharField(max_length=14)
+    ingresos_brutos = models.CharField(max_length=9)
+    exclusion_ret = models.BooleanField()
+    fecha_exclusion = models.DateField()
     categoria_iva = models.CharField(
         max_length=25, 
         choices=IVA_CHOICES)
-    cuenta_contable = models.IntegerField(null=False)
+
+    domicilio_fiscal = models.OneToOneField(
+        "Domicilio", 
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    comprador = models.ManyToManyField("Cliente")
+    vendedor = models.ManyToManyField("Proveedor")
+    retenciones = models.ManyToManyField("Retencion")
 
 
-class Vendedor(Persona):
-    fecha_ingreso = models.DateTimeField(null=False)
-    fecha_egreso = models.DateTimeField()
-
-    def __str__(self):
-        return 'Vendedor {}'.format(str(super()))
-
-
-#Aca falta que nos pasen los datos de lo que tiene un Proveedor 
-#Con Proveedor me refiero a la entidad que tiene los productos, se 
-# confunde el nombre por eso le puse EmpresaProveedor
-#Cambienlo a cualquiera solo lo dejo para que lo puedan distinguir
-class EmpresaProveedor(models.Model):
-    nombre = models.CharField(max_length=50,null=False) 
+class Retencion(models.Model):
+    name = models.CharField(max_length=50, null=False)
 
     def __str__(self):
-        return "Empresa {}".format(
-            self.nombre)
-    
-class Proveedor(Persona):
-    #Estos campos los comente pq no corresponden a esta tabla
-    #Son una mezcla de ORganizacion transaccion y persona que emplea el rol de proveedor 
-    """
-    codigo = models.IntegerField(null=False)
-    fax = models.CharField(max_length=50,null=False)
-    codigo_cta = models.IntegerField(null=False)
-    saldo_inicial = models.FloatField(null=False)
-    alicuota = models.FloatField(null=False)
-    sujeto_retencion = models.CharField(max_length=15, choices=RET_GANANCIA_CHOICES)
-    categoria_iva = models.CharField('Categoria Iva', max_length=25, choices=IVA_CHOICES)
-    desde_iibb = models.FloatField(null=False)
-    hasta_iibb = models.FloatField(null=False)
-    moneda = models.CharField(max_length=50,null=False)
-    numero_cai = models.IntegerField(null=False)
-    vencimiento_cai = models.DateTimeField(null=False)
-    observaciones = models.CharField(max_length=50,null=False)
-    """
-    empresa = models.ForeignKey(EmpresaProveedor, null=False, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return 'Proveedor {} {} - Empresa {}'.format(
-            self.apellido, 
-            self.nombre, 
-            self.empresa.nombre)
+        return "{}".format(self.name)
 
 
-class Pedido(models.Model):
-    cliente = models.ForeignKey(Cliente, null=False, on_delete=models.CASCADE)
-    nombre_articulo = models.CharField(max_length=50, null=False)
-    precio_max = models.FloatField(null=False)
-    fecha = models.DateTimeField(null=False)
+class Domicilio(models.Model):  
+    calle =  models.CharField(max_length=50)
+    numero = models.IntegerField()
+    barrio =  models.CharField(max_length=50)
+    localidad =  models.CharField(max_length=50)
+    provincia =  models.CharField(max_length=50)
 
-    def __str__(self):
-        return 'Pedido Nro: {} - Cliente {} {}'.format(
-            self.id, 
-            self.cliente.apellido, 
-            self.cliente.nombre)
+
+class DomicilioPostal(models.Model):
+    Empresa = models.ForeignKey(
+        "Empresa", 
+        null=False, 
+        on_delete=models.CASCADE)
+    Domicilio = models.OneToOneField(
+        "Domicilio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+
+class DomicilioPersona(models.Model):
+    Persona = models.ForeignKey(
+        "Persona",
+        on_delete=models.CASCADE)
+    Domicilio = models.OneToOneField(
+        "Domicilio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+
+class Telefono(models.Model):
+    numero = models.IntegerField()
 
 
 class Articulo(models.Model):
-    proveedor = models.ForeignKey(EmpresaProveedor, null=False, on_delete=models.CASCADE)
-    codigo_rubro = models.CharField(max_length=50, null=False)
-    codigo_subrubro = models.CharField(max_length=50, null=False)
+    nombre_comercial= models.CharField(max_length=50, null=False)
+    empresa = models.ForeignKey(
+        "Empresa",
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    concentracion=models.IntegerField()
+    banda_toxicologica=models.CharField(max_length=50)
     codigo_articulo = models.CharField(max_length=50, null=False)
     descripcion = models.CharField(max_length=50, null=False)
-    unidad_de =  models.CharField(max_length=20, choices=UNIDAD_CHOICES)
-    precio_compra = models.FloatField(null=False)
-    rubro = models.CharField(max_length=50, null=False)
-    subrubro = models.CharField(max_length=50, null=False)
+    unidad=  models.CharField(max_length=20, null=False)
+    mulitiplicador=  models.FloatField(null=False)
+    envase = models.CharField(max_length=20, null=False)
 
     def __str__(self):
         return 'Articulo: {}'.format(self.codigo_articulo)
 
     
 class Propuesta(models.Model):
-    proveedor = models.ForeignKey(EmpresaProveedor, on_delete=models.CASCADE)
-    items = models.ManyToManyField(Articulo, through="ItemPropuesta")
-    vendedor = models.ForeignKey(Vendedor, null=False, on_delete=models.DO_NOTHING)
-    fecha_entrega = models.DateField(null=False)
-    lugar_entrega = models.CharField(max_length=40)
-    aceptada = models.BooleanField(default=False)
-    fecha_creacion = models.DateField(auto_now_add=True)
+    cliente = models.ForeignKey(
+        "Cliente", 
+        on_delete=models.DO_NOTHING)
+    proveedor = models.ForeignKey("Proveedor", on_delete=models.DO_NOTHING)
+    items = models.ManyToManyField("Articulo", through="ItemPropuesta")
     observaciones = models.CharField(max_length=300, null=False)
      
     def calcularPrecio(self):
@@ -118,18 +151,38 @@ class Propuesta(models.Model):
         return total
     
     def __str__(self):
-        return 'Propuesta Nro: {} - Vendedor {} {} - Articulo {}'.format(
+        return 'Propuesta Nro: {} - Cliente {} {} - Articulo {}'.format(
             self.id, 
-            self.vendedor.apellido, 
-            self.vendedor.nombre, 
+            self.cliente.apellido, 
+            self.cliente.nombre, 
             self.articulo.codigo_articulo)
 
+####################### HAY QUE SOLUCIONAR DEMASIADO ACA
+
 class ItemPropuesta(models.Model):
-    articulo = models.ForeignKey(Articulo, null=False, on_delete=models.DO_NOTHING)
-    propuesta = models.ForeignKey(Propuesta, null=False, on_delete=models.DO_NOTHING)
+    articulo = models.ForeignKey(
+        "Articulo", 
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    propuesta = models.ForeignKey(
+        "Propuesta", 
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    tipo_de_operacion = models.CharField(max_length=255)
     cantidad = models.IntegerField(null=False)
     precio = models.FloatField(null=False)
-    
+    fecha_entrega = models.DateField()
+    divisa = models.CharField(max_length=40, choices=DIVISA_CHOICES)
+    destino = models.ForeignKey(
+        "Domicilio", 
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    obserevaciones = models.CharField(max_length=255)
+    fecha_pago = models.DateField()
+    tipo_pago = models.CharField
+    disponibilidad = models.BooleanField()
+    fecha_disponibilidad = models.DateField()
+
     def __str__(self):
         return 'Item: {} - Cantidad: {} - Precio: $ {}'.format(
             self.articulo.codigo_articulo, 
@@ -137,14 +190,23 @@ class ItemPropuesta(models.Model):
             self.precio)
 
 
+class Financiacion(models.Model):
+    condicion = models.BooleanField()
+    tasa = models.IntegerField(null = True)
+    condicion_comercial = models.CharField(max_length=255)
+
+####################### FIN DE DONDE ENCUENTRO BOLUDECES
+
 class Presupuesto(models.Model):
-    propuesta = models.ForeignKey(Propuesta, null=False, on_delete=models.CASCADE)
+    propuesta = models.ForeignKey(
+        "Propuesta", 
+        null=False, 
+        on_delete=models.DO_NOTHING)
     area = models.CharField(max_length=50, null=False)
     fecha = models.DateField(auto_now_add=True)
-    razon_social = models.CharField(max_length=30, null=False)
-    mes_de_pago = models.DateField(null=False)
     cobrado = models.BooleanField(default=False)
     observaciones = models.CharField(max_length=300,null=False)
+    visualizacion = models.BooleanField()
 
     def __str__(self):
         return 'Propuesta: {} - Monto: {}'.format(self.propuesta.id, self.total)

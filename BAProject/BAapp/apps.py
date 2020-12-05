@@ -1,5 +1,20 @@
 from django.apps import AppConfig
 
+GRUPOS_USUARIO = (
+    'Logistica',
+    'Vendedor',
+    'Proveedor',
+    'EncargadoCompra',
+    'Administracion',)
+
+RET_GANANCIA_CHOICES = (
+    ('Arrendamiento'),
+    ('Exento'),
+    ('Honorarios'),
+    ('Insumos'),
+    ('Servicios'),
+    ('Transporte'),
+)
 
 class BaappConfig(AppConfig):
     name = 'BAapp'
@@ -10,12 +25,13 @@ class BaappConfig(AppConfig):
         from django.contrib.auth.models import Group, User
 
         from . import models
+        from . import choices
 
         if ('makemigrations' in sys.argv or 'migrate' in sys.argv):
             return 
 
-        logistica, created = Group.objects.get_or_create(name='Logistica')
-        vendedor, created = Group.objects.get_or_create(name='Vendedor')
-        proveedor, created = Group.objects.get_or_create(name='Proveedor')
-        cliente, created = Group.objects.get_or_create(name='Cliente')
-        administracion, created = Group.objects.get_or_create(name='Administracion')
+        for g in GRUPOS_USUARIO:
+            group, created = Group.objects.get_or_create(name=g)
+
+        for i in RET_GANANCIA_CHOICES:
+            ret, created = models.Retencion.objects.get_or_create(name=i)
