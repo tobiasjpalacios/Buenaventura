@@ -46,3 +46,17 @@ class PresupuestoForm(ModelForm):
             'fecha' : forms.TextInput(attrs={'class':'datepicker'}),
             'fecha_de_pago' : forms.TextInput(attrs={'class':'datepicker'}),
         }
+
+class PropuestaForm(ModelForm):
+    fecha_entrega = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+    fecha_creacion = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+
+    class Meta:
+        model = Propuesta
+        fields = '__all__'
+
+
+        widget = {
+            'fecha_entrega' : forms.TextInput(attrs={'class':'datepicker'}),
+            'fecha_creacion' : forms.TextInput(attrs={'class':'datepicker'}),
+        }

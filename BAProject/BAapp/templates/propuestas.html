@@ -17,20 +17,20 @@ BuenaVentura Agronegocios
     <div class="input-field col s6">
         <select>
           <option value="" disabled selected>Elija su opcion</option>
-          <option value="1">carlos perez</option>
-          <option value="2">pedro almada </option>
-          <option value="3">Ricky fort</option>
+          {% for cliente in clientes %}
+          	<option value="{{ cliente.id }}">{{cliente.nombre}}, {{cliente.apellido}}</option>
+          {% endfor %}
         </select>
         <label>cliente</label>
       </div>
       <div class="input-field col s6">
         <select>
           <option value="" disabled selected>Elija su opcion</option>
-          <option value="1">tecnocampo</option>
-          <option value="2">agroar</option>
-          <option value="3">roagro</option>
-        </select>
-        <label>Provedor</label>
+<!--           {% for proveedor in proveedores %}
+          	<option value="{{ proveedor.id }}">{{proveedor.nombre}}, {{proveedor.apellido}}</option> o lo que sea
+          {% endfor %}
+ -->        </select>
+        <label>Proveedor</label>
       </div>
 </div>
 
@@ -190,26 +190,18 @@ BuenaVentura Agronegocios
             <table class="center-align col s12">
                 <thead>
                   <tr>
-                      <th>Proveedor</th>
-                      <th>Codigo Rubro</th>
-                      <th>Codigo Subrubro</th>
-                      <th>Codigo</th>
-                      <th>Descripcion</th>
-                      <th>Precio</th>
-                      <th>Rubro</th>
-                      <th>Subrubro</th>
+                    	{% for articulo in articulos %}
+                      		<td>{{articulo.label}} </td>
+                        {% endfor %}
+                        <th>
                   </tr>
                 </thead>
                 <tbody>
                     <tr>
-                      <td>proveedor </td>
-                      <td>codigo_rubro</td>
-                      <td>codigo_subrubro </td>
-                      <td> codigo_articulo </td>
-                      <td>descripcion </td>
-                      <td> precio_compra </td>
-                      <td> rubro </td>
-                      <td>subrubro </td>
+                    	{% for articulo in articulos %}
+                      		<td>{{articulo}} </td>
+                        {% endfor %}
+                        <th>
                       
                         <th>
                           <div class="row">
