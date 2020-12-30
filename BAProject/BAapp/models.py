@@ -6,10 +6,6 @@ from django.contrib import admin
 from .choices import *
 
 class Persona(models.Model):
-    """
-    EL USUARIO TIENE NOMBRE Y APELLIDO
-    NO HACEN FALTA ESOS CAMPOS
-    """
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
         on_delete=models.DO_NOTHING)
@@ -97,7 +93,8 @@ class DomicilioPostal(models.Model):
     Empresa = models.ForeignKey(
         "Empresa", 
         null=False, 
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name="domicilios_postal")
     Domicilio = models.OneToOneField(
         "Domicilio", 
         null = False, 
@@ -107,7 +104,9 @@ class DomicilioPostal(models.Model):
 class DomicilioPersona(models.Model):
     Persona = models.ForeignKey(
         "Persona",
-        on_delete=models.CASCADE)
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="domicilio")
     Domicilio = models.OneToOneField(
         "Domicilio", 
         null = False, 
@@ -119,30 +118,51 @@ class Telefono(models.Model):
 
 
 class Articulo(models.Model):
-    nombre_comercial= models.CharField(max_length=50, null=False)
+    nombre_comercial = models.CharField(max_length=50, null=False)
     empresa = models.ForeignKey(
         "Empresa",
         null=False, 
         on_delete=models.DO_NOTHING)
-    concentracion=models.IntegerField()
-    banda_toxicologica=models.CharField(max_length=50)
+    concentracion = models.IntegerField()
+    banda_toxicologica = models.CharField(max_length=50)
     codigo_articulo = models.CharField(max_length=50, null=False)
     descripcion = models.CharField(max_length=50, null=False)
-    unidad=  models.CharField(max_length=20, null=False)
-    mulitiplicador=  models.FloatField(null=False)
+    unidad =  models.CharField(max_length=20, null=False)
+    mulitiplicador =  models.FloatField(null=False)
     envase = models.CharField(max_length=20, null=False)
+    proveedores = models.ManyToManyField(
+        "Proveedor",
+        related_name="articulos")
 
     def __str__(self):
         return 'Articulo: {}'.format(self.codigo_articulo)
 
-    
-class Propuesta(models.Model):
+
+class Negocio(models.Model):
     cliente = models.ForeignKey(
         "Cliente", 
         on_delete=models.DO_NOTHING)
-    proveedor = models.ForeignKey("Proveedor", on_delete=models.DO_NOTHING)
+    vendedor = models.ForeignKey(
+        "Vendedor",
+        on_delete=models.DO_NOTHING)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    fecha_cierre = models.DateTimeField()
+
+    def getPropuestas(self):
+        return Propuesta.objects.filter(negocio=self)
+
+    def __str__(self):
+        return "Negocio: {}".format(self.timestamp)
+
+    
+class Propuesta(models.Model):
+    negocio = models.ForeignKey(
+        "Negocio",
+        on_delete=models.DO_NOTHING)
     items = models.ManyToManyField("Articulo", through="ItemPropuesta")
+    timestamp = models.DateTimeField(auto_now_add=True)
     observaciones = models.CharField(max_length=300, null=False)
+    visto = models.BooleanField(default=False)
      
     def calcularPrecio(self):
         total = 0
@@ -163,6 +183,9 @@ class ItemPropuesta(models.Model):
     articulo = models.ForeignKey(
         "Articulo", 
         null=False, 
+        on_delete=models.DO_NOTHING)
+    proveedor = models.ForeignKey(
+        "Proveedor", 
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 

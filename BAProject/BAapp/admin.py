@@ -25,4 +25,4 @@ admin.site.register(DomicilioPostal)
 admin.site.register(Telefono)
 admin.site.register(Gerente)
 admin.site.register(ItemPropuesta)
-admin.site.register(Financiacion)1
+admin.site.register(Financiacion)
