@@ -176,7 +176,29 @@ class Propuesta(models.Model):
             self.cliente.apellido, 
             self.cliente.nombre, 
             self.articulo.codigo_articulo)
+    
+    #Tengo que buscar bien el if pero la idea de esto es poder filtrar las Propuestas que vio el Cliente
+    
+    def vioPropuesta(self):
+        visto = False
+        if (self.visualizacion == ""):
+            return visto
+        visto = True
+        return visto
 
+class Respuesta(models.Model):
+    propuesta = models.ForeignKey("Propuesta", on_delete=models.DO_NOTHING)
+    items = models.ManyToManyField("Articulo", through="ItemPropuesta")
+    observaciones = models.CharField(max_length=300, null=False)
+    fecha = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+        return 'Respuesta Nro: {} - Propuesta: {} - Cliente: {} {}'.format(
+        self.id,
+        self.propuesta.id,
+        self.cliente.apellido,
+        self.cliente.nombre)
+    
 ####################### HAY QUE SOLUCIONAR DEMASIADO ACA
 
 class ItemPropuesta(models.Model):
