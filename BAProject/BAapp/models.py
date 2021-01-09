@@ -20,39 +20,43 @@ class Persona(models.Model):
         return '{} {}'.format(self.user.first_name, self.user.last_name)
 
 
-class Empleado(models.Model):
+class Vendedor(models.Model):
     persona = models.ForeignKey(
         "Persona",
         on_delete=models.DO_NOTHING)
 
+    def __str__(self):
+        return 'Vendedor {}'.format(str(self.persona))
+
+
+class Empleado(models.Model):
+    persona = models.ForeignKey(
+        "Persona",
+        on_delete=models.DO_NOTHING)
+    empresa = models.ForeignKey(
+        "Empresa",
+        on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return "{} {} - {}".format(self.__class__.__name__, self.persona, self.empresa)
+
     class Meta():
         abstract = True
 
-class Cliente(Empleado):
-    codigo = models.IntegerField(null=False)
-    categoria_iva = models.CharField(
-        max_length=25,
-        choices=IVA_CHOICES)
 
-    def __str__(self):
-        return 'Cliente {} {}'.format(str(persona))
+class Comprador(Empleado):
+    class Meta():
+        default_related_name = "compradores"
 
 
 class Gerente(Empleado):
-    empresa = models.ForeignKey(
-        "Empresa", 
-        null = False, 
-        on_delete=models.DO_NOTHING)
-
-
-class Vendedor(Empleado):
-    def __str__(self):
-        return 'Vendedor {}'.format(str(persona))
+    class Meta():
+        default_related_name = "gerentes"
 
 
 class Proveedor(Empleado):
-    def __str__(self):
-        return 'Proveedor {} {} - Empresa {}'.format(str(persona), str(empresa))
+    class Meta():
+        default_related_name = "proveedores"
 
 
 class Empresa(models.Model):
@@ -60,18 +64,18 @@ class Empresa(models.Model):
     cuit = models.CharField(max_length=14)
     ingresos_brutos = models.CharField(max_length=9)
     exclusion_ret = models.BooleanField()
-    fecha_exclusion = models.DateField()
+    fecha_exclusion = models.DateField(null=True, blank=True)
     categoria_iva = models.CharField(
         max_length=25, 
         choices=IVA_CHOICES)
-
     domicilio_fiscal = models.OneToOneField(
         "Domicilio", 
         null=False, 
         on_delete=models.DO_NOTHING)
-    comprador = models.ManyToManyField("Cliente")
-    vendedor = models.ManyToManyField("Proveedor")
     retenciones = models.ManyToManyField("Retencion")
+
+    def __str__(self):
+        return "{}".format(self.razon_social)
 
 
 class Retencion(models.Model):
@@ -87,6 +91,14 @@ class Domicilio(models.Model):
     barrio =  models.CharField(max_length=50)
     localidad =  models.CharField(max_length=50)
     provincia =  models.CharField(max_length=50)
+
+    def __str__(self):
+        return "{} {}, {}, {}, {}".format(
+            self.calle, 
+            self.numero, 
+            self.barrio, 
+            self.localidad, 
+            self.provincia)
 
 
 class DomicilioPostal(models.Model):
@@ -116,13 +128,12 @@ class DomicilioPersona(models.Model):
 class Telefono(models.Model):
     numero = models.IntegerField()
 
+    def __str__(self):
+        return str(self.numero)
+
 
 class Articulo(models.Model):
     nombre_comercial = models.CharField(max_length=50, null=False)
-    empresa = models.ForeignKey(
-        "Empresa",
-        null=False, 
-        on_delete=models.DO_NOTHING)
     concentracion = models.IntegerField()
     banda_toxicologica = models.CharField(max_length=50)
     codigo_articulo = models.CharField(max_length=50, null=False)
@@ -130,8 +141,8 @@ class Articulo(models.Model):
     unidad =  models.CharField(max_length=20, null=False)
     mulitiplicador =  models.FloatField(null=False)
     envase = models.CharField(max_length=20, null=False)
-    proveedores = models.ManyToManyField(
-        "Proveedor",
+    empresas = models.ManyToManyField(
+        "Empresa",
         related_name="articulos")
 
     def __str__(self):
@@ -139,17 +150,14 @@ class Articulo(models.Model):
 
 
 class Negocio(models.Model):
-    cliente = models.ForeignKey(
-        "Cliente", 
+    comprador = models.ForeignKey(
+        "Comprador", 
         on_delete=models.DO_NOTHING)
     vendedor = models.ForeignKey(
         "Vendedor",
         on_delete=models.DO_NOTHING)
     timestamp = models.DateTimeField(auto_now_add=True)
-    fecha_cierre = models.DateTimeField()
-
-    def getPropuestas(self):
-        return Propuesta.objects.filter(negocio=self)
+    fecha_cierre = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
@@ -158,8 +166,8 @@ class Negocio(models.Model):
 class Propuesta(models.Model):
     negocio = models.ForeignKey(
         "Negocio",
+        related_name="propuestas",
         on_delete=models.DO_NOTHING)
-    items = models.ManyToManyField("Articulo", through="ItemPropuesta")
     timestamp = models.DateTimeField(auto_now_add=True)
     observaciones = models.CharField(max_length=300, null=False)
     visto = models.BooleanField(default=False)
@@ -169,35 +177,21 @@ class Propuesta(models.Model):
         for item in self.items.all():
             total += item.precio * item.cantidad
         return total
-    
-    def __str__(self):
-        return 'Propuesta Nro: {} - Cliente {} {} - Articulo {}'.format(
-            self.id, 
-            self.cliente.apellido, 
-            self.cliente.nombre, 
-            self.articulo.codigo_articulo)
-    
-    #Tengo que buscar bien el if pero la idea de esto es poder filtrar las Propuestas que vio el Cliente
-    
-    def vioPropuesta(self):
-        visto = False
-        if (self.visualizacion == ""):
-            return visto
-        visto = True
-        return visto
 
-class Respuesta(models.Model):
-    propuesta = models.ForeignKey("Propuesta", on_delete=models.DO_NOTHING)
-    items = models.ManyToManyField("Articulo", through="ItemPropuesta")
-    observaciones = models.CharField(max_length=300, null=False)
-    fecha = models.DateField(auto_now_add=True)
-    
+    def calcularDiferencias(self, prop2):
+        diffs = []
+        for item in self.items.all():
+            counter = prop2.items.get(articulo=item.articulo)
+            diff = counter.calcularDiferencias(counter)
+            if (diff):
+                diffs.append(diff)
+
     def __str__(self):
-        return 'Respuesta Nro: {} - Propuesta: {} - Cliente: {} {}'.format(
-        self.id,
-        self.propuesta.id,
-        self.cliente.apellido,
-        self.cliente.nombre)
+        return 'Propuesta Nro: {} - Comprador {} {} - Articulo {}'.format(
+            self.id, 
+            self.comprador.apellido, 
+            self.comprador.nombre, 
+            self.articulo.codigo_articulo)
     
 ####################### HAY QUE SOLUCIONAR DEMASIADO ACA
 
@@ -211,6 +205,7 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
+        related_name="items",
         null=False, 
         on_delete=models.DO_NOTHING)
     tipo_de_operacion = models.CharField(max_length=255)
@@ -222,11 +217,22 @@ class ItemPropuesta(models.Model):
         "Domicilio", 
         null=False, 
         on_delete=models.DO_NOTHING)
-    obserevaciones = models.CharField(max_length=255)
     fecha_pago = models.DateField()
-    tipo_pago = models.CharField
+    tipo_pago = models.CharField(max_length=40)
     disponibilidad = models.BooleanField()
     fecha_disponibilidad = models.DateField()
+
+    def calcularDiferencias(self, item2):
+        diff = []
+        if (isinstance(item2,self.__class__)):
+            raise TypeError()
+        if (self.articulo != item2.articulo):
+            return False
+        for f in self._meta.get_fields():
+            field = f.name
+            if (getattr(self, field) != getattr(item2, field)):
+                diff.append(field) 
+        return diff
 
     def __str__(self):
         return 'Item: {} - Cantidad: {} - Precio: $ {}'.format(

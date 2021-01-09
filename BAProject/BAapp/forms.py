@@ -16,11 +16,11 @@ class ProveedorForm(ModelForm):
     }
 
 
-class ClienteForm(ModelForm):
+class CompradorForm(ModelForm):
     fecha_nacimiento = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
 
     class Meta:
-        model = Cliente
+        model = Comprador
         fields = '__all__'
 
         widget = {
