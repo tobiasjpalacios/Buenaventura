@@ -83,34 +83,34 @@ class ProveedorView(View):
 
 
 
-class ListClienteView(View):
+class ListCompradorView(View):
     def get(self, request, *args, **kwargs):
-        all_clientes = Cliente.objects.all()
-        return render(request, 'consultar_cliente.html', {'clientes':all_clientes})    
+        all_compradores = Comprador.objects.all()
+        return render(request, 'consultar_comprador.html', {'compradores':all_compradores})    
 
 
-class ClienteView(View):
+class CompradorView(View):
     def get(self, request, *args, **kwargs):
         context = {
-        "form": ClienteForm()}
+        "form": CompradorForm()}
         if ("pk" in kwargs):
-            context["cliente"] = Cliente.objects.get(pk=kwargs["pk"])
-            context["form"] = ClienteForm(instance=context["cliente"])
-        return render(request, 'cliente.html', context)
+            context["comprador"] = Comprador.objects.get(pk=kwargs["pk"])
+            context["form"] = CompradorForm(instance=context["comprador"])
+        return render(request, 'comprador.html', context)
 
     def post(self, request, *args, **kwargs):
-        cliente = None
+        comprador = None
         if ("pk" in kwargs):
-            cliente = Cliente.objects.get(pk=kwargs["pk"])
-        form = ClienteForm(request.POST, instance=cliente)
+            comprador = Comprador.objects.get(pk=kwargs["pk"])
+        form = CompradorForm(request.POST, instance=comprador)
         if form.is_valid():
-            cliente = form.save()
-            return redirect("cliente", pk=cliente.pk)
-        return render(request, 'cliente.html', context={"form":form})
+            comprador = form.save()
+            return redirect("comprador", pk=comprador.pk)
+        return render(request, 'comprador.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
-        cliente = Cliente.objects.get(pk=kwargs["pk"])
-        cliente.delete()
+        comprador = Comprador.objects.get(pk=kwargs["pk"])
+        comprador.delete()
         return HttpResponse(status=200)
 
 class ListPresupuestoView(View):
@@ -149,7 +149,7 @@ class PropuestaView(View):
     def get(self, request, *args, **kwargs):
         context = {
         "form": PropuestaForm(),
-        "clientes": Cliente.objects.all(),
+        "compradores": Comprador.objects.all(),
         "proveedores": Proveedor.objects.all(),
         "articulos": Articulo.objects.all()}
         if ("pk" in kwargs):

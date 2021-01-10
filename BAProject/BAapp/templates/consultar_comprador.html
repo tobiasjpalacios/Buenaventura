@@ -27,25 +27,25 @@ BuenaVentura Agronegocios
         </tr>
       </thead>
       <tbody>
-        {% for cliente in clientes %}
+        {% for comprador in compradores %}
           <tr>
-            <td>{{ cliente.nombre }}</td>
-            <td>{{ cliente.apellido }}</td>
-            <td>{{ cliente.dni }}</td>
-            <td>{{ cliente.email }}</td>
-            <td>{{ cliente.fecha_nacimiento|date:"M d, Y" }}</td>
-            <td>{{ cliente.sexo }}</td>
-            <td>{{ cliente.telefono }}</td>
-            <td>{{ cliente.codigo }}</td>
-            <td>{{ cliente.cuil_cuit }}</td>
-            <td>{{ cliente.categoria_iva }}</td>
-            <td>{{ cliente.cuenta_contable }}</td>
+            <td>{{ comprador.nombre }}</td>
+            <td>{{ comprador.apellido }}</td>
+            <td>{{ comprador.dni }}</td>
+            <td>{{ comprador.email }}</td>
+            <td>{{ comprador.fecha_nacimiento|date:"M d, Y" }}</td>
+            <td>{{ comprador.sexo }}</td>
+            <td>{{ comprador.telefono }}</td>
+            <td>{{ comprador.codigo }}</td>
+            <td>{{ comprador.cuil_cuit }}</td>
+            <td>{{ comprador.categoria_iva }}</td>
+            <td>{{ comprador.cuenta_contable }}</td>
             {% if user.is_superuser %}
               <th>
                 <div>
-                  <a class='btn-small waves-effect waves-light green' href="{% url 'cliente' cliente.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'comprador' comprador.pk %}"><i class="material-icons">edit</i></a>
                   <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ cliente.id }}', '{{ cliente.apellido }}, {{cliente.nombre }}')"><i class="material-icons">delete</i></a>
+                    onclick="abrirmodal('{{ comprador.id }}', '{{ comprador.apellido }}, {{comprador.nombre }}')"><i class="material-icons">delete</i></a>
               </th>
             {% endif %}
           </tr>
@@ -77,7 +77,7 @@ BuenaVentura Agronegocios
   function eliminarCliente(){
     headers = {}
     headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
-    fetch("/cliente/"+currentId, 
+    fetch("/comprador/"+currentId, 
       {
         method: 'delete',
         "headers": headers

@@ -1,8 +1,8 @@
 
-<form action="{% url 'eliminar_cliente' cliente.pk %}" method="POST">
+<form action="{% url 'eliminar_comprador' comprador.pk %}" method="POST">
   <div class="modal-body modal-content">
       {% csrf_token %}
-      <p>Estas seguro de querer eliminar a <strong>{{cliente}}</strong>?</p>
+      <p>Estas seguro de querer eliminar a <strong>{{comprador}}</strong>?</p>
   </div>
   <div class="modal-footer">
       <a class='btn modal-close waves-effect waves-light red'>Cancelar</a>

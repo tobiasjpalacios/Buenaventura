@@ -10,9 +10,9 @@ urlpatterns = [
     path('testeo/', testeo, name="testeo"),
     path('chat/', chat, name="chat"),
 
-    path('clientes/', ListClienteView.as_view(), name="mostrar_clientes"),
-    path('cliente/<int:pk>', ClienteView.as_view(), name="cliente"),
-    path('cliente/', ClienteView.as_view(), name="registrar_cliente"),
+    path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
+    path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),
+    path('comprador/', CompradorView.as_view(), name="registrar_comprador"),
         
     path('proveedores/', ListProveedorView.as_view(), name = "mostrar_proveedores"),
     path('proveedor/<int:pk>', ProveedorView.as_view(), name="proveedor"),
