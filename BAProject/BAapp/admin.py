@@ -12,7 +12,7 @@ class PropuestaAdmin(admin.ModelAdmin):
 class ArticuloAdmin(admin.ModelAdmin):
     inlines = (ItemPropuestaInline,)
 
-admin.site.register(Cliente)
+admin.site.register(Comprador)
 admin.site.register(Proveedor)
 admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Presupuesto)
@@ -26,3 +26,5 @@ admin.site.register(Telefono)
 admin.site.register(Gerente)
 admin.site.register(ItemPropuesta)
 admin.site.register(Financiacion)
+admin.site.register(Negocio)
+admin.site.register(Persona)

@@ -4,7 +4,7 @@ GRUPOS_USUARIO = (
     'Logistica',
     'Vendedor',
     'Proveedor',
-    'EncargadoCompra',
+    'Comprador',
     'Administracion',)
 
 RET_GANANCIA_CHOICES = (
