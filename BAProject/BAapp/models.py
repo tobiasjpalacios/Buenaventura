@@ -191,6 +191,7 @@ class Propuesta(models.Model):
             self.id)
             
     
+
 ####################### HAY QUE SOLUCIONAR DEMASIADO ACA
 
 class ItemPropuesta(models.Model):

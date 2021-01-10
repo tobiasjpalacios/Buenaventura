@@ -8,6 +8,7 @@ urlpatterns = [
     path('', landing_page, name='home'),
     path('administrar/', admin, name="admin"),
     path('testeo/', testeo, name="testeo"),
+    path('chat/', chat, name="chat"),
 
     path('clientes/', ListClienteView.as_view(), name="mostrar_clientes"),
     path('cliente/<int:pk>', ClienteView.as_view(), name="cliente"),
