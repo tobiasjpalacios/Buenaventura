@@ -187,11 +187,9 @@ class Propuesta(models.Model):
                 diffs.append(diff)
 
     def __str__(self):
-        return 'Propuesta Nro: {} - Comprador {} {} - Articulo {}'.format(
-            self.id, 
-            self.comprador.apellido, 
-            self.comprador.nombre, 
-            self.articulo.codigo_articulo)
+        return 'Propuesta: {}'.format(
+            self.id)
+            
     
 ####################### HAY QUE SOLUCIONAR DEMASIADO ACA
 
@@ -223,14 +221,16 @@ class ItemPropuesta(models.Model):
     fecha_disponibilidad = models.DateField()
 
     def calcularDiferencias(self, item2):
+        dont = ('id','propuesta')
         diff = []
-        if (isinstance(item2,self.__class__)):
-            raise TypeError()
+        if (not isinstance(item2, self.__class__)):
+            raise TypeError("La comparacion debe ser entre items.")
         if (self.articulo != item2.articulo):
             return False
-        for f in self._meta.get_fields():
+        fields = self._meta.get_fields()
+        for f in fields:
             field = f.name
-            if (getattr(self, field) != getattr(item2, field)):
+            if (not field in dont and getattr(self, field) != getattr(item2, field)):
                 diff.append(field) 
         return diff
 
