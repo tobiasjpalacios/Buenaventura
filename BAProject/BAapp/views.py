@@ -14,6 +14,9 @@ def landing_page(request):
 def admin(request):
     return render(request,'admin.html')
 
+def chat(request):
+    return render(request,'chat.html')
+
 def testeo(request):
     return render(request, 'testeo.html')
 
