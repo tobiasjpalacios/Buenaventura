@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+
+body {
+  background-color: #96f291;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+<div id="login-page" class="row container">
+  <div class="col s12 z-depth-4 card-panel light-green lighten-5">
+    {%if proveedor %}
+      <form class="col s12 login-form" method="POST" action="{% url 'empresa' empresa.pk %}">
+      {% else %} 
+     <form class="col s12 login-form" method="POST" action="{% url 'registrar_empresa' %}">
+      {% endif %}
+        {% csrf_token %}
+      <div class="row">
+        <div class="center">
+          <span class="card-title">
+              {%if proveedor %}
+                <h4>Modificar empresa</h4>
+              {% else %} 
+               <h4>Registar nueva empresa</h4>
+              {% endif %}
+          </span>  
+        </div>
+      </div>
+      <div>
+        {{ form.non_field_errors }}
+        <div class="input-field col s6">
+          {{ form.razon_social.errors }}
+          <label for="{{ form.razon_social.id_for_label }}">Razón social</label>
+          {{form.razon_social}}
+        </div>
+
+        <div class="input-field col s6">
+          {{ form.cuit.errors }}
+          <label for="{{ form.cuit.id_for_label }}">Cuit</label>
+          <input name="{{form.cuit.name}}" id="{{form.cuit.id_for_label}}" type="number" min="0" class="validate">
+        </div>
+
+        <div class="input-field col s6">
+          {{ form.ingresos_brutos.errors }}
+          <label for="{{ form.ingresos_brutos.id_for_label }}">Ingresos brutos</label>
+          <input name="{{form.ingresos_brutos.name}}" id="{{form.ingresos_brutos.id_for_label}}" type="number" min="0" class="validate">
+        </div>
+        
+        <div class="input-field col s6">
+          {{ form.exclusion_ret.errors }}
+          <label>
+            <input type="checkbox" name="{{form.exclusion_ret.name}}">
+            <span>{{form.exclusion_ret.label}}</span>
+        </label>
+        </div>
+
+        <div class="input-field col s12">
+          {{ form.fecha_exclusion.errors }}
+          <label for="{{ form.fecha_exclusion.id_for_label }}">Fecha de exclusion</label>
+          {{form.fecha_exclusion}}
+        </div>
+        
+        <div class="input-field col s6">
+          {{ form.categoria_iva.errors }}
+          <label for="{{ form.categoria_iva.id_for_label }}">Categoria iva</label>
+          {{form.categoria_iva}}
+        </div>
+        
+        <div class="input-field col s6">
+          {{ form.domicilio_fiscal.errors }}
+          <label for="{{ form.domicilio_fiscal.id_for_label }}">Domicilio fiscal</label>
+          {{form.domicilio_fiscal}}
+        </div>
+        
+        <div class="input-field col s6">
+          {{ form.retenciones.errors }}
+          <label for="{{ form.retenciones.id_for_label }}">Retenciones</label>
+          {{form.retenciones}}
+        </div>
+      </div>
+
+      </div>
+      <div class="row">
+        <div class="input-field col s6 offset-s3">
+          <button type="submit" class="btn waves-effect waves-light col s12" name="Crear">Guardar
+          </button>
+        </div>  
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+// select initialization
+$(document).ready(function(){
+	$('select').formSelect();
+});
+
+// datepicker initialization and conf
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+    	format: 'dd/mm/yyyy',
+    	yearRange: [1920,2020]
+    });
+  });
+
+</script>
+
+{% endblock body %}    
+
+
