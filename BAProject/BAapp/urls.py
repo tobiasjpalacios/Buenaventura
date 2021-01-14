@@ -9,7 +9,6 @@ urlpatterns = [
     path('administrar/', admin, name="admin"),
     path('testeo/', testeo, name="testeo"),
     path('chat/', chat, name="chat"),
-     path('inicio/', inicio, name="inicio"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
     path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),
@@ -31,7 +30,7 @@ urlpatterns = [
     path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),
     path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
 
-    path('empresa/', ListEmpresaView.as_view(), name = "mostrar_empresas"),
+    path('empresas/', ListEmpresaView.as_view(), name = "mostrar_empresas"),
     path('empresa/<int:pk>', EmpresaView.as_view(), name="empresa"),
     path('empresa/', EmpresaView.as_view(), name="registrar_empresa"),
 ]

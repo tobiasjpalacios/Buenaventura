@@ -7,22 +7,81 @@
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}   
-{%block body%}
+{%block body%}  
+  <div class="container">
     <table class="centered bordered">
       <thead>
         <tr>
-            <th>razon_social</th>
+            <th>Razon social</th>
             <th>cuit</th>
-            <th>ingresos_brutos</th>
+<!--             <th>ingresos_brutos</th>
             <th>exclusion_ret</th>
-            <th>fecha_exclusion</th>
-            <th>categoria_iva</th>
-            <th>domicilio_fiscal</th>
-            <th>retenciones</th>
+            <th>fecha_exclusion</th> -->
+            <th>Categoria iva</th>
+            <th>Domicilio fiscal</th>
+<!--             <th>retenciones</th> -->
+            
 
         </tr>
       </thead>
       <tbody>
+        {% for empresa in empresas %}
+          <tr>
+            <td>{{ empresa.razon_social }}</td>
+            <td>{{ empresa.cuit }}</td>
+ <!--            <td>{{ empresa.ingresos_brutos }}</td>
+            <td>{{ empresa.exclusion_ret }}</td>
+            <td>{{ empresa.fecha_exclusion|date:"M d, Y" }}</td> -->
+            <td>{{ empresa.categoria_iva }}</td>
+            <td>{{ empresa.domicilio_fiscal }}</td>
+           <!--  <td> 
+              {% for retencion in empresa.retenciones.all %}
+                  {{retencion}} 
+              {% endfor %}
+            </td> -->
+            {% if user.is_superuser %}
+              <th>
+                <div>
+                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer('{{empresa}}')"><i class="material-icons">remove_red_eye</i></a>
+                  <a class='btn-small waves-effect waves-light green' href="{% url 'empresa' empresa.pk %}"><i class="material-icons">edit</i></a>
+                  <a class='btn-small waves-effect waves-light red' 
+                    onclick="abrirmodal('{{ empresa.id }}', '{{ empresa.razon_social }}, cuit: {{empresa.cuit }}')"><i class="material-icons">delete</i></a>
+              </th>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!-- Modal Structure -->
+  <div id="delete" class="modal">
+    <div class="modal-content">
+      <h4>Confirmacion</h4>
+      <p>Esta seguro que quiere eliminar a la empresa <b><span id="removeEmpresa"></span></b></p>
+    </div>
+    <div class="modal-footer">
+      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
+      <a onClick="eliminarEmpresa()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
+    </div>
+  </div>
+
+   <div id="datos" class="modal">
+    <div class="modal-content">
+          <table class="centered bordered">
+      <thead>
+        <tr>
+            <th>Razon social</th>
+            <th>cuit</th>
+            <th>Ingresos brutos</th>
+            <th>Exclusion ret</th>
+            <th>Fecha exclusion</th>
+            <th>Categoria iva</th>
+            <th>Domicilio fiscal</th>
+            <th>Retenciones</th>
+        </tr>
+      </thead>
+        <tbody>
         {% for empresa in empresas %}
           <tr>
             <td>{{ empresa.razon_social }}</td>
@@ -37,70 +96,8 @@ BuenaVentura Agronegocios
                   {{retencion}} 
               {% endfor %}
             </td>
-            {% if user.is_superuser %}
-              <th>
-                <div>
-                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer('{{empresa}}')"><i class="material-icons">remove_red_eye</i></a>
-                  <a class='btn-small waves-effect waves-light green' href="{% url 'empresa' empresa.pk %}"><i class="material-icons">edit</i></a>
-                  <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ empresa.id }}', '{{ empresa.razon_social }}, {{empresa.cuit }}')"><i class="material-icons">delete</i></a>
-              </th>
-            {% endif %}
           </tr>
         {% endfor %}
-      </tbody>
-    </table>
-
-<!-- Modal Structure -->
-  <div id="delete" class="modal">
-    <div class="modal-content">
-      <h4>Confirmacion</h4>
-      <p>Esta seguro que quiere eliminar a <span id="removeName"></span></p>
-    </div>
-    <div class="modal-footer">
-      <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
-      <a onClick="eliminarEmpresa()" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
-    </div>
-  </div>
-
-   <div id="datos" class="modal">
-    <div class="modal-content">
-          <table class="centered bordered">
-      <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Dni</th>
-            <th>Email</th>
-            <th>Fecha de nacimiento</th>
-            <th>Sexo</th>
-            <th>Telefono</th>
-            <th>Usuario</th>
-            <th>Codigo</th>
-            <th>Cuil/Cuit</th>
-            <th>Categoria Iva</th>
-            <th>Cuenta contable</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr>
-            <p><span id="nombre"></span></p>
-            <td><span id="apellido"></span></td>
-            <td><span id="dni"></span></td>
-            <td><span id="email"></span></td>
-            <td><span id="fecha"></span></td>
-            <td><span id="sexo"></span></td>
-            <td><span id="telefono"></span></td>
-            <td><span id="codigo"></span></td>
-            <td><span id="fax"></span></td>
-            <td><span id="cuil_cuit"></span></td>
-            <td><span id="codigo_cta"></span></td>
-            <td><span id="saldo_inicial"></span></td>
-            <td><span id="alicuota"></span></td>
-            <td><span id="sujeto_retencion"></span></td>
-            <td><span id="categoria_iva"></span></td>
-            <td><span id="cuenta_contable"></span></td>
-          </tr>
       </tbody>
     </table>
     </div>
@@ -112,7 +109,7 @@ BuenaVentura Agronegocios
 <script type="text/javascript">
   var currentId;
   function abrirmodal(id, name){
-    $("#removeName")[0].innerText = name;
+    $("#removeEmpresa")[0].innerText = name;
     currentId = id;
     $("#delete").modal('open');
   }
@@ -132,7 +129,7 @@ BuenaVentura Agronegocios
   }
 
   function modalVer(empresa){
-    console.log(empresa);
+    $("#datos").modal('open');
   }
 
 </script>
