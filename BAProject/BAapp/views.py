@@ -17,9 +17,6 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
-def inicio(request):
-    return render(request,'inicio.html')
-
 def testeo(request):
     return render(request, 'testeo.html')
 
@@ -175,3 +172,32 @@ class PropuestaView(View):
         propuesta.delete()
         return HttpResponse(code=200)
 
+class ListEmpresaView(View):
+    def get(self, request, *args, **kwargs):
+        all_empresas = Empresa.objects.all()
+        return render(request, 'consultar_empresa.html', {'empresas':all_empresas})    
+
+
+class EmpresaView(View):
+    def get(self, request, *args, **kwargs):
+        context = {
+        "form": EmpresaForm()}
+        if ("pk" in kwargs):
+            context["empresa"] = Empresa.objects.get(pk=kwargs["pk"])
+            context["form"] = EmpresaForm(instance=context["empresa"])
+        return render(request, 'empresa.html', context)
+
+    def post(self, request, *args, **kwargs):
+        empresa = None
+        if ("pk" in kwargs):
+            empresa = Empresa.objects.get(pk=kwargs["pk"])
+        form = EmpresaForm(request.POST, instance=empresa)
+        if form.is_valid():
+            empresa = form.save()
+            return redirect('empresa', pk=empresa.pk)
+        return render(request, 'empresa.html', context={"form":form})
+
+    def delete(self, request, *args, **kwargs):
+        empresa = Empresa.objects.get(pk=kwargs["pk"])
+        empresa.delete()
+        return HttpResponse(code=200)

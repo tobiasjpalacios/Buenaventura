@@ -60,3 +60,16 @@ class PropuestaForm(ModelForm):
             'fecha_entrega' : forms.TextInput(attrs={'class':'datepicker'}),
             'fecha_creacion' : forms.TextInput(attrs={'class':'datepicker'}),
         }
+
+class EmpresaForm(ModelForm):
+    fecha_exclusion = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
+    exlusion_ret = forms.BooleanField(required=False, label="Exlusion ret")
+
+    class Meta:
+        model = Empresa
+        fields = '__all__'
+
+
+        widget = {
+            'fecha_exclusion' : forms.TextInput(attrs={'class':'datepicker'}),
+        }
