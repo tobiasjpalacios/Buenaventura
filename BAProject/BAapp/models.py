@@ -61,17 +61,16 @@ class Proveedor(Empleado):
 
 class Empresa(models.Model):
     razon_social = models.CharField(max_length=50)
-    cuit = models.CharField(max_length=14)
-    ingresos_brutos = models.CharField(max_length=9)
-    exclusion_ret = models.BooleanField()
+    nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
+    cuit = models.CharField(max_length=14, blank=True, null=True)
+    ingresos_brutos = models.CharField(max_length=9, blank=True, null=True)
     fecha_exclusion = models.DateField(null=True, blank=True)
     categoria_iva = models.CharField(
         max_length=25, 
-        choices=IVA_CHOICES)
-    domicilio_fiscal = models.OneToOneField(
-        "Domicilio", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
+        choices=IVA_CHOICES,
+        blank=True,
+        null=True)
+    domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
     retenciones = models.ManyToManyField("Retencion")
 
     def __str__(self):
@@ -86,19 +85,10 @@ class Retencion(models.Model):
 
 
 class Domicilio(models.Model):  
-    calle =  models.CharField(max_length=50)
-    numero = models.IntegerField()
-    barrio =  models.CharField(max_length=50)
-    localidad =  models.CharField(max_length=50)
-    provincia =  models.CharField(max_length=50)
+    direccion = models.CharField(max_length=255)
 
     def __str__(self):
-        return "{} {}, {}, {}, {}".format(
-            self.calle, 
-            self.numero, 
-            self.barrio, 
-            self.localidad, 
-            self.provincia)
+        return self.direccion
 
 
 class DomicilioPostal(models.Model):
@@ -131,22 +121,23 @@ class Telefono(models.Model):
     def __str__(self):
         return str(self.numero)
 
-
 class Articulo(models.Model):
-    nombre_comercial = models.CharField(max_length=50, null=False)
-    concentracion = models.IntegerField()
-    banda_toxicologica = models.CharField(max_length=50)
-    codigo_articulo = models.CharField(max_length=50, null=False)
-    descripcion = models.CharField(max_length=50, null=False)
-    unidad =  models.CharField(max_length=20, null=False)
-    mulitiplicador =  models.FloatField(null=False)
-    envase = models.CharField(max_length=20, null=False)
-    empresas = models.ManyToManyField(
+    marca = models.CharField(max_length=50, null=False)
+    ingrediente = models.CharField(max_length=100, null=False)
+    concentracion = models.CharField(max_length=50)
+    banda_toxicologica = models.CharField(
+        max_length=50,
+        choices=BANDA_TOXICOLOGICA_CHOICES)
+    descripcion = models.CharField(max_length=50, blank=True, null=True)
+    unidad =  models.CharField(max_length=50, null=False)
+    formulacion = models.CharField(max_length=20, null=False)
+    empresa = models.ForeignKey(
         "Empresa",
+        on_delete=models.DO_NOTHING,
         related_name="articulos")
 
     def __str__(self):
-        return 'Articulo: {}'.format(self.codigo_articulo)
+        return 'Articulo: {}'.format(self.marca)
 
 
 class Negocio(models.Model):
@@ -190,17 +181,14 @@ class Propuesta(models.Model):
         return 'Propuesta: {}'.format(
             self.id)
             
-    
-
-####################### HAY QUE SOLUCIONAR DEMASIADO ACA
 
 class ItemPropuesta(models.Model):
     articulo = models.ForeignKey(
         "Articulo", 
         null=False, 
         on_delete=models.DO_NOTHING)
-    proveedor = models.ForeignKey(
-        "Proveedor", 
+    distribuidor = models.ForeignKey(
+        "Empresa", 
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
@@ -231,7 +219,8 @@ class ItemPropuesta(models.Model):
         fields = self._meta.get_fields()
         for f in fields:
             field = f.name
-            if (not field in dont and getattr(self, field) != getattr(item2, field)):
+            if (not field in dont 
+                and getattr(self, field) != getattr(item2, field)):
                 diff.append(field) 
         return diff
 
@@ -247,7 +236,6 @@ class Financiacion(models.Model):
     tasa = models.IntegerField(null = True)
     condicion_comercial = models.CharField(max_length=255)
 
-####################### FIN DE DONDE ENCUENTRO BOLUDECES
 
 class Presupuesto(models.Model):
     propuesta = models.ForeignKey(

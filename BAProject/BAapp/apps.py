@@ -8,12 +8,12 @@ GRUPOS_USUARIO = (
     'Administracion',)
 
 RET_GANANCIA_CHOICES = (
-    ('Arrendamiento'),
-    ('Exento'),
-    ('Honorarios'),
-    ('Insumos'),
-    ('Servicios'),
-    ('Transporte'),
+    'Arrendamiento',
+    'Exento',
+    'Honorarios',
+    'Insumos',
+    'Servicios',
+    'Transporte',
 )
 
 class BaappConfig(AppConfig):

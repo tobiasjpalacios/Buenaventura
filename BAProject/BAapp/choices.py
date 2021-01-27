@@ -4,6 +4,14 @@ GENERO_CHOICES = (
     ('NB' , 'Otro'),
 )
 
+BANDA_TOXICOLOGICA_CHOICES = (
+	('I', 'I'),
+	('II', 'II'),
+	('III', 'III'),
+	('VI', 'VI'),
+	('LA', 'LA'),
+	('LB', 'LB'),
+)
 
 CATEGORIA_CHOICES = (
     ("AU" , 'Autonomo'),
