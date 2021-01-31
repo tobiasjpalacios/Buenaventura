@@ -38,7 +38,9 @@ class Empleado(models.Model):
         on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return "{} {} - {}".format(self.__class__.__name__, self.persona, self.empresa)
+        return "{} {} - {}".format(
+            self.__class__.__name__, 
+            self.persona, self.empresa)
 
     class Meta():
         abstract = True
@@ -221,7 +223,7 @@ class ItemPropuesta(models.Model):
             field = f.name
             if (not field in dont 
                 and getattr(self, field) != getattr(item2, field)):
-                diff.append(field) 
+                diff.append(field)
         return diff
 
     def __str__(self):
@@ -249,7 +251,7 @@ class Presupuesto(models.Model):
     visualizacion = models.BooleanField()
 
     def __str__(self):
-        return 'Propuesta: {} - Monto: {}'.format(self.propuesta.id, self.total)
+        return 'Propuesta: {}'.format(self.propuesta.id)
 
     def total(self):
         return propuesta.calcularPrecio()
