@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
-
+import json
 from django.views import View
-
+from django.http import JsonResponse
 from .forms import *
 from .models import *
 
@@ -17,8 +17,22 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
+def inicio(request):
+    return render(request,'inicio.html')
+
+
 def testeo(request):
     return render(request, 'testeo.html')
+
+class APIArticulos(View):
+    def get(self,request):
+        articulos = Articulo.objects.all().values("id","ingrediente","marca")
+        return JsonResponse(list(articulos), safe=False)
+
+    def post(self,request):
+        data = json.loads(request.body.decode("utf-8"))
+        print(data)
+        return HttpResponse(status=200)
 
 class ListArticuloView(View):
     def get(self, request, *args, **kwargs):

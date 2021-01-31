@@ -176,6 +176,12 @@
 
 $('.dropdown-trigger').dropdown();   
 </script>
+ <script>
+  window.drf = {
+    csrfHeaderName: "{{ csrf_header_name|default:'X-CSRFToken' }}",
+    csrfToken: "{% if request %}{{ csrf_token }}{% endif %}"
+  };
+</script>
 
 </body>
 </html>
