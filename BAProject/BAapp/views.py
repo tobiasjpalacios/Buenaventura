@@ -6,7 +6,7 @@ from django.views import View
 from django.http import JsonResponse
 from .forms import *
 from .models import *
-
+import datetime
 
 def landing_page(request):
 	return render(request, 'Principal.html')
@@ -31,7 +31,26 @@ class APIArticulos(View):
 
     def post(self,request):
         data = json.loads(request.body.decode("utf-8"))
-        print(data)
+        for i in range(len(data)):
+            actual = data[i]
+            marca = actual.get("Marca")
+            ingrediente = actual.get("Ingrediente")
+            articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
+            item = ItemPropuesta(
+                articulo=articulo, 
+                distribuidor=None,
+                propuesta=None,
+                tipo_de_operacion="",
+                cantidad=actual.get("Cantidad"),
+                precio=actual.get("Precio X unidad"),
+                fecha_entrega= datetime.date.today(),
+                divisa="",
+                destino=None,
+                fecha_pago=datetime.date.today(),
+                tipo_pago="",
+                disponibilidad=False,
+                fecha_disponibilidad=datetime.date.today())
+            item.save()
         return HttpResponse(status=200)
 
 class ListArticuloView(View):

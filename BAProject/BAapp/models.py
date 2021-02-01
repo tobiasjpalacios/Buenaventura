@@ -190,12 +190,13 @@ class ItemPropuesta(models.Model):
         null=False, 
         on_delete=models.DO_NOTHING)
     distribuidor = models.ForeignKey(
-        "Empresa", 
+        "Empresa",
+        null=True,  
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
         related_name="items",
-        null=False, 
+        null=True, 
         on_delete=models.DO_NOTHING)
     tipo_de_operacion = models.CharField(max_length=255)
     cantidad = models.IntegerField(null=False)
@@ -204,7 +205,7 @@ class ItemPropuesta(models.Model):
     divisa = models.CharField(max_length=40, choices=DIVISA_CHOICES)
     destino = models.ForeignKey(
         "Domicilio", 
-        null=False, 
+        null=True, 
         on_delete=models.DO_NOTHING)
     fecha_pago = models.DateField()
     tipo_pago = models.CharField(max_length=40)
@@ -228,7 +229,7 @@ class ItemPropuesta(models.Model):
 
     def __str__(self):
         return 'Item: {} - Cantidad: {} - Precio: $ {}'.format(
-            self.articulo.codigo_articulo, 
+            self.articulo.marca, 
             self.cantidad, 
             self.precio)
 
