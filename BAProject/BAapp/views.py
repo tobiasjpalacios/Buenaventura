@@ -53,9 +53,9 @@ class APIArticulos(View):
             item.save()
         return HttpResponse(status=200)
 
-def filterArticulo(request, marca):
-    ingredientes = Articulo.objects.filter(marca=marca).values("ingrediente")
-    return JsonResponse(list(ingredientes), safe=False)
+def filterArticulo(request, ingrediente):
+    marcas = Articulo.objects.filter(ingrediente=ingrediente).values("marca")
+    return JsonResponse(list(marcas), safe=False)
 
         
 

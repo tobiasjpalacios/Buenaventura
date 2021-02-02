@@ -47,13 +47,12 @@ BuenaVentura Agronegocios
             <table id="empTable">
               <thead>
               <tr class="grey darken-1">
-                 <th>Marca</th>
-                  <th>Ingrediente</th>
-                  <th>Precio X unidad</th>
-                  <th>Cantidad</th>
-                  <th>Financiamiento</th>
-                  <th>Estado</th>
-                  <th></th>
+                <th>Ingrediente</th>
+                <th>Marca</th>
+                <th>Precio X unidad</th>
+                <th>Cantidad</th>
+                <th>Financiamiento</th>
+                <th>Estado</th>
                 </tr>
             </thead>
             <tbody id="body"></tbody>
@@ -65,6 +64,7 @@ BuenaVentura Agronegocios
 
 <div>
   <a class="green waves-effect waves-light btn " onclick="addRow()">Agregar articulo</a> 
+  <a class="green waves-effect waves-light btn " onclick="removeRow()">Eliminar articulo</a> 
   <a class="green waves-effect waves-light btn " onclick="submit()">Realizar Propuesta</a> 
 </div>
 <br>
@@ -110,7 +110,7 @@ $(document).ready(function(){
     $('.datepicker').datepicker();
   }); 
 
-var headers = ["Marca", "Ingrediente", "Precio X unidad", "Cantidad", "Financiamiento", "Estado"];
+var headers = ["Ingrediente", "Marca", "Precio X unidad", "Cantidad", "Financiamiento", "Estado"];
 var savings_data;
   $(document).ready(function(){
     $.ajax({
@@ -127,51 +127,52 @@ function addRow() {
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   var tr = empTab.insertRow(rowCnt); // numero de filas
-  tr = empTab.insertRow(rowCnt);
-
   for (var c = 0; c < headers.length; c++) {             
     var td = document.createElement('td');       
     td = tr.insertCell(c);
     if (c==0) {
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt/2)+'.'+c+'');
-      ele.setAttribute('list', 'datalist'+(rowCnt/2)+'');
-      ele.setAttribute('onchange','refreshIngrediente("'+(rowCnt/2)+'.'+c+'")');
-      ele.setAttribute('onclick','this.select();');
-      
-      var datalistMarca = document.createElement('datalist');
-      datalistMarca.setAttribute('id', 'datalist'+(rowCnt/2)+'');
-      
-      td.appendChild(ele);
-      td.appendChild(datalistMarca);
-      for (var i = 0; i < savings_data.length; i++) {
-        var optionIng = document.createElement('option');
-        optionIng.setAttribute('value',''+savings_data[i].marca+'');
-        datalistMarca.appendChild(optionIng);        
-      }
-    }else if(c==1){      
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt/2)+'.'+c+'');
-      ele.setAttribute('list', 'datalist'+(rowCnt/2)+'.'+(rowCnt/2)+'');
+      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
+      ele.setAttribute('list', 'datalist'+(rowCnt)+'');
+      ele.setAttribute('onchange','refreshMarca("'+(rowCnt)+'.'+c+'")');
       ele.setAttribute('onclick','this.select();');
       
       var datalistIng = document.createElement('datalist');
-      datalistIng.setAttribute('id', 'datalist'+(rowCnt/2)+'.'+(rowCnt/2)+'');
+      datalistIng.setAttribute('id', 'datalist'+(rowCnt)+'');
       
       td.appendChild(ele);
       td.appendChild(datalistIng);
       for (var i = 0; i < savings_data.length; i++) {
-        var optionMar = document.createElement('option');
-        optionMar.setAttribute('value',''+savings_data[i].ingrediente+'');
-        optionMar.setAttribute('id','option'+i);
-        datalistIng.appendChild(optionMar);        
+        var optionIng = document.createElement('option');
+        optionIng.setAttribute('value',''+savings_data[i].ingrediente+'');
+        datalistIng.appendChild(optionIng);        
+
       }
+    }else if(c==1){      
+      var ele = document.createElement('input');
+      ele.setAttribute('type', 'text');
+      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
+      ele.setAttribute('list', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
+      ele.setAttribute('onclick','this.select();');
+      
+      var datalistMar = document.createElement('datalist');
+      datalistMar.setAttribute('id', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
+      
+      td.appendChild(ele);
+      td.appendChild(datalistMar);
+      for (var i = 0; i < savings_data.length; i++) {
+        var optionMar = document.createElement('option');
+        optionMar.setAttribute('value',''+savings_data[i].marca+'');
+        optionMar.setAttribute('id','option'+i);
+        datalistMar.appendChild(optionMar);        
+      }
+     
+      
     }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt/2)+'.'+c+'');
+      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
       
       td.appendChild(ele);
 
@@ -179,7 +180,7 @@ function addRow() {
   }
 }
 
-function refreshIngrediente(inputId){
+function refreshMarca(inputId){
   var tmp = (inputId.substring(0,1));
   var input = document.getElementById('input'+inputId).value;
   var datalist = document.getElementById('datalist'+tmp+'.'+tmp);
@@ -193,7 +194,7 @@ function refreshIngrediente(inputId){
       datalist.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].ingrediente+'');
+        option.setAttribute('value',''+data[i].marca+'');
         option.setAttribute('id','option'+i);
         datalist.appendChild(option);
       }
@@ -201,13 +202,18 @@ function refreshIngrediente(inputId){
   });
 }
 
+function removeRow(){
+  var empTab = document.getElementById('body');
+  var rowCnt = empTab.rows.length;    // numero de columnas
+  empTab.deleteRow(rowCnt-1); // numero de filas
+
+}
+
 function submit(){
   var dict = [];
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
-  console.log(rowCnt/2);
-  console.log(headers.length);
-   for (var i = 0; i < rowCnt/2; i++) {
+   for (var i = 0; i < rowCnt; i++) {
     var tmp_dict = {};
     for (var j = 0; j < headers.length; j++) {
       var input = document.getElementById('input'+i+'.'+j+'');

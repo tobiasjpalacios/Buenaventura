@@ -41,6 +41,6 @@ urlpatterns = [
     # crear propuestas
 
     path('api/', include(apipatters)),
-    path('filterArticulo/<str:marca>', filterArticulo, name="filterArticulo")
+    path('filterArticulo/<str:ingrediente>', filterArticulo, name="filterArticulo")
     
 ]
