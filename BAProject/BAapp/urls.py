@@ -39,7 +39,8 @@ urlpatterns = [
     path('empresa/', EmpresaView.as_view(), name="registrar_empresa"),
 
     # crear propuestas
-    
-    path('api/', include(apipatters))
+
+    path('api/', include(apipatters)),
+    path('filterArticulo/<str:marca>', filterArticulo, name="filterArticulo")
     
 ]
