@@ -123,8 +123,9 @@ class Telefono(models.Model):
     def __str__(self):
         return str(self.numero)
 
+
 class Articulo(models.Model):
-    marca = models.CharField(max_length=50, null=False)
+    marca = models.CharField(max_length=50, null=False, unique=True)
     ingrediente = models.CharField(max_length=100, null=False)
     concentracion = models.CharField(max_length=50)
     banda_toxicologica = models.CharField(
@@ -161,8 +162,9 @@ class Propuesta(models.Model):
         "Negocio",
         related_name="propuestas",
         on_delete=models.DO_NOTHING)
+    envio_comprador = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    observaciones = models.CharField(max_length=300, null=False)
+    observaciones = models.CharField(max_length=300, blank=True)
     visto = models.BooleanField(default=False)
      
     def calcularPrecio(self):
@@ -199,10 +201,13 @@ class ItemPropuesta(models.Model):
         null=True, 
         on_delete=models.DO_NOTHING)
     tipo_de_operacion = models.CharField(max_length=255)
-    cantidad = models.IntegerField(null=False)
-    precio = models.FloatField(null=False)
+    cantidad = models.IntegerField(null=True, blank=True)
+    precio = models.FloatField(null=True, blank=True)
     fecha_entrega = models.DateField()
-    divisa = models.CharField(max_length=40, choices=DIVISA_CHOICES)
+    divisa = models.CharField(
+        max_length=40, 
+        choices=DIVISA_CHOICES,
+        blank=True, null=True)
     destino = models.ForeignKey(
         "Domicilio", 
         null=True, 
@@ -210,7 +215,8 @@ class ItemPropuesta(models.Model):
     fecha_pago = models.DateField()
     tipo_pago = models.CharField(max_length=40)
     disponibilidad = models.BooleanField()
-    fecha_disponibilidad = models.DateField()
+    fecha_disponibilidad = models.DateField(blank=True, null=True)
+    aceptado = models.BooleanField()
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')

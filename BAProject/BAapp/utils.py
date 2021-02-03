@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO, FileIO
 
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import PatternFill
@@ -7,7 +7,7 @@ from openpyxl.utils import quote_sheetname, get_column_letter
 from django.db import transaction
 from django.db.models.fields.reverse_related import ManyToOneRel
 
-from .models import Articulo, Empresa
+from .models import Articulo, Empresa, Retencion
 
 def _read_header(ws):
     header = {}
@@ -31,7 +31,12 @@ def sheet_reader(sheet):
                 break
             for v in emp_header.keys():
                 if (v=="retenciones"):
-                    c[emp_header[v]]
+                    if (c[emp_header[v]]):    
+                        rets = c[emp_header[v]].split("+")
+                        for ret in rets:
+                            obj = Retencion.objects.get(name=ret)
+                            instance.retenciones.add(obj)
+                    continue
                 setattr(instance, v, c[emp_header[v]])
             instance.save()
 
@@ -81,6 +86,10 @@ def _readable_column_width(ws):
     for col, value in dims.items():
         ws.column_dimensions[col].width = value
 
+def _get_ret_names_list(retentions):
+    for ret in retentions:
+        yield ret[0]
+
 def sheet_writer():
     wb = Workbook()
 
@@ -115,7 +124,11 @@ def sheet_writer():
         for field in range(len(emp_fields)):
             cell = emp_sheet.cell(row,field+1)
             if (emp_fields[field] == "retenciones"):
-                cell.value = "+".join(empresa.retenciones.all().values('name'))
+                cell.value = "+".join(
+                    _get_ret_names_list(
+                        empresa.retenciones.all().values_list('name')
+                    )
+                )
                 continue
             cell.value = getattr(empresa, emp_fields[field])
         row += 1
@@ -154,7 +167,8 @@ def sheet_writer():
     _readable_column_width(emp_sheet)
     _readable_column_width(ing_sheet)
 
-    file = BytesIO()
+    file = FileIO("dump.xlsx", 'w+')
     wb.save(file)
+    file.seek(0)
 
     return file
