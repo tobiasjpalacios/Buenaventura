@@ -24,6 +24,13 @@ def inicio(request):
 def testeo(request):
     return render(request, 'testeo.html')
 
+def cliente(request):
+    return render(request, 'cliente.html')
+
+def vendedor(request):
+    return render(request, 'vendedor.html')
+
+
 class APIArticulos(View):
     def get(self,request):
         articulos = Articulo.objects.all().values("id","ingrediente","marca")

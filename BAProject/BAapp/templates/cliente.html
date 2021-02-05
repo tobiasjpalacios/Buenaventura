@@ -1,0 +1,355 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+
+      
+  <div class="row">
+    <div class="col s12 m9 l10">
+      <div id="id1" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card">
+                <div class="card-content ">
+                  <span class="card-title"> Presupuesto</span>
+                    <p>ultimos presupuestos realizado y aquellos abiertos todavia </p>
+                  <table class="card-panel white"> 
+                    <thead>
+                      <tr>
+                          <th> Fecha</th>
+                          <th> Cantidad de item</th>
+                          <th>Estado</th>
+                          <th>Vendedor</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td>27/03/2021</td>
+                        <td>4 Articulos</td>
+                        <td class="green-text" > Confirmar respuesta</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td>28/03/2021</td>
+                        <td>7 Articulos</td>
+                        <td class="orange-text"> Esperando respuesta</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-action">
+                  <a onclick="$('.tap-target').tapTarget('open')" >Nuevo pedido </a>
+                  <a href="#">Ultima Negociacion</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+
+      <div id="id2" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content ">
+                  <span class="card-title">Negocios Cerrados</span>
+                  <p> una lista de los ultimos negociones cerrrados </p>
+                  <table class="card-panel white"> 
+                    <thead>
+                      <tr>
+                          <th> Fecha</th>
+                          <th> Cantidad de item</th>
+                          <th>Estado</th>
+                          <th>Vendedor</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td>27/03/2021</td>
+                        <td>4 Articulos</td>
+                        <td class="green-text" > Aceptado</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td>28/03/2021</td>
+                        <td>7 Articulos</td>
+                        <td class="red-text"> Cancelado</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-action">
+                  <a href="#">Toque aqui para ir a la lista completa</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+
+      <div id="id3" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content ">
+                  <span class="card-title center-align">Semaforo de Vencimientos </span>
+                  <p>en Buenaventura queremos ayudarlo a mantener sus pagos al dia asi que le avisamos de todos los vencimientos en un sistema basado en un semaforo y sus tres colores </p>
+                    <br>
+                  <div class="row">
+                        <div class=" col s4">
+                            <div class="card-panel ">
+                                <span class="card-title red-text center-align  ">VENCIMIENTOS ESTA SEMANA</span> 
+                               <br>
+                                <a class=" btn-large red col s12 "><i class="material-icons right ">warning</i>ULTIMO AVISO</a>
+                                <ul class="collection">
+                                    <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 <li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
+                                    <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                                </ul>
+                            </div>
+                        </div> 
+                        <div class=" col s4">
+                            <div class="card-panel ">
+                                <span class="card-title black-text center-align ">VENCIMIENTOS ESTE MES</span> 
+                               <br>
+                                <a class=" btn-large yellow black-text col s12"><i class="material-icons right black-text">new_releases</i>AVISO MENSUAL</a>
+                                <ul class="collection">
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                                </ul>
+                            </div>
+                        </div> 
+                        <div class=" col s4">
+                            <div class="card-panel ">
+                               <span class="card-title black-text center-align ">Todos los Vencimientos</span> 
+                               <br>
+                                <a class=" btn-large green black-text col s12"><i class="material-icons right black-text">priority_high</i>VENCIMIENTOS FUTUROS</a>
+                                <ul class="collection">
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text">Pago mensual atrazina </li>
+                                    <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                                </ul>
+                            </div>
+                        </div> 
+                    </div>
+                
+                
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+      </div>
+      <div id="id4" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content">
+                  <span class="card-title">Logistica del ultimo pedido</span>
+                  <p>lleve control de la logistica de su ultimo pedido </p>
+                  <br>
+                  <div class="row">
+                    <div class="col s2">
+                      <i class="large material-icons">home</i>
+                      <span class="card-title left-align">Estamos preparando su pedido</span>
+                    </div>
+                    
+                    <div class="col s3">
+                      <br>
+                      <br>
+                      <div   class="progress">
+                        <div class="determinate" style="width: 100% "></div>
+                  </div>
+                    </div>
+                    <div class="col s2">
+                      <i class="large material-icons col s12">local_shipping</i>
+                      <span class="card-title left-align">En camino</span>
+                    </div>
+                    <div class="col s3">
+                      <br>
+                      <br>
+                      <div class="progress ">
+                        <div class="indeterminate"></div>
+                    </div>
+                    
+                    </div>
+                    <div class="col s2">
+                      <i class="large material-icons">location_city</i>
+                      <span class="card-title left-align">Llegando a destino</span>
+                    </div>
+                  
+                    
+                  </div>
+                      
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+    
+      <div id="id5" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content white-text">
+                  <span class="card-title black-text">Comprobantes</span>
+                  <ul class="collapsible black-text">
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
+                      <div class="collapsible-body">
+                        <table>
+                            <thead>
+                              <tr>
+                                  <th>Fecha emision</th>
+                                  <th>Emisor</th>
+                                  <th>Costo</th>
+                                  <th></th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                    
+                            <tbody>
+                              <tr>
+                                <td>17/01/2020</td>
+                                <td>Tecnocampo</td>
+                                <td>$150.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                              <tr>
+                                <td>05/06/2020</td>
+                                <td>ADAMA</td>
+                                <td>$376.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                              <tr>
+                                <td>12/08/2020</td>
+                                <td>Speedagro</td>
+                                <td>$5.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">book</i>Remitos</div>
+                      <div class="collapsible-body"></div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                      <div class="collapsible-body"></div>
+                    </li>
+                  </ul>
+
+
+
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+    
+    
+    </div>
+    
+    
+    
+    <div class="col hide-on-small-only m3 l2 ">
+      <ul class="section table-of-contents pinned ">
+        <li><a href="#id1">Presupuesto</a></li>
+        <li><a href="#id2">Negocios Confirmados</a></li>
+        <li><a href="#id3">Proximos Vencimientos</a></li>
+        <li><a href="#id4">Logistica</a></li>
+        <li><a href="#id4">Comprobantes</a></li>
+    </ul>
+    </div>
+  </div>    
+  
+  <div id="nuevo" class="fixed-action-btn">
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">add</i>
+    </a>
+    <ul>
+      <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
+      <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar pedido "><i class="material-icons">cached</i></a></li>
+      <li><a class="btn-floating yellow tooltipped" data-position="left"  data-tooltip="Nuevo Pedido"><i class="material-icons">add_circle</i></a></li>
+      
+    </ul>
+  </div>
+
+  <div class="tap-target" data-target="nuevo">
+    <div class="tap-target-content">
+      <h5 class="center-align">Opciones </h5>
+      <p> este boton es el que le permitira realizar nuevos pedidos , volver a mandar mi ultimo pedido o establecer un vinculo de comunicacion por Whatsapp</p>
+    </div>
+  </div>
+
+
+  <script>
+    $(document).ready(function(){
+    $('.scrollspy').scrollSpy();
+  });
+        
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+
+  $(document).ready(function(){
+    $('.fixed-action-btn').floatingActionButton();
+  });
+ $(document).ready(function(){
+    $('.tooltipped').tooltip();
+  });
+
+  $(document).ready(function(){
+    $('.tap-target').tapTarget();
+  });
+           
+    </script>
+
+{% endblock body %}
