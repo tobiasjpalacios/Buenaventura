@@ -14,7 +14,7 @@ urlpatterns = [
     path('chat/', chat, name="chat"),
     path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
-    path('Vendedor/', vendedor, name="Vendedor"),
+    path('vendedor/', vendedor, name="vendedor"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
     path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),

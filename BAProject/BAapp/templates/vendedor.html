@@ -1,0 +1,556 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+{% endblock imports %}
+{% block style%}
+
+body {
+  background-color: #white;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}
+
+      
+  <div class="row">
+    
+    <div class="col hide-on-small-only m3 l2 ">
+        <ul class="section table-of-contents pinned ">
+          <li><a href="#id1">Presupuestos</a></li>
+          <li><a href="#id2">Negocios Confirmados</a></li>
+          <li><a href="#id3">Empresas</a></li>
+          <li><a href="#id4">Articulos</a></li>
+          <li><a href="#id5">Condiciones Comerciales</a></li>
+          <li><a href="#id6">Administracion de cuentas</a></li>
+          <li><a href="#id7">Logistica</a></li>
+          <li><a href="#id8">Comprobantes</a></li>
+      </ul>
+      </div>
+    
+    
+    <div class="col s12 m9 l10">
+      <div id="id1" class="section scrollspy">
+        <div class="row">
+            <div class="col s12  ">
+              <div class="card z-depth-5">
+                <div class="card-content ">
+                    <div class="card-panel blue darken-4 white-text z-depth-3">
+                        <h4 class="center-align" > Presupuestos </h4>
+                    </div>
+                    
+                    <a class=" btn-large tooltipped green col s12 " data-position="left" data-tooltip="Clickea para ver todos "><i class="material-icons right ">call_received</i>Recibidos</a>
+                    <br>
+                    <div class="divider "></div>
+                    <br>
+                  <table class="card-panel white z-depth-3"> 
+                    <thead>
+                      <tr>
+                          <th class=" center-align" >  Fecha</th>
+                          <th class=" center-align"> Cantidad de item</th>
+                          <th class=" center-align">Empresa</th>
+                          <th>Cliente</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td class=" center-align">27/03/2021</td>
+                        <td class=" center-align">
+                            <ol class="collection" start="1">
+                            <li class="collection-item" >Glifosato 20% </li>
+                            <li class="collection-item" >Atrazina 30% </li>
+                            <li class="collection-item" > Aceite soja 50%</li>
+                            <li class="collection-item" >Benomil 89%</li>
+                          </ol>
+                        </td>
+                        <td class=" center-align" > Tecnocampo - Martin suarez </td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td class=" center-align">28/03/2021</td>
+                        <td class=" center-align">
+                            <ol start="1">
+                                <li>Glifosato 20% </li>
+                                <li>Atrazina 40% </li>
+                                <li>Aceite de soja 70%</li>
+                                <li>Bifentrin 50%</li>
+                                <li>Captan %62</li>
+                                <li>Diuron %71</li>
+                        </td>
+                        <td class=" center-align" > Speedagro - Daniel Smith</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a class=" btn-large lime darken-4 col s12 "><i class="material-icons right ">call_made</i>Enviados</a>
+                    <br>
+                    <div class="divider "></div>
+                    <br>
+                  <table class="card-panel white z-depth-3"> 
+                    <thead>
+                      <tr>
+                          <th class=" center-align" >  Fecha</th>
+                          <th class=" center-align"> Cantidad de item</th>
+                          <th class=" center-align">Empresa</th>
+                          <th>Cliente</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td class=" center-align">27/03/2021</td>
+                        <td class=" center-align">
+                            <ol class="collection" start="1">
+                            <li class="collection-item" >Glifosato 20% </li>
+                            <li class="collection-item" >Atrazina 30% </li>
+                            <li class="collection-item" > Aceite soja 50%</li>
+                            <li class="collection-item" >Benomil 89%</li>
+                          </ol>
+                        </td>
+                        <td class=" center-align" > Tecnocampo - Martin suarez </td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td class=" center-align">28/03/2021</td>
+                        <td class=" center-align">
+                            <ol start="1">
+                                <li>Glifosato 20% </li>
+                                <li>Atrazina 40% </li>
+                                <li>Aceite de soja 70%</li>
+                                <li>Bifentrin 50%</li>
+                                <li>Captan %62</li>
+                                <li>Diuron %71</li>
+                        </td>
+                        <td class=" center-align" > Speedagro - Daniel Smith</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-action">
+                  <a href="#">Ultima Negociacion</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+
+      <div id="id2" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card z-depth-5">
+                <div class="card-content ">
+                    <div class="card-panel blue darken-4 white-text z-depth-3">
+                        <h4 class="center-align" > Negocios Cerrados </h4>
+                    </div>
+
+                  <a class=" btn-large green col s12 "><i class="material-icons right ">check_box</i>Confirmados</a>
+                    <br>
+                    <div class="divider "></div>
+                    <br>
+                  <table class="card-panel white z-depth-3"> 
+                    <thead>
+                      <tr>
+                          <th class=" center-align" >  Fecha</th>
+                          <th class=" center-align"> Cantidad de item</th>
+                          <th class=" center-align">Empresa</th>
+                          <th>Cliente</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td class=" center-align">27/03/2021</td>
+                        <td class=" center-align">
+                            <ol class="collection" start="1">
+                            <li class="collection-item" >Glifosato 20% </li>
+                            <li class="collection-item" >Atrazina 30% </li>
+                            <li class="collection-item" > Aceite soja 50%</li>
+                            <li class="collection-item" >Benomil 89%</li>
+                          </ol>
+                        </td>
+                        <td class=" center-align" > Tecnocampo - Martin suarez </td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td class=" center-align">28/03/2021</td>
+                        <td class=" center-align">
+                            <ol start="1">
+                                <li>Glifosato 20% </li>
+                                <li>Atrazina 40% </li>
+                                <li>Aceite de soja 70%</li>
+                                <li>Bifentrin 50%</li>
+                                <li>Captan %62</li>
+                                <li>Diuron %71</li>
+                        </td>
+                        <td class=" center-align" > Speedagro - Daniel Smith</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a class=" btn-large red col s12 "><i class="material-icons right ">cancel</i>Cancelados</a>
+                    <br>
+                    <div class="divider "></div>
+                    <br>
+                  <table class="card-panel white z-depth-3"> 
+                    <thead>
+                      <tr>
+                          <th class=" center-align" >  Fecha</th>
+                          <th class=" center-align"> Cantidad de item</th>
+                          <th class=" center-align">Empresa</th>
+                          <th>Cliente</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                      <tr>
+                        <td class=" center-align">27/03/2021</td>
+                        <td class=" center-align">
+                            <ol class="collection" start="1">
+                            <li class="collection-item" >Glifosato 20% </li>
+                            <li class="collection-item" >Atrazina 30% </li>
+                            <li class="collection-item" > Aceite soja 50%</li>
+                            <li class="collection-item" >Benomil 89%</li>
+                          </ol>
+                        </td>
+                        <td class=" center-align" > Tecnocampo - Martin suarez </td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green  btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                      <tr>
+                        <td class=" center-align">28/03/2021</td>
+                        <td class=" center-align">
+                            <ol start="1">
+                                <li>Glifosato 20% </li>
+                                <li>Atrazina 40% </li>
+                                <li>Aceite de soja 70%</li>
+                                <li>Bifentrin 50%</li>
+                                <li>Captan %62</li>
+                                <li>Diuron %71</li>
+                        </td>
+                        <td class=" center-align" > Speedagro - Daniel Smith</td>
+                        <td>Matias Nuñez</td>
+                        <td> <a class="green btn waves-effect waves-light  " href="#">Ir a la Negociacion</a></td>       
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-action">
+                  <a class="right-align" href="#">Toque aqui para ir a la lista completa</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+
+      <div id="id3" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card z-depth-5">
+                <div class="card-content">
+                    <div class="card-panel blue darken-4 white-text z-depth-3">
+                        <h4 class="center-align" > Empresas </h4>
+                    </div>
+                  <br>
+                  
+                  <div class="card  z-depth-3">
+                    <ul class="collapsible">
+                        <li>
+                          <div class="collapsible-header"><span > Speedagro </span> <a style="margin-left: 80%;" class="waves-effect waves-light btn ">Ver Mas</a> </div>
+                          <div class="collapsible-body">
+                            <div class="row">
+                                <div class="col s12"><a  class="waves-effect waves-light btn  col s12"> Ver mas info Empresa</a></div>
+                            
+                                <div class="col s6">
+                                    <a class=" btn-large blue  col s12 "><i class="material-icons right black-text">people</i> Clientes</a>
+                                
+                                <table class="card ">
+                                    <thead>
+                                    <tr>
+                                        <th class="left-align"> Nombre Y apellido</th>
+                                        <th class="left-align" >Email</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td class="left-align">Alvin Eclair</td>
+                                        <td class="left-align" >iamalvin@gmail.com</td>
+                                        <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left-align" >Alan Jellybeam</td>
+                                        <td class="left-align" >alan_jelly@hotmail.com</td>
+                                        <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left-align" >Jonathan Lollipop</td>
+                                        <td class="left-align" >jhony.lollipop@outlook.com</td>
+                                        <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                    </tr>
+        
+                                    </tbody>
+                                </table>
+                                <a  class="waves-effect waves-light btn col s12 ">Agregar Clientes</a>
+                                </div>
+                                <div class="col s6">
+                                    <a class=" btn-large blue  col s12 "><i class="material-icons right black-text">people</i> Proveedores</a>
+                                    <table class="card ">
+                                        <thead>
+                                        <tr>
+                                            <th class="left-align"> Nombre Y Apellido</th>
+                                            <th class="left-align" >Email</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+    
+                                        <tbody>
+                                        <tr>
+                                            <td class="left-align">Alvin Eclair</td>
+                                            <td class="left-align" >iamalvin@gmail.com</td>
+                                            <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left-align" >Alan Jellybeam</td>
+                                            <td class="left-align" >alan_jelly@hotmail.com</td>
+                                            <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left-align" >Jonathan Lollipop</td>
+                                            <td class="left-align" >jhony.lollipop@outlook.com</td>
+                                            <td><a  class="waves-effect waves-light btn ">Ver Mas</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <a  class="waves-effect waves-light btn col s12 "> Agregar Proveedor </a>
+                                </div>
+                            
+                            </div>
+                                        
+                            
+                          </div>
+                        </li>
+                        <li>
+                          <div class="collapsible-header"><span > Adama</span></div>
+                          <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                        </li>
+                        <li>
+                          <div class="collapsible-header"><span > Helm</span></div>
+                          <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                        </li>
+                      </ul>
+                            
+                  </div>
+                  
+                 
+                    
+                  </div>
+                      
+                
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+      
+      <div id="id4" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content">
+                  <span class="card-title">Logistica del ultimo pedido</span>
+                  <p>lleve control de la logistica de su ultimo pedido </p>
+                  <br>
+                  <div class="row">
+                    <div class="col s2">
+                      <i class="large material-icons">home</i>
+                      <span class="card-title left-align">Estamos preparando su pedido</span>
+                    </div>
+                    
+                    <div class="col s3">
+                      <br>
+                      <br>
+                      <div   class="progress">
+                        <div class="determinate" style="width: 100% "></div>
+                  </div>
+                    </div>
+                    <div class="col s2">
+                      <i class="large material-icons col s12">local_shipping</i>
+                      <span class="card-title left-align">En camino</span>
+                    </div>
+                    <div class="col s3">
+                      <br>
+                      <br>
+                      <div class="progress ">
+                        <div class="indeterminate"></div>
+                    </div>
+                    
+                    </div>
+                    <div class="col s2">
+                      <i class="large material-icons">location_city</i>
+                      <span class="card-title left-align">Llegando a destino</span>
+                    </div>
+                  
+                    
+                  </div>
+                      
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+    
+      <div id="id5" class="section scrollspy">
+        <div class="row">
+            <div class="col s12 ">
+              <div class="card ">
+                <div class="card-content white-text">
+                  <span class="card-title black-text">Comprobantes</span>
+                  <ul class="collapsible black-text">
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
+                      <div class="collapsible-body">
+                        <table>
+                            <thead>
+                              <tr>
+                                  <th>Fecha emision</th>
+                                  <th>Emisor</th>
+                                  <th>Costo</th>
+                                  <th></th>
+                                  <th></th>
+                              </tr>
+                            </thead>
+                    
+                            <tbody>
+                              <tr>
+                                <td>17/01/2020</td>
+                                <td>Tecnocampo</td>
+                                <td>$150.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                              <tr>
+                                <td>05/06/2020</td>
+                                <td>ADAMA</td>
+                                <td>$376.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                              <tr>
+                                <td>12/08/2020</td>
+                                <td>Speedagro</td>
+                                <td>$5.000</td>
+                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
+                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">book</i>Remitos</div>
+                      <div class="collapsible-body"></div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                      <div class="collapsible-body"></div>
+                    </li>
+                  </ul>
+
+
+
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </div>
+    
+    
+    </div>
+    
+    
+    
+  
+
+</div>    
+  
+  <div id="nuevo" class="fixed-action-btn">
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">add</i>
+    </a>
+    <ul>
+      <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
+      <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar Presupuesto "><i class="material-icons">cached</i></a></li>
+      <li><a class="btn-floating yellow tooltipped" data-position="left"  data-tooltip="Nuevo Presupuesto"><i class="material-icons">add_circle</i></a></li>
+      
+    </ul>
+  </div>
+
+  
+
+  <script>
+    $(document).ready(function(){
+    $('.scrollspy').scrollSpy();
+  });
+        
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+
+  $(document).ready(function(){
+    $('.fixed-action-btn').floatingActionButton();
+  });
+ $(document).ready(function(){
+    $('.tooltipped').tooltip();
+  });
+
+  $(document).ready(function(){
+    $('.tap-target').tapTarget();
+  });
+           
+    </script>
+
+{% endblock body %}
