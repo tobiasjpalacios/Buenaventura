@@ -57,16 +57,22 @@ BuenaVentura Agronegocios
             </thead>
             <tbody id="body"></tbody>
           </table>
+          <br>
+          <div class="right">
+            <a class="blue waves-effect waves-light btn" onclick="addRow()"><i class="material-icons">add</i></a> 
+            <a class="red waves-effect waves-light btn" onclick="removeRow()"><i class="material-icons">cancel</i></a> 
+          </div>
+          <br>
+          <div class="center" id="divProp" style="display:none">
+            <a class="green waves-effect waves-light btn" onclick="showModal()">Realizar Propuesta</a>
+          </div>
+          <br>
         </div>
       </div>
     </div>
 </div>
 
-<div>
-  <a class="green waves-effect waves-light btn " onclick="addRow()">Agregar articulo</a> 
-  <a class="green waves-effect waves-light btn " onclick="removeRow()">Eliminar articulo</a> 
-  <a class="green waves-effect waves-light btn " onclick="submit()">Realizar Propuesta</a> 
-</div>
+
 <br>
 
 
@@ -78,9 +84,19 @@ BuenaVentura Agronegocios
       <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
       <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar pedido "><i class="material-icons">cached</i></a></li>
       <li><a class="btn-floating orange tooltipped" data-position="left"  data-tooltip="Nuevo Pedido"><i class="material-icons">add_circle</i></a></li>
-      
     </ul>
   </div>
+
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Advertencia!</h4>
+      <p>¿Desea realizar una Propuesta ?</p>
+    </div>
+    <div class="modal-footer">
+      <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">check</i></a>
+    </div>
+  </div>
+
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -121,7 +137,19 @@ var savings_data;
         savings_data = data;
       }
     });
+    hideSend();
   });
+
+  function hideSend(){
+    var bodyT = document.getElementById('body');
+    var rowCnt = bodyT.rows.length;
+    var divS = document.getElementById("divProp");
+    if (rowCnt < 1){
+      divS.style.display = "none";
+    }else {
+      divS.style.display = "block";
+    }
+  };
 
 function addRow() {
   var empTab = document.getElementById('body');
@@ -167,18 +195,15 @@ function addRow() {
         optionMar.setAttribute('id','option'+i);
         datalistMar.appendChild(optionMar);        
       }
-     
-      
-    }else{
+    }else {
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
-      
       td.appendChild(ele);
-
-    }
+    };
   }
-}
+  hideSend();
+};
 
 function refreshMarca(inputId){
   var tmp = (inputId.substring(0,1));
@@ -206,8 +231,12 @@ function removeRow(){
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   empTab.deleteRow(rowCnt-1); // numero de filas
-
+  hideSend();
 }
+
+function showModal(){
+  $('#modal1').modal('open');
+};
 
 function submit(){
   var dict = [];
@@ -231,6 +260,6 @@ function submit(){
     },
     body: JSON.stringify(dict),
    }).then(console.log);
-}
+};
   </script>
 {% endblock body %}
