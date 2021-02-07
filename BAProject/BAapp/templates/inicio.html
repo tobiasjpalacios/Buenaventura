@@ -59,20 +59,22 @@ BuenaVentura Agronegocios
           </table>
           <br>
           <div class="right">
-            <a class="blue waves-effect waves-light btn" onclick="addRow()"><i class="material-icons">add</i></a> 
-            <a class="red waves-effect waves-light btn" onclick="removeRow()"><i class="material-icons">cancel</i></a> 
+            <a class="blue waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila" onclick="addRow()">Agregar Artículo</a> 
+            <a class="red waves-effect waves-light btn tooltipped" data-position="right" data-tooltip="Eliminar ultima fila" onclick="removeRow()">Eliminar Articulo</a> 
           </div>
           <br>
           <div class="center" id="divProp" style="display:none">
             <a class="green waves-effect waves-light btn" onclick="showModal()">Realizar Propuesta</a>
           </div>
-          <br>
         </div>
       </div>
     </div>
 </div>
 
-
+<!--
+  <i class="material-icons">cancel</i>
+  <i class="material-icons">add</i>
+-->
 <br>
 
 
@@ -152,6 +154,7 @@ var savings_data;
   };
 
 function addRow() {
+  var defaultPlace = ["0.00", "0.00", "----", '----']
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   var tr = empTab.insertRow(rowCnt); // numero de filas
@@ -165,7 +168,7 @@ function addRow() {
       ele.setAttribute('list', 'datalist'+(rowCnt)+'');
       ele.setAttribute('onchange','refreshMarca("'+(rowCnt)+'.'+c+'")');
       ele.setAttribute('onclick','this.select();');
-      
+      ele.setAttribute('placeholder', 'Ingrediente');
       var datalistIng = document.createElement('datalist');
       datalistIng.setAttribute('id', 'datalist'+(rowCnt)+'');
       
@@ -183,7 +186,7 @@ function addRow() {
       ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
       ele.setAttribute('list', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
       ele.setAttribute('onclick','this.select();');
-      
+      ele.setAttribute('placeholder', 'Marca');
       var datalistMar = document.createElement('datalist');
       datalistMar.setAttribute('id', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
       
@@ -199,6 +202,8 @@ function addRow() {
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
+      var pl = defaultPlace[c-2];
+      ele.setAttribute('placeholder', pl);
       td.appendChild(ele);
     };
   }
