@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
 
-  <!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>    
@@ -160,9 +159,6 @@
   <script>
   $(document).ready(function(){
     $('.sidenav').sidenav();
-  });
-
-  $(document).ready(function(){
     $('.modal').modal();
   });
 
@@ -170,18 +166,6 @@
     csrfHeaderName: "{{csrf_header_name|default:'X-CSRFToken'}}",
     csrfToken: "{% if request %}{{csrf_token}}{% endif %}"
   };  // Generar Header y Token para Ajax
-
-
-// Or with jQuery
-
-$('.dropdown-trigger').dropdown();   
 </script>
- <script>
-  window.drf = {
-    csrfHeaderName: "{{ csrf_header_name|default:'X-CSRFToken' }}",
-    csrfToken: "{% if request %}{{ csrf_token }}{% endif %}"
-  };
-</script>
-
 </body>
 </html>

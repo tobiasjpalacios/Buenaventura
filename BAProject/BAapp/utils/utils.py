@@ -7,7 +7,7 @@ from openpyxl.utils import quote_sheetname, get_column_letter
 from django.db import transaction
 from django.db.models.fields.reverse_related import ManyToOneRel
 
-from .models import Articulo, Empresa, Retencion
+from BAapp.models import Articulo, Empresa, Retencion
 
 def _read_header(ws):
     header = {}

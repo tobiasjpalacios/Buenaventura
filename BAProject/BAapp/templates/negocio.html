@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% block imports %}
+   {% load static %}
+   <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+{% endblock imports %}
+{% block style %}
+.autocomplete-suggestions {
+    background-color: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+    max-height: 650px;
+    min-width: 100px;
+    overflow-y: auto;
+    will-change: width, height;
+    z-index: 999;
+}
+  .autocomplete-suggestion,
+  .autocomplete-no-suggestion {
+    clear: both;
+    color: #26a69a;
+    color: rgba(0,0,0,0.87);
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    line-height: 1.5rem;
+    line-height: 22px;
+    min-height: 50px;
+    padding: 14px 16px;
+    text-align: left;
+    text-transform: none;
+    width: 100%;
+  }
+
+  &.autocomplete-selected {
+    background-color: #888;
+  }
+{% endblock %}
+{% block title %}Negocios{% endblock title %}
+{%block body%}
+<h3>Comprador: {{ negocio.comprador }}</h3>
+<h3>Vendedor: {{ negocio.vendedor }}</h3>
+{% for prop in propuestas %}
+  <div class="row">
+    <div class="col s12 m9 {% if prop.envio_comprador %}push-m3{%endif%}">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title">
+          {% if prop.envio_comprador %}
+            {{ negocio.comprador }}
+          {% else %}
+            {{ negocio.vendedor }}
+          {% endif %}</span>
+          <div class="row">
+            <table {% if forloop.last %}id="form"{%endif%}>
+              <thead>  
+                <tr>
+                  <th>Articulo</th>
+                  <th>Distribuidor</th>
+                  <th>Precio</th>
+                  <th>Divisa</th>
+                  <th>Cantidad</th>
+                  <th>Operaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+            {% if not forloop.last %}
+              {% for item in prop.items.all %}
+                <tr>
+                  <td>{{ item.articulo.marca }}</td>
+                  <td>{{ item.distribuidor }}</td>
+                  <td>{{ item.precio }}</td>
+                  <td>{{ item.divisa }}</td>
+                  <td>{{ item.cantidad }}</td>
+                  <td></td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              {% for item in prop.items.all %}
+                <tr {% if item.aceptado %}class="green"{% endif %}>
+                  <td>{{ item.articulo.marca|default_if_none:'' }}</td>
+                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
+                {% if not item.aceptado %}
+                  <td><input type="number" name="precio" step=".01" value="{{ item.precio|default_if_none:''|stringformat:'.2f' }}"></td>
+                  <td>
+                    <select name="divisa" value="{{ item.divisa|default_if_none:'' }}">
+                    {% for v,t in divisas %}
+                      <option value="{{ v }}">{{ t }}</option>
+                    {% endfor %}
+                    </select>
+                  </td>
+                  <td><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
+                  <td>
+                    <a class="btn tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})">o</a>
+                    <a class="red btn tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})">x</a>
+                    <a class="yellow btn tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})">e</a>
+                    <a class="blue btn tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})">r</a>
+                  </td>
+                {% else %}
+                  <td>{{ item.precio|stringformat:'.2f' }}</td>
+                  <td>{{ item.divisa }}</td>
+                  <td>{{ item.cantidad }}</td>
+                  <td></td>
+                {% endif %}
+                </tr>
+              {% endfor %}
+                <tr id="extra">
+                  <td>
+                      <input type="hidden" name='articulo' id='artValue'>
+                      <input type="text" id='artSearch' class="autocomplete">
+                  </td>
+                  <td>
+                    <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
+                    <datalist id='distResults'>
+                    {% for dist in distribuidores %}
+                      <option data-value="{{ dist.id }}" value="{{ dist.razon_social }}"></option>
+                    {% endfor %}
+                    </datalist>
+                      
+                  </td>
+                  <td>
+                    <input type="number" name="precio" step=".01">
+                  </td>
+                  <td>
+                    <select name="divisa">
+                    {% for v,t in divisas %}
+                      <option value="{{ v }}">{{ t }}</option>
+                    {% endfor %}
+                    </select>
+                  </td>
+                  <td><input type="number" name="cantidad"></td>
+                  <td><a class="btn" onclick="addArt()">Agregar</a></td>
+                </tr>
+            {% endif %}
+              </tbody>
+            </table>
+          {% if forloop.last %}
+            <a class="btn" onclick="submitProp()">Enviar</a>
+          {% endif %}
+          </div>
+          <span>Observaciones</span>
+          <p>{{ prop.observaciones }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+<script type="text/javascript">
+
+  var last = {{ last | safe }};
+  var edits = $.extend(deep=true, {}, last);
+  var editable_fields = [
+    "precio",
+    "divisa",
+    "cantidad"
+  ]
+  var headers = []
+
+  $(document).ready(function(){
+    $('.tooltipped').tooltip();
+    $('select').formSelect();
+    $("#form thead tr th").each(function(index){
+      if ($(this).text() != "Operaciones"){
+        headers.push($(this).text().toLowerCase())
+      }
+    })
+    edits.new = {}
+
+    $("#artSearch").devbridgeAutocomplete({
+      serviceUrl: "{% url 'api_articulos' %}",
+      paramName: "search",
+      noCache: true,
+      ajaxSettings: {
+        method: "GET",
+        dataType: "json"
+      },
+      transformResult: function(res){
+        var data = {"suggestions":[]};
+        $.map(res, (a) => {
+          data.suggestions.push({
+            'value': a.marca,
+            'data': ""+a.id,
+          })
+        })
+        return data;
+      },
+      minChars: 4,
+      onSelect: function (suggestion) {
+        $("#artValue").val(suggestion.data)
+      },
+    });
+
+  });
+
+  function accept(index){
+    console.log("accept")
+    reset(index)
+    edits.items[index].aceptado = true;
+    $($("#form")[0].rows[index+1]).addClass("green")
+  }
+
+  function reject(index){
+    console.log("rejected")
+    reset(index)
+    $($("#form")[0].rows[index+1]).addClass("red")
+    edits.items[index]={};
+  }
+
+  function update(index){
+    console.log("update");
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"])
+    $($("#form")[0].rows[index+1]).addClass("yellow");
+    console.log($("#form")[0].rows)
+    console.log(index+1)
+    editable_fields.forEach(element => {
+      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
+      if (input.type == "number"){
+        edits.items[index][element] = parseInt(input.value)
+      } else {
+        edits.items[index][element] = input.value
+      }
+    })
+  }
+
+  function reset(index){
+    console.log("reset");
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"])
+    edits.items[index] = Object.assign({},last.items[index]);
+    editable_fields.forEach(element => {
+      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
+      input.value = edits.items[index][element] 
+    })
+  }
+
+  function addArt(){
+    var n = {},errors=false;
+    headers.forEach(element => {
+      var input = $($("#extra").find('[name="'+element+'"]'))[0]
+      if (!input.value){
+        errors = true;
+        $(input).addClass("invalid")
+      }
+      if (element === "distribuidor"){
+        var opt = $("#distResults [value='"+input.value+"']")
+        n[element] = opt.data('value')
+      } else {
+        if (input.type == "number" || input.type == "hidden"){
+          n[element] = parseInt(input.value)
+        }else {
+          n[element] = input.value
+        }
+      }
+    })
+    if (errors){
+      return;
+    }
+    n.destino = 1;
+    n.aceptado = false;
+
+    edits.items.push(n);
+    var table = $("#form")[0]
+    var row = table.insertRow(table.rows.length-1)
+    row.innerHTML = "\
+    <td>"+$("#artSearch")[0].value+"</td>\
+    <td>"+$("#distSearch")[0].value+"</td>\
+    <td><input type=\"number\" name=\"precio\" step=\".01\" value="+n.precio+"></td>\
+    <td><select value=\""+n.divisa+"\" name=\"divisa\">{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
+    <td><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
+    <td>\
+      <a class=\"red btn tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\">x</a>\
+      <a class=\"yellow btn tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\">e</a>\
+    </td>\
+    "
+    $('select').formSelect();
+    headers.forEach(element => {
+      var input = $($("#extra").find('[name="'+element+'"]'))
+      input.val("");
+      $("#artSearch").val("");
+    })
+  }
+
+  function submitProp(){
+    var proc = {}
+    proc.observaciones = ""
+    proc.items = [];
+    edits.items.forEach(element => {
+      console.log(element)
+      if (element.hasOwnProperty("articulo")){
+        proc.items.push(element)
+      }
+    })
+    fetch("",{
+    method:'POST',
+    headers: {
+      [window.drf.csrfHeaderName]: window.drf.csrfToken,
+      'Content-Type':'application/json',
+    },
+    body: JSON.stringify(proc),
+   })
+    .then(a => {location.reload()})
+    .catch(a => {console.log(a)})
+  }
+</script>
+{%endblock body%}

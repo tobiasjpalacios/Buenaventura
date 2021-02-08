@@ -135,3 +135,4 @@ dmypy.json
 #Django
 */**/migrations/
 *.sqlite3
+mariadb.conf

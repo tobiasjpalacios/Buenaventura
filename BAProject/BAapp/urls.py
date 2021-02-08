@@ -34,6 +34,10 @@ urlpatterns = [
     path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),
     path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
 
+    #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
+    path('negocio/<int:pk>', NegocioView.as_view(), name="negocio"),
+    path('negocio/', NegocioView.as_view(), name="crear_negocio"),
+
     path('empresas/', ListEmpresaView.as_view(), name = "mostrar_empresas"),
     path('empresa/<int:pk>', EmpresaView.as_view(), name="empresa"),
     path('empresa/', EmpresaView.as_view(), name="registrar_empresa"),
