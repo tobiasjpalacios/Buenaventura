@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% endblock imports %}
+{% block style%}
+
+body {
+  background-color: #96f291;
+}
+
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}   
+{%block body%}  
+<div class="container">
+  <br>
+  <br>
+  <br>
+    <div class="row z-depth-1 white"> 
+        <div class="col s12 ">
+            <center><h5>Cargar articulos desde excel</h5></center>
+        </div>
+        <div class="col s12">
+            <form class="col s12 login-form" method="POST" action="{% url 'carga_excel' %}">
+                {% csrf_token %}
+                <div>
+                    {{ form.non_field_errors }}
+                    <div class="input-field col s6">
+                        {{ form.file.errors }}
+                        {{form.file}}
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6 offset-s3">
+                            <button type="submit" class="btn waves-effect waves-light col s12" name="Crear">Cargar archivo</button>
+                        </div>  
+                    </div>  
+                </div>
+            </form>
+        </div>   
+    </div>
+</div>
+{%endblock body%} 

@@ -30,6 +30,16 @@ def inicio(request):
 def testeo(request):
     return render(request, 'testeo.html')
 
+def cliente(request):
+    return render(request, 'cliente.html')
+
+def vendedor(request):
+    return render(request, 'vendedor.html')
+
+
+def carga_excel(request):
+    return render(request, 'carga_excel.html')
+
 class APIArticulos(View):
     def get(self,request):
         articulos = None
