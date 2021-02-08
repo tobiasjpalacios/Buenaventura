@@ -31,6 +31,9 @@ def vendedor(request):
     return render(request, 'vendedor.html')
 
 
+def carga_excel(request):
+    return render(request, 'carga_excel.html')
+
 class APIArticulos(View):
     def get(self,request):
         articulos = Articulo.objects.all().values("id","ingrediente","marca")

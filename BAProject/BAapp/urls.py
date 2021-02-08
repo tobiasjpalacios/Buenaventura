@@ -15,6 +15,7 @@ urlpatterns = [
     path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
     path('vendedor/', vendedor, name="vendedor"),
+    path('carga_excel/', carga_excel, name="carga_excel"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
     path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),

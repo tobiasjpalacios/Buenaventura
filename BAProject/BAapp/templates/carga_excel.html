@@ -22,7 +22,7 @@ BuenaVentura Agronegocios
             <center><h5>Cargar articulos desde excel</h5></center>
         </div>
         <div class="col s12">
-            <form class="col s12 login-form" method="POST" action="{% url 'cargar_excel' %}">
+            <form class="col s12 login-form" method="POST" action="{% url 'carga_excel' %}">
                 {% csrf_token %}
                 <div>
                     {{ form.non_field_errors }}
