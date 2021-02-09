@@ -46,7 +46,7 @@ class APIArticulos(View):
         if (request.GET.get('search', None)):
             words = request.GET['search'].split(" ")
             for i in range(len(words)):
-                words[i] = "{}".format(words[i])
+                words[i] = "+{}*".format(words[i])
             searchStr = " ".join(words)
             articulos = Articulo.objects.search(searchStr)
         else:
