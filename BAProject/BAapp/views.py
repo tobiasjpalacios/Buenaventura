@@ -9,7 +9,6 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
-
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES
