@@ -4,7 +4,7 @@ from .models import *
 from .choices import *
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-
+from django.http import HttpResponse
  
 def loadModels(request):
     #Carga de Vendedores
@@ -23,7 +23,7 @@ def loadModels(request):
         p1, created = Persona.objects.get_or_create(
             user = user,
             fecha_nacimiento = fecha_nacimiento,
-            sexo = "Hombre",
+            sexo = "HO",
             telefono = t1
         )   
         v, created = Vendedor.objects.get_or_create(
@@ -32,11 +32,11 @@ def loadModels(request):
     """
     #Carga de Proveedores
     #Todos trabajan para la misma Empresa.
-    """
+    
     empresa = Empresa.objects.get(pk=10)
     for a in range(5):
-        user = User.objects.create_user('Lucas'+str(a+1), 'lucas'+str(a+1)+'@thebeatles.com', 'lucas'+str(a+1))
-        user.first_name = 'Lucas'+str(a+1)
+        user = User.objects.create_user('Lucia'+str(a+1), 'Lucia'+str(a+1)+'@thebeatles.com', 'Lucia'+str(a+1))
+        user.first_name = 'Lucia'+str(a+1)
         user.last_name = 'Sanchez'+str(a+1)
         user.save()
         grupoProveedor = Group.objects.get(name='Proveedor') 
@@ -48,7 +48,7 @@ def loadModels(request):
         p1, created = Persona.objects.get_or_create(
             user = user,
             fecha_nacimiento = fecha_nacimiento,
-            sexo = "Mujer",
+            sexo = "MU",
             telefono = t1
         )
         #Si la idea es que cada Proovedor sea de una empresa diferente
@@ -57,7 +57,7 @@ def loadModels(request):
             persona = p1,
             empresa = empresa
         )
-    """
+    
     #Carga de Compradores
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)
@@ -76,7 +76,7 @@ def loadModels(request):
         p1, created = Persona.objects.get_or_create(
             user = user,
             fecha_nacimiento = fecha_nacimiento,
-            sexo = "Hombre",
+            sexo = "HO",
             telefono = t1
         )
         #Si la idea es que cada Comprador sea de una empresa diferente
@@ -102,7 +102,7 @@ def loadModels(request):
         p1, created = Persona.objects.get_or_create(
             user = user,
             fecha_nacimiento = fecha_nacimiento,
-            sexo = "Mujer",
+            sexo = "MU",
             telefono = t1
         )
         #Si la idea es que cada Gerente sea de una empresa diferente

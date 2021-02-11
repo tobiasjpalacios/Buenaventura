@@ -12,6 +12,7 @@ from django.db import transaction
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES
+from .scriptModels import *
 
 def landing_page(request):
 	return render(request, 'Principal.html')
@@ -23,6 +24,7 @@ def chat(request):
     return render(request,'chat.html')
 
 def inicio(request):
+    loadModels(request)
     return render(request,'inicio.html')
 
 
