@@ -7,8 +7,8 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse
  
 def loadModels(request):
-    #Carga de Vendedores
     """
+    #Carga de Vendedores
     for a in range(5):
         user = User.objects.create_user('Juan'+str(a+1), 'juan'+str(a+1)+'@thebeatles.com', 'hola'+str(a+1))
         user.first_name = 'Juan'+str(a+1)
@@ -22,6 +22,7 @@ def loadModels(request):
         fecha_nacimiento = datetime.date.today()
         p1, created = Persona.objects.get_or_create(
             user = user,
+            dni = (10000000 + (a+1)),
             fecha_nacimiento = fecha_nacimiento,
             sexo = "HO",
             telefono = t1
@@ -29,10 +30,9 @@ def loadModels(request):
         v, created = Vendedor.objects.get_or_create(
             persona = p1
         )
-    """
     #Carga de Proveedores
     #Todos trabajan para la misma Empresa.
-    
+    """
     empresa = Empresa.objects.get(pk=10)
     for a in range(5):
         user = User.objects.create_user('Lucia'+str(a+1), 'Lucia'+str(a+1)+'@thebeatles.com', 'Lucia'+str(a+1))
@@ -47,6 +47,7 @@ def loadModels(request):
         fecha_nacimiento = datetime.date.today()
         p1, created = Persona.objects.get_or_create(
             user = user,
+            dni = (20000000 + (a+1)),
             fecha_nacimiento = fecha_nacimiento,
             sexo = "MU",
             telefono = t1
@@ -61,7 +62,7 @@ def loadModels(request):
     #Carga de Compradores
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)
-    """
+    
     for a in range(5):
         user = User.objects.create_user('Diego'+str(a+1), 'Diego'+str(a+1)+'@thebeatles.com', 'Diego'+str(a+1))
         user.first_name = 'Diego'+str(a+1)
@@ -75,6 +76,7 @@ def loadModels(request):
         fecha_nacimiento = datetime.date.today()
         p1, created = Persona.objects.get_or_create(
             user = user,
+            dni = (30000000 + (a+1)),
             fecha_nacimiento = fecha_nacimiento,
             sexo = "HO",
             telefono = t1
@@ -85,11 +87,11 @@ def loadModels(request):
             persona = p1,
             empresa = empresa
         )
-    """
+
     #Carga de Gerentes
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)
-    """
+  
     for a in range(5):
         user = User.objects.create_user('Steve'+str(a+1), 'Steve'+str(a+1)+'@thebeatles.com', 'Steve'+str(a+1))
         user.first_name = 'Steve'+str(a+1)
@@ -101,6 +103,7 @@ def loadModels(request):
         fecha_nacimiento = datetime.date.today()
         p1, created = Persona.objects.get_or_create(
             user = user,
+            dni = (40000000 + (a+1)),
             fecha_nacimiento = fecha_nacimiento,
             sexo = "MU",
             telefono = t1
@@ -111,5 +114,5 @@ def loadModels(request):
             persona = p1,
             empresa = empresa
         )
-    """
+    
     return HttpResponse("Creado")

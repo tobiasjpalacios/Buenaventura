@@ -12,7 +12,7 @@ from django.db import transaction
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES
-#from .scriptModels import *
+from .scriptModels import *
 
 def landing_page(request):
 	return render(request, 'Principal.html')

@@ -2,7 +2,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
-
+from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
 
@@ -12,6 +12,7 @@ class Persona(models.Model):
         on_delete=models.DO_NOTHING)
     fecha_nacimiento = models.DateField(null=False)
     sexo = models.CharField(max_length=6, choices=GENERO_CHOICES)
+    dni = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)])
     telefono = models.ForeignKey(
         "Telefono", 
         null = False, 
@@ -19,7 +20,6 @@ class Persona(models.Model):
 
     def __str__(self):
         return '{} {}'.format(self.user.first_name, self.user.last_name)
-
 
 class Vendedor(models.Model):
     persona = models.ForeignKey(

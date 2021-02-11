@@ -24,12 +24,12 @@ BuenaVentura Agronegocios
       <tbody>
         {% for proveedor in proveedores %}
           <tr>
-            <td>{{ proveedor.nombre }}</td>
-            <td>{{ proveedor.apellido }}</td>
-            <td>{{ proveedor.dni }}</td>
-            <td>{{ proveedor.email }}</td>
-            <td>{{ proveedor.fecha_nacimiento|date:"M d, Y" }}</td>
-            <td>{{ proveedor.sexo }}</td>
+            <td>{{ proveedor.persona.user.first_name|title }}</td>
+            <td>{{ proveedor.persona.user.last_name|title }}</td>
+            <td>{{ proveedor.persona.dni }}</td>
+            <td>{{ proveedor.persona.user.email }}</td>
+            <td>{{ proveedor.persona.fecha_nacimiento|date:"M d, Y" }}</td>
+            <td>{{ proveedor.persona.get_sexo_display|title}}</td>
             {% if user.is_superuser %}
               <th>
                 <div>
