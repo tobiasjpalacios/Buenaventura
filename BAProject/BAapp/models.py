@@ -9,10 +9,10 @@ from .utils.fulltext import SearchManager
 class Persona(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, 
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING, null=True)
     fecha_nacimiento = models.DateField(null=False)
     sexo = models.CharField(max_length=6, choices=GENERO_CHOICES)
-    dni = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+    dni = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
     telefono = models.ForeignKey(
         "Telefono", 
         null = False, 
@@ -151,11 +151,12 @@ class Negocio(models.Model):
         on_delete=models.DO_NOTHING)
     vendedor = models.ForeignKey(
         "Vendedor",
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING,
+        null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
-    fecha_entrega = models.DateField()
-    fecha_pago = models.DateField()
+    fecha_entrega = models.DateField(null=True)
+    fecha_pago = models.DateField(null=True)
     tipo_pago = models.CharField(max_length=40)
 
     def __str__(self):

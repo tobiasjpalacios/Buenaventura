@@ -43,6 +43,13 @@ BuenaVentura Agronegocios
       <div class="card blue-grey darken-1">
         <div class="card-content white-text">
           <span class="card-title center-align"> Agrege los articulos en los que esta interesado</span>
+          <span class="left-align">Vendedor: </span>
+          <b><span class="left-align" id="vendedor">{{ user.get_username }}</span></b><br>
+          <span class="left-align">Seleccione un comprador:</span><br>
+          <div class="row left-align col s6">
+            <input type="text" id="inputComp" list="datalistComp">
+            <datalist id="datalistComp"></datalist>
+          </div>
           <br>
             <table id="empTable">
               <thead>
@@ -129,6 +136,7 @@ $(document).ready(function(){
     $('.datepicker').datepicker();
   }); 
 
+
 var headers = [
   "Ingrediente", 
   "Marca", 
@@ -138,6 +146,7 @@ var headers = [
   "Estado"
 ];
 var savings_data;
+var compradores_data;
   $(document).ready(function(){
     $.ajax({
       type: "GET",
@@ -149,6 +158,26 @@ var savings_data;
     });
     hideSend();
   });
+
+  $(document).ready(function(){
+    $.ajax({
+      type: "GET",
+      url: "{% url 'api_comprador' %}",
+      dataType: "json",
+      success: function(data) {      
+        compradores_data = data;
+        var datalistComp = document.getElementById("datalistComp");
+        for (var i = 0; i < compradores_data.length; i++) {
+            var optionComp = document.createElement('option');
+            optionComp.setAttribute('value',''+compradores_data[i]['usuario']+'');
+            optionComp.setAttribute('id','option'+i);
+            datalistComp.appendChild(optionComp);        
+          }
+      }
+    });
+    hideSend();
+  });
+
 
   function hideSend(){
     var bodyT = document.getElementById('body');
@@ -174,7 +203,7 @@ function addRow() {
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
       ele.setAttribute('list', 'datalist'+(rowCnt)+'');
-      ele.setAttribute('onchange','refreshMarca("'+(rowCnt)+'.'+c+'")');
+      ele.setAttribute('onchange','refreshMarca("'+rowCnt+'.'+c+'")');
       ele.setAttribute('onclick','this.select();');
       ele.setAttribute('placeholder', 'Ingrediente');
       var datalistIng = document.createElement('datalist');
@@ -206,7 +235,7 @@ function addRow() {
         optionMar.setAttribute('id','option'+i);
         datalistMar.appendChild(optionMar);        
       }
-    }else {
+    }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
@@ -222,6 +251,7 @@ function refreshMarca(inputId){
   var tmp = (inputId.substring(0,1));
   var input = document.getElementById('input'+inputId).value;
   var datalist = document.getElementById('datalist'+tmp+'.'+tmp);
+
   var url = "{% url 'filterArticulo' "replace" %}";
   url = url.replace('replace',input);
   $.ajax({
@@ -254,6 +284,8 @@ function showModal(){
 function submit(){
   var dict = [];
   var empTab = document.getElementById('body');
+  var inputComp = document.getElementById('inputComp');
+  var vendedor = document.getElementById('vendedor');
   var rowCnt = empTab.rows.length;    // numero de columnas
    for (var i = 0; i < rowCnt; i++) {
     var tmp_dict = {};
@@ -264,14 +296,20 @@ function submit(){
     }
     dict.push(tmp_dict);
    }
-
+   var aux_dict = {
+      'data':dict,
+      'comprador':inputComp.value,
+      'vendedor':vendedor.value,
+   }
+   console.log("--------");
+   console.log(aux_dict);
    fetch("{% url 'api_articulos' %}",{
     method:'POST',
     headers: {
       [window.drf.csrfHeaderName]:window.drf.csrfToken,
       'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
     },
-    body: JSON.stringify(dict),
+    body: JSON.stringify(aux_dict),
    }).then(console.log);
 };
   </script>
