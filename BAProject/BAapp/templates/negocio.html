@@ -121,6 +121,7 @@
                   </td>
                   <td>
                     <select name="divisa">
+                      <option value="" disabled selected>Elija una divisa</option>
                     {% for v,t in divisas %}
                       <option value="{{ v }}">{{ t }}</option>
                     {% endfor %}
@@ -208,8 +209,6 @@
     console.log("update");
     $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"])
     $($("#form")[0].rows[index+1]).addClass("yellow");
-    console.log($("#form")[0].rows)
-    console.log(index+1)
     editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
       if (input.type == "number"){
@@ -226,12 +225,14 @@
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
-      input.value = edits.items[index][element] 
+      input.val(edits.items[index][element]) 
     })
+    $("#select")
   }
 
   function addArt(){
-    var n = {},errors=false;
+    var n = {}, errors=false;
+    console.log("art")
     headers.forEach(element => {
       var input = $($("#extra").find('[name="'+element+'"]'))[0]
       if (!input.value){
@@ -273,8 +274,10 @@
     headers.forEach(element => {
       var input = $($("#extra").find('[name="'+element+'"]'))
       input.val("");
-      $("#artSearch").val("");
+      input.removeClass(["invalid"])
     })
+    $('select').formSelect();
+    $("#artSearch").val("");
   }
 
   function submitProp(){
@@ -282,7 +285,6 @@
     proc.observaciones = ""
     proc.items = [];
     edits.items.forEach(element => {
-      console.log(element)
       if (element.hasOwnProperty("articulo")){
         proc.items.push(element)
       }

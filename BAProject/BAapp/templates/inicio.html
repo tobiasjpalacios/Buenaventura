@@ -137,17 +137,15 @@ $(document).ready(function(){
   }); 
 
 
-var headers = [
-  "Ingrediente", 
-  "Marca", 
-  "Precio X unidad", 
-  "Cantidad", 
-  "Financiamiento", 
-  "Estado"
-];
+var headers = [];
 var savings_data;
 var compradores_data;
   $(document).ready(function(){
+  $("#empTable thead tr th").each(function(index){
+    if ($(this).text() != "Operaciones"){
+      headers.push($(this).text())
+    }
+  })
     $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
