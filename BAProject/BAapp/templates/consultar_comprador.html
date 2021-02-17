@@ -29,17 +29,19 @@ BuenaVentura Agronegocios
       <tbody>
         {% for comprador in compradores %}
           <tr>
-            <td>{{ comprador.nombre }}</td>
-            <td>{{ comprador.apellido }}</td>
-            <td>{{ comprador.dni }}</td>
-            <td>{{ comprador.email }}</td>
-            <td>{{ comprador.fecha_nacimiento|date:"M d, Y" }}</td>
-            <td>{{ comprador.sexo }}</td>
-            <td>{{ comprador.telefono }}</td>
-            <td>{{ comprador.codigo }}</td>
-            <td>{{ comprador.cuil_cuit }}</td>
-            <td>{{ comprador.categoria_iva }}</td>
-            <td>{{ comprador.cuenta_contable }}</td>
+            <td>{{comprador.persona.user.first_name|title }}</td>
+            <td>{{comprador.persona.user.last_name|title  }}</td>
+            <td>{{comprador.persona.dni }}</td>
+            <td>{{comprador.persona.user.email }}</td>
+            <td>{{comprador.persona.fecha_nacimiento|date:"M d, Y" }}</td>
+            <td>{{comprador.persona.get_sexo_display|title }}</td>
+            <td>{{comprador.persona.telefono.numero}}</td>
+            <td>Usuario</td>
+            <td>Codigo</td>
+            <td>{{comprador.empresa.cuit }}</td>
+            <td>{{comprador.empresa.get_categoria_iva_display|title }}</td>
+            <td>Cuenta Contable</td>
+            
             {% if user.is_superuser %}
               <th>
                 <div>

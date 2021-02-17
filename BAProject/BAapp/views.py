@@ -9,10 +9,10 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
-
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES
+from .scriptModels import *
 
 def landing_page(request):
 	return render(request, 'Principal.html')
@@ -26,7 +26,6 @@ def chat(request):
 def inicio(request):
     return render(request,'inicio.html')
 
-
 def testeo(request):
     return render(request, 'testeo.html')
 
@@ -39,6 +38,34 @@ def vendedor(request):
 
 def carga_excel(request):
     return render(request, 'carga_excel.html')
+
+def crear_negocio(comprador, vendedor):
+    comprador_per = Persona.objects.filter(user=comprador).values("id")
+    comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
+
+    # vendedor_per = Persona.objects.filter(user=vendedor).values("id")
+    # vendedor_obj = Vendedor.objects.get(persona_id__in=1)
+    negocio = Negocio(
+        comprador = comprador_obj,
+        vendedor = None,
+        fecha_cierre = datetime.datetime.now(),
+        fecha_entrega = datetime.datetime.now(),
+        fecha_pago = datetime.datetime.now(),
+        tipo_pago = "tipo de pago",
+        )
+    negocio.save()
+    return negocio 
+
+def crear_propuesta(negocio):
+    propuesta = Propuesta(
+        negocio=negocio,
+        observaciones="",
+        timestamp=datetime.datetime.now(),
+        envio_comprador=False,
+        visto=False,
+        )    
+    propuesta.save()
+    return propuesta
 
 class APIArticulos(View):
     def get(self,request):
@@ -54,7 +81,12 @@ class APIArticulos(View):
         return JsonResponse(list(articulos.values("marca", "ingrediente","id")), safe=False)
 
     def post(self,request):
-        data = json.loads(request.body.decode("utf-8"))
+        recieved = json.loads(request.body.decode("utf-8"))
+        comprador = recieved.get("comprador")
+        vendedor = recieved.get("vendedor")
+        negocio = crear_negocio(comprador, vendedor)
+        propuesta = crear_propuesta(negocio)
+        data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
             marca = actual.get("Marca")
@@ -63,19 +95,25 @@ class APIArticulos(View):
             item = ItemPropuesta(
                 articulo=articulo, 
                 distribuidor=None,
-                propuesta=None,
-                tipo_de_operacion="",
+                propuesta=propuesta,
                 cantidad=actual.get("Cantidad"),
                 precio=actual.get("Precio X unidad"),
-                fecha_entrega= datetime.date.today(),
                 divisa="",
                 destino=None,
-                fecha_pago=datetime.date.today(),
-                tipo_pago="",
-                disponibilidad=False,
-                fecha_disponibilidad=datetime.date.today())
+                aceptado=False,)
             item.save()
         return HttpResponse(status=200)
+
+class APIComprador(View):
+    def get(self,request):
+        compradores = []
+        for comp in Comprador.objects.all().values("persona_id","empresa_id"):
+            tmp = {
+                'usuario':Persona.objects.filter(id=comp['persona_id']).values("user")[0]['user'],
+                'empresa':Empresa.objects.filter(id=comp['empresa_id']).values("razon_social")[0]['razon_social'],
+            }
+            compradores.append(tmp)
+        return JsonResponse(list(compradores), safe=False)
 
 def filterArticulo(request, ingrediente):
     marcas = Articulo.objects.filter(ingrediente=ingrediente).values("marca")
