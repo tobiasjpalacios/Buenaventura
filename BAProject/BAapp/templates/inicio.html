@@ -4,8 +4,9 @@
 {% endblock imports %}
 {% block style%}
 
+
 body {
-  background-color: #96f291;
+  background: #96f291;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -56,10 +57,12 @@ BuenaVentura Agronegocios
               <tr class="grey darken-1">
                 <th>Ingrediente</th>
                 <th>Marca</th>
+                <th>Distribuidor</th>
                 <th>Precio X unidad</th>
                 <th>Cantidad</th>
                 <th>Financiamiento</th>
-                <th>Estado</th>
+                <th>Tipo de pago</th>
+                <th>Fecha de pago</th>
                 </tr>
             </thead>
             <tbody id="body"></tbody>
@@ -132,14 +135,18 @@ $(document).ready(function(){
     $('select').formSelect();
   });    
 
-  $(document).ready(function(){
-    $('.datepicker').datepicker();
-  }); 
+// datepicker initialization and conf
 
+function start_datepicker(){
+    $('.datepicker').datepicker({
+    format: 'dd/mm/yyyy',
+  });
+}
 
 var headers = [];
 var savings_data;
 var compradores_data;
+var distribuidores_data;
   $(document).ready(function(){
   $("#empTable thead tr th").each(function(index){
     if ($(this).text() != "Operaciones"){
@@ -152,6 +159,14 @@ var compradores_data;
       dataType: "json",
       success: function(data) {      
         savings_data = data;
+      }
+    });
+    $.ajax({
+      type: "GET",
+      url: "{% url 'api_distribuidor' %}",
+      dataType: "json",
+      success: function(data) {      
+        distribuidores_data = data;
       }
     });
     hideSend();
@@ -199,31 +214,31 @@ function addRow() {
     if (c==0) {
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
-      ele.setAttribute('list', 'datalist'+(rowCnt)+'');
-      ele.setAttribute('onchange','refreshMarca("'+rowCnt+'.'+c+'")');
+      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+      ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
+      ele.setAttribute('onchange','refreshMarca("'+rowCnt+'")');
       ele.setAttribute('onclick','this.select();');
       ele.setAttribute('placeholder', 'Ingrediente');
       var datalistIng = document.createElement('datalist');
-      datalistIng.setAttribute('id', 'datalist'+(rowCnt)+'');
+      datalistIng.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
       
       td.appendChild(ele);
       td.appendChild(datalistIng);
       for (var i = 0; i < savings_data.length; i++) {
         var optionIng = document.createElement('option');
-        optionIng.setAttribute('value',''+savings_data[i].ingrediente+'');
+        optionIng.setAttribute('value',''+savings_data[i].ingrediente);
         datalistIng.appendChild(optionIng);        
 
       }
     }else if(c==1){      
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
-      ele.setAttribute('list', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
+      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+      ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
       ele.setAttribute('onclick','this.select();');
       ele.setAttribute('placeholder', 'Marca');
       var datalistMar = document.createElement('datalist');
-      datalistMar.setAttribute('id', 'datalist'+(rowCnt)+'.'+(rowCnt)+'');
+      datalistMar.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
       
       td.appendChild(ele);
       td.appendChild(datalistMar);
@@ -233,11 +248,39 @@ function addRow() {
         optionMar.setAttribute('id','option'+i);
         datalistMar.appendChild(optionMar);        
       }
+    }else if (c==2) {
+      var ele = document.createElement('input');
+      ele.setAttribute('type', 'text');
+      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+      ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
+      ele.setAttribute('onclick','this.select();');
+      ele.setAttribute('placeholder', 'Distribuidor');
+      var datalistDis = document.createElement('datalist');
+      datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+
+      td.appendChild(ele);
+      td.appendChild(datalistDis);
+      for (var i = 0; i < distribuidores_data.length; i++) {
+        var optionDis = document.createElement('option');
+        optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+        optionDis.setAttribute('id','option'+i);
+        datalistDis.appendChild(optionDis);        
+      }
+
+    }else if(c==7){
+      var ele = document.createElement('input');
+      ele.setAttribute('type', 'text');
+      ele.setAttribute('class', 'datepicker');
+      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+      ele.setAttribute('placeholder', 'Seleccione Fecha');
+      td.appendChild(ele);
+      start_datepicker();
+
     }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(rowCnt)+'.'+c+'');
-      var pl = defaultPlace[c-2];
+      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+      var pl = defaultPlace[c-3];
       ele.setAttribute('placeholder', pl);
       td.appendChild(ele);
     };
@@ -246,9 +289,8 @@ function addRow() {
 };
 
 function refreshMarca(inputId){
-  var tmp = (inputId.substring(0,1));
-  var input = document.getElementById('input'+inputId).value;
-  var datalist = document.getElementById('datalist'+tmp+'.'+tmp);
+  var input = document.getElementById('input0.'+inputId).value;
+  var datalist = document.getElementById('datalist1.'+inputId);
 
   var url = "{% url 'filterArticulo' "replace" %}";
   url = url.replace('replace',input);
@@ -288,7 +330,7 @@ function submit(){
    for (var i = 0; i < rowCnt; i++) {
     var tmp_dict = {};
     for (var j = 0; j < headers.length; j++) {
-      var input = document.getElementById('input'+i+'.'+j+'');
+      var input = document.getElementById('input'+j+'.'+i+'');
       var tmp = {};
       tmp_dict[headers[j]] = input.value;
     }
@@ -299,7 +341,6 @@ function submit(){
       'comprador':inputComp.value,
       'vendedor':vendedor.value,
    }
-   console.log("--------");
    console.log(aux_dict);
    fetch("{% url 'api_articulos' %}",{
     method:'POST',

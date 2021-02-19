@@ -156,7 +156,6 @@ class Negocio(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
     fecha_entrega = models.DateField(null=True)
-    fecha_pago = models.DateField(null=True)
     tipo_pago = models.CharField(max_length=40)
 
     def __str__(self):
@@ -221,6 +220,8 @@ class ItemPropuesta(models.Model):
         null=True, 
         on_delete=models.DO_NOTHING)
     aceptado = models.BooleanField()
+    fecha_pago = models.CharField(max_length=12)
+
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')
