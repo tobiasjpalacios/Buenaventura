@@ -6,6 +6,7 @@ from BAapp.views import *
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
     path('compradores/',APIComprador.as_view() , name="api_comprador"),
+    path('distribuidor/',APIDistribuidor.as_view() , name="api_distribuidor"),
 ]
 
 urlpatterns = [

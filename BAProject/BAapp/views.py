@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
+from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES
@@ -40,7 +41,9 @@ def carga_excel(request):
     return render(request, 'carga_excel.html')
 
 def crear_negocio(comprador, vendedor):
-    comprador_per = Persona.objects.filter(user=comprador).values("id")
+    chunks = comprador.split(' ')
+    comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+    comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
     comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
 
     # vendedor_per = Persona.objects.filter(user=vendedor).values("id")
@@ -50,7 +53,6 @@ def crear_negocio(comprador, vendedor):
         vendedor = None,
         fecha_cierre = datetime.datetime.now(),
         fecha_entrega = datetime.datetime.now(),
-        fecha_pago = datetime.datetime.now(),
         tipo_pago = "tipo de pago",
         )
     negocio.save()
@@ -87,33 +89,65 @@ class APIArticulos(View):
         negocio = crear_negocio(comprador, vendedor)
         propuesta = crear_propuesta(negocio)
         data = recieved.get("data")
+        domicilio = Domicilio.objects.get(id=1)
         for i in range(len(data)):
             actual = data[i]
             marca = actual.get("Marca")
             ingrediente = actual.get("Ingrediente")
+            fecha_pago = actual.get("Fecha de pago")
             articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
+
+            #quilombo para traer al objecto proveedor
+            get_distribuidor = actual.get("Distribuidor").split(" ")
+            distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
+            distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
+            distribuidor_emp = Proveedor.objects.filter(persona_id__in=distribuidor_per).values("empresa_id")
+            distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
+
             item = ItemPropuesta(
                 articulo=articulo, 
-                distribuidor=None,
+                distribuidor=distribuidor,
                 propuesta=propuesta,
                 cantidad=actual.get("Cantidad"),
                 precio=actual.get("Precio X unidad"),
                 divisa="",
-                destino=None,
-                aceptado=False,)
+                destino=domicilio,
+                aceptado=False,
+                fecha_pago=fecha_pago)
             item.save()
-        return HttpResponse(status=200)
+        return redirect('negocio', pk=str(negocio.pk))
+        #return HttpResponse(status=200)
 
 class APIComprador(View):
     def get(self,request):
         compradores = []
         for comp in Comprador.objects.all().values("persona_id","empresa_id"):
+            try:
+                tmp_persona = Persona.objects.filter(id=comp['persona_id']).values("user")[0]['user']
+            except Exception:
+                context = Persona.objects.none()
             tmp = {
-                'usuario':Persona.objects.filter(id=comp['persona_id']).values("user")[0]['user'],
+                'usuario':User.objects.get(id=tmp_persona).get_full_name(),
                 'empresa':Empresa.objects.filter(id=comp['empresa_id']).values("razon_social")[0]['razon_social'],
             }
             compradores.append(tmp)
         return JsonResponse(list(compradores), safe=False)
+
+
+class APIDistribuidor(View):
+    def get(self,request):
+        distribuidores = []
+        for pro in Proveedor.objects.all().values("persona_id","empresa_id"):
+            try:
+                tmp_persona = Persona.objects.filter(id=pro['persona_id']).values("user")[0]['user']
+            except Exception:
+                context = Persona.objects.none()
+            tmp = {
+                'nombre':User.objects.get(id=tmp_persona).get_full_name(),
+                'empresa':Empresa.objects.filter(id=pro['empresa_id']).values("razon_social")[0]['razon_social'],
+            }
+            distribuidores.append(tmp)
+        return JsonResponse(list(distribuidores), safe=False)
 
 def filterArticulo(request, ingrediente):
     marcas = Articulo.objects.filter(ingrediente=ingrediente).values("marca")
