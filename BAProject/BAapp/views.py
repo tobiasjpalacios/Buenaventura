@@ -27,6 +27,9 @@ def chat(request):
 def inicio(request):
     return render(request,'inicio.html')
 
+def todos_negocios(request):
+    return render(request, 'todos_negocios.html')
+
 def testeo(request):
     return render(request, 'testeo.html')
 
