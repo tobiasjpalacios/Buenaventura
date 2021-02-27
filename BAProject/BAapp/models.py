@@ -156,7 +156,6 @@ class Negocio(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
     fecha_entrega = models.DateField(null=True)
-    tipo_pago = models.CharField(max_length=40)
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
@@ -194,6 +193,13 @@ class Propuesta(models.Model):
         return 'Propuesta: {}'.format(
             self.id)
             
+class TipoPago(models.Model):
+    nombre = models.CharField(max_length=30, null=False)
+    descripcion = models.CharField(max_length=100, null=True,blank=True)
+
+    def __str__(self):
+        return 'Tipo de pago: {}'.format(
+            self.nombre)
 
 class ItemPropuesta(models.Model):
     articulo = models.ForeignKey(
@@ -221,7 +227,11 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     aceptado = models.BooleanField()
     fecha_pago = models.CharField(max_length=12)
-
+    tipo_pago = models.ForeignKey(
+            "TipoPago",
+            null=False,
+            on_delete=models.DO_NOTHING,
+        )
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')

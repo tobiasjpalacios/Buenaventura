@@ -60,7 +60,7 @@ BuenaVentura Agronegocios
                 <th>Distribuidor</th>
                 <th>Precio X unidad</th>
                 <th>Cantidad</th>
-                <th>Financiamiento</th>
+                <th>Divisa</th>
                 <th>Tipo de pago</th>
                 <th>Fecha de pago</th>
                 </tr>
@@ -147,6 +147,9 @@ var headers = [];
 var savings_data;
 var compradores_data;
 var distribuidores_data;
+var tipo_pago;
+var divisas = ["Dolar", "Pesos"];
+
   $(document).ready(function(){
   $("#empTable thead tr th").each(function(index){
     if ($(this).text() != "Operaciones"){
@@ -161,6 +164,7 @@ var distribuidores_data;
         savings_data = data;
       }
     });
+
     $.ajax({
       type: "GET",
       url: "{% url 'api_distribuidor' %}",
@@ -169,6 +173,16 @@ var distribuidores_data;
         distribuidores_data = data;
       }
     });
+
+    $.ajax({
+      type: "GET",
+      url: "{% url 'getPagos' %}",
+      dataType: "json",
+      success: function(data) {      
+        tipo_pago = data;
+      }
+    });
+
     hideSend();
   });
 
@@ -204,83 +218,31 @@ var distribuidores_data;
   };
 
 function addRow() {
-  var defaultPlace = ["0.00", "0.00", "----", '----']
+  var defaultPlace = ["0.00", "0.00", "----"]
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   var tr = empTab.insertRow(rowCnt); // numero de filas
   for (var c = 0; c < headers.length; c++) {             
-    var td = document.createElement('td');       
+    var td = document.createElement('td'); 
     td = tr.insertCell(c);
     if (c==0) {
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-      ele.setAttribute('onchange','refreshMarca("'+rowCnt+'")');
-      ele.setAttribute('onclick','this.select();');
-      ele.setAttribute('placeholder', 'Ingrediente');
-      var datalistIng = document.createElement('datalist');
-      datalistIng.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-      
-      td.appendChild(ele);
-      td.appendChild(datalistIng);
-      for (var i = 0; i < savings_data.length; i++) {
-        var optionIng = document.createElement('option');
-        optionIng.setAttribute('value',''+savings_data[i].ingrediente);
-        datalistIng.appendChild(optionIng);        
-
-      }
-    }else if(c==1){      
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-      ele.setAttribute('onclick','this.select();');
-      ele.setAttribute('placeholder', 'Marca');
-      var datalistMar = document.createElement('datalist');
-      datalistMar.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-      
-      td.appendChild(ele);
-      td.appendChild(datalistMar);
-      for (var i = 0; i < savings_data.length; i++) {
-        var optionMar = document.createElement('option');
-        optionMar.setAttribute('value',''+savings_data[i].marca+'');
-        optionMar.setAttribute('id','option'+i);
-        datalistMar.appendChild(optionMar);        
-      }
+      input_ingrediente(c, rowCnt,td)
+    }else if(c==1){   
+      input_marca(c, rowCnt,td);
     }else if (c==2) {
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-      ele.setAttribute('onclick','this.select();');
-      ele.setAttribute('placeholder', 'Distribuidor');
-      var datalistDis = document.createElement('datalist');
-      datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-
-      td.appendChild(ele);
-      td.appendChild(datalistDis);
-      for (var i = 0; i < distribuidores_data.length; i++) {
-        var optionDis = document.createElement('option');
-        optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
-        optionDis.setAttribute('id','option'+i);
-        datalistDis.appendChild(optionDis);        
-      }
-
+      input_distribuidor(c, rowCnt,td);
+    }else if (c==5) {
+      input_divisa(c, rowCnt,td);
+    }else if (c==6) {
+      input_tipoPago(c, rowCnt,td);
     }else if(c==7){
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('class', 'datepicker');
-      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      ele.setAttribute('placeholder', 'Seleccione Fecha');
-      td.appendChild(ele);
-      start_datepicker();
-
+      input_fecha(c, rowCnt,td);
     }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      var pl = defaultPlace[c-3];
+      ele.setAttribute('autocomplete', 'off');
+      var pl = defaultPlace[c-2];
       ele.setAttribute('placeholder', pl);
       td.appendChild(ele);
     };
@@ -351,5 +313,127 @@ function submit(){
     body: JSON.stringify(aux_dict),
    }).then(console.log);
 };
-  </script>
+
+
+// funciones de los inputs
+
+function input_ingrediente(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
+  ele.setAttribute('onchange','refreshMarca("'+rowCnt+'")');
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Ingrediente');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistIng = document.createElement('datalist');
+  datalistIng.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+  
+  td.appendChild(ele);
+  td.appendChild(datalistIng);
+  for (var i = 0; i < savings_data.length; i++) {
+    var optionIng = document.createElement('option');
+    optionIng.setAttribute('value',''+savings_data[i].ingrediente);
+    datalistIng.appendChild(optionIng);        
+
+  }
+}
+
+
+function input_marca(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Marca');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistMar = document.createElement('datalist');
+  datalistMar.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+  
+  td.appendChild(ele);
+  td.appendChild(datalistMar);
+  for (var i = 0; i < savings_data.length; i++) {
+    var optionMar = document.createElement('option');
+    optionMar.setAttribute('value',''+savings_data[i].marca+'');
+    optionMar.setAttribute('id','option'+i);
+    datalistMar.appendChild(optionMar);        
+  }
+}
+
+function input_distribuidor(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Distribuidor');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistDis = document.createElement('datalist');
+  datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+
+  td.appendChild(ele);
+  td.appendChild(datalistDis);
+  for (var i = 0; i < distribuidores_data.length; i++) {
+    var optionDis = document.createElement('option');
+    optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+    optionDis.setAttribute('id','option'+i);
+    datalistDis.appendChild(optionDis);        
+  }
+}
+
+function input_divisa(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Divisa');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistDivisa = document.createElement('datalist');
+  datalistDivisa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+  
+  td.appendChild(ele);
+  td.appendChild(datalistDivisa);
+  for (var i = 0; i < divisas.length; i++) {
+    var optionDivisa = document.createElement('option');
+    optionDivisa.setAttribute('value',''+divisas[i]);
+    optionDivisa.setAttribute('id','option'+i);
+    datalistDivisa.appendChild(optionDivisa);        
+  }
+}
+
+function input_tipoPago(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Tipo de pago');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistPagos = document.createElement('datalist');
+  datalistPagos.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+  
+  td.appendChild(ele);
+  td.appendChild(datalistPagos);
+  for (var i = 0; i < tipo_pago.length; i++) {
+    var optionPagos = document.createElement('option');
+    optionPagos.setAttribute('value',''+tipo_pago[i].nombre+'');
+    optionPagos.setAttribute('id','option'+i);
+    datalistPagos.appendChild(optionPagos);        
+  }
+}
+
+function input_fecha(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('class', 'datepicker');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('placeholder', 'Seleccione Fecha');
+  ele.setAttribute('autocomplete', 'off');
+  td.appendChild(ele);
+  start_datepicker();
+}
+</script>
+
 {% endblock body %}

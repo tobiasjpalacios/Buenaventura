@@ -53,6 +53,6 @@ UNIDAD_CHOICES = (
 )
 
 DIVISA_CHOICES = (
-	("EF", "Efectivo"),
-	("UD", "Dolar")
+	('AR','Pesos'),
+    ('USD','Dolar'),
 )
