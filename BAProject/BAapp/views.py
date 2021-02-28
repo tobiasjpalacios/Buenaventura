@@ -12,7 +12,7 @@ from django.db import transaction
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
-from .choices import DIVISA_CHOICES
+from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
 
 def landing_page(request):
@@ -56,7 +56,6 @@ def crear_negocio(comprador, vendedor):
         vendedor = None,
         fecha_cierre = datetime.datetime.now(),
         fecha_entrega = datetime.datetime.now(),
-        tipo_pago = "tipo de pago",
         )
     negocio.save()
     return negocio 
@@ -98,6 +97,11 @@ class APIArticulos(View):
             marca = actual.get("Marca")
             ingrediente = actual.get("Ingrediente")
             fecha_pago = actual.get("Fecha de pago")
+            tipo_pago_str = actual.get("Tipo de pago")
+            divisa_tmp = actual.get("Divisa")
+            divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
+            tasa_tmp = actual.get("Tasa")
+            tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
             articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
 
             #quilombo para traer al objecto proveedor
@@ -107,18 +111,22 @@ class APIArticulos(View):
             distribuidor_emp = Proveedor.objects.filter(persona_id__in=distribuidor_per).values("empresa_id")
             distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
 
+            #traer el objecto tipo de pago
+            tipo_pago = TipoPago.objects.get(nombre=tipo_pago_str)
             item = ItemPropuesta(
                 articulo=articulo, 
                 distribuidor=distribuidor,
                 propuesta=propuesta,
                 cantidad=actual.get("Cantidad"),
                 precio=actual.get("Precio X unidad"),
-                divisa="",
+                divisa=divisa,
                 destino=domicilio,
                 aceptado=False,
-                fecha_pago=fecha_pago)
+                fecha_pago=fecha_pago,
+                tipo_pago=tipo_pago,
+                tasa=tasa)
             item.save()
-        return redirect('negocio', pk=str(negocio.pk))
+        return JsonResponse(negocio.pk, safe=False)
         #return HttpResponse(status=200)
 
 class APIComprador(View):
@@ -156,6 +164,9 @@ def filterArticulo(request, ingrediente):
     marcas = Articulo.objects.filter(ingrediente=ingrediente).values("marca")
     return JsonResponse(list(marcas), safe=False)
 
+def getPagos(request):
+    tipo_pago = TipoPago.objects.all().values("nombre")
+    return JsonResponse(list(tipo_pago), safe=False)
         
 
 class ListArticuloView(View):
@@ -405,3 +416,10 @@ class EmpresaView(View):
         empresa = Empresa.objects.get(pk=kwargs["pk"])
         empresa.delete()
         return HttpResponse(code=200)
+
+def get_from_tuple(my_tuple, value):
+    ret = ""
+    for (x,y) in my_tuple:
+        if y==value:
+            ret = x
+    return ret
