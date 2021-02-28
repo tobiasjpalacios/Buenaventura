@@ -12,7 +12,7 @@ from django.db import transaction
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
-from .choices import DIVISA_CHOICES
+from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
 
 def landing_page(request):
@@ -100,6 +100,8 @@ class APIArticulos(View):
             tipo_pago_str = actual.get("Tipo de pago")
             divisa_tmp = actual.get("Divisa")
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
+            tasa_tmp = actual.get("Tasa")
+            tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
             articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
 
             #quilombo para traer al objecto proveedor
@@ -121,9 +123,10 @@ class APIArticulos(View):
                 destino=domicilio,
                 aceptado=False,
                 fecha_pago=fecha_pago,
-                tipo_pago=tipo_pago)
+                tipo_pago=tipo_pago,
+                tasa=tasa)
             item.save()
-        return redirect('negocio'+str(negocio.pk))
+        return JsonResponse(negocio.pk, safe=False)
         #return HttpResponse(status=200)
 
 class APIComprador(View):
@@ -415,6 +418,7 @@ class EmpresaView(View):
         return HttpResponse(code=200)
 
 def get_from_tuple(my_tuple, value):
+    ret = ""
     for (x,y) in my_tuple:
         if y==value:
             ret = x

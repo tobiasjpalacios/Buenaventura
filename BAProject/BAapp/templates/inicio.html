@@ -26,21 +26,9 @@ input[type=number] {
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
-<div class="row hide">
-    
-    <div class="col s12">
-        <div class="card grey darken-3"> 
-            <span class=" col s2 right-align  bottom-aling grey-text">Cliente:</span>
-            <span class="card-title col s3 white-text">Arguello ramiro </span>
-            <span class=" col s2 right-align bottom-aling grey-text">Empresa:</span>
-            <span class="card-title col s3 green-text"> Speedagro </span>
-            <a class=" grey darken-3 yellow-text btn-flat waves-effect waves-light modal-trigger pulse " href="#modal-empresa"><i class="material-icons right ">info_outline</i>Modificar</a>
-        </div>
-    </div>
 
-  </div>
   <div class="float: right; row">
-    <div class="col s12 m8">
+    <div class="col m12 m8">
       <div class="card blue-grey darken-1">
         <div class="card-content white-text">
           <span class="card-title center-align"> Agrege los articulos en los que esta interesado</span>
@@ -62,6 +50,7 @@ BuenaVentura Agronegocios
                 <th>Cantidad</th>
                 <th>Divisa</th>
                 <th>Tipo de pago</th>
+                <th>Tasa</th>
                 <th>Fecha de pago</th>
                 </tr>
             </thead>
@@ -149,6 +138,7 @@ var compradores_data;
 var distribuidores_data;
 var tipo_pago;
 var divisas = ["Dolar", "Pesos"];
+var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
 
   $(document).ready(function(){
   $("#empTable thead tr th").each(function(index){
@@ -218,7 +208,7 @@ var divisas = ["Dolar", "Pesos"];
   };
 
 function addRow() {
-  var defaultPlace = ["0.00", "0.00", "----"]
+  var defaultPlace = ["0.00", "0.00"]
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   var tr = empTab.insertRow(rowCnt); // numero de filas
@@ -235,14 +225,16 @@ function addRow() {
       input_divisa(c, rowCnt,td);
     }else if (c==6) {
       input_tipoPago(c, rowCnt,td);
-    }else if(c==7){
+    }else if (c==7) {
+      input_tasa(c, rowCnt, td);
+    }else if(c==8){
       input_fecha(c, rowCnt,td);
     }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
       ele.setAttribute('autocomplete', 'off');
-      var pl = defaultPlace[c-2];
+      var pl = defaultPlace[c-3];
       ele.setAttribute('placeholder', pl);
       td.appendChild(ele);
     };
@@ -311,7 +303,12 @@ function submit(){
       'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
     },
     body: JSON.stringify(aux_dict),
-   }).then(console.log);
+   }).then(async function(res){
+      var data = await res.json();
+      var url = "{% url 'negocio' "0" %}";
+      url = url.replace('0',data);
+      window.location = url;
+   });
 };
 
 
@@ -409,6 +406,7 @@ function input_tipoPago(c, rowCnt,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('onchange','desactivarTasa('+rowCnt+');');
   ele.setAttribute('placeholder', 'Tipo de pago');
   ele.setAttribute('autocomplete', 'off');
   var datalistPagos = document.createElement('datalist');
@@ -424,6 +422,27 @@ function input_tipoPago(c, rowCnt,td){
   }
 }
 
+function input_tasa(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Tasa');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistTasa = document.createElement('datalist');
+  datalistTasa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+  
+  td.appendChild(ele);
+  td.appendChild(datalistTasa);
+  for (var i = 0; i < tasas.length; i++) {
+    var optionTasa = document.createElement('option');
+    optionTasa.setAttribute('value',''+tasas[i]+'');
+    optionTasa.setAttribute('id','option'+i);
+    datalistTasa.appendChild(optionTasa);        
+  }
+}
+
 function input_fecha(c, rowCnt,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
@@ -433,6 +452,19 @@ function input_fecha(c, rowCnt,td){
   ele.setAttribute('autocomplete', 'off');
   td.appendChild(ele);
   start_datepicker();
+}
+
+function desactivarTasa(rowCnt){
+  var inputPago = document.getElementById("input6."+rowCnt).value;
+  var datalistTasa = document.getElementById("input7."+rowCnt);
+  var inputTasa = document.getElementById("input7."+rowCnt);
+  if (inputPago=="CONTADO") {
+    inputTasa.disabled = true;
+    inputTasa.setAttribute("placeholder","/");
+  }else if (inputTasa.disabled) {
+    inputTasa.disabled = false;
+    inputTasa.setAttribute("placeholder","Tasa");
+  }
 }
 </script>
 

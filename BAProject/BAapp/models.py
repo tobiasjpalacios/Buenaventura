@@ -232,6 +232,12 @@ class ItemPropuesta(models.Model):
             null=False,
             on_delete=models.DO_NOTHING,
         )
+    tasa = models.CharField(
+        max_length=15,
+        choices=TASA_CHOICES,
+        blank=True,
+        null=True
+        )
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')
