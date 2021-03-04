@@ -46,12 +46,14 @@ BuenaVentura Agronegocios
                 <th>Ingrediente</th>
                 <th>Marca</th>
                 <th>Distribuidor</th>
-                <th>Precio X unidad</th>
+                <th>Precio venta</th>
+                <th>Precio compra</th>
                 <th>Cantidad</th>
                 <th>Divisa</th>
                 <th>Tipo de pago</th>
                 <th>Tasa</th>
                 <th>Fecha de pago</th>
+                <th>Fecha de entrega</th>
                 </tr>
             </thead>
             <tbody id="body"></tbody>
@@ -208,7 +210,7 @@ var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2
   };
 
 function addRow() {
-  var defaultPlace = ["0.00", "0.00"]
+  var defaultPlace = ["0.00", "0.00", "0.00"]
   var empTab = document.getElementById('body');
   var rowCnt = empTab.rows.length;    // numero de columnas
   var tr = empTab.insertRow(rowCnt); // numero de filas
@@ -221,17 +223,20 @@ function addRow() {
       input_marca(c, rowCnt,td);
     }else if (c==2) {
       input_distribuidor(c, rowCnt,td);
-    }else if (c==5) {
-      input_divisa(c, rowCnt,td);
     }else if (c==6) {
-      input_tipoPago(c, rowCnt,td);
+      input_divisa(c, rowCnt,td);
     }else if (c==7) {
+      input_tipoPago(c, rowCnt,td);
+    }else if (c==8) {
       input_tasa(c, rowCnt, td);
-    }else if(c==8){
-      input_fecha(c, rowCnt,td);
+    }else if(c==9){
+      input_fechaPago(c, rowCnt,td);
+    }else if (c==10) {
+      input_fechaEntrega(c, rowCnt, td);
     }else{
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
+      ele.setAttribute('size', '4');
       ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
       ele.setAttribute('autocomplete', 'off');
       var pl = defaultPlace[c-3];
@@ -382,6 +387,7 @@ function input_distribuidor(c, rowCnt,td){
 function input_divisa(c, rowCnt,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
+  ele.setAttribute('size', '9');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
@@ -425,6 +431,7 @@ function input_tipoPago(c, rowCnt,td){
 function input_tasa(c, rowCnt,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
+  ele.setAttribute('size', '9');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
@@ -443,9 +450,22 @@ function input_tasa(c, rowCnt,td){
   }
 }
 
-function input_fecha(c, rowCnt,td){
+function input_fechaPago(c, rowCnt,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
+  ele.setAttribute('size', '18');
+  ele.setAttribute('class', 'datepicker');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('placeholder', 'Seleccione Fecha');
+  ele.setAttribute('autocomplete', 'off');
+  td.appendChild(ele);
+  start_datepicker();
+}
+
+function input_fechaEntrega(c, rowCnt, td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('size', '1');
   ele.setAttribute('class', 'datepicker');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('placeholder', 'Seleccione Fecha');
@@ -455,9 +475,9 @@ function input_fecha(c, rowCnt,td){
 }
 
 function desactivarTasa(rowCnt){
-  var inputPago = document.getElementById("input6."+rowCnt).value;
-  var datalistTasa = document.getElementById("input7."+rowCnt);
-  var inputTasa = document.getElementById("input7."+rowCnt);
+  var inputPago = document.getElementById("input7."+rowCnt).value;
+  var datalistTasa = document.getElementById("input8."+rowCnt);
+  var inputTasa = document.getElementById("input8."+rowCnt);
   if (inputPago=="CONTADO") {
     inputTasa.disabled = true;
     inputTasa.setAttribute("placeholder","/");

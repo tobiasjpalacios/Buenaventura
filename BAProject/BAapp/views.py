@@ -56,7 +56,6 @@ def crear_negocio(comprador, vendedor):
         comprador = comprador_obj,
         vendedor = None,
         fecha_cierre = datetime.datetime.now(),
-        fecha_entrega = datetime.datetime.now(),
         )
     negocio.save()
     return negocio 
@@ -96,8 +95,7 @@ class APIArticulos(View):
         for i in range(len(data)):
             actual = data[i]
             marca = actual.get("Marca")
-            ingrediente = actual.get("Ingrediente")
-            fecha_pago = actual.get("Fecha de pago")
+            ingrediente = actual.get("Ingrediente") 
             tipo_pago_str = actual.get("Tipo de pago")
             divisa_tmp = actual.get("Divisa")
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
@@ -118,17 +116,19 @@ class APIArticulos(View):
                 articulo=articulo, 
                 distribuidor=distribuidor,
                 propuesta=propuesta,
+                precio_venta=actual.get("Precio venta"),
+                precio_compra=actual.get("Precio compra"),
                 cantidad=actual.get("Cantidad"),
-                precio=actual.get("Precio X unidad"),
                 divisa=divisa,
+                tipo_pago=tipo_pago,
+                tasa=tasa,
                 destino=domicilio,
                 aceptado=False,
-                fecha_pago=fecha_pago,
-                tipo_pago=tipo_pago,
-                tasa=tasa)
+                fecha_pago=actual.get("Fecha de pago"),
+                fecha_entrega=actual.get("Fecha de entrega"),)
             item.save()
-        return JsonResponse(negocio.pk, safe=False)
-        #return HttpResponse(status=200)
+        #return JsonResponse(negocio.pk, safe=False)
+        return HttpResponse(status=200)
 
 class APIComprador(View):
     def get(self,request):

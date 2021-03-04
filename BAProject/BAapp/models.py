@@ -164,7 +164,7 @@ class Negocio(models.Model):
     )
     tipo_de_negocio = models.CharField(
         max_length=2,
-        choices=choices.TIPO_DE_NEGOCIO_CHOICES 
+        choices=TIPO_DE_NEGOCIO_CHOICES 
     )
     aprobado = models.BooleanField(default=False)
 
@@ -249,9 +249,10 @@ class ItemPropuesta(models.Model):
         null=True, 
         on_delete=models.DO_NOTHING
     )
-    fecha_entrega = models.DateField(
+    fecha_entrega = models.CharField(
         null=True,
-        blank=True
+        blank=True,
+        max_length=12
     )
     aceptado = models.BooleanField()
     fecha_pago = models.CharField(
@@ -287,10 +288,9 @@ class ItemPropuesta(models.Model):
         return diff
 
     def __str__(self):
-        return 'Item: {} - Cantidad: {} - Precio: $ {}'.format(
+        return 'Item: {} - Cantidad: {}'.format(
             self.articulo.marca, 
-            self.cantidad, 
-            self.precio)
+            self.cantidad,)
 
 
 class Financiacion(models.Model):
