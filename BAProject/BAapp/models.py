@@ -155,12 +155,12 @@ class Negocio(models.Model):
         null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     fecha_cierre = models.DateTimeField(null=True, blank=True)
-    fecha_entrega = models.DateField(null=True)
+    aprobado = models.BooleanField(default=False)
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
 
-    
+
 class Propuesta(models.Model):
     negocio = models.ForeignKey(
         "Negocio",
@@ -216,7 +216,8 @@ class ItemPropuesta(models.Model):
         null=True, 
         on_delete=models.DO_NOTHING)
     cantidad = models.IntegerField(null=True, blank=True)
-    precio = models.FloatField(null=True, blank=True)
+    precio_venta = models.FloatField(null=True, blank=True)
+    precio_compra = models.FloatField(null=True, blank=True)
     divisa = models.CharField(
         max_length=40, 
         choices=DIVISA_CHOICES,
@@ -225,6 +226,7 @@ class ItemPropuesta(models.Model):
         "Domicilio", 
         null=True, 
         on_delete=models.DO_NOTHING)
+    fecha_entrega = models.DateField(null=True)
     aceptado = models.BooleanField()
     fecha_pago = models.CharField(max_length=12)
     tipo_pago = models.ForeignKey(
