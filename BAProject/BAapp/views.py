@@ -14,6 +14,7 @@ from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
+from datetime import date
 
 def landing_page(request):
 	return render(request, 'Principal.html')
@@ -45,15 +46,16 @@ def vendedor(request):
     lnr = listasNA(negociosAbiertos, True)
     lnp = listasNA(negociosAbiertos, False)
     
-
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).distinct())
     lnc = listaNC(negociosCerrConf)
     
+    lista_semanas,lista_mensual,lista_futuros = semaforoVencimiento(negociosCerrConf)
+    
     #lnnc = Linta de Negocios Rechazados
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).distinct())
     lnnc = listaNC(negociosCerrRech) 
-    return render(request, 'vendedor.html', {'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
+    return render(request, 'vendedor.html', {'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencimiento_mensual':lista_mensual,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
     
 def listaNC(negocioFilter):
     lista_negocios = []
@@ -72,6 +74,85 @@ def listaNC(negocioFilter):
         }
         lista_negocios.append(lista)
     return lista_negocios
+
+def semaforoVencimiento(negocioFilter):
+    lista_semanas = []
+    lista_mensual = []
+    lista_futuros = []
+    today = date.today()
+    d1 = today.strftime("%d/%m/%Y")
+    diaA = int(d1[0:2])
+    mesA = int(d1[3:5])
+    añoA = int(d1[6:10])
+    for a in negocioFilter:
+        negocio = Negocio.objects.get(id=a)
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
+        id_prop = propuesta[0][0]
+        fecha_p = propuesta[0][1]
+        items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', 'fecha_pago')
+        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+        esta_semana = []
+        este_mes = []
+        futuros = []
+        for a in items:
+            diaP = int(a[1][0:2])
+            mesP = int(a[1][3:5])
+            añoP = int(a[1][6:10])
+            difD = (diaP - diaA)
+            difM = (mesP - mesA)
+            difA = (añoP - añoA)
+            if ((mesA == 12 and mesP == 1) and (difA == 1)):
+                difM = 1
+            proxMes = (diaP + 30 - diaA)
+            print (difM, añoP)
+            if ((añoP < añoA)):
+                pass
+            elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ( (difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
+                esta_semana.append(a)
+            elif ((añoA==añoP) and ( ((mesP == mesA) and (difD >= 8)) or ((difM == 1) and (diaA >= diaP)))):
+                este_mes.append(a)
+            else:
+                futuros.append(a)
+
+        if (len(esta_semana) > 0):
+            lista = {
+                'fecha':fecha_p,
+                'items':list(esta_semana),
+                'comprador': comprador,
+                'empresa':negocio.comprador.empresa.razon_social
+            }
+            print (lista)
+            lista_semanas.append(lista)
+        if (len(este_mes) > 0):
+            lista = {
+                'fecha':fecha_p,
+                'items':list(este_mes),
+                'comprador': comprador,
+                'empresa':negocio.comprador.empresa.razon_social
+            }
+            lista_mensual.append(lista) 
+        if (len(futuros) > 0):
+            lista = {
+                'fecha':fecha_p,
+                'items':list(futuros),
+                'comprador': comprador,
+                'empresa':negocio.comprador.empresa.razon_social
+            }
+            lista_futuros.append(lista)
+
+    return lista_semanas,lista_mensual,lista_futuros
+
+def listaItemsPorVencer(listaNegociosC):
+    lista_Items = []
+    for a in listaNegociosC:
+        negocio = Negocio.objects.get(id=a)
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
+        id_prop = propuesta[0][0]
+        fecha_p = propuesta[0][1]
+        items = list(ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente','fecha_pago'))
+        for b in items:
+            lista_Items.append(b)
+    return lista_Items
 
 def listasNA(negocioFilter, tipo):
     lista_negocios = []

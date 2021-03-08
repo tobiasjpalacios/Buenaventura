@@ -321,11 +321,12 @@ BuenaVentura Agronegocios
                            <br>
                             <a class=" btn-large red col s12 "><i class="material-icons right ">warning</i>ULTIMO AVISO</a>
                             <ul class="collection">
-                                <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 <li>
-                                <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina - 03/02/2021 </li>
+                              {% for vence in vencimiento_semanal %}
+                                <li class=" collection-item black-text">{{vence.fecha|date:"M d, Y"}} {{vence.empresa}}</li>
+                              {% endfor %}
+                              {% if vencimiento_semanal|length > 0 %}
                                 <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                              {% endif %}
                             </ul>
                         </div>
                     </div> 
@@ -335,11 +336,12 @@ BuenaVentura Agronegocios
                            <br>
                             <a class=" btn-large yellow black-text col s12"><i class="material-icons right black-text">new_releases</i>AVISO MENSUAL</a>
                             <ul class="collection">
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
+                              {% for venceM in vencimiento_mensual %}
+                                <li class=" collection-item black-text">{{venceM.fecha|date:"M d, Y"}} {{venceM.empresa}}</li>
+                              {% endfor %}
+                              {% if vencimiento_mensual|length > 0 %}
                                 <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                              {% endif %}
                             </ul>
                         </div>
                     </div> 
@@ -349,11 +351,12 @@ BuenaVentura Agronegocios
                            <br>
                             <a class=" btn-large green black-text col s12"><i class="material-icons right black-text">priority_high</i>VENCIMIENTOS FUTUROS</a>
                             <ul class="collection">
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
-                                <li class=" collection-item black-text">Pago mensual atrazina </li>
+                              {% for venceF in vencimiento_futuro %}
+                                <li class=" collection-item black-text">{{venceF.fecha|date:"M d, Y"}} {{venceF.empresa}}</li>
+                              {% endfor %}
+                              {% if vencimiento_futuro|length > 0 %}
                                 <li class=" collection-item black-text"><a style="width: 100%;" class=" btn-small waves-ligth waves-efect green ">Ver Todas</a>  </li>
+                              {% endif %}
                             </ul>
                         </div>
                     </div> 
