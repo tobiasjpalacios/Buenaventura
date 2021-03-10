@@ -75,3 +75,8 @@ TASA_CHOICES = (
 	("3.6","36.00%"),
 	("inc","INCLUIDA"),
 )
+
+TIPO_DE_NEGOCIO_CHOICES = (
+	("VT","Venta"),
+	("CS","Consignacion"),
+)

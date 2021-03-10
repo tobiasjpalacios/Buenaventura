@@ -148,19 +148,30 @@ class Articulo(models.Model):
 class Negocio(models.Model):
     comprador = models.ForeignKey(
         "Comprador", 
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING
+    )
     vendedor = models.ForeignKey(
         "Vendedor",
         on_delete=models.DO_NOTHING,
-        null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    fecha_cierre = models.DateTimeField(null=True, blank=True)
-    fecha_entrega = models.DateField(null=True)
+        null=True
+    )
+    timestamp = models.DateTimeField(
+        auto_now_add=True
+    )
+    fecha_cierre = models.DateTimeField(
+        null=True, 
+        blank=True
+    )
+    tipo_de_negocio = models.CharField(
+        max_length=2,
+        choices=TIPO_DE_NEGOCIO_CHOICES 
+    )
+    aprobado = models.BooleanField(default=False)
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
 
-    
+
 class Propuesta(models.Model):
     negocio = models.ForeignKey(
         "Negocio",
@@ -208,25 +219,47 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     distribuidor = models.ForeignKey(
         "Empresa",
-        null=True,  
+        null=True,
+        blank=True,
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
         related_name="items",
-        null=True, 
         on_delete=models.DO_NOTHING)
-    cantidad = models.IntegerField(null=True, blank=True)
-    precio = models.FloatField(null=True, blank=True)
+    cantidad = models.IntegerField(
+        null=True, 
+        blank=True
+    )
+    precio_venta = models.FloatField(
+        null=True, 
+        blank=True
+    )
+    precio_compra = models.FloatField(
+        null=True, 
+        blank=True
+    )
     divisa = models.CharField(
         max_length=40, 
         choices=DIVISA_CHOICES,
-        blank=True, null=True)
+        blank=True, 
+        null=True
+    )
     destino = models.ForeignKey(
         "Domicilio", 
         null=True, 
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING
+    )
+    fecha_entrega = models.CharField(
+        null=True,
+        blank=True,
+        max_length=12
+    )
     aceptado = models.BooleanField()
-    fecha_pago = models.CharField(max_length=12)
+    fecha_pago = models.CharField(
+        null=True,
+        blank=True,
+        max_length=12
+    )
     tipo_pago = models.ForeignKey(
             "TipoPago",
             null=False,
@@ -255,10 +288,9 @@ class ItemPropuesta(models.Model):
         return diff
 
     def __str__(self):
-        return 'Item: {} - Cantidad: {} - Precio: $ {}'.format(
+        return 'Item: {} - Cantidad: {}'.format(
             self.articulo.marca, 
-            self.cantidad, 
-            self.precio)
+            self.cantidad,)
 
 
 class Financiacion(models.Model):
