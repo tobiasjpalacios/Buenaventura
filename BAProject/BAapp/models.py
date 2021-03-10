@@ -225,7 +225,7 @@ class ItemPropuesta(models.Model):
     propuesta = models.ForeignKey(
         "Propuesta", 
         related_name="items",
-        on_delete=models.DO_NOTHING)
+        on_delete=models.CASCADE)
     cantidad = models.IntegerField(
         null=True, 
         blank=True
@@ -315,3 +315,22 @@ class Presupuesto(models.Model):
 
     def total(self):
         return propuesta.calcularPrecio()
+
+
+class Notificacion(models.Model):
+    titulo = models.CharField(max_length=255)
+    descripcion = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+    categoria = models.CharField(max_length=64)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    hyperlink = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING)
+    visto = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('-timestamp',)

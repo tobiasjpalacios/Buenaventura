@@ -8,7 +8,8 @@ from django.views import View
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
-from django.db import transaction, models
+from django.db import transaction
+from django.urls import reverse
 from django.utils.dateparse import parse_date
 
 from .forms import *
@@ -16,10 +17,6 @@ from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
 from datetime import date
-
-from pprint import pprint as print
-
-from pprint import pprint as print
 
 def landing_page(request):
 	return render(request, 'Principal.html')
@@ -490,6 +487,7 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
+        completed = True
         with transaction.atomic():
             prop = Propuesta(
                 negocio=negocio,
@@ -500,14 +498,15 @@ class NegocioView(View):
             for item in data["items"]:
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
-                    if (f.name=="propuesta"):
+                    if (f.name=="propuesta" or f.name=="id"):
                         continue
+                    print(f.name)
                     if (f.is_relation):
                         obj = get_object_or_404(
                             f.related_model,
                             pk=item[f.name]
                         )
-                        setattr(tmp,f.name,obj)
+                        setattr(tmp, f.name, obj)
                     else:
                         setattr(
                             tmp, 
@@ -516,10 +515,28 @@ class NegocioView(View):
                         )
                 tmp.propuesta = prop
                 tmp.save()
-        return render(request, 'negocio.html')
+                completed &= tmp.aceptado
 
-    def delete(self, request, *args, **kwargs):
-        return HttpResponse(code=200)
+        titulo = "Propuesta de {} {}".format(
+            request.user.get_full_name(),
+            "aceptada" if completed else "actualizada"
+        )
+        catergoria = "Propuesta {}".format(
+            "aceptada" if completed else "actualizada"
+        )
+        user = None
+        if (prop.envio_comprador):
+            user=negocio.comprador.persona.user
+        else:
+            user=negocio.vendedor.persona.user
+        notif = models.Notificacion(
+            titulo=titulo,
+            categoria=categoria,
+            hyperlink=reverse('negocio', args=[negocio.id,]),
+            user=user
+        )
+        notif.save()
+        return render(request, 'negocio.html')
 
 
 class ListEmpresaView(View):
@@ -908,6 +925,7 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
+        completed = True
         with transaction.atomic():
             prop = Propuesta(
                 negocio=negocio,
@@ -918,7 +936,7 @@ class NegocioView(View):
             for item in data["items"]:
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
-                    if (f.name=="propuesta"):
+                    if (f.name=="propuesta" or f.name=='id'):
                         continue
                     if (f.is_relation):
                         obj = get_object_or_404(
@@ -934,10 +952,27 @@ class NegocioView(View):
                         )
                 tmp.propuesta = prop
                 tmp.save()
+                completed &= tmp.aceptado
+        titulo = "Propuesta de {} {}".format(
+            request.user.get_full_name(),
+            "aceptada" if completed else "actualizada"
+        )
+        categoria = "Propuesta {}".format(
+            "aceptada" if completed else "actualizada"
+        )
+        user = None
+        if (prop.envio_comprador):
+            user=negocio.comprador.persona.user
+        else:
+            user=negocio.vendedor.persona.user
+        notif = Notificacion(
+            titulo=titulo,
+            categoria=categoria,
+            hyperlink=reverse('negocio', args=[negocio.id,]),
+            user=user
+        )
+        notif.save()
         return render(request, 'negocio.html')
-
-    def delete(self, request, *args, **kwargs):
-        return HttpResponse(code=200)
 
 
 class ListEmpresaView(View):
