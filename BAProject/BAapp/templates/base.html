@@ -30,28 +30,31 @@
 
 </head>
 <body>
- <nav >
-  <div style="background-color: #198d2d;" class="nav-wrapper ">
-    <a href="{% url 'home' %}" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
-    <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-    <ul class="right hide-on-med-and-down">
-      {% if user.is_superuser %}  
-      <li>
-        <a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a>
-      </li>
-      {% endif %}
-      <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
-      {% if user.is_authenticated %}
-      <li><a>{{user.username|title}}</a></li>
-      <li><a  href="{% url 'logout' %}" class="dropdown-item ">Cerrar Sesion</a></li>
+<div class="navbar-fixed">
+  <nav >
+    <div style="background-color: #198d2d;" class="nav-wrapper  ">
+      <a href="{% url 'home' %}" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        {% if user.is_superuser %}  
+        <li>
+          <a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a>
+        </li>
+        {% endif %}
+        <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
+        {% if user.is_authenticated %}
+        <li><a>{{user.username|title}}</a></li>
+        <li><a  href="{% url 'logout' %}" class="dropdown-item ">Cerrar Sesion</a></li>
+  
+        {% else %}
+        <li><a style="border-radius: 2em; color: #000000;" class="waves-effect waves-light btn modal-trigger green" href="#modal1" > Iniciar Sesion</a></li>
+  
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
 
-      {% else %}
-      <li><a style="border-radius: 2em; color: #000000;" class="waves-effect waves-light btn modal-trigger green" href="#modal1" > Iniciar Sesion</a></li>
-
-      {% endif %}
-    </ul>
-  </div>
-</nav>
+</div>
 
 
 <!--  sidenav -->
@@ -131,30 +134,7 @@
 
 
   <!--  footer pagina  -->
-  <footer style= "background-color: #004e20 ;" class="page-footer" id="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Redes y contacto</h5>
-          <p class="grey-text text-lighten-4"> Whatsapp: +54 12345678</p>
-          <p class="grey-text text-lighten-4"> E-mail:  Buenaventura@ejemplo.com.ar</p>
-        </div>
-        <div class="col l4 offset-l2 s12">
-          <h5 class="white-text">Aca pueden ir links</h5>
-          <ul>
-            <li><a class="grey-text text-lighten-3" href="#!">Link 1 </a></li>
-            <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-        © 2020 Copyright Text
-        <a class="grey-text text-lighten-4 right" href="#!">Otros Links</a>
-      </div>
-    </div>
-  </footer>
+ 
 
   <script>
   $(document).ready(function(){

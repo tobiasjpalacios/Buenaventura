@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block imports %}
    {% load static %}
@@ -8,78 +9,155 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}  
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+<script>
+   $(document).ready(function(){
+    $('.scrollspy').scrollSpy();
+  });
+       
+</script>
 
-<div class="container">
-<div class="row"> 
-   <div class="col s12">
-        <h5>clientes</h5>
-   </div>
-    </div>
-   <div class="col l6 m6 s6">
-    <nav>
-        <div class="nav-wrapper ">
-          <form>
-            <div class="input-field">
-              <input id="search" type="search" required>
-              <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-              <i class="material-icons">close</i>
-            </div>
-          </form>
+<style>
+  .vl {
+    border-right: 2px solid rgb(128, 128, 128, 0.5);
+    height: 1000px;
+    
+  }
+
+  .titulo {
+    height: 55px;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    
+    background-color: #e30613;
+    font-family: 'Montserrat';
+  }
+
+  body {
+  font-family: 'Montserrat';
+  
+ 
+}
+.im {
+ height: 50px;
+ width: 50px;
+}
+
+.bloque-izquierdo{
+  height: 60px;
+  width: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+}
+
+.bloque-centro{
+  height: 60px;
+  width: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+  border-right: 2px solid rgb(128, 128, 128, 0.5);
+  border-left: 2px solid rgb(128, 128, 128, 0.5);
+}
+.bloque-centro1{
+  border-right: 2px solid rgb(128, 128, 128, 0.5);
+  border-left: 2px solid rgb(128, 128, 128, 0.5);
+}
+
+
+.bloque-derecho{
+  height: 60px;
+  width: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+}
+ 
+ .titulito{
+   font-size: 30px;
+   font-family: 'Montserrat';
+   text-align: center;
+ }
+
+  .tamaño{
+    height: 600px;
+    width: 600px;
+  }
+.opcion{
+  font-size: 20px;
+}
+
+.opcion:hover{
+  font-weight: bold;
+}
+
+.botonsito{
+  border-bottom-left-radius: 2em;
+  border-bottom-right-radius: 2em;  
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
+
+}
+  
+  </style>
+
+ 
+<div class="row " >
+  <div class="col hide-on-small-only s2 vl">
+    <ul class="section table-of-contents pinned ">
+      <li><a href="#id1">Presupuestos</a></li>
+      <li><a href="#id2">Negocios Confirmados</a></li>
+      <li><a href="#id6">Semaforo de Vencimientos</a></li>
+      <li><a href="#id7">Logistica</a></li>
+      <li><a href="#id8">Comprobantes</a></li>
+      <li><a href="#id8">Mas opciones </a></li>
+  </ul>
+
+  </div>
+  <div class="col s10">
+    <div class="row"> 
+      <div class=" titulo  col s4 offset-s4 ">
+        <div class="">
+          <span style="font-size: 45px ; padding-bottom: 5px;" class=" white-text "> <img class="im text-align right"  src="{% static 'images/notis.png' %}"> Notificaciones  </span>
         </div>
-      </nav>  
+      </div>
     </div>
-    <div class="col s12">
-        <table class="centered bordered">
-            <thead>
-              <tr>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Dni</th>
-                  <th>Email</th>
-                  <th>Fecha de nacimiento</th>
-                  <th>Sexo</th>
-                  <th>Telefono</th>
-                  <th>Usuario</th>
-                  <th>Codigo</th>
-                  <th>Cuil/Cuit</th>
-                  <th>Categoria Iva</th>
-                  <th>Cuenta contable</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for cliente in clientes %}
-                <tr>
-                  <td>{{ cliente.nombre }}</td>
-                  <td>{{ cliente.apellido }}</td>
-                  <td>{{ cliente.dni }}</td>
-                  <td>{{ cliente.email }}</td>
-                  <td>{{ cliente.fecha_nacimiento|date:"M d, Y" }}</td>
-                  <td>{{ cliente.sexo }}</td>
-                  <td>{{ cliente.telefono }}</td>
-                  <td>{{ cliente.codigo }}</td>
-                  <td>{{ cliente.cuil_cuit }}</td>
-                  <td>{{ cliente.categoria_iva }}</td>
-                  <td>{{ cliente.cuenta_contable }}</td>
-                  {% if user.is_superuser %}
-                    <th>
-                      <div>
-                        <a class='btn-small waves-effect waves-light green' href="{% url 'cliente' cliente.pk %}"><i class="material-icons">edit</i></a>
-                        <a class='btn-small waves-effect waves-light red' 
-                          onclick="abrirmodal('{{ cliente.id }}', '{{ cliente.apellido }}, {{cliente.nombre }}')"><i class="material-icons">delete</i></a>
-                    </th>
-                  {% endif %}
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-
+    <div  style="height: 100px;"></div>
+  <div class="row">
+    <div class=" bloque-izquierdo col s4 "  >
+      <span class="text-align center titulito grey-text">  Presupuestos </span>
     </div>
+    <div class="col s4 bloque-centro" >
+      <span class=" text-align center titulito  grey-text" >Logistica</span>
+    </div>
+    <div class="col s4 bloque-derecho">
+      <span class="text-align center titulito  grey-text">Vencimientos </span>
+    </div>
+    <div class="col s4 tamaño">
+      <ul>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
+        <br>
+        <li  class=" opcion center"><span>te llego un pedido de marcos smkith    </span><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></li>
 
+      </ul>
+      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+    </div>
+     <div class="col s4 tamaño bloque-centro1"></div>
+     <div class="col s4 tamaño"></div>
+  </div>
+  
+  </div>
 
+  
 </div>
-</div>
-
 
 
 {%endblock body%} 
