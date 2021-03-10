@@ -19,6 +19,8 @@ from datetime import date
 
 from pprint import pprint as print
 
+from pprint import pprint as print
+
 def landing_page(request):
 	return render(request, 'Principal.html')
 
@@ -457,23 +459,24 @@ class PropuestaView(View):
 
 class NegocioView(View):
     def get(self, request, *args, **kwargs):
-        negocio = Negocio.objects.get(pk=kwargs["pk"])
+        negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = negocio.propuestas.last()
         last = {
             'items': [],
             'observaciones': data.observaciones
         }
+        comp = request.user.groups.filter(name="comprador").exists()
+        if (comp==data.envio_comprador):
+            data.visto = True
+            data.save()
         for i in data.items.all():
-            art = {
-                'id': i.id,
-                'articulo': i.articulo.id,
-                'distribuidor': i.distribuidor.id,
-                'cantidad': i.cantidad,
-                'precio': i.precio,
-                'divisa': i.divisa,
-                'destino': i.destino.id,
-                'aceptado': i.aceptado,
-            }
+            art = {}
+            for f in i._meta.get_fields():
+                val = getattr(i,f.name)
+                if (f.is_relation):
+                    art[f.name] = val.id
+                else:
+                    art[f.name] = val
             last['items'].append(art)
         context = {
             "negocio": negocio,
@@ -487,32 +490,31 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
-        prop = Propuesta(
-            negocio=negocio,
-            observaciones=data["observaciones"],
-            envio_comprador=request.user.groups.filter(name="comprador").exists()
-        )
-        prop.save()
         with transaction.atomic():
+            prop = Propuesta(
+                negocio=negocio,
+                observaciones=data["observaciones"],
+                envio_comprador=request.user.groups.filter(name="comprador").exists()
+            )
+            prop.save()
             for item in data["items"]:
-                tmp = ItemPropuesta(
-                    articulo=get_object_or_404(
-                        Articulo, 
-                        pk=item['articulo']
-                    ),
-                    distribuidor=get_object_or_404(
-                        Empresa, 
-                        pk=item['distribuidor']
-                    ),
-                    destino=get_object_or_404(
-                        Domicilio,
-                        pk=item['destino']
-                    ),
-                    propuesta=prop,
-                    cantidad=item['cantidad'],
-                    precio=item['precio'],
-                    aceptado=item['aceptado']
-                )
+                tmp = ItemPropuesta()
+                for f in tmp._meta.get_fields():
+                    if (f.name=="propuesta"):
+                        continue
+                    if (f.is_relation):
+                        obj = get_object_or_404(
+                            f.related_model,
+                            pk=item[f.name]
+                        )
+                        setattr(tmp,f.name,obj)
+                    else:
+                        setattr(
+                            tmp, 
+                            f.name, 
+                            item[f.name]
+                        )
+                tmp.propuesta = prop
                 tmp.save()
         return render(request, 'negocio.html')
 
