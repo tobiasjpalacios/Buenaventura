@@ -290,7 +290,7 @@ class ItemPropuesta(models.Model):
     def __str__(self):
         return 'Item: {} - Cantidad: {}'.format(
             self.articulo.marca, 
-            self.cantidad,)
+            self.cantidad)
 
 
 class Financiacion(models.Model):
