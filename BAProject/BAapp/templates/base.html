@@ -8,6 +8,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <style type="text/css">
+/*    html {
+    font-family: "Montseratt";
+  }*/
+  </style>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -18,8 +24,15 @@
 
   <!-- style -->
   <style type="text/css">
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #4fad31;
+  opacity: 1; /* Firefox */
+  text-align: center;
+}
+
   {% block style %}
   {% endblock style %}
+
   </style>
 
   <!-- title -->
@@ -32,25 +45,29 @@
 <body>
 <div class="navbar-fixed">
   <nav >
-    <div style="background-color: #198d2d;" class="nav-wrapper  ">
-      <a href="{% url 'home' %}" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
+    <div class="row nav-wrapper">
+      <div style="background-color: #005221; width: 15%; height: 64px" class="col s3">
+        <a style= "position: absolute; left: 2%;" href="{% url 'home' %}" class="brand-logo"><img width="120px" src="{% static 'images/Buenaventura_blanco.png' %}"></a>
+      </div>
+    <div style="background-color: #4fad31;height: 64px">
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
         {% if user.is_superuser %}  
         <li>
-          <a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a>
+          <a style="color: #ffffff; position:absolute; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin' %}">Administrar</a>
         </li>
         {% endif %}
         <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
         {% if user.is_authenticated %}
-        <li><a>{{user.username|title}}</a></li>
-        <li><a  href="{% url 'logout' %}" class="dropdown-item ">Cerrar Sesion</a></li>
+        <li><a style="color: #ffffff; position:absolute; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.username|title}}</a></li>
+        <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:absolute; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
   
         {% else %}
-        <li><a style="border-radius: 2em; color: #000000;" class="waves-effect waves-light btn modal-trigger green" href="#modal1" > Iniciar Sesion</a></li>
+        <li><a style="color: #ffffff; position:absolute; right :1%;font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
   
         {% endif %}
       </ul>
+    </div>
     </div>
   </nav>
 
@@ -58,7 +75,7 @@
 
 
 <!--  sidenav -->
-<ul  style="background-color: rgba(25, 141, 45, 0.5);" class="sidenav" id="mobile-demo"  >
+<ul  style="background-color: #4fad31;" class="sidenav" id="mobile-demo"  >
   {% if user.is_authenticated %}
   <li><div class="user-view">
     <div class="background">
@@ -98,32 +115,34 @@
   {% block body %}
   {% endblock body %}
 <!--  modal de inicio de sesion  -->
-<div style="border-radius: 1em;" id="modal1" class="modal">
-  <div class="modal-content center">
-    <h4>Inicio de sesion</h4>
+<div style="top:0%; max-height: 80%; max-width: 70%" id="modal1" class="modal">
+  <header style="background-color: #005221; height:80px; color:#ffffff; "> <center><br><img width="200" src="{% static 'images/Buenaventura_blanco.png' %}"></center> </header>
+  <div style="background-color: #4fad31; "class="modal-content center">
+    <center><img width="100px" src="{% static 'images/BV_darkgreen.png' %}"></center>
+    <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat; font-size: 200%;height: 10px"><b>Bienvenido/a</b></p>
+    <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Ingresá a tu panel de control</p>
+
     <div class="row">
       <form action="{% url 'login' %}" method="POST"  class="col s12">
         {%csrf_token%}
         <div class="row">
-          <div class="input-field col s12">
-            <input id="email" name="username" type="text" class="validate">
-            <label for="email">Username</label>
+          <div style="border-radius: 2em; background-color: #ffffff ;height:45px;"class="center col s4 offset-s4">
+            <input style="color:#004e20; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
           </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="password" name="password" type="password" class="validate">
-            <label for="password">Contraseña</label>
+          <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
+            <input style="color:#004e20;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
           </div>
         </div>
         <div class="row">
           <div class="center">
-            <button type="submit" class="waves-effect waves-light btn-large green lighten-2  center">iniciar sesion</button>
+            <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
           </div>
         </div>
         <div class="row">
           <div class="center">
-            <span >Olvidaste tu contraseña </span><a href="#">haz click aqui </a>
+            <a style = "color: #005221" href="#">¿No sos usuario?</a>
+            <br>
+            <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
           </div>
         </div>
       </form>
@@ -134,7 +153,9 @@
 
 
   <!--  footer pagina  -->
- 
+         <footer class="page-footer "style="background-color: #4fad31">
+          <br>
+        </footer>
 
   <script>
   $(document).ready(function(){
