@@ -255,6 +255,7 @@ class ItemPropuesta(models.Model):
         max_length=12
     )
     aceptado = models.BooleanField()
+    pagado = models.BooleanField(default=False)
     fecha_pago = models.CharField(
         null=True,
         blank=True,
