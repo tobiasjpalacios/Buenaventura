@@ -45,18 +45,12 @@
 <body>
 <div class="navbar-fixed">
   <nav >
-<<<<<<< HEAD
-    <div style="background-color: #198d2d;" class="nav-wrapper  ">
-      <a href="{% url 'home' %}" class="brand-logo"><img width="95" src="{% static 'images/logo.png' %}"></a>
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger bronw"><i class="material-icons">menu</i></a>
-=======
     <div class="row nav-wrapper">
       <div style="background-color: #005221; width: 15%; height: 64px" class="col s3">
         <a style= "position: absolute; left: 7%;" href="{% url 'home' %}" class="brand-logo center "><img width="120px" src="{% static 'images/Buenaventura_blanco.png' %}"></a>
       </div>
     <div style="background-color: #4fad31;height: 64px">
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
->>>>>>> 3f47cf4ed232de51380f8ff44a570a1b50364c62
       <ul class="right hide-on-med-and-down">
         {% if user.is_superuser %}  
         <li>

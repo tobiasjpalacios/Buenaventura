@@ -13,17 +13,50 @@ BuenaVentura Agronegocios
 <script>
    $(document).ready(function(){
     $('.scrollspy').scrollSpy();
-  });
-
-        $(document).ready(function(){
     $('.collapsible').collapsible();
-  }); 
-  
-  $(document).ready(function(){
     $('.fixed-action-btn').floatingActionButton();
+    $('.modal').modal();
+    $('#contenido').hide();
+    $('#contenido1').hide();
+    $('#contenido2').hide();
+    $('#ocultar').hide();
+    $('#campo').hide();
+ 
+    $('#mostrar').click(function(){
+			$('#contenido').show();
+			$('#contenido1').show();
+			$('#contenido2').show();
+      $('#ocultar').show();
+      $('#mostrar').hide();
+      $('#campo').show();
+
+   });
+
+   $('#ocultar').click(function(){
+			$('#contenido').hide();
+			$('#contenido1').hide();
+			$('#contenido2').hide();
+      $('#ocultar').hide();
+      $('#mostrar').show();
+      $('#campo').hide();
+      
+   });
+
+
+
+
+     
   });
+  
+  
+  
+  
+   
+    
     
 </script>
+
+
 
 <style>
   .vl {
@@ -173,8 +206,113 @@ BuenaVentura Agronegocios
 
   <!---------------->
 
+  <!------ Modals  ---------->
+  <!------ Modal negocio  ---------->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <div class="row"  "> <h4>Negocio de ADAMA de FECHA 2021/05/06</h4></div>
+      <div class="row" ">
+      <div class="col s6"><span class="">Cliente Marcos Juarez</span> </div>
+      <div class="col s6"><span class="">Vendedor Matias Nuñez</span> </div>
+      <div class="row">
+        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+        <table>
+        <thead>
+          <tr>
+              <th ></th>
+              <th>Item</th>
+              <th>Cant</th>
+              <th>precio</th>
+              <th>Fecha de pago</th>
+              <th>Estado</th>
+              <th></th>
 
+          </tr>
+        </thead>
 
+        <tbody>
+          <tr>
+            <td >
+              <label id="contenido" >
+                <input type="checkbox" class="filled-in" checked="checked" />
+                <span></span>
+              </label>
+            </td>
+            <td>Glifosato</td>
+            <td>200</td>
+            <td>$0.87</td>
+            <td>27/05/21</td>
+            <td>En tiempo</td>
+            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+          </tr>
+          <tr>
+            <td>
+              <label id="contenido1" >
+                <input type="checkbox" class="filled-in" checked="checked" />
+                <span></span>
+              </label>
+            </td>
+            <td>Glifosato</td>
+            <td>200</td>
+            <td>$0.87</td>
+            <td>27/05/21</td>
+            <td>En tiempo</td>
+            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+          </tr>
+          <tr class="red">
+            <td>
+              <label id="contenido2" >
+                <input type="checkbox" class="filled-in" checked="checked" />
+                <span></span>
+              </label>
+            </td>
+            <td>Glifosato</td>
+            <td>200</td>
+            <td>$0.87</td>
+            <td>27/05/21</td>
+            <td>vencido</td>
+            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger  modal-close red  "><i class=" small material-icons ">search</i></a></td>
+          </tr>
+        </tbody>
+        
+      </table>
+
+      <form action="# " class="col s12 " id="campo">
+         <div class="file-field input-field">
+       <div class="btn">
+      <i class="material-icons">attach_file</i>
+       <input type="file">
+        </div>
+        <div class="file-path-wrapper">
+       <input class="file-path validate" type="text">
+     </div>
+        </div>
+       </form>
+
+      <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick=""> Cambiar estado </a>
+      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
+      
+      </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+    </div>
+  </div>
+  <!------ Modal Articulo ---------->
+
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
+  <!---------------->
 
 
 
@@ -361,7 +499,8 @@ BuenaVentura Agronegocios
         <td>
           <div style="overflow-y: scroll; height: 150px;" >
           <ol class="collection" start="1">
-          <li class="collection-item" >Glifosato 20% </li>
+          <li class="collection-item" >Glifosato 20% 
+           </li>
           <li class="collection-item" >Atrazina 30% </li>
           <li class="collection-item" > Aceite soja 50%</li>
           <li class="collection-item" >Benomil 89%</li>
@@ -397,7 +536,7 @@ BuenaVentura Agronegocios
   <div class="row"> 
     <div style="background-color:  3cad41;" class="col s12 barraa center-align " ><span class="titulito center-align white-text"> Confirmados</span> </div>
   </div>
-  <div class="row"><table>
+  <table>
     <thead>
       <tr>
           <th>Fecha</th>
@@ -472,7 +611,7 @@ BuenaVentura Agronegocios
       </tr>
     </tbody>
   </table>
-  <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div></div>
+<div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
 
 
   <!-- Esto es el semaforo de vencimientos -->
@@ -499,7 +638,7 @@ BuenaVentura Agronegocios
           <tbody >
             <tr style="border-bottom: 0px; ">
               <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger blue "><i class=" small material-icons ">search</i></a></td>
             </tr>
            
           
@@ -517,7 +656,7 @@ BuenaVentura Agronegocios
           <tbody >
             <tr style="border-bottom: 0px; ">
               <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger red "><i class=" small material-icons ">search</i></a></td>
             </tr>
            
           
@@ -547,8 +686,7 @@ BuenaVentura Agronegocios
       
       <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
     </div>
-    <a class="waves-effect waves-light btn botonsote red white-text col s12" > Ver todos </a>
-    <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div></div>
+    <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
 
   <div class="row" > 
@@ -558,7 +696,8 @@ BuenaVentura Agronegocios
       </div>
     </div>
   </div>
-  <table>
+  <div class="row">
+    <table>
     <thead>
       <tr>
           <th> Destinatario </th>
@@ -576,7 +715,7 @@ BuenaVentura Agronegocios
         <td>pilar buenos aires  colon 1546 </td>
         <td>27/05/2021</td>
         <td class="card-title"> En tiempo </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
       </tr>
       <tr class="ligth-blue">
         <td>Alan</td>
@@ -584,7 +723,7 @@ BuenaVentura Agronegocios
         <td>pilar buenos aires  colon 1546 </td>
         <td>27/05/2021</td>
         <td class="card-title"> En transito </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
         
       </tr>
       <tr class="green"> 
@@ -593,7 +732,7 @@ BuenaVentura Agronegocios
         <td>pilar buenos aires  colon 1546 </td>
         <td>27/05/2021</td>
         <td class="card-title" > entregado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
       </tr>
       <tr class="red"> 
         <td>Jonathan</td>
@@ -601,11 +740,16 @@ BuenaVentura Agronegocios
         <td>pilar buenos aires  colon 1546 </td>
         <td>27/05/2021</td>
         <td class="card-title" > Atrasado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
       </tr>
     </tbody>
   </table>
-
+  <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
+  </div>
+  
+  
+  
+  
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
       <div class="">
@@ -613,8 +757,8 @@ BuenaVentura Agronegocios
       </div>
     </div>
   </div>
-
-  <ul class="collapsible black-text">
+  <div class="row">
+    <ul class="collapsible black-text">
                     <li>
                       <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
                       <div class="collapsible-body">
@@ -696,7 +840,22 @@ BuenaVentura Agronegocios
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
                       <div class="collapsible-body"></div>
                     </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                      <div class="collapsible-body"></div>
+                    </li>  
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                      <div class="collapsible-body"></div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                      <div class="collapsible-body"></div>
+                    </li>
                   </ul>
+                  <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>    
+  </div>
+  
 
                   <div class="row"> 
       <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">

@@ -9,6 +9,129 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
+<script> $(document).ready(function(){
+  $('.scrollspy').scrollSpy();
+  $('.collapsible').collapsible();
+  $('.fixed-action-btn').floatingActionButton();
+  $('.modal').modal();
+  $('.logis').hide();
+  $('#ocultar').hide();
+  $('#campo').hide();
+
+  $('#mostrar').click(function(){
+    $('#ocultar').show();
+    $('.logistica').hide();
+    $('#mostrar').hide();
+    $('.logis').show();
+
+ });
+
+ $('#ocultar').click(function(){
+    $('.logis').hide();
+    $('.logistica').show();
+    $('#ocultar').hide();
+    $('#mostrar').show();
+
+ });
+
+
+
+
+   
+});</script>
+
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <div class="row"  "> <h4>Negocio de ADAMA de FECHA 2021/05/06</h4></div>
+    <div class="row" ">
+    <div class="col s6"><span class="">Cliente Marcos Juarez</span> </div>
+    <div class="col s6"><span class="">Vendedor Matias Nuñez</span> </div>
+    <div class="row">
+      <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+      <table>
+      <thead>
+        <tr>
+            <th>Item</th>
+            <th>Cant</th>
+            <th>Destino</th>
+            <th>Fecha de entrega</th>
+            <th>Estado</th>
+            <th></th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+
+          <td>Glifosato</td>
+          <td>200</td>
+          <td>Tarija 943 residencial america cordoba capital </td>
+          <td>27/05/21</td>
+          <td id="logistica" class="logistica"> En tiempo</td>
+          <td id="logis" class="logis"><div class="input-field col s12">
+            <select>
+              <option value=""  selected>Choose your option</option>
+              <option class="selected" value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+          </div></td>
+          <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+        </tr>
+        <tr>
+          <td>Glifosato</td>
+          <td>200</td>
+          <td>Tarija 943 residencial america cordoba capital </td>
+          <td>27/05/21</td>
+          <td id="logistica"  class="logistica">En transito</td>
+          <td id="logis" class="logis"><div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+          </div></td>
+          <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+        </tr>
+        <tr class="red">
+          <td>Glifosato</td>
+          <td>200</td>
+          <td>Tarija 943 residencial america cordoba capital </td>
+          <td>27/05/21</td>
+          <td id="logistica"  class="logistica">vencido</td>
+          <td id="logis1" class="logis"><div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose your option</option>
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+          </div></td>
+          <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger  modal-close red  "><i class=" small material-icons ">search</i></a></td>
+        </tr>
+      </tbody>
+      
+    </table>
+    <br>
+    <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick=""> Cambiar estado </a>
+    <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
+    
+    </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+  </div>
+</div>
+
+
+
 
 <div class="row" >
     <div class="col s12">
@@ -107,7 +230,8 @@ BuenaVentura Agronegocios
                 <td>
                         <div style="overflow-y: scroll; height: 150px;" >
                             <ol class="collection" start="1">
-                            <li class="collection-item" >Glifosato 20% </li>
+                            <li class="collection-item" >Glifosato 20% 
+                            </li>
                             <li class="collection-item" >Atrazina 30% </li>
                             <li class="collection-item" > Aceite soja 50%</li>
                             <li class="collection-item" >Benomil 89%</li>
@@ -120,7 +244,7 @@ BuenaVentura Agronegocios
                         </ol></div>
                     </td>
                 <td class="green-text center">Aceptado</td>
-                <td><a class="btn red ">  <i class="large material-icons">remove_red_eye</i></a></td>
+                <td><a class="btn red  modal-trigger" href="#modal1">  <i class="large material-icons ">remove_red_eye</i></a></td>
               </tr>
               <!-- esto es la lista de negocios-->
 
