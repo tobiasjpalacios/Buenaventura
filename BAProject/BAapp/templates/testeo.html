@@ -15,12 +15,14 @@ BuenaVentura Agronegocios
     $('.scrollspy').scrollSpy();
     $('.collapsible').collapsible();
     $('.fixed-action-btn').floatingActionButton();
+    $('select').formSelect();
     $('.modal').modal();
     $('#contenido').hide();
     $('#contenido1').hide();
     $('#contenido2').hide();
     $('#ocultar').hide();
     $('#campo').hide();
+    $('.tablita').hide();
  
     $('#mostrar').click(function(){
 			$('#contenido').show();
@@ -41,6 +43,14 @@ BuenaVentura Agronegocios
       $('#campo').hide();
       
    });
+
+   $('.nego').click(function(){
+			$('.tablita').show();
+      $('.nego').hide();
+			
+      
+   });
+
 
 
 
@@ -207,7 +217,88 @@ BuenaVentura Agronegocios
   <!---------------->
 
   <!------ Modals  ---------->
+
+  <div id="alerta" class="modal">
+    <div class="modal-content">
+      <h4 class="center">Alerta</h4>
+      <div class="row">
+        <h4 class="left">27/05/2021</h4>
+        <div class="right">  
+        <div class="input-field col s12">
+            
+            <select>
+              <option value=""  selected>Choose your option</option>
+              <option class="selected" value="1">Vencimientos</option>
+              <option value="2">Presupuesto</option>
+              <option value="3">Logistica</option>
+            </select>
+            <label> Tipo de Notificacion</label>
+            </div></div>
+
+           
+            
+            <table class="tablita">
+    <thead>
+      <tr>
+          <th>Fecha</th>
+          <th>Items</th>
+          <th class="center">Empresa</th>
+          <th>Cliente</th>
+          <th>Ver Negociacion</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>22/05/22</td>
+        <td>
+          <div style="overflow-y: scroll; height: 150px;" >
+          <ol class="collection" start="1">
+          <li class="collection-item" >Glifosato 20% </li>
+          <li class="collection-item" >Atrazina 30% </li>
+          <li class="collection-item" > Aceite soja 50%</li>
+          <li class="collection-item" >Benomil 89%</li>
+          <li class="collection-item" >Atrazina 30% </li>
+          <li class="collection-item" > Aceite soja 50%</li>
+          <li class="collection-item" >Benomil 89%</li>
+          <li class="collection-item" >Atrazina 30% </li>
+          <li class="collection-item" > Aceite soja 50%</li>
+          <li class="collection-item" >Benomil 89%</li>
+        </ol>
+      </div>
+      </td>
+        <td class="center">Tecnocampo </td>
+        <td>Juan Perez</td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+            <div class="row">
+              <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick=""> Seleccionar un negocio </a>
+              <form class="col s12">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <textarea id="textarea1" class="materialize-textarea"></textarea>
+                    <label for="textarea1">Textarea</label>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+    </div>
+  </div>
+
+
   <!------ Modal negocio  ---------->
+  
   <div id="modal1" class="modal">
     <div class="modal-content">
       <div class="row"  "> <h4>Negocio de ADAMA de FECHA 2021/05/06</h4></div>
@@ -313,6 +404,93 @@ BuenaVentura Agronegocios
   </div>
 
   <!---------------->
+  <!------ Modal Combrobantes ---------->
+
+<div id="comprobante" class="modal">
+  <div class="modal-content">
+    <h4 class="left">Negocio de Adama</h4><h4 class="right">27/05/2021</h4>
+    <div class="row"> 
+      <span class="col s6">Cliente Carlos Daniel</span> <span class="col s6">Vendedor Matias Nuñez</span>
+      <div class="">
+        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Comprobantes</span> </div>
+        <table>
+        <thead>
+          <tr>
+              <th>Fecha de subida</th>
+              <th>Nombre de archivo</th>
+              <th>Tipó</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>27/03/2021</td>
+            <td>ADAMA-254645</td>
+            <td>Factura</td>
+          </tr>
+          <tr>
+            <td>27/03/2021</td>
+            <td>ADAMA-254645</td>
+            <td>
+              <div class="input-field col s12">
+            <select>
+              <option value=""  selected>Choose your option</option>
+              <option class="selected" value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3">Option 3</option>
+            </select>
+            <label>Materialize Select</label>
+            </div>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+      </div>
+      <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Archivos</span> </div>
+      <div> 
+        <div class="row">
+        <br>
+        <ul>
+        <li>
+          <span>PDF factura-adama</span>
+        </li>
+        <li>
+          <span>PDF factura-adama</span>
+        </li>
+        <li>
+          <span>PDF factura-adama</span>
+        </li>
+        
+        </ul>
+        
+       
+        <a class="waves-effect waves-light btn botonsito red white-text " > Confirmar </a>
+      
+         </div>
+        <form action="# " class="col s12">
+                            <div class="file-field input-field">
+                              <div class="btn">
+                                <i class="material-icons">attach_file</i>
+                                <input type="file">
+                              </div>
+                              <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                              </div>
+                            </div>
+                          </form>
+                          <a class="waves-effect waves-light btn botonsito green white-text " > Subir </a>
+                    </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
+</div>
+
+
+<!---------------->
 
 
 
@@ -329,7 +507,7 @@ BuenaVentura Agronegocios
       <li><a href="#id7">Logistica</a></li>
       <li><a href="#id8">Comprobantes</a></li>
       <li><a href="#id8">Mas Opciones </a></li>
-      <li><a class="waves-effect waves-light btn botonsito red white-text pinned" > Enviar Alerta</a></li>
+      <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " href="#alerta"> Enviar Alerta</a></li>
       
   </ul>
   </div>
@@ -853,9 +1031,16 @@ BuenaVentura Agronegocios
                       <div class="collapsible-body"></div>
                     </li>
                   </ul>
+                  <div style="border: 2px solid grey; margin: px;" class="">
+                    <a style="padding-top: 2px; margin-bottom: 2px;" class="waves-effect waves-light btn col s4 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+                    <a href="#comprobante" style="padding-top: 2px; margin-bottom: 2px;" class="waves-effect waves-light btn col s4 offset-s1 botonsito grey darken-3 modal-trigger" > Cargar Facturas</a>
+                  </div>
+
+              
                   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>    
   </div>
   
+
 
                   <div class="row"> 
       <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
