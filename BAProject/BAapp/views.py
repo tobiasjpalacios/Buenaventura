@@ -21,6 +21,8 @@ from BAapp.utils.utils import *
 
 def landing_page(request):
 	return render(request, 'Principal.html')
+def cuentas(request):
+    return render(request, 'cuentas.html')
 
 def admin(request):
     return render(request,'admin.html')
