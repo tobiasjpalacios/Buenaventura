@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from BAapp.views import *
+from BAapp.utils.utils import *
 
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('vendedor/', vendedor, name="vendedor"),
     path('carga_excel/', carga_excel, name="carga_excel"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
+    path('sheet_reader/', sheet_reader, name="sheet_reader"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
     path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),
