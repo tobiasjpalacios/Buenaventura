@@ -18,7 +18,7 @@ urlpatterns = [
     path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
     path('vendedor/', vendedor, name="vendedor"),
-    path('carga_excel/', carga_excel, name="carga_excel"),
+    path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
     path('sheet_reader/', sheet_reader, name="sheet_reader"),
 
