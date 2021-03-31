@@ -261,6 +261,10 @@ class ItemPropuesta(models.Model):
         blank=True,
         max_length=12
     )
+    fecha_real_pago = models.DateTimeField(
+        null=True,
+        blank=True
+    )
     tipo_pago = models.ForeignKey(
             "TipoPago",
             null=False,
