@@ -646,7 +646,6 @@ BuenaVentura Agronegocios
           <th>Ver Negociacion</th>
       </tr>
     </thead>
-
     <tbody>
       {% for preprec in presupuestos_recibidos %}
       <tr>
@@ -703,7 +702,7 @@ BuenaVentura Agronegocios
       </div>
       </td>
         <td class="center">{{prepneg.empresa}}</td>
-        <td>{{prepneg.visto}}</td>
+        <td>{{prepneg.comprador}}</td>
         <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
@@ -774,7 +773,7 @@ BuenaVentura Agronegocios
     <tbody>
       {% for negocioNoCerr in negocios_cerrados_no_confirmados %}
       <tr>
-        <td>{{negocioNoCerr.timestamp|date:"M d, Y"}}</td>
+        <td>{{negocioNoCerr.fecha|date:"M d, Y"}}</td>
         <td>
           <div style="overflow-y: scroll; height: 150px;" >
           <ol class="collection" start="1">
@@ -785,7 +784,7 @@ BuenaVentura Agronegocios
       </div>
       </td>
         <td class="center">Tecnocampo </td>
-        <td>{{negocioNoCerr.comprador.persona.user.first_name|title}} {{negocioNoCerr.comprador.persona.user.last_name|title}}</td>
+        <td>{{negocioNoCerr.comprador}}</td>
         <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
