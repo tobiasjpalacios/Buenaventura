@@ -33,7 +33,7 @@ BuenaVentura Agronegocios
                        <div class="card-panel blue">
                         <span class="card-title center">Cargar Archivo</span>
                         </div>
-                        <form action="{% url 'sheet_reader' %} " enctype="multipart/form-data" method="post" class="col s12">
+                        <form  enctype="multipart/form-data" method="post" class="col s12">
                             {% csrf_token %}
                             <div class="file-field input-field">
                               <div class="btn">

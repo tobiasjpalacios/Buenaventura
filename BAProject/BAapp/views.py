@@ -17,9 +17,12 @@ from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
 from datetime import date
+from BAapp.utils.utils import *
 
 def landing_page(request):
 	return render(request, 'Principal.html')
+def cuentas(request):
+    return render(request, 'cuentas.html')
 
 def admin(request):
     return render(request,'admin.html')
@@ -184,8 +187,14 @@ def listasNA(negocioFilter, tipo):
     return lista_negocios
     
 
-def carga_excel(request):
-    return render(request, 'carga_excel.html')
+class carga_excel(View):
+    
+    def get(self,request):    
+        return render(request, 'carga_excel.html')
+    
+    def post(self,request):
+        sheet_reader(request.FILES["myfile"])
+        return self.get(request)
 
 def crear_negocio(comprador, vendedor):
     chunks = comprador.split(' ')
@@ -611,8 +620,7 @@ def cargarListasNegociosCerrados(negocioFilter):
         lista_negocios.append(lista)
     return lista_negocios
 
-def carga_excel(request):
-    return render(request, 'carga_excel.html')
+
 
 def crear_negocio(comprador, vendedor):
     chunks = comprador.split(' ')
