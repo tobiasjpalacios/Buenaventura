@@ -63,6 +63,7 @@ class Proveedor(Empleado):
 
 
 class Empresa(models.Model):
+    objects = SearchManager()
     razon_social = models.CharField(max_length=50)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
@@ -75,6 +76,14 @@ class Empresa(models.Model):
         null=True)
     domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
     retenciones = models.ManyToManyField("Retencion")
+
+    class Meta:
+        search_fields = (
+            'razon_social',
+            'nombre_comercial',
+            'cuit',
+            'categoria_iva',
+        )
 
     def __str__(self):
         return "{}".format(self.razon_social)
@@ -126,7 +135,7 @@ class Telefono(models.Model):
 
 
 class Articulo(models.Model):
-    objects = SearchManager(('marca','ingrediente','concentracion'))
+    objects = SearchManager()
     marca = models.CharField(max_length=50, null=False)
     ingrediente = models.CharField(max_length=200, null=False)
     concentracion = models.CharField(max_length=50)
@@ -140,6 +149,9 @@ class Articulo(models.Model):
         "Empresa",
         on_delete=models.DO_NOTHING,
         related_name="articulos")
+
+    class Meta:
+        search_fields = ('marca','ingrediente','concentracion')
 
     def __str__(self):
         return 'Articulo: {}'.format(self.marca)
