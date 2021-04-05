@@ -1,0 +1,67 @@
+<!------ Modal negocio  ---------->
+
+<div class="modal-content">
+      <div class="row" > <h4>Negocio de {{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4></div>
+      <div class="row">
+      <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
+      <div class="col s6"><span class="">Vendedor {{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</span> </div>
+      <div class="row">
+        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+        <table>
+        <thead>
+          <tr>
+              <th style="display:none" class="auxSem"></th>
+              <th>Item</th>
+              <th>Cant</th>
+              <th>precio</th>
+              <th>Fecha de pago</th>
+              <th>Estado</th>
+              <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+          {% if item.estado == "En Tiempo" %}
+            <tr>
+        {% else %}
+            <tr class="red">
+        {% endif %}
+                <td style="display:none" class="auxSem">
+                    <label id="contenido">
+                        <input type="checkbox" class="filled-in" />
+                        <span></span>
+                    </label>
+                </td>
+                <td>{{item.articulo.ingrediente}}</td>
+                <td>{{item.cantidad}}</td>
+                <td>${{item.precio_venta}}</td>
+                <td>{{item.fecha_pago}}</td>
+                <td>{{item.estado}}</td>
+                <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        
+      </table>
+
+      <form action="# " class="col s12 "  id="campo">
+         <div class="file-field input-field">
+            <div class="btn">
+              <i class="material-icons">attach_file</i>
+              <input type="file">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>
+          </div>
+       </form>
+      <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick="showChangeEstados()"> Cambiar estado </a>
+      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
+      </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+    </div>
+ 

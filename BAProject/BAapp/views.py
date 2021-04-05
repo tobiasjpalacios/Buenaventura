@@ -44,17 +44,13 @@ def cliente(request):
     return render(request, 'cliente.html')
 
 def vendedor(request):
-    
     #Negocios en Procesos
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
-    
     lnr = listasNA(negociosAbiertos, True)
     lnp = listasNA(negociosAbiertos, False)
-    
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
-    
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
@@ -95,9 +91,10 @@ def semaforoVencimiento(negocioFilter):
         fecha_p = propuesta[0][1]
         items = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True).values_list('articulo__ingrediente', 'fecha_pago')
         comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-        vencidos = []
-        esta_semana = []
-        futuros = []
+        id_propuesta = id_prop        
+        vencidos = False
+        esta_semana = False
+        futuros = False
         for a in items:
             diaP = int(a[1][0:2])
             mesP = int(a[1][3:5])
@@ -108,44 +105,72 @@ def semaforoVencimiento(negocioFilter):
             if ((mesA == 12 and mesP == 1) and (difA == 1)):
                 difM = 1
             proxMes = (diaP + 30 - diaA)
-            
             if ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))) and (añoP <= añoA)):
-                vencidos.append(a)
-            #if ((añoP < añoA)):
-            #    vencidos.append(a)
+                vencidos = True
             elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ( (difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
-                esta_semana.append(a)
-            
+                esta_semana = True
             else:
-                futuros.append(a)
+                futuros = True
 
-        if (len(esta_semana) > 0):
+        if (vencidos):
             lista = {
                 'fecha':fecha_p,
-                'items':list(esta_semana),
                 'comprador': comprador,
-                'empresa':negocio.comprador.empresa.razon_social
-            }
-            print (lista)
-            lista_semanas.append(lista)
-        if (len(futuros) > 0):
-            lista = {
-                'fecha':fecha_p,
-                'items':list(futuros),
-                'comprador': comprador,
-                'empresa':negocio.comprador.empresa.razon_social
-            }
-            lista_futuros.append(lista)
-        if (len(vencidos) > 0):
-            lista = {
-                'fecha':fecha_p,
-                'items':list(futuros),
-                'comprador': comprador,
+                'id_propuesta': id_propuesta,
                 'empresa':negocio.comprador.empresa.razon_social
             }
             lista_vencidos.append(lista)
+            
+        elif (esta_semana):
+            lista = {
+                'fecha':fecha_p,
+                'comprador': comprador,
+                'id_propuesta': id_propuesta,
+                'empresa':negocio.comprador.empresa.razon_social
+            }
+            lista_semanas.append(lista)
+            
+        else:
+            lista = {
+                'fecha':fecha_p,
+                'comprador': comprador,
+                'id_propuesta': id_propuesta,
+                'empresa':negocio.comprador.empresa.razon_social
+            }
+            lista_futuros.append(lista)
+            
 
     return lista_vencidos,lista_semanas,lista_futuros
+
+def detalleSemaforo(request):
+    if request.method == 'POST':
+        idProp = request.POST['idProp']
+        propuesta = Propuesta.objects.get(id = idProp)
+        negocio = Negocio.objects.get(id=propuesta.negocio.id)
+        items = ItemPropuesta.objects.filter(propuesta__id = idProp).order_by('fecha_pago')
+        today = date.today()
+        d1 = today.strftime("%d/%m/%Y")
+        diaA = int(d1[0:2])
+        mesA = int(d1[3:5])
+        añoA = int(d1[6:10])
+        for a in items:
+            diaP = int(a.fecha_pago[0:2])
+            mesP = int(a.fecha_pago[3:5])
+            añoP = int(a.fecha_pago[6:10])
+            difD = (diaP - diaA)
+            difM = (mesP - mesA)
+            difA = (añoP - añoA)
+            if ((mesA == 12 and mesP == 1) and (difA == 1)):
+                difM = 1
+            proxMes = (diaP + 30 - diaA)
+            if ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))) and (añoP <= añoA)):
+                a.estado = "Vencido"
+            elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ( (difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
+                a.estado = "En Tiempo"
+            else:
+                a.estado = "En Tiempo"
+        return render (request, 'modalSemaforo.html', {'negocio':negocio, 'propuesta':propuesta,'items':items})
+    return HttpResponse("Dad")
 
 def listaItemsPorVencer(listaNegociosC):
     lista_Items = []

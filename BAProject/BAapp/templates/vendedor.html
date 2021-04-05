@@ -236,7 +236,10 @@ BuenaVentura Agronegocios
   </div>
 
   <!---------------->
-
+  <div id="modalSemaforoNegocio" class="modal">
+    <div id="modalSemaforo" class="modal-content">
+    </div>
+  </div>
   <!------ Modals  ---------->
 
   <div id="alerta" class="modal">
@@ -318,100 +321,7 @@ BuenaVentura Agronegocios
   </div>
 
 
-  <!------ Modal negocio  ---------->
   
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <div class="row"  "> <h4>Negocio de ADAMA de FECHA 2021/05/06</h4></div>
-      <div class="row" ">
-      <div class="col s6"><span class="">Cliente Marcos Juarez</span> </div>
-      <div class="col s6"><span class="">Vendedor Matias Nuñez</span> </div>
-      <div class="row">
-        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
-        <table>
-        <thead>
-          <tr>
-              <th ></th>
-              <th>Item</th>
-              <th>Cant</th>
-              <th>precio</th>
-              <th>Fecha de pago</th>
-              <th>Estado</th>
-              <th></th>
-
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td >
-              <label id="contenido" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>En tiempo</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <label id="contenido1" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>En tiempo</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-          <tr class="red">
-            <td>
-              <label id="contenido2" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>vencido</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger  modal-close red  "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-        </tbody>
-        
-      </table>
-
-      <form action="# " class="col s12 " id="campo">
-         <div class="file-field input-field">
-       <div class="btn">
-      <i class="material-icons">attach_file</i>
-       <input type="file">
-        </div>
-        <div class="file-path-wrapper">
-       <input class="file-path validate" type="text">
-     </div>
-        </div>
-       </form>
-
-      <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick=""> Cambiar estado </a>
-      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
-      
-      </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
-    </div>
-  </div>
   <!------ Modal Articulo ---------->
 
   <div id="modal2" class="modal">
@@ -803,23 +713,24 @@ BuenaVentura Agronegocios
   </div>
   <div class="row">
     <div class=" bloque-izquierdo col l4 red"  >
-      <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
     </div>
     <div class="col l4 bloque-centro yellow" >
-      <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
     </div>
     <div class="col l4 bloque-derecho green">
-      <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
     </div>
     <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger blue "><i class=" small material-icons ">search</i></a></td>
-            </tr>
-           
+            {% for vence in vencidos%}
+              <tr style="border-bottom: 0px;">
+                <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+              </tr>
+            {% endfor %}
           
           </tbody>
         </table>
@@ -833,11 +744,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger red "><i class=" small material-icons ">search</i></a></td>
+            {% for semanal in vencimiento_semanal %}
+            <tr style="border-bottom: 0px; ">  
+                <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
-           
+            {% endfor %}
           
           </tbody>
         </table>
@@ -851,11 +763,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
+          {% for futuro in vencimiento_futuro %}
             <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+                <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
+                <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
-           
+            {% endfor %}
           
           </tbody>
         </table>
@@ -1144,6 +1057,25 @@ BuenaVentura Agronegocios
     $('.tap-target').tapTarget();
   });
            
+  function detalleSemaforo(idProp){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleSemaforo' %}",
+      data: {'idProp':idProp,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalSemaforo").html(data);
+        $('#modalSemaforoNegocio').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function showChangeEstados(){
+    $('.auxSem').show();
+  };
     </script>
 
 {% endblock body %}
