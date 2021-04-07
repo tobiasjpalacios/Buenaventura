@@ -1076,6 +1076,37 @@ BuenaVentura Agronegocios
   function showChangeEstados(){
     $('.auxSem').show();
   };
-    </script>
+
+  function sendFechaPagoSemaforo(){
+    var ids = [];
+    var grid = document.getElementById("tableFechaPagoS");
+    var checkBoxes = grid.getElementsByTagName("INPUT");
+    for (var i = 0; i < checkBoxes.length; i++) {
+        if (checkBoxes[i].checked) {
+            var row = checkBoxes[i];
+            var id = $(row).data("id");
+            ids.push(id);
+        };
+    };
+    var jsonText = JSON.stringify(ids);
+    
+    $.ajax({
+        url: "{% url 'setFechaPagoReal' %}",
+        type: 'POST',
+        data: {'jsonText':jsonText,
+          csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          $('#modalSemaforoNegocio').modal('close'); 
+            M.toast({html: data.result})
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    })      
+  };
+
+  </script>
+
+  
 
 {% endblock body %}

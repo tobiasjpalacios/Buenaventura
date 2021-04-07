@@ -1,7 +1,6 @@
 <!------ Modal negocio  ---------->
-
 <div class="modal-content">
-      <div class="row" > <h4>Negocio de {{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4></div>
+      <div class="row" > <h4>{{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4></div>
       <div class="row">
       <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
       <div class="col s6"><span class="">Vendedor {{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</span> </div>
@@ -19,7 +18,7 @@
               <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tableFechaPagoS">
         {% for item in items %}
           {% if item.estado == "En Tiempo" %}
             <tr>
@@ -28,7 +27,7 @@
         {% endif %}
                 <td style="display:none" class="auxSem">
                     <label id="contenido">
-                        <input type="checkbox" class="filled-in" />
+                        <input type="checkbox" data-id={{item.id}} class="filled-in" id="input_{{item.id}}"/>
                         <span></span>
                     </label>
                 </td>
@@ -41,9 +40,7 @@
             </tr>
           {% endfor %}
         </tbody>
-        
       </table>
-
       <form action="# " class="col s12 "  id="campo">
          <div class="file-field input-field">
             <div class="btn">
@@ -56,7 +53,7 @@
           </div>
        </form>
       <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick="showChangeEstados()"> Cambiar estado </a>
-      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
+      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
       </div>
       </div>
     </div>
@@ -64,4 +61,3 @@
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
     </div>
- 
