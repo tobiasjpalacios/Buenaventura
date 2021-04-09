@@ -55,7 +55,6 @@ def vendedor(request):
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
     #Logistica
     lnl = listaNL(negociosCerrConf)
-    
     #lnnc = Linta de Negocios Rechazados
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)

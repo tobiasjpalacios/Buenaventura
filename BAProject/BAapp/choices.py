@@ -80,10 +80,3 @@ TIPO_DE_NEGOCIO_CHOICES = (
 	("VT","Venta"),
 	("CS","Consignacion"),
 )
-
-ESTADO_ENTREGA_CHOICES = (
-	("TI","En Tiempo"),
-	("ET","En Transito"),
-	("EN","Entregado"),
-	("AT","Atrasado")
-)
