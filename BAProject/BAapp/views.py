@@ -236,7 +236,6 @@ def setLogistica(request):
                 comienzo = True
                 lista_ids.append(int(id_carga))
                 id_carga = ""
-        print (lista_estados, lista_ids)
         today = date.today()
         for a in range(len(lista_estados)):
             id_item = lista_ids[a]
@@ -352,12 +351,20 @@ def setFechaPagoReal(request):
     if request.method == 'POST':
         ourid = request.POST['jsonText']
         lista_ids = []
+        print (ourid)
+        id_carga = ""
         for a in ourid:
-            if (a == "[" or a == "]" or a == ","):
-                pass
+            if (a == '[' ):
+                    pass
+            elif (a == ']'):
+                lista_ids.append(int(id_carga))
+            elif (a != ','):
+                id_carga += str(a)
             else:
-                lista_ids.append(int(a))
+                lista_ids.append(int(id_carga))
+                id_carga = ""
         today = date.today()
+        print (lista_ids)
         for b in lista_ids:
             item = ItemPropuesta.objects.get(id=b)
             item.fecha_real_pago = today
@@ -400,7 +407,6 @@ def calcularVencAtr(a, b):
     difM = (mesP - mesA)
     difA = (añoP - añoA)
     proxMes = (diaP + 30 - diaA)
-    print (difA)
     if ((mesA == 12 and mesP == 1) and (difA == 1)):
         difM = 1
     if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):

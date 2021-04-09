@@ -1138,6 +1138,7 @@ BuenaVentura Agronegocios
         };
     };
     var jsonText = JSON.stringify(ids);
+    
     $.ajax({
         url: "{% url 'setFechaPagoReal' %}",
         type: 'POST',
