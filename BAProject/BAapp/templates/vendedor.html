@@ -728,7 +728,7 @@ BuenaVentura Agronegocios
             {% for vence in vencidos%}
               <tr style="border-bottom: 0px;">
                 <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
-                <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+                <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
               </tr>
             {% endfor %}
           
@@ -747,7 +747,7 @@ BuenaVentura Agronegocios
             {% for semanal in vencimiento_semanal %}
             <tr style="border-bottom: 0px; ">  
                 <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
-                <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+                <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
             {% endfor %}
           
@@ -766,7 +766,7 @@ BuenaVentura Agronegocios
           {% for futuro in vencimiento_futuro %}
             <tr style="border-bottom: 0px; ">
                 <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
-                <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}')" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+                <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
             {% endfor %}
           
@@ -792,48 +792,33 @@ BuenaVentura Agronegocios
     <table>
     <thead>
       <tr>
-          <th> Destinatario </th>
-          <th> Empresa</th>
+          <th>Destinatario </th>
+          <th>Empresa</th>
           <th>Destino</th>
-          <th> Fecha de hoy </th>
+          <th>Fecha de Entrega Programada</th>
           <th>Estado</th>
           <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr class=" yellow">
-        <td>Carlos perez</td>
-        <td>Adama</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title"> En tiempo </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
-      <tr class="ligth-blue">
-        <td>Alan</td>
-        <td>Helm </td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title"> En transito </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-        
-      </tr>
-      <tr class="green"> 
-        <td>Jonathan</td>
-        <td>Lollipop</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title" > entregado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
-      <tr class="red"> 
-        <td>Jonathan</td>
-        <td>Lollipop</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title" > Atrasado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
+      {% for logistica in lista_logistica %}
+        {% if logistica.estado == 'Atrasado' %}
+          <tr class=" red">
+        {% elif logistica.estado == 'Entregado' %}
+          <tr class="green">
+        {% elif logistica.estado == 'En Transito' %}
+          <tr class="ligth-blue">
+        {% else %}
+          <tr class="yellow">
+        {% endif %}
+            <td>{{logistica.destinatario}}</td>
+            <td>{{logistica.empresa}}</td>
+            <td>{{logistica.destino}}</td>
+            <td>{{logistica.fecha}}</td>
+            <td class="card-title">{{logistica.estado}}</td>
+            <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
+          </tr>
+      {% endfor %}
     </tbody>
   </table>
   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
@@ -1057,11 +1042,11 @@ BuenaVentura Agronegocios
     $('.tap-target').tapTarget();
   });
            
-  function detalleSemaforo(idProp){
+  function detalleSemaforo(idProp, ind){
     $.ajax({
       type: 'POST',
       url: "{% url 'detalleSemaforo' %}",
-      data: {'idProp':idProp,
+      data: {'idProp':idProp,'ind':ind,
       csrfmiddlewaretoken: '{{ csrf_token }}'},
       success: function (data) {
         $("#modalSemaforo").html(data);

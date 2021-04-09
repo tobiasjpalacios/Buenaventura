@@ -51,12 +51,130 @@ def vendedor(request):
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
+    #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
+    #Logistica
+    lnl = listaNL(negociosCerrConf)
+    
     #lnnc = Linta de Negocios Rechazados
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
-    return render(request, 'vendedor.html', {'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
-    
+    return render(request, 'vendedor.html', {'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
+
+#Lista Negocios Logistica
+def listaNL(negocioFilter):
+    lista_negocios = []
+    en_tiempo = False
+    en_transito = False
+    entregado = False
+    atrasado = False
+    for a in negocioFilter:
+        negocio = Negocio.objects.get(id=a)
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
+        id_prop = propuesta[0][0]
+        fecha_p = propuesta[0][1]
+        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+        items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
+        destino = ""
+        estado = ""
+        destino_tiempo = ""
+        fecha_tiempo = "00/00/0000"
+        destino_transito = ""
+        fecha_transito = "00/00/0000"
+        destino_entregado = ""
+        fecha_entregado = "00/00/0000"
+        destino_atrasado = ""
+        fecha_atrasado = "00/00/0000"
+        primero_tiempo = True
+        primero_transito = True
+        primero_entregado = True
+        primero_atrasado = True
+        today = date.today()
+        d1 = today.strftime("%d/%m/%Y")
+        for b in items:
+            resultado = calcularVencAtr(b.fecha_entrega, d1)
+            if (b.fecha_real_entrega is not None):
+                #Entregado
+                entregado = True
+                if (primero_entregado):
+                    fecha_entregado = b.fecha_entrega
+                    destino_entregado = b.destino.direccion
+                    primero_entregado = False
+                else:
+                    res = calcularVencAtr(b.fecha_entrega, fecha_entregado)
+                    if (not res):
+                        fecha_entregado = b.fecha_entrega
+                        destino_entregado = b.destino.direccion
+            else:
+                if (resultado):
+                    if (b.fecha_salida_entrega is None):
+                        #En Tiempo
+                        en_tiempo = True
+                        if (primero_tiempo):
+                            fecha_tiempo = b.fecha_entrega
+                            destino_tiempo = b.destino.direccion
+                            primero_tiempo = False
+                        else:
+                            res = calcularVencAtr(b.fecha_entrega, fecha_tiempo)
+                            if (not res):
+                                fecha_tiempo = b.fecha_entrega
+                                destino_tiempo = b.destino.direccion
+                    else:
+                        #En Transito
+                        en_transito = True
+                        if (primero_transito):
+                            fecha_transito = b.fecha_entrega
+                            destino_transito = b.destino.direccion
+                            primero_transito = False
+                        else:
+                            res = calcularVencAtr(b.fecha_entrega, fecha_transito)
+                            if (not res):
+                                fecha_transito = b.fecha_entrega
+                                destino_transito = b.destino.direccion
+                else:
+                    #Atrasado
+                    atrasado = True
+                    if (primero_atrasado):
+                            fecha_atrasado = b.fecha_entrega    
+                            destino_atrasado = b.destino.direccion
+                            primero_atrasado = False
+                    else:
+                        res = calcularVencAtr(b.fecha_entrega, fecha_atrasado)
+                        if (not res):
+                            fecha_atrasado = b.fecha_entrega
+                            destino_atrasado = b.destino.direccion
+        if (atrasado):
+            estado = "Atrasado"
+            destino = destino_atrasado
+            fecha = fecha_atrasado
+        elif (en_tiempo):
+            estado = "En Tiempo"
+            destino = destino_tiempo
+            fecha = fecha_tiempo    
+        elif (en_transito):
+            estado = "En Transito"
+            destino = destino_transito
+            fecha = fecha_transito
+        else:
+            estado = "Entregado"
+            destino = destino_entregado
+            fecha = fecha_entregado
+               
+        lista = {
+            'fecha':fecha,
+            'destinatario': comprador,
+            'destino': destino,
+            'empresa':negocio.comprador.empresa.razon_social,
+            'estado':estado
+        }
+        lista_negocios.append(lista)
+        en_tiempo = False
+        en_transito = False
+        entregado = False
+        atrasado = False
+        
+    return lista_negocios
+
 def listaNC(negocioFilter):
     lista_negocios = []
     for a in negocioFilter:
@@ -106,15 +224,14 @@ def semaforoVencimiento(negocioFilter):
                 proxMes = (diaP + 30 - diaA)
                 if ((mesA == 12 and mesP == 1) and (difA == 1)):
                     difM = 1
-                if ((difA < 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-                    vencidos = True
+                if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
+                    vencidos = True 
                 elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
                     esta_semana = True
                 elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
                     esta_semana = True
                 else:
                     futuros = True
-                
             if (vencidos):
                 lista = {
                     'fecha':fecha_p,
@@ -142,7 +259,6 @@ def semaforoVencimiento(negocioFilter):
             vencidos = False
             esta_semana = False
             futuros = False
-            
     return lista_vencidos,lista_semanas,lista_futuros
 
 def setFechaPagoReal(request):
@@ -171,36 +287,42 @@ def setFechaPagoReal(request):
 def detalleSemaforo(request):
     if request.method == 'POST':
         idProp = request.POST['idProp']
+        ind = request.POST['ind']
         propuesta = Propuesta.objects.get(id = idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
         items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True).order_by('fecha_pago')
         today = date.today()
         d1 = today.strftime("%d/%m/%Y")
-        diaA = int(d1[0:2])
-        mesA = int(d1[3:5])
-        añoA = int(d1[6:10])
         for a in items:
-            diaP = int(a.fecha_pago[0:2])
-            mesP = int(a.fecha_pago[3:5])
-            añoP = int(a.fecha_pago[6:10])
-            difD = (diaP - diaA)
-            difM = (mesP - mesA)
-            difA = (añoP - añoA)
-            proxMes = (diaP + 30 - diaA)
-            if ((mesA == 12 and mesP == 1) and (difA == 1)):
-                difM = 1
-            if ((difA < 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-                a.estado = "Vencido"
-            elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
-                a.estado = "En Tiempo"
-            elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
-                a.estado = "En Tiempo"
+            if (ind == "1"):
+                resultado = calcularVencAtr(a.fecha_pago, d1)
+                if (resultado):
+                    a.estado = "En Tiempo"
+                else:
+                    a.estado = "Vencido"
             else:
-                a.estado = "En Tiempo"       
-
+                a.estado = "En Tiempo"
         return render (request, 'modalSemaforo.html', {'negocio':negocio, 'propuesta':propuesta,'items':items})
     return redirect(render)
 
+def calcularVencAtr(a, b):
+    diaA = int(b[0:2])
+    mesA = int(b[3:5])
+    añoA = int(b[6:10])
+    diaP = int(a[0:2])
+    mesP = int(a[3:5])
+    añoP = int(a[6:10])
+    difD = (diaP - diaA)
+    difM = (mesP - mesA)
+    difA = (añoP - añoA)
+    proxMes = (diaP + 30 - diaA)
+    if ((mesA == 12 and mesP == 1) and (difA == 1)):
+        difM = 1
+    if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
+        return False 
+    else: 
+        return True
+    
 def listaItemsPorVencer(listaNegociosC):
     lista_Items = []
     for a in listaNegociosC:

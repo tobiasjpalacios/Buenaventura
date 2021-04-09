@@ -288,6 +288,20 @@ class ItemPropuesta(models.Model):
         blank=True,
         null=True
         )
+    estado_entrega = models.CharField(
+        max_length=11,
+        choices=ESTADO_ENTREGA_CHOICES,
+        blank=True,
+        null=True
+        )
+    fecha_salida_entrega = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    fecha_real_entrega = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')
