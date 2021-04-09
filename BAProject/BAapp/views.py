@@ -71,7 +71,6 @@ def listaNL(negocioFilter):
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
         id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
         comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
         items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
         destino = ""
@@ -163,6 +162,7 @@ def listaNL(negocioFilter):
             'fecha':fecha,
             'destinatario': comprador,
             'destino': destino,
+            'id_prop':id_prop,
             'empresa':negocio.comprador.empresa.razon_social,
             'estado':estado
         }
@@ -171,8 +171,93 @@ def listaNL(negocioFilter):
         en_transito = False
         entregado = False
         atrasado = False
-        
     return lista_negocios
+
+def detalleLogistica(request):
+    if request.method == 'POST':
+        idProp = request.POST['idProp']
+        propuesta = Propuesta.objects.get(id = idProp)
+        negocio = Negocio.objects.get(id=propuesta.negocio.id)
+        negocio.fecha_aux = propuesta.timestamp
+        items = ItemPropuesta.objects.filter(propuesta__id = idProp)
+        today = date.today()
+        d1 = today.strftime("%d/%m/%Y")
+        for b in items:
+            b.estados = ('Atrasado', 'En Tiempo', 'Entregado', 'Aceptado')
+            resultado = calcularVencAtr(b.fecha_entrega, d1)
+            if (b.fecha_real_entrega is not None):
+                #Entregado
+                b.estado = 'Entregado'
+                b.estados = ('Atrasado', 'En Tiempo', 'Transito')
+            else:
+                if (resultado):
+                    if (b.fecha_salida_entrega is None):
+                        #En Tiempo
+                        b.estado = 'En Tiempo'
+                        b.estados = ('Transito', 'Entregado','Atrasado')
+                        
+                    else:
+                        #En Transito
+                        b.estado = 'Transito'
+                        b.estados = ('Entregado','Atrasado','En Tiempo')
+                        
+                else:
+                    #Atrasado
+                    b.estado = 'Atrasado'
+                    b.estados = ('En Tiempo','Transito', 'Entregado')
+
+        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items})
+    return render (request, 'modalLogistica.html')
+
+def setLogistica(request):
+    data = {
+        'result' : 'Error, la operacion fracaso.'
+    }
+    if request.method == 'POST':
+        ourid = request.POST['jsonText']
+        lista_estados = []
+        lista_ids = []
+        comienzo = True
+        id_carga = "" 
+        ourid2 = ourid.replace('"', '')
+        print (ourid2)
+        #[3-7,1-9]
+        for a in ourid2:
+            if (a == '[' or a == '-'):
+                pass
+            elif (a == ']'):
+                lista_ids.append(int(id_carga))
+            elif (comienzo):
+                lista_estados.append(int(a))
+                comienzo = False
+            elif (a != ','):
+                id_carga += str(a)
+            else:
+                comienzo = True
+                lista_ids.append(int(id_carga))
+                id_carga = ""
+        print (lista_estados, lista_ids)
+        today = date.today()
+        for a in range(len(lista_estados)):
+            id_item = lista_ids[a]
+            item = ItemPropuesta.objects.get(id=id_item)
+            estado = lista_estados[a]
+            print (estado, item.articulo.ingrediente)
+            if (estado == 1 or estado == 4):
+                item.fecha_real_entrega = None
+                item.fecha_salida_entrega = None
+            elif (estado == 2):
+                item.fecha_real_entrega = None
+                item.fecha_salida_entrega = today
+            else:
+                item.fecha_real_entrega = today
+            item.save()
+
+        data = {
+            'result' : 'Estados cargados con exito.'
+        }
+        return JsonResponse(data)
+    return JsonResponse(data)
 
 def listaNC(negocioFilter):
     lista_negocios = []
@@ -315,6 +400,7 @@ def calcularVencAtr(a, b):
     difM = (mesP - mesA)
     difA = (añoP - añoA)
     proxMes = (diaP + 30 - diaA)
+    print (difA)
     if ((mesA == 12 and mesP == 1) and (difA == 1)):
         difM = 1
     if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
