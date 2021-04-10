@@ -631,7 +631,8 @@ class ProveedorView(View):
         form = ProveedorForm(request.POST, instance=proveedor)
         if form.is_valid():
             proveedor = form.save()
-            return redirect('proveedor', pk=proveedor.pk)
+            print("here")
+            return redirect('admin')
         return render(request, 'proveedor.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
@@ -663,7 +664,7 @@ class CompradorView(View):
         form = CompradorForm(request.POST, instance=comprador)
         if form.is_valid():
             comprador = form.save()
-            return redirect("comprador", pk=comprador.pk)
+            return redirect("admin")
         return render(request, 'comprador.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
@@ -1045,69 +1046,6 @@ class ArticuloView(View):
         return HttpResponse(code=200)
 
 
-
-class ListProveedorView(View):
-    def get(self, request, *args, **kwargs):
-        all_proveedores = Proveedor.objects.all()
-        return render(request, 'consultar_proveedor.html', {'proveedores':all_proveedores})    
-
-
-class ProveedorView(View):
-    def get(self, request, *args, **kwargs):
-        context = {
-        "form": ProveedorForm()}
-        if ("pk" in kwargs):
-            context["proveedor"] = Proveedor.objects.get(pk=kwargs["pk"])
-            context["form"] = ProveedorForm(instance=context["proveedor"])
-        return render(request, 'proveedor.html', context)
-
-    def post(self, request, *args, **kwargs):
-        proveedor = None
-        if ("pk" in kwargs):
-            proveedor = Proveedor.objects.get(pk=kwargs["pk"])
-        form = ProveedorForm(request.POST, instance=proveedor)
-        if form.is_valid():
-            proveedor = form.save()
-            return redirect('proveedor', pk=proveedor.pk)
-        return render(request, 'proveedor.html', context={"form":form})
-
-    def delete(self, request, *args, **kwargs):
-        proveedor = Proveedor.objects.get(pk=kwargs["pk"])
-        proveedor.delete()
-        return HttpResponse(code=200)
-
-
-
-class ListCompradorView(View):
-    def get(self, request, *args, **kwargs):
-        all_compradores = Comprador.objects.all()
-        return render(request, 'consultar_comprador.html', {'compradores':all_compradores})    
-
-
-class CompradorView(View):
-    def get(self, request, *args, **kwargs):
-        context = {
-        "form": CompradorForm()}
-        if ("pk" in kwargs):
-            context["comprador"] = Comprador.objects.get(pk=kwargs["pk"])
-            context["form"] = CompradorForm(instance=context["comprador"])
-        return render(request, 'comprador.html', context)
-
-    def post(self, request, *args, **kwargs):
-        comprador = None
-        if ("pk" in kwargs):
-            comprador = Comprador.objects.get(pk=kwargs["pk"])
-        form = CompradorForm(request.POST, instance=comprador)
-        if form.is_valid():
-            comprador = form.save()
-            return redirect("comprador", pk=comprador.pk)
-        return render(request, 'comprador.html', context={"form":form})
-
-    def delete(self, request, *args, **kwargs):
-        comprador = Comprador.objects.get(pk=kwargs["pk"])
-        comprador.delete()
-        return HttpResponse(status=200)
-
 class ListPresupuestoView(View):
     def get(self, request, *args, **kwargs):
         all_presupuestos = Presupuesto.objects.all()
@@ -1131,7 +1069,7 @@ class PresupuestoView(View):
         form = PresupuestoForm(request.POST, instance=presupuesto)
         if form.is_valid():
             presupuesto = form.save()
-            return redirect('presupuesto', pk=presupuesto.pk)
+            return redirect('admin')
         return render(request, 'presupuesto.html', context={"form":form})
 
     def delete(self, request, *args, **kwargs):
@@ -1262,8 +1200,8 @@ class EmpresaView(View):
         context = {
         "form": EmpresaForm()}
         if ("pk" in kwargs):
-            context["empresa"] = Empresa.objects.get(pk=kwargs["pk"])
-            context["form"] = EmpresaForm(instance=context["empresa"])
+            instance = get_object_or_404(Empresa, pk=kwargs["pk"])
+            context["form"] = EmpresaForm(instance=instance)
         return render(request, 'empresa.html', context)
 
     def post(self, request, *args, **kwargs):

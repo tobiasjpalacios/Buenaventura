@@ -45,81 +45,22 @@ BuenaVentura Agronegocios
           </div>
         </div>
         <div>
-          {{ form.non_field_errors }}
-          
-          <div class="input-field col s6">
-            {{ form.nombre.errors }}
-            <label for="{{ form.nombre.id_for_label }}">Nombre</label>
-            {{form.nombre}}
-          </div>
+        {{ form.non_field_errors }}
+        <div class="input-field col s6">
+          {{ form.persona.errors }}
+          <span>Persona</span>
+          {{form.persona}}
+        </div>
 
-          <div class="input-field col s6">
-            {{ form.apellido.errors }}
-            <label for="{{ form.apellido.id_for_label }}">Apellido</label>
-            {{form.apellido}}
-          </div>
-
-          <div class="input-field col s6">
-            {{ form.dni.errors }}
-            <label for="{{ form.dni.id_for_label }}">D.N.I.</label>
-            <input name="{{form.dni.name}}" id="{{ form.dni.id_for_label }}" type="number" min="0" class="validate">
-          </div>
-          
-          <div class="input-field col s6">
-            {{ form.telefono.errors }}
-            <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
-            <input name="{{form.telefono.name}}" id="{{ form.telefono.id_for_label }}" type="text" class="validate">
-          </div>
-
-          <div class="input-field col s12">
-            {{ form.email.errors }}
-            <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
-            {{form.email}}
-          </div>
-          
-          
-          <div class="input-field col s6">
-            {{ form.fecha_nacimiento.errors }}
-            <label for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento</label>
-            {{form.fecha_nacimiento}}
-          </div>
-          
-          <div class="input-field col s6">
-            {{ form.sexo.errors }}
-            <label class="active" for="{{ form.nombre.id_for_label }}">Sexo</label>
-            {{form.sexo}}
-          </div>
-          
-          <div class="input-field col s6">
-            {{ form.user.errors }}
-            <label class="active" for="{{ form.nombre.id_for_label }}">Usuario</label>
-            {{form.user}}
-          </div>
-                    
-          <div class="input-field col s6">
-            {{ form.codigo.errors }}
-            <label for="{{ form.codigo.id_for_label }}">Código</label>
-            <input name="{{form.codigo.name}}" id="{{ form.codigo.id_for_label }}" type="number" min="0" class="validate">
-          </div>
-                    
-          <div class="input-field col s6">
-            {{ form.cuil_cuit.errors }}
-            <label for="{{ form.cuil_cuit.id_for_label }}">CUIL/CUIT</label>
-            {{form.cuil_cuit}}
-          </div>
-                    
-          <div class="input-field col s6">
-            {{ form.categoria_iva.errors }}
-            <label class="active" for="{{ form.categoria_iva.id_for_label }}">Categoria IVA</label>
-            {{form.categoria_iva}}
-          </div>
-                    
-          <div class="input-field col s12">
-            {{ form.cuenta_contable.errors }}
-            <label for="{{ form.cuenta_contable.id_for_label }}">Cuenta Contable</label>
-           <input name="{{form.cuenta_contable.name}}" id="{{ form.cuenta_contable.id_for_label }}" type="number" min="0" class="validate">
-          </div>
-          
+        <div class="input-field col s6">
+          {{ form.empresa.errors }}
+            <span>Empresa</span>
+          {{form.empresa}}
+        </div>
+        <div class="input-field col s6">
+          {{ form.fecha_nacimiento.errors }}
+          <span>Fecha de nacimiento</span>
+          {{form.fecha_nacimiento}}
         </div>
         <div class="row">
           <div class="input-field col s6 offset-s3">

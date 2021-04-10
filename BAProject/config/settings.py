@@ -83,6 +83,11 @@ DATABASES = {
         'OPTIONS':{
             'read_default_file': str(BASE_DIR.joinpath('config/mariadb.conf'))
         },
+        'NAME': 'Buenaventura',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

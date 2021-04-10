@@ -8,18 +8,18 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}  
-  <div class="container">
-    <table class="centered bordered">
+      <input type="text" id="myInput" onkeyup="filter()" placeholder="Buscar empresa..">
+
+    <table id="empresasTable" class="centered bordered">
       <thead>
         <tr>
             <th>Razon social</th>
-            <th>cuit</th>
-<!--             <th>ingresos_brutos</th>
-            <th>exclusion_ret</th>
-            <th>fecha_exclusion</th> -->
+            <th>Cuit</th>
+            <th>Ingresos brutos</th>
+            <th>Fecha exclusion</th>
             <th>Categoria iva</th>
             <th>Domicilio fiscal</th>
-<!--             <th>retenciones</th> -->
+            <th>retenciones</th>
             
 
         </tr>
@@ -29,20 +29,21 @@ BuenaVentura Agronegocios
           <tr>
             <td>{{ empresa.razon_social }}</td>
             <td>{{ empresa.cuit }}</td>
- <!--            <td>{{ empresa.ingresos_brutos }}</td>
-            <td>{{ empresa.exclusion_ret }}</td>
-            <td>{{ empresa.fecha_exclusion|date:"M d, Y" }}</td> -->
+            <td>{{ empresa.ingresos_brutos }}</td>
+            <td>{{ empresa.fecha_exclusion|date:"M d, Y" }}</td>
             <td>{{ empresa.categoria_iva }}</td>
             <td>{{ empresa.domicilio_fiscal }}</td>
-           <!--  <td> 
+            <td> 
               {% for retencion in empresa.retenciones.all %}
                   {{retencion}} 
               {% endfor %}
-            </td> -->
+            </td>
             {% if user.is_superuser %}
               <th>
                 <div>
-                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer('{{empresa}}')"><i class="material-icons">remove_red_eye</i></a>
+                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer(
+                                                                                      '{{ empresa.razon_social }},{{ empresa.cuit }},{{ empresa.ingresos_brutos }},{{ empresa.fecha_exclusion|date}}, {{ empresa.categoria_iva }},{{ empresa.domicilio_fiscal }}, {{empresa.retenciones.all}}')"
+                  ><i class="material-icons">remove_red_eye</i></a>
                   <a class='btn-small waves-effect waves-light green' href="{% url 'empresa' empresa.pk %}"><i class="material-icons">edit</i></a>
                   <a class='btn-small waves-effect waves-light red' 
                     onclick="abrirmodal('{{ empresa.id }}', '{{ empresa.razon_social }}, cuit: {{empresa.cuit }}')"><i class="material-icons">delete</i></a>
@@ -52,7 +53,6 @@ BuenaVentura Agronegocios
         {% endfor %}
       </tbody>
     </table>
-  </div>
 
 <!-- Modal Structure -->
   <div id="delete" class="modal">
@@ -68,36 +68,26 @@ BuenaVentura Agronegocios
 
    <div id="datos" class="modal">
     <div class="modal-content">
-          <table class="centered bordered">
-      <thead>
-        <tr>
+      <table class="centered bordered">
+        <thead>
+          <tr>
             <th>Razon social</th>
-            <th>cuit</th>
+            <th>Cuit</th>
             <th>Ingresos brutos</th>
-            <th>Exclusion ret</th>
             <th>Fecha exclusion</th>
             <th>Categoria iva</th>
             <th>Domicilio fiscal</th>
-            <th>Retenciones</th>
-        </tr>
-      </thead>
-        <tbody>
-        {% for empresa in empresas %}
-          <tr>
-            <td>{{ empresa.razon_social }}</td>
-            <td>{{ empresa.cuit }}</td>
-            <td>{{ empresa.ingresos_brutos }}</td>
-            <td>{{ empresa.exclusion_ret }}</td>
-            <td>{{ empresa.fecha_exclusion|date:"M d, Y" }}</td>
-            <td>{{ empresa.categoria_iva }}</td>
-            <td>{{ empresa.domicilio_fiscal }}</td>
-            <td> 
-              {% for retencion in empresa.retenciones.all %}
-                  {{retencion}} 
-              {% endfor %}
-            </td>
           </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+          <tr>
+            <td id="modal-razon_social"></td>
+            <td id="modal-cuit"></td>
+            <td id="modal-ingresos_brutos"></td>
+            <td id="modal-fecha_exclusion"></td>
+            <td id="modal-categoria_iva"></td>
+            <td id="modal-domicilio_fiscal"></td>
+          </tr>
       </tbody>
     </table>
     </div>
@@ -107,30 +97,66 @@ BuenaVentura Agronegocios
   </div>
 
 <script type="text/javascript">
-  var currentId;
-  function abrirmodal(id, name){
-    $("#removeEmpresa")[0].innerText = name;
-    currentId = id;
-    $("#delete").modal('open');
-  }
+var currentId;
+function abrirmodal(id, name){
+  $("#removeEmpresa")[0].innerText = name;
+  currentId = id;
+  $("#delete").modal('open');
+}
 
-  function eliminarEmpresa(){
-    headers = {}
-    headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
-    fetch("/empresa/"+currentId, 
-      {
-        method: 'delete',
-        "headers": headers
-      }
-    ).then( function(result){
-      location.reload();
+function eliminarEmpresa(){
+  headers = {}
+  headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
+  fetch("/empresa/"+currentId, 
+    {
+      method: 'delete',
+      "headers": headers
     }
-    )
+  ).then( function(result){
+    location.reload();
   }
+  )
+}
 
-  function modalVer(empresa){
-    $("#datos").modal('open');
+function modalVer(empresa){
+  $("#datos").modal('open');
+  data = empresa.split(",")
+  var razon_social = document.getElementById("modal-razon_social");
+  var cuit = document.getElementById("modal-cuit");
+  var ingresos_brutos = document.getElementById("modal-ingresos_brutos");
+  var fecha_exclusion = document.getElementById("modal-fecha_exclusion");
+  var categoria_iva = document.getElementById("modal-categoria_iva");
+  var domicilio_fiscal = document.getElementById("modal-domicilio_fiscal");
+  razon_social.innerText = data[0];
+  cuit.innerText = data[1];
+  ingresos_brutos.innerText = data[2];
+  fecha_exclusion.innerText = data[3];
+  categoria_iva.innerText = data[4];
+  domicilio_fiscal.innerText = data[5];
+
+}
+
+
+function filter() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("empresasTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
   }
-
+}
 </script>
 {% endblock body %}

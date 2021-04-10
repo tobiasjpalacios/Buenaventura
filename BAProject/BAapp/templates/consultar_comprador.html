@@ -19,11 +19,6 @@ BuenaVentura Agronegocios
             <th>Fecha de nacimiento</th>
             <th>Sexo</th>
             <th>Telefono</th>
-            <th>Usuario</th>
-            <th>Codigo</th>
-            <th>Cuil/Cuit</th>
-            <th>Categoria Iva</th>
-            <th>Cuenta contable</th>
         </tr>
       </thead>
       <tbody>
@@ -36,18 +31,13 @@ BuenaVentura Agronegocios
             <td>{{comprador.persona.fecha_nacimiento|date:"M d, Y" }}</td>
             <td>{{comprador.persona.get_sexo_display|title }}</td>
             <td>{{comprador.persona.telefono.numero}}</td>
-            <td>Usuario</td>
-            <td>Codigo</td>
-            <td>{{comprador.empresa.cuit }}</td>
-            <td>{{comprador.empresa.get_categoria_iva_display|title }}</td>
-            <td>Cuenta Contable</td>
             
             {% if user.is_superuser %}
               <th>
                 <div>
                   <a class='btn-small waves-effect waves-light green' href="{% url 'comprador' comprador.pk %}"><i class="material-icons">edit</i></a>
                   <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ comprador.id }}', '{{ comprador.apellido }}, {{comprador.nombre }}')"><i class="material-icons">delete</i></a>
+                    onclick="abrirmodal('{{ comprador.id }},{{ comprador.persona.user.first_name }},{{comprador.persona.user.last_name }}')"><i class="material-icons">delete</i></a>
               </th>
             {% endif %}
           </tr>
@@ -70,8 +60,12 @@ BuenaVentura Agronegocios
 
 <script type="text/javascript">
   var currentId;
-  function abrirmodal(id, name){
-    $("#removeName")[0].innerText = name;
+  function abrirmodal(all_data){
+    var data = all_data.split(",");
+    var id = data[0];
+    var full_name = data[1] + " " + data[2];
+    var span = document.getElementById("removeName");
+    span.innerText = full_name;    
     currentId = id;
     $("#delete").modal('open');
   }

@@ -33,10 +33,14 @@ BuenaVentura Agronegocios
             {% if user.is_superuser %}
               <th>
                 <div>
-                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer('{{proveedor}}')"><i class="material-icons">remove_red_eye</i></a>
+                  <a class='btn-small waves-effect waves-light blue' onclick="modalVer(
+                  '{{proveedor.persona.user.first_name}},{{proveedor.persona.user.last_name}},{{ proveedor.persona.dni }},{{ proveedor.persona.user.email }},{{proveedor.persona.fecha_nacimiento}}, {{proveedor.persona.get_sexo_display}}'
+                  )">
+
+                    <i class="material-icons">remove_red_eye</i></a>
                   <a class='btn-small waves-effect waves-light green' href="{% url 'proveedor' proveedor.pk %}"><i class="material-icons">edit</i></a>
                   <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ proveedor.id }}', '{{ proveedor.apellido }}, {{proveedor.nombre }}')"><i class="material-icons">delete</i></a>
+                    onclick="abrirmodal('{{proveedor.id}},{{proveedor.persona.user.first_name}},{{proveedor.persona.user.last_name}}')"><i class="material-icons">delete</i></a>
               </th>
             {% endif %}
           </tr>
@@ -68,32 +72,16 @@ BuenaVentura Agronegocios
             <th>Email</th>
             <th>Fecha de nacimiento</th>
             <th>Sexo</th>
-            <th>Telefono</th>
-            <th>Usuario</th>
-            <th>Codigo</th>
-            <th>Cuil/Cuit</th>
-            <th>Categoria Iva</th>
-            <th>Cuenta contable</th>
         </tr>
       </thead>
       <tbody>
           <tr>
-            <p><span id="nombre"></span></p>
-            <td><span id="apellido"></span></td>
-            <td><span id="dni"></span></td>
-            <td><span id="email"></span></td>
-            <td><span id="fecha"></span></td>
-            <td><span id="sexo"></span></td>
-            <td><span id="telefono"></span></td>
-            <td><span id="codigo"></span></td>
-            <td><span id="fax"></span></td>
-            <td><span id="cuil_cuit"></span></td>
-            <td><span id="codigo_cta"></span></td>
-            <td><span id="saldo_inicial"></span></td>
-            <td><span id="alicuota"></span></td>
-            <td><span id="sujeto_retencion"></span></td>
-            <td><span id="categoria_iva"></span></td>
-            <td><span id="cuenta_contable"></span></td>
+            <td id="nombre"></td>
+            <td id="apellido"></td>
+            <td id="dni"></td>
+            <td id="email"></td>
+            <td id="fecha_nacimiento"></td>
+            <td id="sexo"></td>
           </tr>
       </tbody>
     </table>
@@ -105,8 +93,12 @@ BuenaVentura Agronegocios
 
 <script type="text/javascript">
   var currentId;
-  function abrirmodal(id, name){
-    $("#removeName")[0].innerText = name;
+  function abrirmodal(all_data){
+    var data = all_data.split(",");
+    var id = data[0];
+    var full_name = data[1] + " " + data[2];
+    var span = document.getElementById("removeName");
+    span.innerText = full_name;
     currentId = id;
     $("#delete").modal('open');
   }
@@ -126,7 +118,21 @@ BuenaVentura Agronegocios
   }
 
   function modalVer(proveedor){
-    console.log(proveedor);
+    $("#datos").modal('open');
+    var data = proveedor.split(",");
+    var nombre = document.getElementById("nombre");
+    var apellido = document.getElementById("apellido");
+    var dni = document.getElementById("dni");
+    var email = document.getElementById("email");
+    var fecha_nacimiento = document.getElementById("fecha_nacimiento");
+    var sexo = document.getElementById("sexo");
+
+    nombre.innerText = data[0];
+    apellido.innerText = data[1];
+    dni.innerText = data[2];
+    email.innerText = data[3];
+    fecha_nacimiento.innerText = data[4];
+    sexo.innerText = data[5];
   }
 
 </script>

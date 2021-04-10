@@ -338,10 +338,6 @@ class Presupuesto(models.Model):
     def __str__(self):
         return 'Propuesta: {}'.format(self.propuesta.id)
 
-    def total(self):
-        return propuesta.calcularPrecio()
-
-
 class Notificacion(models.Model):
     titulo = models.CharField(max_length=255)
     descripcion = models.CharField(
