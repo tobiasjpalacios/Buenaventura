@@ -20,7 +20,8 @@ from datetime import date
 from BAapp.utils.utils import *
 
 def landing_page(request):
-	return render(request, 'Principal.html')
+    return render(request, 'Principal.html')
+
 def cuentas(request):
     return render(request, 'cuentas.html')
 
@@ -947,23 +948,41 @@ class APIArticulos(View):
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
-            articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
 
+            if len(actual.get("Marca").strip()) != 0:
+                articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
+            else:
+                articulo = Articulo.objects.get(marca = "", ingrediente=ingrediente)    
             #quilombo para traer al objecto proveedor
-            get_distribuidor = actual.get("Distribuidor").split(" ")
-            distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
-            distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-            distribuidor_emp = Proveedor.objects.filter(persona_id__in=distribuidor_per).values("empresa_id")
-            distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
-
+            if len(actual.get("Distribuidor").strip()) != 0:
+                get_distribuidor = actual.get("Distribuidor").split(" ")
+                distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
+                distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
+                distribuidor_emp = Proveedor.objects.filter(persona_id__in=distribuidor_per).values("empresa_id")
+                distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
+            else:
+                distribuidor = None
             #traer el objecto tipo de pago
-            tipo_pago = TipoPago.objects.get(nombre=tipo_pago_str)
+            if len(actual.get("Tipo de pago").strip()) != 0:
+                tipo_pago = TipoPago.objects.get(nombre=tipo_pago_str)
+            else:
+                tipo_pago = None
+
+            if len(actual.get("Precio venta").strip()) != 0:
+                precio_venta = actual.get("Precio venta")
+            else:
+                precio_venta = 0.0
+
+            if len(actual.get("Precio compra").strip()) != 0:
+                precio_compra = actual.get("Precio compra")
+            else:
+                precio_compra = 0.0
             item = ItemPropuesta(
                 articulo=articulo, 
                 distribuidor=distribuidor,
                 propuesta=propuesta,
-                precio_venta=actual.get("Precio venta"),
-                precio_compra=actual.get("Precio compra"),
+                precio_venta=precio_venta,
+                precio_compra=precio_compra,
                 cantidad=actual.get("Cantidad"),
                 divisa=divisa,
                 tipo_pago=tipo_pago,
@@ -973,8 +992,7 @@ class APIArticulos(View):
                 fecha_pago=actual.get("Fecha de pago"),
                 fecha_entrega=actual.get("Fecha de entrega"),)
             item.save()
-        #return JsonResponse(negocio.pk, safe=False)
-        return HttpResponse(status=200)
+        return JsonResponse(negocio.pk, safe=False)
 
 class APIComprador(View):
     def get(self,request):

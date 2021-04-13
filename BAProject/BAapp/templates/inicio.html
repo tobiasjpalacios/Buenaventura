@@ -36,7 +36,7 @@ BuenaVentura Agronegocios
           <b><span class="left-align" id="vendedor">{{ user.get_username }}</span></b><br>
           <span class="left-align">Seleccione un comprador:</span><br>
           <div class="row left-align col s6">
-            <input type="text" id="inputComp" list="datalistComp">
+            <input class ="error" type="text" id="inputComp" list="datalistComp">
             <datalist id="datalistComp"></datalist>
           </div>
           <br>
@@ -142,6 +142,15 @@ var tipo_pago;
 var divisas = ["Dolar", "Pesos"];
 var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
 
+// to validate if inputs are correct
+var isValidated = false;
+var all_ingredientes = [];
+var all_marcas = [];
+var all_distribuidores = [];
+var all_tipoPago = [];
+var all_compradores = []
+var errors = [];
+
   $(document).ready(function(){
   $("#empTable thead tr th").each(function(index){
     if ($(this).text() != "Operaciones"){
@@ -188,8 +197,9 @@ var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2
         var datalistComp = document.getElementById("datalistComp");
         for (var i = 0; i < compradores_data.length; i++) {
             var optionComp = document.createElement('option');
-            optionComp.setAttribute('value',''+compradores_data[i]['usuario']+'');
+            optionComp.setAttribute('value',''+compradores_data[i]['usuario']);
             optionComp.setAttribute('id','option'+i);
+            all_compradores.push(compradores_data[i]['usuario']);
             datalistComp.appendChild(optionComp);        
           }
       }
@@ -280,40 +290,193 @@ function showModal(){
   $('#modal1').modal('open');
 };
 
-function submit(){
-  var dict = [];
-  var empTab = document.getElementById('body');
-  var inputComp = document.getElementById('inputComp');
-  var vendedor = document.getElementById('vendedor');
-  var rowCnt = empTab.rows.length;    // numero de columnas
-   for (var i = 0; i < rowCnt; i++) {
-    var tmp_dict = {};
+function validateData(rowCnt){
+  var inputComprador = document.getElementById("inputComp");
+  if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
+    isValidated = false;
+    var error = "El comprador no puede estar vacio";
+    if (errors.indexOf(error) < 0) {
+      errors.push(error);
+    }
+    inputComprador.style.borderColor = '#CF0029';
+  }else{ 
+    if (all_compradores.indexOf(inputComprador.value)  > -1) {
+      isValidated = true;
+    }else{
+      isValidated = false;
+      var error = "El comprador seleccionado no está dentro de las opciones permitidas";
+      if (errors.indexOf(error) < 0) {
+        errors.push(error);
+      }
+      inputComprador.style.borderColor = '#CF0029';
+    }
+  }
+  for (var i = 0; i < rowCnt; i++) {
     for (var j = 0; j < headers.length; j++) {
       var input = document.getElementById('input'+j+'.'+i+'');
-      var tmp = {};
-      tmp_dict[headers[j]] = input.value;
+      if (j==0) { //ingrediente
+        if (input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = false;
+          var error = "El ingrediente no puede estar vacio";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }else{
+          if (all_ingredientes.indexOf(input.value) > -1) {
+            isValidated = true;
+          }else{
+            isValidated = false;
+            var error = "El ingrediente no está dentro de las opciones permitidas";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
+          }
+        }
+      }else if (j == 1) {
+        if (all_marcas.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          var error = "La marca no está dentro de las opciones permitidas";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }
+      }else if (j == 2) {
+        if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          var error = "El distribuidor seleccionado no está dentro de las opciones permitidas";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }
+      }else if (j == 3) {
+        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true
+        }else{
+          isValidated = false;
+          errors.push("El precio venta debe ser un número");
+          input.style.borderColor = '#CF0029'; 
+        }
+      }else if (j == 4) {
+        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true
+        }else{
+          isValidated = false;
+          var error = "El precio compra debe ser un número";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029'; 
+        }
+      }else if (j == 5) {
+        if (input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = false;
+          var error = "La cantidad no puede estar vacia";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }else{
+          if (!isNaN(input.value)) {
+            isValidated = true
+          }else{
+            isValidated = false;
+            var error = "La cantidad debe ser un número";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029'; 
+          }
+        }
+      }else if (j == 6) {
+        if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          var error = "La divisa seleccionada no está dentro de las opciones permitidas";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }
+      }else if(j == 7){
+        if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          var error = "El tipo de pago seleccionado no está dentro de las opciones permitidas";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+        }
+      }else if(j == 8){
+         if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
+          isValidated = true;
+         }else{
+          isValidated = false;
+          var error = "La tasa seleccionada no está dentro de las opciones permitidas";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029';
+         }
+      }
     }
-    dict.push(tmp_dict);
-   }
-   var aux_dict = {
-      'data':dict,
-      'comprador':inputComp.value,
-      'vendedor':vendedor.value,
-   }
-   console.log(aux_dict);
-   fetch("{% url 'api_articulos' %}",{
-    method:'POST',
-    headers: {
-      [window.drf.csrfHeaderName]:window.drf.csrfToken,
-      'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-    },
-    body: JSON.stringify(aux_dict),
-   }).then(async function(res){
-      var data = await res.json();
-      var url = "{% url 'negocio' "0" %}";
-      url = url.replace('0',data);
-      window.location = url;
-   });
+  }
+  return isValidated;
+};
+
+function submit(){
+  var empTab = document.getElementById('body');
+  var rowCnt = empTab.rows.length;
+  if (validateData(rowCnt)) {
+    var dict = [];
+    var inputComp = document.getElementById('inputComp');
+    var vendedor = document.getElementById('vendedor');
+     for (var i = 0; i < rowCnt; i++) {
+      var tmp_dict = {};
+      for (var j = 0; j < headers.length; j++) {
+        var input = document.getElementById('input'+j+'.'+i+'');
+        var tmp = {};
+        tmp_dict[headers[j]] = input.value;
+      }
+      dict.push(tmp_dict);
+     }
+     var aux_dict = {
+        'data':dict,
+        'comprador':inputComp.value,
+        'vendedor':vendedor.value,
+     }
+     fetch("{% url 'api_articulos' %}",{
+      method:'POST',
+      headers: {
+        [window.drf.csrfHeaderName]:window.drf.csrfToken,
+        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
+      },
+      body: JSON.stringify(aux_dict),
+     }).then(async function(res){
+        var data = await res.json();
+        var url = "{% url 'negocio' "0" %}";
+        url = url.replace('0',data);
+        window.location = url;
+     });
+  }else{
+    console.log(errors);
+    var print_errors="";
+    for (var i = 0; i < errors.length; i++) {
+      print_errors = print_errors.concat('\n'+errors[i])
+    }
+    swal("Oops!", print_errors, "error");
+    errors = [];
+  }
 };
 
 
@@ -336,6 +499,7 @@ function input_ingrediente(c, rowCnt,td){
   for (var i = 0; i < savings_data.length; i++) {
     var optionIng = document.createElement('option');
     optionIng.setAttribute('value',''+savings_data[i].ingrediente);
+    all_ingredientes.push(savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
 
   }
@@ -359,6 +523,7 @@ function input_marca(c, rowCnt,td){
     var optionMar = document.createElement('option');
     optionMar.setAttribute('value',''+savings_data[i].marca+'');
     optionMar.setAttribute('id','option'+i);
+    all_marcas.push(savings_data[i].marca);
     datalistMar.appendChild(optionMar);        
   }
 }
@@ -380,6 +545,7 @@ function input_distribuidor(c, rowCnt,td){
     var optionDis = document.createElement('option');
     optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
     optionDis.setAttribute('id','option'+i);
+    all_distribuidores.push(distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
     datalistDis.appendChild(optionDis);        
   }
 }
@@ -422,8 +588,9 @@ function input_tipoPago(c, rowCnt,td){
   td.appendChild(datalistPagos);
   for (var i = 0; i < tipo_pago.length; i++) {
     var optionPagos = document.createElement('option');
-    optionPagos.setAttribute('value',''+tipo_pago[i].nombre+'');
+    optionPagos.setAttribute('value',''+tipo_pago[i].nombre);
     optionPagos.setAttribute('id','option'+i);
+    all_tipoPago.push(tipo_pago[i].nombre);
     datalistPagos.appendChild(optionPagos);        
   }
 }
@@ -478,7 +645,7 @@ function desactivarTasa(rowCnt){
   var inputPago = document.getElementById("input7."+rowCnt).value;
   var datalistTasa = document.getElementById("input8."+rowCnt);
   var inputTasa = document.getElementById("input8."+rowCnt);
-  if (inputPago=="CONTADO") {
+  if (inputPago.toLowerCase() =="contado") {
     inputTasa.disabled = true;
     inputTasa.setAttribute("placeholder","/");
   }else if (inputTasa.disabled) {
