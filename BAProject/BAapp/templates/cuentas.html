@@ -35,7 +35,40 @@ BuenaVentura Agronegocios
    font-family: 'Montserrat';
    text-align: center;
  }
+ .barra{
+  background-color: #757474;
+  height: 40px;
+  
+}
 
+
+ /* label color */
+ .input-field label {
+     color: #000;
+   }
+   /* label focus color */
+   .input-field input[type=text]:focus + label {
+     color: #000;
+   }
+   /* label underline focus color */
+   .input-field input[type=text]:focus {
+     border-bottom: 0px solid #000;
+     box-shadow: 0 0px 0 0 #000;
+   }
+   /* valid color */
+   .input-field input[type=text].valid {
+     border-bottom: 1px solid #000;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* invalid color */
+   .input-field input[type=text].invalid {
+     border-bottom: 1px solid #000;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* icon prefix focus color */
+   .input-field .prefix.active {
+     color: #000;
+   }
 </style>
 
 <script>
@@ -64,40 +97,53 @@ BuenaVentura Agronegocios
           
         </ul>
       </div>
-        <div class="col l8">
+        <div class="col l10">
             <div class="inicio" id="inicio">
                 <h4> hola bienvenido a las cuentas </h4>
             </div>
-            <div class="vendedor" id="vendedor">
-                <div class=" titulo  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
+            <div class="vendedor" id="vendedor" >
+                <div class=" titulo  col l8 m10 s8 offset-l2 offset-m1 offset-s1  ">
                     <div  class="">
                       <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="">Vendedor</span>
                     </div>
                   </div>
-                  <form action="{% url 'login' %}" method="POST"  class="col s12">
-                    {%csrf_token%}
+                  <div style="height: 100px;"></div>
+                  <div class="row"> 
+                    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">Datos personales </span> </div>
+                  </div>
+                  
+                  <form action=""   class="col s10 offset-s1">
                     <div class="row">
-                      <div style="border-radius: 2em; background-color: #ffffff ;height:45px;"class="center col s4 offset-s4">
-                        <input style="color:#004e20; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
-                      </div>
-                      <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
-                        <input style="color:#004e20;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
-                      </div>
+                      <div style="border-radius: 2em; background-color: white ;height:45px; border: 2px solid green;"class=" col s3 ">
+                        <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="Nombre" id="user" name="username" type="text"> 
+                      </div>     
+                      <div style="border-radius: 2em; background-color: green ;height:45px; "class=" col s3 offset-s1">
+                        <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="Apellido" id="user" name="username" type="text"> 
+                       </div>
                     </div>
-                    <div class="row">
-                      <div class="center">
-                        <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
-                      </div>
+                   <div class="row">
+                    <div style="border-radius: 2em; background-color: green ;height:45px; "class=" col s12">
+                      <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="email" id="user" name="username" type="text"> 
+                     </div>
+                   </div>
+                   <div class="row">
+                    <div style="border-radius: 2em; background-color: green ;height:45px; "class=" col s4 ">
+                      <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="fecha nacimiento" id="user" name="username" type="text"> 
+                    </div>     
+                    <div style="border-radius: 2em; background-color: green ;height:45px; "class=" col s4 offset-s2">
+                      <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="sexo" id="user" name="username" type="text"> 
+                     </div>
                     </div>
-                    <div class="row">
-                      <div class="center">
-                        <a style = "color: #005221" href="#">¿No sos usuario?</a>
-                        <br>
-                        <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
-                      </div>
-                    </div>
+                  <div class="row">
+                    <div style="border-radius: 2em; background-color: green ;height:45px; "class=" col s4 ">
+                      <input class="input"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="Dni" id="user" name="username" type="text"> 
+                     </div>
+                  </div>
                   </form>
-        </div>
+                
+                </div>
+            </div>
+
 </div>
 
 {%endblock body%}

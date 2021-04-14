@@ -67,7 +67,7 @@
                 <tr>
                   <td>{{ item.articulo.marca }}</td>
                   <td>{{ item.distribuidor }}</td>
-                  <td>{{ item.precio }}</td>
+                  <td class="white-text">{{ item.precio }}</td>
                   <td>{{ item.divisa }}</td>
                   <td>{{ item.cantidad }}</td>
                   <td></td>
@@ -117,7 +117,7 @@
                       
                   </td>
                   <td>
-                    <input type="number" name="precio" step=".01">
+                    <input type="number" name="precio" step=".01" placeholder="{{ item.precio }}">
                   </td>
                   <td>
                     <select name="divisa">

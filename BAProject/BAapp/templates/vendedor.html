@@ -332,7 +332,89 @@ BuenaVentura Agronegocios
       <p>A bunch of text</p>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>
+    </div>
+  </div>
+
+  <!---------------->
+    
+  <!------ Modal Negociios ---------->
+
+  <div id="negocio1" class="modal">
+    <div class="modal-content">
+      <div class="row" > 
+    <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
+      <div class="">
+        <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/logopres.png' %}">Info Negocio</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="row"> 
+    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Datos</span> </div>
+  </div>
+    <table>
+    <thead>
+      <th>Fecha</th>
+      <th>Cliente</th>
+      <th>Comprador</th>
+      <th>distribuidor</th>
+    </thead>
+    <tbody>
+    <td>{{fecha}} fecha</td>
+    <td>{{cliente}} cliente</td>
+    <td>{{vendedor}} vendedor</td>
+    </tbody>
+    </table>
+    <div class="col s12" style="border-bottom: 2px grey solid;"></div>
+  </div>  
+      <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+      <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> Cancelado </span>
+      </div>
+      <div class="row"> 
+        <div class="row"> 
+    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+  </div>
+       <table>
+      <thead>
+        <tr>
+            <th>Item</th>
+            <th>Marca</th>
+            <th>Distribuidor</th>
+            <th>Cant</th>
+            <th>Precio Venta</th>
+            <th>Precio Compra</th>
+            <th>divisa</th>
+            <th>Forma de pago</th>
+            <th></th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+
+          <td>Glifosato</td>
+          <td>ADAMA</td>
+          <td>Carlos juarez</td>
+          <td>200</td>
+          <td>$150 </td>
+          <td>$50 </td>
+          <td>Dolar</td>
+          <td>Contado</td>
+          <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+        </tr>
+       
+       
+      </tbody>
+      
+    </table>
+      </div>
+
+
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>
     </div>
   </div>
 
@@ -416,11 +498,12 @@ BuenaVentura Agronegocios
                     </div>
       </div>
     </div>
+    <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">De Acuerdo</a>
   </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+
   </div>
-</div>
+  
 
 
 <!---------------->
@@ -663,7 +746,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{negocioConf.empresa}} </td>
         <td>{{negocioConf.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light green modal-trigger" href="#negocio1"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -697,7 +780,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">Tecnocampo </td>
         <td>{{negocioNoCerr.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light blue modal-trigger" href="#negocio1"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
