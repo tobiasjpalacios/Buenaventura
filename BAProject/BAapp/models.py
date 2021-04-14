@@ -279,7 +279,8 @@ class ItemPropuesta(models.Model):
     )
     tipo_pago = models.ForeignKey(
             "TipoPago",
-            null=False,
+            null=True,
+            blank = True,
             on_delete=models.DO_NOTHING,
         )
     tasa = models.CharField(
