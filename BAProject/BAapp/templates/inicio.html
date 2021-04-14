@@ -645,11 +645,7 @@ function desactivarTasa(rowCnt){
   var inputPago = document.getElementById("input7."+rowCnt).value;
   var datalistTasa = document.getElementById("input8."+rowCnt);
   var inputTasa = document.getElementById("input8."+rowCnt);
-<<<<<<< HEAD
-  if (inputPago=="Contado") {
-=======
   if (inputPago.toLowerCase() =="contado") {
->>>>>>> a57e10ea57e775dbd87e27bf1de6a52124588d9f
     inputTasa.disabled = true;
     inputTasa.setAttribute("placeholder","/");
   }else if (inputTasa.disabled) {
