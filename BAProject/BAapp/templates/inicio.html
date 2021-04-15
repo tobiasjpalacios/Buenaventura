@@ -291,9 +291,10 @@ function showModal(){
 };
 
 function validateData(rowCnt){
+  var mustFields = false;
   var inputComprador = document.getElementById("inputComp");
   if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
-    isValidated = false;
+    mustFields = false;
     var error = "El comprador no puede estar vacio";
     if (errors.indexOf(error) < 0) {
       errors.push(error);
@@ -301,9 +302,9 @@ function validateData(rowCnt){
     inputComprador.style.borderColor = '#CF0029';
   }else{ 
     if (all_compradores.indexOf(inputComprador.value)  > -1) {
-      isValidated = true;
+      mustFields = true;
     }else{
-      isValidated = false;
+      mustFields = false;
       var error = "El comprador seleccionado no está dentro de las opciones permitidas";
       if (errors.indexOf(error) < 0) {
         errors.push(error);
@@ -316,7 +317,7 @@ function validateData(rowCnt){
       var input = document.getElementById('input'+j+'.'+i+'');
       if (j==0) { //ingrediente
         if (input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = false;
+          mustFields = false
           var error = "El ingrediente no puede estar vacio";
           if (errors.indexOf(error) < 0) {
             errors.push(error);
@@ -324,9 +325,9 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }else{
           if (all_ingredientes.indexOf(input.value) > -1) {
-            isValidated = true;
+            mustFields = true;
           }else{
-            isValidated = false;
+            mustFields = false
             var error = "El ingrediente no está dentro de las opciones permitidas";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
@@ -377,7 +378,7 @@ function validateData(rowCnt){
         }
       }else if (j == 5) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = false;
+          mustFields = false
           var error = "La cantidad no puede estar vacia";
           if (errors.indexOf(error) < 0) {
             errors.push(error);
@@ -385,9 +386,9 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }else{
           if (!isNaN(input.value)) {
-            isValidated = true
+            mustFields = true;
           }else{
-            isValidated = false;
+            mustFields = false;
             var error = "La cantidad debe ser un número";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
@@ -431,7 +432,7 @@ function validateData(rowCnt){
       }
     }
   }
-  return isValidated;
+  return (isValidated && mustFields);
 };
 
 function submit(){
