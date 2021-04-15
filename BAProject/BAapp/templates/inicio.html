@@ -291,10 +291,10 @@ function showModal(){
 };
 
 function validateData(rowCnt){
-  var mustFields = false;
+  var boolComp = false;
   var inputComprador = document.getElementById("inputComp");
   if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
-    mustFields = false;
+    boolComp = false;
     var error = "El comprador no puede estar vacio";
     if (errors.indexOf(error) < 0) {
       errors.push(error);
@@ -302,9 +302,9 @@ function validateData(rowCnt){
     inputComprador.style.borderColor = '#CF0029';
   }else{ 
     if (all_compradores.indexOf(inputComprador.value)  > -1) {
-      mustFields = true;
+      boolComp = true;
     }else{
-      mustFields = false;
+      boolComp = false;
       var error = "El comprador seleccionado no está dentro de las opciones permitidas";
       if (errors.indexOf(error) < 0) {
         errors.push(error);
@@ -313,11 +313,14 @@ function validateData(rowCnt){
     }
   }
   for (var i = 0; i < rowCnt; i++) {
+    var boolIng = false;
+    var boolMar = false;
+    var boolCant = false;
     for (var j = 0; j < headers.length; j++) {
       var input = document.getElementById('input'+j+'.'+i+'');
-      if (j==0) { //ingrediente
+      if (j == 0) { //ingrediente
         if (input.value === null || input.value.match(/^ *$/) !== null) {
-          mustFields = false
+          boolIng = false
           var error = "El ingrediente no puede estar vacio";
           if (errors.indexOf(error) < 0) {
             errors.push(error);
@@ -325,9 +328,9 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }else{
           if (all_ingredientes.indexOf(input.value) > -1) {
-            mustFields = true;
+            boolIng = true;
           }else{
-            mustFields = false
+            boolIng = false;
             var error = "El ingrediente no está dentro de las opciones permitidas";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
@@ -336,16 +339,25 @@ function validateData(rowCnt){
           }
         }
       }else if (j == 1) {
-        if (all_marcas.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "La marca no está dentro de las opciones permitidas";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
+          if (input.value === null || input.value.match(/^ *$/) !== null) {
+            boolMar = false;
+            var error = "La marca no puede estar vacia, si no requiere una en específico seleccione NINGUNA";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
+          }else{
+            if (all_marcas.indexOf(input.value) > -1) {
+              boolMar = true;
+            }else{
+              boolMar = false;
+              var error = "La marca no está dentro de las opciones permitidas";
+              if (errors.indexOf(error) < 0) {
+                errors.push(error);
+              }
+              input.style.borderColor = '#CF0029';
+            }
           }
-          input.style.borderColor = '#CF0029';
-        }
       }else if (j == 2) {
         if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
@@ -359,7 +371,7 @@ function validateData(rowCnt){
         }
       }else if (j == 3) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true
+          isValidated = true;
         }else{
           isValidated = false;
           errors.push("El precio venta debe ser un número");
@@ -367,7 +379,7 @@ function validateData(rowCnt){
         }
       }else if (j == 4) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true
+          isValidated = true;
         }else{
           isValidated = false;
           var error = "El precio compra debe ser un número";
@@ -378,7 +390,7 @@ function validateData(rowCnt){
         }
       }else if (j == 5) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
-          mustFields = false
+          boolCant = false;
           var error = "La cantidad no puede estar vacia";
           if (errors.indexOf(error) < 0) {
             errors.push(error);
@@ -386,9 +398,9 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }else{
           if (!isNaN(input.value)) {
-            mustFields = true;
+            boolCant = true;
           }else{
-            mustFields = false;
+            boolCant = false;
             var error = "La cantidad debe ser un número";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
@@ -432,7 +444,7 @@ function validateData(rowCnt){
       }
     }
   }
-  return (isValidated && mustFields);
+  return (isValidated && boolCant && boolMar && boolIng && boolComp);
 };
 
 function submit(){

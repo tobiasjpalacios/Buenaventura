@@ -138,13 +138,13 @@ class Articulo(models.Model):
     objects = SearchManager()
     marca = models.CharField(max_length=50, null=False)
     ingrediente = models.CharField(max_length=200, null=False)
-    concentracion = models.CharField(max_length=50)
+    concentracion = models.CharField(max_length=50, null=True)
     banda_toxicologica = models.CharField(
         max_length=50,
-        choices=BANDA_TOXICOLOGICA_CHOICES)
+        choices=BANDA_TOXICOLOGICA_CHOICES, null=True)
     descripcion = models.CharField(max_length=50, blank=True, null=True)
-    unidad =  models.CharField(max_length=50, null=False)
-    formulacion = models.CharField(max_length=20, null=False)
+    unidad =  models.CharField(max_length=50, null=True)
+    formulacion = models.CharField(max_length=20, null=True)
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING,
@@ -154,7 +154,7 @@ class Articulo(models.Model):
         search_fields = ('marca','ingrediente','concentracion')
 
     def __str__(self):
-        return 'Articulo: {}'.format(self.marca)
+        return 'Articulo:{} de {}'.format(self.ingrediente, self.marca)
 
 
 class Negocio(models.Model):

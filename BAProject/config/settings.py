@@ -83,11 +83,6 @@ DATABASES = {
         'OPTIONS':{
             'read_default_file': str(BASE_DIR.joinpath('config/mariadb.conf'))
         },
-        'NAME': 'BA',
-        'USER': 'root',
-        'PASSWORD': '3516870752',
-        'HOST': 'localhost',
-        'PORT': '',
     }
 }
 

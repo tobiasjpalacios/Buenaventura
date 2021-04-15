@@ -948,11 +948,8 @@ class APIArticulos(View):
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
+            articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
 
-            if len(actual.get("Marca").strip()) != 0:
-                articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
-            else:
-                articulo = Articulo.objects.get(marca = "", ingrediente=ingrediente)    
             #quilombo para traer al objecto proveedor
             if len(actual.get("Distribuidor").strip()) != 0:
                 get_distribuidor = actual.get("Distribuidor").split(" ")
@@ -1139,7 +1136,7 @@ class NegocioView(View):
             art = {}
             for f in i._meta.get_fields():
                 val = getattr(i,f.name)
-                if (f.is_relation):
+                if (f.is_relation and val):
                     art[f.name] = val.id
                 else:
                     art[f.name] = val
@@ -1169,7 +1166,7 @@ class NegocioView(View):
                 for f in tmp._meta.get_fields():
                     if (f.name=="propuesta" or f.name=='id'):
                         continue
-                    if (f.is_relation):
+                    if (f.is_relation and item[f.name]):
                         obj = get_object_or_404(
                             f.related_model,
                             pk=item[f.name]
