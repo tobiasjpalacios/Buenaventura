@@ -1,0 +1,124 @@
+{% load static %}
+<div class="modal-content">
+    <div class="row" > 
+  <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
+    <div class="">
+      <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/logopres.png' %}">Info Articulo</span>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="row"> 
+  <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Datos</span> </div>
+</div>
+  <table>
+  <thead>
+    <th>Ingrediente</th>
+    <th>Marca</th>
+    <th>Distribuidor</th>
+  </thead>
+  <tbody>
+    <td>{{item.articulo.ingrediente}}</td>
+    <td>{{item.articulo.marca}}</td>
+    <td>Distribuidor xd</td>
+  </tbody>
+  </table>
+  <div class="col s12" style="border-bottom: 2px grey solid;"></div>
+  <table>
+  <thead>
+    <th>Concetracion</th>
+    <th>Banda toxicologica</th>
+    <th>Unidad</th>
+    <th>formulacion</th>
+  </thead>
+  <tbody>
+  <td>{{item.articulo.concentracion}}</td>
+  <td>{{item.articulo.banda_toxicologica}}</td>
+  <td>{{item.articulo.unidad}}</td>
+  <td>{{item.articulo.formulacion}}</td>
+  </tbody>
+  </table>
+  <div style="height: 10px;"></div>
+  <div class="center" style="border: 2px black solid ; border-radius: 6em; height: 60px;">
+  <span class="center"> {{item.articulo.descripcion}} </span>
+  </div>
+</div>  
+    <div class="row"> 
+      <div class="row"> 
+  <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Pagos </span> </div>
+</div>
+     <table>
+    <thead>
+      <tr>
+          <th>Cant</th>
+          <th>Precio Venta</th>
+          <th>Precio Compra</th>
+          <th>divisa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{item.cantidad}}</td>
+        <td>${{item.precio_venta}} </td>
+        <td>${{item.precio_compra}} </td>
+        <td>{{item.divisa}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col s12" style="border-bottom: 2px grey solid;"></div>
+  <table>
+    <thead>
+      <tr>
+          <th>Tipo de pago</th>
+          <th>Tasa</th>
+          <th>Fecha de pago acordada</th>
+          <th>Realizacion del pago</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>{{item.tipo_pago.nombre}}</td>
+        <td>{{item.tasa}}%</td>
+        <td>{{item.fecha_pago}}</td>
+        <td>{{item.fecha_real_pago|date:"d/m/y"}}</td>
+      </tr>
+    </tbody>
+    
+  </table>
+  <div class="col s12" style="border-bottom: 2px grey solid; padding-top: ;"></div>
+  <div style="height: 10px;"></div>
+  <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+    <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{estado_pago}} </span>
+    </div>
+  
+    
+    </div>
+    <div class="row"> 
+    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Logistica</span> </div>
+    </div>
+    <table>
+    <thead>
+      <tr>
+          <th>Destino</th>
+          <th>Fecha entrega</th>
+          <th>Fecha de llegada a destino </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{item.destino.direccion}}</td>
+        <td>{{item.fecha_entrega}} </td>
+        <td>{{item.fecha_real_entrega|date:"d/m/y"}} </td>
+      </tr>
+    </tbody>
+    
+  </table>
+  <div style="height: 10px;"></div>
+  <div class="row" style="border-radius: 2em; background-color: yellow; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+    <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>
+  </div>

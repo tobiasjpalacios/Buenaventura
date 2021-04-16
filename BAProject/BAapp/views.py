@@ -51,6 +51,7 @@ def vendedor(request):
     lnp = listasNA(negociosAbiertos, False)
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    print(negociosCerrConf)
     lnc = listaNC(negociosCerrConf)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -60,6 +61,68 @@ def vendedor(request):
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     return render(request, 'vendedor.html', {'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
+
+def detalleNegocio(request):
+    if request.method == 'POST':
+        idProp = request.POST['idProp']        
+        propuesta = Propuesta.objects.get(id=idProp)
+        negocio = Negocio.objects.get(id=propuesta.negocio.id)
+        resultado = "Cancelado"
+        if (negocio.fecha_cierre is None):
+            if (negocio.tipo):
+                resultado = "Recibido"
+            else:
+                resultado = "Negociando"
+        else:
+            if (negocio.aprobado):
+                resultado = "Confirmado"
+        items = ItemPropuesta.objects.filter(propuesta__id = idProp)        
+        return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
+    return render (request, 'modalDetalleNegocio.html')
+
+def detalleItem(request):
+    if request.method == 'POST':
+        idItem = request.POST['idItem']        
+        item = ItemPropuesta.objects.get(id = idItem)
+        today = date.today()
+        d1 = today.strftime("%d/%m/%Y")
+        resultado = calcularVencAtr(item.fecha_entrega, d1)
+        logistica = "Atrasado"
+        if (item.fecha_real_entrega is not None):
+            #Entregado
+            logistica = "Entregado"
+        else:
+            if (resultado):
+                if (item.fecha_salida_entrega is None):
+                    #En Tiempo
+                    logistica = "En Tiempo"
+                else:
+                    #En Transito
+                    logistica = "En Transito"
+        diaA = int(d1[0:2])
+        mesA = int(d1[3:5])
+        añoA = int(d1[6:10])
+        diaP = int(item.fecha_pago[0:2])
+        mesP = int(item.fecha_pago[3:5])
+        añoP = int(item.fecha_pago[6:10])
+        difD = (diaP - diaA)
+        difM = (mesP - mesA)
+        difA = (añoP - añoA)
+        proxMes = (diaP + 30 - diaA)
+        estado_pago = "Pago"
+        if (item.fecha_real_pago is None):
+            if ((mesA == 12 and mesP == 1) and (difA == 1)):
+                difM = 1
+            if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
+                estado_pago = "Atrasado" 
+            elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
+                estado_pago = "Vence esta Semana"
+            elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
+                estado_pago = "Vence esta Semana"
+            else:
+                estado_pago = "Vencimiento Futuro"
+        return render (request, 'modalDetalleItem.html', {'item':item, 'logistica':logistica, 'estado_pago':estado_pago})
+    return render (request, 'modalDetalleItem.html')
 
 #Lista Negocios Logistica
 def listaNL(negocioFilter):
@@ -242,7 +305,6 @@ def setLogistica(request):
             id_item = lista_ids[a]
             item = ItemPropuesta.objects.get(id=id_item)
             estado = lista_estados[a]
-            print (estado, item.articulo.ingrediente)
             if (estado == 1 or estado == 4):
                 item.fecha_real_entrega = None
                 item.fecha_salida_entrega = None
@@ -272,7 +334,8 @@ def listaNC(negocioFilter):
             'fecha':fecha_p,
             'items':list(items),
             'comprador': comprador,
-            'empresa':negocio.comprador.empresa.razon_social
+            'empresa':negocio.comprador.empresa.razon_social,
+            'id_prop': id_prop
         }
         lista_negocios.append(lista)
     return lista_negocios
@@ -365,7 +428,6 @@ def setFechaPagoReal(request):
                 lista_ids.append(int(id_carga))
                 id_carga = ""
         today = date.today()
-        print (lista_ids)
         for b in lista_ids:
             item = ItemPropuesta.objects.get(id=b)
             item.fecha_real_pago = today
@@ -447,7 +509,8 @@ def listasNA(negocioFilter, tipo):
                 'items':list(items),
                 'comprador': comprador,
                 'empresa':(negocio.comprador.empresa.razon_social),
-                'visto': valor_visto
+                'visto': valor_visto,
+                'id_prop': id_prop
             }
             lista_negocios.append(lista)
         else:
