@@ -245,80 +245,7 @@ BuenaVentura Agronegocios
   <!------ Modals  ---------->
 
   <div id="alerta" class="modal">
-    <div class="modal-content">
-      <h4 class="center">Alerta</h4>
-      <div class="row">
-        <h4 class="left">27/05/2021</h4>
-        <div class="right">  
-        <div class="input-field col s12">
-            
-            <select>
-              <option value=""  selected>Choose your option</option>
-              <option class="selected" value="1">Vencimientos</option>
-              <option value="2">Presupuesto</option>
-              <option value="3">Logistica</option>
-            </select>
-            <label> Tipo de Notificacion</label>
-            </div></div>
-
-           
-            
-            <table class="tablita">
-    <thead>
-      <tr>
-          <th>Fecha</th>
-          <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr>
-        <td>22/05/22</td>
-        <td>
-          <div style="overflow-y: scroll; height: 150px;" >
-          <ol class="collection" start="1">
-          <li class="collection-item" >Glifosato 20% </li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-        </ol>
-      </div>
-      </td>
-        <td class="center">Tecnocampo </td>
-        <td>Juan Perez</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-            <div class="row">
-              <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick=""> Seleccionar un negocio </a>
-              <form class="col s12">
-                <div class="row">
-                  <div class="input-field col s12">
-                    <textarea id="textarea1" class="materialize-textarea"></textarea>
-                    <label for="textarea1">Textarea</label>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-
-      </div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+    <div id="modalAlerta" class="modal-content">
     </div>
   </div>
 
@@ -438,7 +365,7 @@ BuenaVentura Agronegocios
       <li><a href="#id7">Logistica</a></li>
       <li><a href="#id8">Comprobantes</a></li>
       <li><a href="#id8">Mas Opciones </a></li>
-      <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " href="#alerta"> Enviar Alerta</a></li>
+      <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
       
   </ul>
   </div>
@@ -483,10 +410,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center">te llego un pedido de marcos smkith  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_presupuestos%}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} </td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -498,10 +427,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> El pedido de adama marcos juarez esta atrasado  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_logistica_noti %}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} </td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -514,10 +445,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_vencimiento%}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} </td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -569,7 +502,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{preprec.empresa}} </td>
         <td>{{preprec.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{preprec.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -611,7 +544,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{prepneg.empresa}}</td>
         <td>{{prepneg.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{prepneg.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -1021,8 +954,6 @@ BuenaVentura Agronegocios
   
 
   <script>
-
-  
   $(document).ready(function(){
     $('.scrollspy').scrollSpy(); 
   });
@@ -1041,7 +972,13 @@ BuenaVentura Agronegocios
   $(document).ready(function(){
     $('.tap-target').tapTarget();
   });
-  
+ 
+  function searchBuscadorAlerta(){ 
+      var value = $("#inputBuscadorAlerta").val().toLowerCase();
+      $("#tablitaAlerta tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+  };
            
   function detalleSemaforo(idProp, ind){
     $.ajax({
@@ -1090,16 +1027,34 @@ BuenaVentura Agronegocios
     })
   };
 
-  function detalleArticuloNegocio(idItem){
+  function openModalAlerta(){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleAlerta' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalAlerta").html(data);
+        $('#alerta').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function detalleArticuloNegocio(idItem, funOrig){
     $.ajax({
       type: 'POST',
       url: "{% url 'detalleItem' %}",
       data: {'idItem':idItem,
       csrfmiddlewaretoken: '{{ csrf_token }}'},
       success: function (data) {
-        $('#modalDetalleNegocio').modal('close'); 
         $("#modalNegocio").html(data);
-        $('#modalDetalleNegocio').modal('open'); 
+        $('#modalDetalleNegocio').modal('open');
+        if (funOrig == 2){
+          $('#modalDetalleLogistica').modal('close'); 
+        }
+        
       },
       error: function (response) {
           console.log("Error")
@@ -1107,17 +1062,61 @@ BuenaVentura Agronegocios
     })
   };
   
+  function selNegocioModalAlerta(input_sel, id_sel){ 
+    if (input_sel.checked){
+      var tabla = document.getElementById("tableAlertas");
+      var selectRow = tabla.getElementsByTagName("TR");
+      for (var i = 0; i < selectRow.length; i++) {
+        var row = selectRow[i];
+        var id = $(row).data("id");
+        if (id != id_sel){
+          row.style.display ="none";
+        };
+      };
+      $("#divFormSendAlerta").show();
+      $("#inputBuscadorAlerta").hide();
+      $("#btnSendAlerta").show();
+    };
+  };
+
+  function sendAlertaModal(){
+    var titulo = document.getElementById("tituloAlerta").value;
+    var descri = document.getElementById("descriAlerta").value;
+    var categoria = document.getElementById("selectModalAlert").value;
+    $.ajax({
+        url: "{% url 'sendAlerta' %}",
+        type: 'POST',
+        data: {'titulo':titulo,'descri':descri,'categoria':categoria,
+          csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){ 
+            M.toast({html: data.result});
+            $('#modalAlerta').modal('close');
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    });
+  };
 
   function showChangeEstados(){
     $('.auxSem').show();
+    $("#nego").hide();
+    $("#mostrarChgEstSem").hide();
+    $("#confirmarChgEstSem").show();
+  };
+
+  function formAlertaSem(){
+    $("#btnAlertaSem").hide();
+    $("#divFormSendAlertaSemaforo").show();
   };
 
   function ocultarEstadoLog(){
     $(".textEstado").hide();
     $(".selecEstado").show();
-    $("#mostrarEstadoLog").hide(),
-    $("#confirmarEstadoLog").show()
+    $("#mostrarEstadoLog").hide();
+    $("#confirmarEstadoLog").show();
   };
+
   
   function cambiarEstadoLog(){
     var estadosId = [];
@@ -1141,10 +1140,13 @@ BuenaVentura Agronegocios
         estadosId.push(value_log);
     };
     var jsonText = JSON.stringify(estadosId);
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    var descri = document.getElementById("descriAlertaLog").value;
+    var categoria = 2;
     $.ajax({
         url: "{% url 'setLogistica' %}",
         type: 'POST',
-        data: {'jsonText':jsonText,
+        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
           csrfmiddlewaretoken: '{{ csrf_token }}'},
         success: function(data){
           $('#modalDetalleLogistica').modal('close'); 
@@ -1153,10 +1155,14 @@ BuenaVentura Agronegocios
         error: function (data) {
             console.log(data.result)
         }
-    })     
+    });     
   };
 
   function sendFechaPagoSemaforo(){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;
+    var categoria = 3;
+    var idNegocio = document.getElementById("idNegocioSem").value;
     var ids = [];
     var grid = document.getElementById("tableFechaPagoS");
     var checkBoxes = grid.getElementsByTagName("INPUT");
@@ -1168,15 +1174,21 @@ BuenaVentura Agronegocios
         };
     };
     var jsonText = JSON.stringify(ids);
-    
+    var vacio = 0
+    if (ids.length == 0){
+      vacio = 1
+    };
     $.ajax({
         url: "{% url 'setFechaPagoReal' %}",
         type: 'POST',
-        data: {'jsonText':jsonText,
+        data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,'descri':descri,'categoria':categoria, 'vacio':vacio,
           csrfmiddlewaretoken: '{{ csrf_token }}'},
         success: function(data){
-          $('#modalSemaforoNegocio').modal('close'); 
-            M.toast({html: data.result})
+          if (data.estado){
+            $('#modalSemaforoNegocio').modal('close');     
+          } 
+          M.toast({html: data.result});
+          
         },
         error: function (data) {
             console.log(data.result)

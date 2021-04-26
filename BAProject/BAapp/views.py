@@ -44,6 +44,7 @@ def testeo(request):
 def cliente(request):
     return render(request, 'cliente.html')
 
+#Esta funcion muestra todos los componentes del HTML
 def vendedor(request):
     #Negocios en Procesos
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
@@ -51,7 +52,6 @@ def vendedor(request):
     lnp = listasNA(negociosAbiertos, False)
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
-    print(negociosCerrConf)
     lnc = listaNC(negociosCerrConf)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -60,7 +60,36 @@ def vendedor(request):
     #lnnc = Linta de Negocios Rechazados
     negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
-    return render(request, 'vendedor.html', {'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
+    #lpn = Lista Presupuesto Notificaciones
+    lpn = Notificacion.objects.filter(user=request.user, categoria=1)
+    #lln = Lista Logsitica Notificaciones
+    lln = Notificacion.objects.filter(user=request.user, categoria=2)
+    #lvn = Lista Vencimiento Notificaciones
+    lvn = Notificacion.objects.filter(user=request.user, categoria=3)
+    return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
+
+def detalleAlerta(request):
+    if request.method == 'POST':
+        negocio = Negocio.objects.all().order_by('-timestamp')
+        for a in negocio:
+            propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
+            envio = True
+            id_prop = -1
+            for b in propuesta:
+                envio = b.envio_comprador
+                id_prop = b.id
+            a.id_prop = id_prop
+            if (a.fecha_cierre is None):
+                if (envio):
+                    a.estado = "Recibido"
+                else:
+                    a.estado = "En Negociacion"
+            else:
+                if (a.aprobado):
+                    a.estado = "Confirmado"
+                else:
+                    a.estado = "Cancelado"
+        return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
 
 def detalleNegocio(request):
     if request.method == 'POST':
@@ -69,7 +98,7 @@ def detalleNegocio(request):
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
         resultado = "Cancelado"
         if (negocio.fecha_cierre is None):
-            if (negocio.tipo):
+            if (propuesta.envio_comprador):
                 resultado = "Recibido"
             else:
                 resultado = "Negociando"
@@ -212,7 +241,7 @@ def listaNL(negocioFilter):
         elif (en_tiempo):
             estado = "En Tiempo"
             destino = destino_tiempo
-            fecha = fecha_tiempo    
+            fecha = fecha_tiempo
         elif (en_transito):
             estado = "En Transito"
             destino = destino_transito
@@ -220,8 +249,7 @@ def listaNL(negocioFilter):
         else:
             estado = "Entregado"
             destino = destino_entregado
-            fecha = fecha_entregado
-               
+            fecha = fecha_entregado      
         lista = {
             'fecha':fecha,
             'destinatario': comprador,
@@ -273,6 +301,22 @@ def detalleLogistica(request):
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items})
     return render (request, 'modalLogistica.html')
 
+def sendAlerta(request):
+    data = {
+        'result' : 'Error, la operacion fracaso.'
+    }
+    if request.method == 'POST':
+        titulo = request.POST['titulo']
+        descri = request.POST['descri']
+        categoria = request.POST['categoria']
+        notificacion = Notificacion(titulo=titulo,descripcion=descri,categoria=categoria,user=request.user)
+        notificacion.save()
+        data = {
+            'result' : 'Alerta enviada con Exito!'
+        }
+        return JsonResponse(data)
+    return JsonResponse(data)
+
 def setLogistica(request):
     data = {
         'result' : 'Error, la operacion fracaso.'
@@ -284,8 +328,6 @@ def setLogistica(request):
         comienzo = True
         id_carga = "" 
         ourid2 = ourid.replace('"', '')
-        print (ourid2)
-        #[3-7,1-9]
         for a in ourid2:
             if (a == '[' or a == '-'):
                 pass
@@ -414,29 +456,57 @@ def setFechaPagoReal(request):
     }
     if request.method == 'POST':
         ourid = request.POST['jsonText']
-        lista_ids = []
-        print (ourid)
-        id_carga = ""
-        for a in ourid:
-            if (a == '[' ):
-                    pass
-            elif (a == ']'):
-                lista_ids.append(int(id_carga))
-            elif (a != ','):
-                id_carga += str(a)
+        vacio = request.POST['vacio']
+        if (vacio == "0"):
+            lista_ids = []
+            id_carga = ""
+            for a in ourid:
+                if (a == '[' ):
+                        pass
+                elif (a == ']'):
+                    lista_ids.append(int(id_carga))
+                elif (a != ','):
+                    id_carga += str(a)
+                else:
+                    lista_ids.append(int(id_carga))
+                    id_carga = ""
+            today = date.today()
+            for b in lista_ids:
+                item = ItemPropuesta.objects.get(id=b)
+                item.fecha_real_pago = today
+                item.save()
+            titulo = request.POST['titulo']
+            descri = request.POST['descri']
+            categoria = request.POST['categoria']
+            res = 'Fechas de Pago cargados con exito.'
+            estado = True
+            if (titulo != ""):
+                idNegocio = request.POST['idNegocio']
+                idN = int(idNegocio)
+                negocio = Negocio.objects.get(id=idN)
+                user = None
+                print (request.user)
+                print (negocio.comprador.persona.user)
+                print (negocio.vendedor.persona.user)
+                if (negocio.comprador.persona.user == request.user):
+                    user = negocio.vendedor.persona.user
+                else:
+                    user = negocio.comprador.persona.user
+                notificacion = Notificacion(titulo=titulo,descripcion=descri,categoria=categoria,user=user)
+                notificacion.save()
             else:
-                lista_ids.append(int(id_carga))
-                id_carga = ""
-        today = date.today()
-        for b in lista_ids:
-            item = ItemPropuesta.objects.get(id=b)
-            item.fecha_real_pago = today
-            item.save()
+                res = 'Fechas de Pago cargados con exito. Fallo en notificacion, el Titulo no puede estar en blanco.'
+                estado = False
+        else:
+                res = 'Error! No se ha seleccionado ningun item.'
+                estado = False
         data = {
-            'result' : 'Fechas de Pago cargados con exito.'
+            'result' : res,
+            'estado' : estado
         }
         return JsonResponse(data)
     return JsonResponse(data)
+
 
 def detalleSemaforo(request):
     if request.method == 'POST':

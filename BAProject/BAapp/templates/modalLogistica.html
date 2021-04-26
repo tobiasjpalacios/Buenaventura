@@ -42,12 +42,29 @@
                       </select>
                       <label>Materialize Select</label>
                 </td>
-                <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+                <td><a onclick="detalleArticuloNegocio('{{item.id}}', 2)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
             </tr>
         {% endfor %}
     </tbody>
     </table>
     <br>
+    <form class="col s12" id="formSendAlertaLog" action ="#">
+        <div style="display:none" id="divFormSendAlertaLog">
+          <p>Alerta</p>              
+          <div class="row">
+            <div class="input-field col s3">
+              <textarea id="tituloAlertaLog" name="tituloAlertaLog" class="materialize-textarea"></textarea>
+              <label for="titulo">Titulo</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="descriAlertaLog" class="materialize-textarea"></textarea>
+              <label for="descri">Descripcion</label>
+            </div>
+          </div>              
+      </div>
+      </form>
     <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarEstadoLog" onclick="ocultarEstadoLog()"> Cambiar estado </a>
     <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="confirmarEstadoLog" onclick="cambiarEstadoLog()"> Confirmar </a>
     </div>

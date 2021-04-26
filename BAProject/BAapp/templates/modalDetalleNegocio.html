@@ -61,7 +61,7 @@
                     <td>${{item.precio_compra}} </td>
                     <td>{{item.divisa}}</td>
                     <td>{{item.tipo_pago.nombre}}</td>
-                    <td><a onclick="detalleArticuloNegocio('{{item.id}}')" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
+                    <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
                 </tr>
             {% endfor %}
             </tbody>

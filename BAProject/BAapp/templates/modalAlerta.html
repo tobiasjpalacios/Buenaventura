@@ -1,0 +1,80 @@
+<div class="modal-content">
+    <h4 class="center">Alerta</h4>
+    <div class="row">
+      <h4 class="left">27/05/2021</h4>
+      <div class="right">  
+        </div>
+        <input id="inputBuscadorAlerta" placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text">
+        <br><br>
+        <table class="tablita" id="tablitaAlerta">
+          <thead>
+            <tr>
+                <th style="display:none" class="auxSem"></th>
+                <th>Fecha</th>
+                <th>Empresa</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Ver Negociacion</th>
+            </tr>
+          </thead>
+          <tbody id="tableAlertas">
+            {% for negocio in negocios%}
+                <tr data-id={{negocio.id}}>
+                    <td style="display:none" class="auxSem">
+                      <label id="contenido">
+                          <input type="checkbox" onclick="selNegocioModalAlerta(this, '{{negocio.id}}')" data-id={{negocio.id}} class="filled-in" id="input_{{negocio.id}}"/>
+                          <span></span>
+                      </label>
+                    </td>
+                    <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+                    <td> {{negocio.comprador.empresa.razon_social}}</td>
+                    <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                    <td>{{negocio.estado}}</td>
+                    <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="row">
+          <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
+          <form class="col s12" id="formSendAlerta" action ="#">
+            <div style="display:none" id="divFormSendAlerta">
+              <input type="hidden" name="idNegocioAlerta" id="idNegocioAlerta" value={{negocio.id}}> 
+              <div class="row">
+                <div class="input-field col s4">
+                  <select id="selectModalAlert">
+                    <option class="selected" value="1">Vencimientos</option>
+                    <option value="2">Presupuesto</option>
+                    <option value="3">Logistica</option>
+                  </select>
+                  <label> Tipo de Notificacion</label>
+                </div>
+              </div>             
+              <div class="row">
+                <div class="input-field col s3">
+                  <textarea id="tituloAlerta" name="tituloAlerta" class="materialize-textarea"></textarea>
+                  <label for="titulo">Titulo</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <textarea id="descriAlerta" class="materialize-textarea"></textarea>
+                  <label for="descri">Descripcion</label>
+                </div>
+              </div>              
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+    <a href="#!" style="display:none" id="btnSendAlerta" onclick="sendAlertaModal()" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+  </div>
+</div>
+
+<script>
+   $(document).ready(function(){
+    $('select').formSelect();
+  });
+</script>
