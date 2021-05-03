@@ -24,8 +24,8 @@ input[type=number] {
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}   
-{%block body%}
-
+{% block body%}
+{% load auth_extras %}
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 <script>
    $(document).ready(function(){
@@ -348,12 +348,6 @@ BuenaVentura Agronegocios
 
 <!---------------->
                         
-
-
-
-
-
-
 <div class="row " >
   <!------- barra lateral de opciones --------->
   <div class="col hide-on-small-only l2 m3 vl ">
@@ -365,7 +359,9 @@ BuenaVentura Agronegocios
       <li><a href="#id7">Logistica</a></li>
       <li><a href="#id8">Comprobantes</a></li>
       <li><a href="#id8">Mas Opciones </a></li>
-      <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
+      {% if request.user|has_group:"Vendedor" %} 
+        <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
+      {% endif %}
       
   </ul>
   </div>
@@ -460,9 +456,11 @@ BuenaVentura Agronegocios
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
   <!------------- fin de notificaciones---------------------->
-  
-  
+  {% if request.user|has_group:"Proveedor" or  request.user|has_group:"Logistica"%} 
+      
+  {% else %}
   <div id="id1" style="height: 63px;"></div>
+  
   <!---------------------------------Presupuestos titulo ---------------------------------------------->
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -553,7 +551,7 @@ BuenaVentura Agronegocios
   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
   <!------------------------------------------------------------------------------->
-  
+  {% endif %}
   <div id="id2" style="height: 63px;"></div>
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -597,43 +595,47 @@ BuenaVentura Agronegocios
       {% endfor %}
     </tbody>
   </table>
-  <div class="row"> 
-    <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
-  </div>
-  <table>
-    <thead>
-      <tr>
-          <th>Fecha</th>
-          <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
-      </tr>
-    </thead>
+  {% if request.user|has_group:"Logistica"%} 
+      
+  {% else %}
+    <div class="row"> 
+      <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Items</th>
+            <th class="center">Empresa</th>
+            <th>Cliente</th>
+            <th>Ver Negociacion</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      {% for negocioNoCerr in negocios_cerrados_no_confirmados %}
-      <tr>
-        <td>{{negocioNoCerr.fecha|date:"M d, Y"}}</td>
-        <td>
-          <div style="overflow-y: scroll; height: 150px;" >
-          <ol class="collection" start="1">
-            {% for item in negocioNoCerr.items %}
-          <li class="collection-item" >{{item}} </li>
-          {% endfor %}
-        </ol>
-      </div>
-      </td>
-        <td class="center">Tecnocampo </td>
-        <td>{{negocioNoCerr.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light blue modal-trigger" onclick="detalleNegocio('{{negocioNoCerr.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      <tbody>
+        {% for negocioNoCerr in negocios_cerrados_no_confirmados %}
+        <tr>
+          <td>{{negocioNoCerr.fecha|date:"M d, Y"}}</td>
+          <td>
+            <div style="overflow-y: scroll; height: 150px;" >
+            <ol class="collection" start="1">
+              {% for item in negocioNoCerr.items %}
+            <li class="collection-item" >{{item}} </li>
+            {% endfor %}
+          </ol>
+        </div>
+        </td>
+          <td class="center">Tecnocampo </td>
+          <td>{{negocioNoCerr.comprador}}</td>
+          <td><a class="btn-floating btn-small waves-effect waves-light blue modal-trigger" onclick="detalleNegocio('{{negocioNoCerr.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endif %}
 <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
 
-
+{% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -711,7 +713,7 @@ BuenaVentura Agronegocios
     </div>
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
-
+  {% endif %}
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
       <div class="">
@@ -1054,7 +1056,6 @@ BuenaVentura Agronegocios
         if (funOrig == 2){
           $('#modalDetalleLogistica').modal('close'); 
         }
-        
       },
       error: function (response) {
           console.log("Error")

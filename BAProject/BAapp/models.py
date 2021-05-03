@@ -61,6 +61,14 @@ class Proveedor(Empleado):
     class Meta():
         default_related_name = "proveedores"
 
+class Logistica(Empleado):
+    class Meta():
+        default_related_name = "logisticas"
+    
+class Administrador(Empleado):
+    class Meta():
+        default_related_name = "administradores"
+
 
 class Empresa(models.Model):
     objects = SearchManager()

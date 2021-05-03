@@ -1,4 +1,4 @@
-
+{% load auth_extras %}
 <div class="modal-content">
     <h4>{{negocio.comprador.empresa.razon_social}} {{negocio.fechaaux|date:"M d, Y"}}</h4>
     <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
@@ -65,13 +65,17 @@
           </div>              
       </div>
       </form>
-    <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarEstadoLog" onclick="ocultarEstadoLog()"> Cambiar estado </a>
-    <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="confirmarEstadoLog" onclick="cambiarEstadoLog()"> Confirmar </a>
+    {% if request.user|has_group:"Vendedor"%} 
+        <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarEstadoLog" onclick="ocultarEstadoLog()"> Cambiar estado </a>
+    {% endif %}
+    <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="confirmarEstadoLog" onclick="cambiarEstadoLog()"> Confirmar </a>  
     </div>
     </div>
 </div>
 <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+    {% if request.user|has_group:"Vendedor" or request.user|has_group:"Logistica"%} 
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+    {% endif %}
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
 </div>
 

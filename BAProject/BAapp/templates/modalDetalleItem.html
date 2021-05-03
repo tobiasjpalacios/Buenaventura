@@ -1,4 +1,5 @@
 {% load static %}
+{% load auth_extras %}
 <div class="modal-content">
     <div class="row" > 
   <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -15,7 +16,7 @@
   <thead>
     <th>Ingrediente</th>
     <th>Marca</th>
-    <th>Distribuidor</th>
+    <th>Proveedor</th>
   </thead>
   <tbody>
     <td>{{item.articulo.ingrediente}}</td>
@@ -50,17 +51,25 @@
      <table>
     <thead>
       <tr>
-          <th>Cant</th>
-          <th>Precio Venta</th>
-          <th>Precio Compra</th>
+          <th>Cantidad</th>
+          {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
+            <th>Precio Venta</th>
+          {% endif %}
+          {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+            <th>Precio Compra</th>
+          {% endif %}
           <th>divisa</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>{{item.cantidad}}</td>
-        <td>${{item.precio_venta}} </td>
-        <td>${{item.precio_compra}} </td>
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
+          <td>${{item.precio_venta}} </td>
+        {% endif %}
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
+          <td>${{item.precio_compra}} </td>
+        {% endif %}
         <td>{{item.divisa}}</td>
       </tr>
     </tbody>

@@ -1,4 +1,5 @@
 <!------ Modal negocio  ---------->
+{% load auth_extras %}
 <div class="modal-content">
       <div class="row" >
         <h4>{{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4>
@@ -56,31 +57,35 @@
           </div>
        </form>
        -->
-      <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarChgEstSem" onclick="showChangeEstados()"> Cambiar estado </a>
-      <form class="col s12" id="formSendAlertaSem" action ="#">
-        <div style="display:none" id="divFormSendAlertaSemaforo">
-          <input type="hidden" name="idNegocioSem" id="idNegocioSem" value={{negocio.id}}>
-          <p>Alerta</p>               
-          <div class="row">
-            <div class="input-field col s3">
-              <textarea id="tituloAlertaSem" name="tituloAlertaSem" class="materialize-textarea"></textarea>
-              <label for="titulo">Titulo</label>
+       {% if request.user|has_group:"Vendedor" or request.user|has_group:"Administracion"%} 
+        <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarChgEstSem" onclick="showChangeEstados()"> Cambiar estado </a>
+      {% endif %}  
+        <form class="col s12" id="formSendAlertaSem" action ="#">
+          <div style="display:none" id="divFormSendAlertaSemaforo">
+            <input type="hidden" name="idNegocioSem" id="idNegocioSem" value={{negocio.id}}>
+            <p>Alerta</p>               
+            <div class="row">
+              <div class="input-field col s3">
+                <textarea id="tituloAlertaSem" name="tituloAlertaSem" class="materialize-textarea"></textarea>
+                <label for="titulo">Titulo</label>
+              </div>
             </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <textarea id="descriAlertaSem" class="materialize-textarea"></textarea>
+                <label for="descri">Descripcion</label>
+              </div>
+            </div>              
           </div>
-          <div class="row">
-            <div class="input-field col s12">
-              <textarea id="descriAlertaSem" class="materialize-textarea"></textarea>
-              <label for="descri">Descripcion</label>
-            </div>
-          </div>              
-      </div>
-      </form>
-      <a class="waves-effect waves-light btn botonsote green white-text col s12  "style="display:none" id="confirmarChgEstSem" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
+          </form>
+          <a class="waves-effect waves-light btn botonsote green white-text col s12  "style="display:none" id="confirmarChgEstSem" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
       </div>
       </div>
     </div>
    
     <div class="modal-footer">
-      <a href="#!" id="btnAlertaSem" onclick="formAlertaSem()"class="waves-effect waves-green btn-flat">Enviar alerta</a>
+      {% if request.user|has_group:"Vendedor" or request.user|has_group:"Administracion" %} 
+        <a href="#!" id="btnAlertaSem" onclick="formAlertaSem()"class="waves-effect waves-green btn-flat">Enviar alerta</a>  
+      {% endif %}
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
     </div>
