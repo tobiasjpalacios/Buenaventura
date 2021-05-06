@@ -57,7 +57,7 @@
           </div>
        </form>
        -->
-       {% if request.user|has_group:"Vendedor" or request.user|has_group:"Administracion"%} 
+       {% if request.user|has_group:"Vendedor"%} 
         <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarChgEstSem" onclick="showChangeEstados()"> Cambiar estado </a>
       {% endif %}  
         <form class="col s12" id="formSendAlertaSem" action ="#">

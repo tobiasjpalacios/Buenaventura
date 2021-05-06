@@ -111,6 +111,7 @@
       <tr>
           <th>Destino</th>
           <th>Fecha entrega</th>
+          <th>Fecha de Salida</th>
           <th>Fecha de llegada a destino </th>
       </tr>
     </thead>
@@ -118,6 +119,7 @@
       <tr>
         <td>{{item.destino.direccion}}</td>
         <td>{{item.fecha_entrega}} </td>
+        <td>{{item.fecha_salida_entrega|date:"d/m/y"}} </td>
         <td>{{item.fecha_real_entrega|date:"d/m/y"}} </td>
       </tr>
     </tbody>
