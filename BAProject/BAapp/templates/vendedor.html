@@ -408,7 +408,7 @@ BuenaVentura Agronegocios
           <tbody >
             {% for noti in lista_presupuestos%}
               <tr style="border-bottom: 0px; ">
-                <td class="opcion center">{{noti.titulo}} </td>
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
                 <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
@@ -425,7 +425,7 @@ BuenaVentura Agronegocios
           <tbody >
             {% for noti in lista_logistica_noti %}
               <tr style="border-bottom: 0px; ">
-                <td class="opcion center">{{noti.titulo}} </td>
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
                 <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
@@ -443,7 +443,7 @@ BuenaVentura Agronegocios
           <tbody >
             {% for noti in lista_vencimiento%}
               <tr style="border-bottom: 0px; ">
-                <td class="opcion center">{{noti.titulo}} </td>
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
                 <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
@@ -1063,40 +1063,40 @@ BuenaVentura Agronegocios
     })
   };
   
-  function selNegocioModalAlerta(input_sel, id_sel){ 
-    if (input_sel.checked){
-      var tabla = document.getElementById("tableAlertas");
-      var selectRow = tabla.getElementsByTagName("TR");
-      for (var i = 0; i < selectRow.length; i++) {
-        var row = selectRow[i];
-        var id = $(row).data("id");
-        if (id != id_sel){
-          row.style.display ="none";
-        };
-      };
-      $("#divFormSendAlerta").show();
-      $("#inputBuscadorAlerta").hide();
-      $("#btnSendAlerta").show();
-    };
+  function selNegocioModalAlerta(){ 
+    $("#divFormSendAlerta").show();
+    $("#inputBuscadorAlerta").hide();
+    $("#btnSendAlerta").show();
   };
 
   function sendAlertaModal(){
+    var selected = new Array();
+    $('#tableAlertas input[type="checkbox"]:checked').each(function() {
+        selected.push($(this).attr('data-id'));
+    });    
+    var jsonText = JSON.stringify(selected);
     var titulo = document.getElementById("tituloAlerta").value;
-    var descri = document.getElementById("descriAlerta").value;
-    var categoria = document.getElementById("selectModalAlert").value;
-    $.ajax({
-        url: "{% url 'sendAlerta' %}",
-        type: 'POST',
-        data: {'titulo':titulo,'descri':descri,'categoria':categoria,
-          csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: function(data){ 
-            M.toast({html: data.result});
-            $('#modalAlerta').modal('close');
-        },
-        error: function (data) {
-            console.log(data.result)
-        }
-    });
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlerta").value;
+      var categoria = document.getElementById("selectModalAlert").value;
+      $.ajax({
+          url: "{% url 'sendAlertaModal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){             
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#alerta').modal('close');
+              };   
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    };
   };
 
   function showChangeEstados(){
@@ -1106,10 +1106,72 @@ BuenaVentura Agronegocios
     $("#confirmarChgEstSem").show();
   };
 
+  function formAlertaLog(){
+    $("#btnAlertaLog").hide();
+    $("#divFormSendAlertaLog").show();
+    $("#btnsendAlertaLog").show();
+    document.getElementById("idPideAlertaLog").value = 1;
+  };
+
+  function sendAlertaLog(){
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlertaLog").value;
+      var categoria = "Logistica";
+      var idNegocio = document.getElementById("idNegocioLog").value;
+      $.ajax({
+          url: "{% url 'sendAlertaLog' %}",
+          type: 'POST',
+          data: {'titulo':titulo,'descri':descri,'categoria':categoria,'idNegocio':idNegocio,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){ 
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#modalDetalleLogistica').modal('close');
+              };  
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    }
+    
+  };
+
   function formAlertaSem(){
     $("#btnAlertaSem").hide();
     $("#divFormSendAlertaSemaforo").show();
+    document.getElementById("idPideAlertaSem").value = 1;
   };
+  
+  function formAlertaSemCA(origen){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;    
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    $.ajax({
+        url: "{% url 'createAlertaNV' %}",
+        type: 'POST',
+        data: {'titulo':titulo,'descri':descri,
+            'idNegocio':idNegocio,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          console.log(data.result);
+          if (data.estado){
+            if (origen=='Sem'){
+              $('#modalSemaforoNegocio').modal('close');
+            }else{
+              $('#modalDetalleLogistica').modal('close'); 
+            }
+                 
+          } 
+          M.toast({html: data.result});
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    })      
+  }
 
   function ocultarEstadoLog(){
     $(".textEstado").hide();
@@ -1118,36 +1180,40 @@ BuenaVentura Agronegocios
     $("#confirmarEstadoLog").show();
   };
 
-  
   function cambiarEstadoLog(){
-    var estadosId = [];
-    var grid = document.getElementById("tablaLogEstados");
-    var selectInput = grid.getElementsByTagName("SELECT");
-    for (var i = 0; i < selectInput.length; i++) {
-        var estado=1;
-        var row = selectInput[i];
-        var id = $(row).data("id");
-        
-        if (row.value == 'Entregado') {
-          estado = 3
-        } else if (row.value == 'Atrasado') {
-          estado = 4
-        } else if (row.value == 'Transito'){
-          estado = 2
-        } else {
-          estado = 1
-        };
-        var value_log = estado +"-"+ id
-        estadosId.push(value_log);
-    };
-    var jsonText = JSON.stringify(estadosId);
     var titulo = document.getElementById("tituloAlertaLog").value;
     var descri = document.getElementById("descriAlertaLog").value;
-    var categoria = 2;
-    $.ajax({
+    var idPideAlertaLog = document.getElementById("idPideAlertaLog").value;
+    var receptor = document.getElementById("selectModalAlertLog").value;
+    if (idPideAlertaLog == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var estadosId = [];
+      var grid = document.getElementById("tablaLogEstados");
+      var selectInput = grid.getElementsByTagName("SELECT");
+      for (var i = 0; i < selectInput.length; i++) {
+          var estado=1;
+          var row = selectInput[i];
+          var id = $(row).data("id");
+          
+          if (row.value == 'Entregado') {
+            estado = 3
+          } else if (row.value == 'Atrasado') {
+            estado = 4
+          } else if (row.value == 'Transito'){
+            estado = 2
+          } else {
+            estado = 1
+          };
+          var value_log = estado +"-"+ id
+          estadosId.push(value_log);
+      };
+      var jsonText = JSON.stringify(estadosId);
+      console.log(titulo,descri);
+      $.ajax({
         url: "{% url 'setLogistica' %}",
         type: 'POST',
-        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
+        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'receptor':receptor,'envio':idPideAlertaLog,
           csrfmiddlewaretoken: '{{ csrf_token }}'},
         success: function(data){
           $('#modalDetalleLogistica').modal('close'); 
@@ -1156,45 +1222,53 @@ BuenaVentura Agronegocios
         error: function (data) {
             console.log(data.result)
         }
-    });     
+    });
+    }
+         
   };
 
   function sendFechaPagoSemaforo(){
     var titulo = document.getElementById("tituloAlertaSem").value;
     var descri = document.getElementById("descriAlertaSem").value;
-    var categoria = 3;
+    var tocadoAlerta = document.getElementById("idPideAlertaSem").value;
     var idNegocio = document.getElementById("idNegocioSem").value;
-    var ids = [];
-    var grid = document.getElementById("tableFechaPagoS");
-    var checkBoxes = grid.getElementsByTagName("INPUT");
-    for (var i = 0; i < checkBoxes.length; i++) {
-        if (checkBoxes[i].checked) {
-            var row = checkBoxes[i];
-            var id = $(row).data("id");
-            ids.push(id);
-        };
+    if (tocadoAlerta == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var ids = [];
+      var grid = document.getElementById("tableFechaPagoS");
+      var checkBoxes = grid.getElementsByTagName("INPUT");
+      for (var i = 0; i < checkBoxes.length; i++) {
+          if (checkBoxes[i].checked) {
+              var row = checkBoxes[i];
+              var id = $(row).data("id");
+              ids.push(id);
+          };
+      };
+      var jsonText = JSON.stringify(ids);
+      var vacio = 0
+      if (ids.length == 0){
+        vacio = 1
+      };
+      $.ajax({
+          url: "{% url 'setFechaPagoReal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,
+            'descri':descri,'vacio':vacio,'tocadoAlerta':tocadoAlerta,
+              csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){
+            if (data.estado){
+              console.log(data.estado);
+              $('#modalSemaforoNegocio').modal('close');     
+            } 
+            M.toast({html: data.result});
+            
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      })      
     };
-    var jsonText = JSON.stringify(ids);
-    var vacio = 0
-    if (ids.length == 0){
-      vacio = 1
-    };
-    $.ajax({
-        url: "{% url 'setFechaPagoReal' %}",
-        type: 'POST',
-        data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,'descri':descri,'categoria':categoria, 'vacio':vacio,
-          csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: function(data){
-          if (data.estado){
-            $('#modalSemaforoNegocio').modal('close');     
-          } 
-          M.toast({html: data.result});
-          
-        },
-        error: function (data) {
-            console.log(data.result)
-        }
-    })      
   };
 
   </script>

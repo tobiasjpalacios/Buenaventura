@@ -44,25 +44,13 @@
             {% endfor %}
           </tbody>
         </table>
-      <!--
-      <form action="# " class="col s12 "  id="campo">
-         <div class="file-field input-field">
-            <div class="btn">
-              <i class="material-icons">attach_file</i>
-              <input type="file">
-            </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" type="text">
-            </div>
-          </div>
-       </form>
-       -->
        {% if request.user|has_group:"Vendedor"%} 
         <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarChgEstSem" onclick="showChangeEstados()"> Cambiar estado </a>
       {% endif %}  
         <form class="col s12" id="formSendAlertaSem" action ="#">
           <div style="display:none" id="divFormSendAlertaSemaforo">
             <input type="hidden" name="idNegocioSem" id="idNegocioSem" value={{negocio.id}}>
+            <input type="hidden" name="idPideAlertaSem" id="idPideAlertaSem" value="0">     
             <p>Alerta</p>               
             <div class="row">
               <div class="input-field col s3">
@@ -78,13 +66,15 @@
             </div>              
           </div>
           </form>
-          <a class="waves-effect waves-light btn botonsote green white-text col s12  "style="display:none" id="confirmarChgEstSem" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
-      </div>
+          {% if request.user|has_group:"Vendedor" %}
+            <a class="waves-effect waves-light btn botonsote green white-text col s12  "style="display:none" id="confirmarChgEstSem" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
+          {% endif %}
+        </div>
       </div>
     </div>
    
     <div class="modal-footer">
-      {% if request.user|has_group:"Vendedor" or request.user|has_group:"Administracion" %} 
+      {% if request.user|has_group:"Vendedor"%} 
         <a href="#!" id="btnAlertaSem" onclick="formAlertaSem()"class="waves-effect waves-green btn-flat">Enviar alerta</a>  
       {% endif %}
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>

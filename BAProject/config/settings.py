@@ -128,5 +128,5 @@ STATIC_URL = '/static/'
 
 # Login
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'router'
 LOGOUT_REDIRECT_URL = 'home'

@@ -7,6 +7,7 @@ apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
     path('compradores/',APIComprador.as_view() , name="api_comprador"),
     path('distribuidor/',APIDistribuidor.as_view() , name="api_distribuidor"),
+    path('empresa/',APIEmpresa.as_view() , name="api_empresa"),
 ]
 
 urlpatterns = [
@@ -16,7 +17,9 @@ urlpatterns = [
     path('chat/', chat, name="chat"),
     path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
+    path('createAlertaNV/', createAlertaNV, name="createAlertaNV"),
     path('vendedor/', vendedor, name="vendedor"),
+    path('router/', check_user_group_after_login, name="router"),
     path('vistaAdministrador/', vistaAdministrador, name="vistaAdministrador"),
     path('vistaLogistica/', vistaLogistica, name="vistaLogistica"),
     path('vistaProveedor/', vistaProveedor, name="vistaProveedor"),
@@ -26,7 +29,8 @@ urlpatterns = [
     path('detalleLogistica/', detalleLogistica, name="detalleLogistica"),
     path('detalleNegocio/', detalleNegocio, name="detalleNegocio"),
     path('detalleItem/', detalleItem, name="detalleItem"),
-    path('sendAlerta/', sendAlerta, name="sendAlerta"),
+    path('sendAlertaLog/', sendAlertaLog, name="sendAlertaLog"),
+    path('sendAlertaModal/', sendAlertaModal, name="sendAlertaModal"),
     path('setLogistica/', setLogistica, name="setLogistica"),
     path('detalleSemaforo/', detalleSemaforo, name="detalleSemaforo"),
     path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),   

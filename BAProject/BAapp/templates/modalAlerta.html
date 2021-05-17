@@ -22,7 +22,7 @@
                 <tr data-id={{negocio.id}}>
                     <td style="display:none" class="auxSem">
                       <label id="contenido">
-                          <input type="checkbox" onclick="selNegocioModalAlerta(this, '{{negocio.id}}')" data-id={{negocio.id}} class="filled-in" id="input_{{negocio.id}}"/>
+                          <input type="checkbox" onclick="selNegocioModalAlerta()" data-id={{negocio.id}} class="filled-in" id="input_{{negocio.id}}"/>
                           <span></span>
                       </label>
                     </td>
@@ -37,15 +37,16 @@
         </table>
         <div class="row">
           <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
+          <br>
           <form class="col s12" id="formSendAlerta" action ="#">
             <div style="display:none" id="divFormSendAlerta">
               <input type="hidden" name="idNegocioAlerta" id="idNegocioAlerta" value={{negocio.id}}> 
               <div class="row">
                 <div class="input-field col s4">
                   <select id="selectModalAlert">
-                    <option class="selected" value="1">Vencimientos</option>
-                    <option value="2">Presupuesto</option>
-                    <option value="3">Logistica</option>
+                    <option class="selected" value="Vencimiento">Vencimientos</option>
+                    <option value="Presupuesto">Presupuesto</option>
+                    <option value="Logistica">Logistica</option>
                   </select>
                   <label> Tipo de Notificacion</label>
                 </div>
@@ -69,7 +70,7 @@
     </div>
   <div class="modal-footer">
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-    <a href="#!" style="display:none" id="btnSendAlerta" onclick="sendAlertaModal()" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+    <a href="#!" style="display:none" id="btnSendAlerta" onclick="sendAlertaModal()" class="waves-effect waves-green btn-flat">Enviar</a>
   </div>
 </div>
 

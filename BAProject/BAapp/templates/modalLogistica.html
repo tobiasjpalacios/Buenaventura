@@ -50,6 +50,8 @@
     <br>
     <form class="col s12" id="formSendAlertaLog" action ="#">
         <div style="display:none" id="divFormSendAlertaLog">
+            <input type="hidden" name="idNegocioLog" id="idNegocioLog" value={{negocio.id}}>
+            <input type="hidden" name="idPideAlertaLog" id="idPideAlertaLog" value="0">
           <p>Alerta</p>              
           <div class="row">
             <div class="input-field col s3">
@@ -62,10 +64,22 @@
               <textarea id="descriAlertaLog" class="materialize-textarea"></textarea>
               <label for="descri">Descripcion</label>
             </div>
-          </div>              
+          </div> 
+        {% if request.user|has_group:"Vendedor" %} 
+            <select id="selectModalAlertLog">
+                <option class="selected" value="-1">{{cliente.persona.user.last_name}} {{cliente.persona.user.first_name}} - {{cliente.empresa.razon_social}}</option>
+                {% for proveedor in proveedores %}
+                    <option value={{proveedor.id}} >{{proveedor.persona.user.last_name}} {{proveedor.persona.user.last_name}}</option>
+                {% endfor %}
+            </select>             
+        {% endif %}
+        
       </div>
       </form>
-    {% if request.user|has_group:"Vendedor"%} 
+    {% if request.user|has_group:"Logistica" %} 
+        <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="btnsendAlertaLog" onclick="sendAlertaLog()"> Confirmar </a>
+    {% endif %}
+    {% if request.user|has_group:"Vendedor" %} 
         <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarEstadoLog" onclick="ocultarEstadoLog()"> Cambiar estado </a>
     {% endif %}
     <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="confirmarEstadoLog" onclick="cambiarEstadoLog()"> Confirmar </a>  
@@ -73,8 +87,8 @@
     </div>
 </div>
 <div class="modal-footer">
-    {% if request.user|has_group:"Vendedor" or request.user|has_group:"Logistica"%} 
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
+    {% if request.user|has_group:"Vendedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador"%} 
+        <a href="#!" id="btnAlertaLog" onclick="formAlertaLog()" class="waves-effect waves-green btn-flat">Enviar alerta</a>
     {% endif %}
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
 </div>

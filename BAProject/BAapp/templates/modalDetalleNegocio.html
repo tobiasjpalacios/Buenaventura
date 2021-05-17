@@ -60,7 +60,7 @@
                 <tr>
                     <td>{{item.articulo.ingrediente}}</td>
                     <td>{{item.articulo.marca}}</td>
-                    <td>{{item.distribuidor.razon_social}}</td>
+                    <td>{{item.empresa.razon_social}}</td>
                     <td>{{item.cantidad}}</td>
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
                         <td>${{item.precio_venta}}</td>

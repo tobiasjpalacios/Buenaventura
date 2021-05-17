@@ -31,13 +31,17 @@ BuenaVentura Agronegocios
     <div class="col m12 m8">
       <div class="card blue-grey darken-1">
         <div class="card-content white-text">
-          <span class="card-title center-align"> Agrege los articulos en los que esta interesado</span>
+          <span class="card-title center-align"> Agregue los articulos en los que esta interesado</span>
           <span class="left-align">Vendedor: </span>
-          <b><span class="left-align" id="vendedor">{{ user.get_username }}</span></b><br>
+          <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b><br>
           <span class="left-align">Seleccione un comprador:</span><br>
           <div class="row left-align col s6">
             <input class ="error" type="text" id="inputComp" list="datalistComp">
             <datalist id="datalistComp"></datalist>
+          </div>
+          <span class="left-align">Observacion:</span><br>
+          <div class="row left-align col s6">
+            <input class ="error" type="text" id="inputObser">
           </div>
           <br>
             <table id="empTable">
@@ -45,6 +49,7 @@ BuenaVentura Agronegocios
               <tr class="grey darken-1">
                 <th>Ingrediente</th>
                 <th>Marca</th>
+                <th>Proveedor</th>
                 <th>Distribuidor</th>
                 <th>Precio venta</th>
                 <th>Precio compra</th>
@@ -137,7 +142,8 @@ function start_datepicker(){
 var headers = [];
 var savings_data;
 var compradores_data;
-var distribuidores_data;
+var proveedores_data;
+var empresas_data;
 var tipo_pago;
 var divisas = ["Dolar", "Pesos"];
 var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
@@ -146,7 +152,8 @@ var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2
 var isValidated = false;
 var all_ingredientes = [];
 var all_marcas = [];
-var all_distribuidores = [];
+var all_proveedores = [];
+var all_empresas = [];
 var all_tipoPago = [];
 var all_compradores = []
 var errors = [];
@@ -172,6 +179,14 @@ var errors = [];
       dataType: "json",
       success: function(data) {      
         distribuidores_data = data;
+      }
+    });
+    $.ajax({
+      type: "GET",
+      url: "{% url 'api_empresa' %}",
+      dataType: "json",
+      success: function(data) {      
+        empresas_data = data;
       }
     });
 
@@ -232,16 +247,18 @@ function addRow() {
     }else if(c==1){   
       input_marca(c, rowCnt,td);
     }else if (c==2) {
-      input_distribuidor(c, rowCnt,td);
-    }else if (c==6) {
-      input_divisa(c, rowCnt,td);
+      input_proveedor(c, rowCnt,td);
+    }else if (c==3) {
+      input_empresa(c, rowCnt,td);
     }else if (c==7) {
-      input_tipoPago(c, rowCnt,td);
+      input_divisa(c, rowCnt,td);
     }else if (c==8) {
+      input_tipoPago(c, rowCnt,td);
+    }else if (c==9) {
       input_tasa(c, rowCnt, td);
-    }else if(c==9){
+    }else if(c==10){
       input_fechaPago(c, rowCnt,td);
-    }else if (c==10) {
+    }else if (c==11) {
       input_fechaEntrega(c, rowCnt, td);
     }else{
       var ele = document.createElement('input');
@@ -359,7 +376,7 @@ function validateData(rowCnt){
             }
           }
       }else if (j == 2) {
-        if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+        if (all_proveedores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
           isValidated = false;
@@ -369,7 +386,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if (j == 3) {
+      }else if (j == 34) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -377,7 +394,7 @@ function validateData(rowCnt){
           errors.push("El precio venta debe ser un número");
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 4) {
+      }else if (j == 5) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -388,7 +405,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 5) {
+      }else if (j == 6) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
           boolCant = false;
           var error = "La cantidad no puede estar vacia";
@@ -408,7 +425,7 @@ function validateData(rowCnt){
             input.style.borderColor = '#CF0029'; 
           }
         }
-      }else if (j == 6) {
+      }else if (j == 7) {
         if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -419,7 +436,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 7){
+      }else if(j == 8){
         if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -430,7 +447,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 8){
+      }else if(j == 9){
          if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
           isValidated = true;
          }else{
@@ -453,7 +470,8 @@ function submit(){
   if (validateData(rowCnt)) {
     var dict = [];
     var inputComp = document.getElementById('inputComp');
-    var vendedor = document.getElementById('vendedor');
+    var inputObser = document.getElementById('inputObser');
+    var vendedor = document.getElementById("vendedorSpan").innerHTML;
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
@@ -466,7 +484,8 @@ function submit(){
      var aux_dict = {
         'data':dict,
         'comprador':inputComp.value,
-        'vendedor':vendedor.value,
+        'vendedor':vendedor,
+        'observacion':inputObser
      }
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
@@ -541,13 +560,13 @@ function input_marca(c, rowCnt,td){
   }
 }
 
-function input_distribuidor(c, rowCnt,td){
+function input_proveedor(c, rowCnt,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
   ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Distribuidor');
+  ele.setAttribute('placeholder', 'Proveedor');
   ele.setAttribute('autocomplete', 'off');
   var datalistDis = document.createElement('datalist');
   datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
@@ -556,9 +575,31 @@ function input_distribuidor(c, rowCnt,td){
   td.appendChild(datalistDis);
   for (var i = 0; i < distribuidores_data.length; i++) {
     var optionDis = document.createElement('option');
-    optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+    optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
     optionDis.setAttribute('id','option'+i);
-    all_distribuidores.push(distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+    all_proveedores.push(distribuidores_data[i].nombre);
+    datalistDis.appendChild(optionDis);        
+  }
+}
+
+function input_empresa(c, rowCnt,td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
+  ele.setAttribute('onclick','this.select();');
+  ele.setAttribute('placeholder', 'Empresa');
+  ele.setAttribute('autocomplete', 'off');
+  var datalistDis = document.createElement('datalist');
+  datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+
+  td.appendChild(ele);
+  td.appendChild(datalistDis);
+  for (var i = 0; i < empresas_data.length; i++) {
+    var optionDis = document.createElement('option');
+    optionDis.setAttribute('value',''+empresas_data[i].empresa);
+    optionDis.setAttribute('id','option'+i);
+    all_empresas.push(empresas_data[i].empresa);
     datalistDis.appendChild(optionDis);        
   }
 }

@@ -46,20 +46,21 @@ class Empleado(models.Model):
     class Meta():
         abstract = True
 
-
 class Comprador(Empleado):
     class Meta():
         default_related_name = "compradores"
-
 
 class Gerente(Empleado):
     class Meta():
         default_related_name = "gerentes"
 
 
-class Proveedor(Empleado):
-    class Meta():
-        default_related_name = "proveedores"
+class Proveedor(models.Model):
+    persona = models.ForeignKey("Persona",on_delete=models.DO_NOTHING)
+    empresa = models.ManyToManyField("Empresa")
+
+    def __str__(self):
+        return "{} {} ".format(self.persona.user.last_name, self.persona.user.first_name)
 
 class Logistica(Empleado):
     class Meta():
@@ -237,10 +238,13 @@ class ItemPropuesta(models.Model):
         "Articulo", 
         null=False, 
         on_delete=models.DO_NOTHING)
-    distribuidor = models.ForeignKey(
-        "Empresa",
-        null=True,
-        blank=True,
+    proveedor = models.ForeignKey(
+        "Proveedor",
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    empresa = models.ForeignKey(
+        "Empresa", 
+        null=False, 
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
