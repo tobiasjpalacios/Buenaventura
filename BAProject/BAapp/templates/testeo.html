@@ -1,7 +1,7 @@
 
 {% extends 'base.html' %}
 {% block imports %}
-   {% load static %}
+{% load static %}
 {% endblock imports %}
 {% block style%}
 {% endblock style%}
@@ -9,13 +9,95 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}  
-<style></style>
 
-<div class="row"> 
+<style>
+.titulito{
+   font-size: 30px;
+   font-family: 'Montserrat';
+   text-align: center;
+ }
+
+
+ .barra{
+  background-color: #757474;
+  height: 40px;
+  
+}
+
+</style>
 
 
 
+<!-- Modal Trigger -->
+<a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+   <div class="row" >
+      <div class="col s12 " ">
+         <div class="col s10 "><h4 class="left-align ">Titulo</h4></div>
+         <div class="col s2 "><span class="right-align" style="color: grey;">27 de abril 20:30 hs  </span> </div>
+         <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
+      </div>
+      <br>
+      <div class="espacio col s12" style="height: 25px;"></div>
+      
+      <div class="col s12">
+         <div style="background-color: greenyellow; border-radius: 2em; height: 100px; " >
+      <div class="conteiner col s10 offset-s1">
+         <span style="margin-top: 0px;" >   espacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcion</span> 
+      </div>
+      <br>
+      <div class="espacio" style="height: 30px;"> </div>
+      </div>
+      <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
+   </div>
+   
+      <div class="col s12">
+         
+         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> negocio relacionado</span> </div>
+         <div class="espacio" style="height: 30px;"> </div>
+         <table class="tablita" id="tablitaAlerta">
+            <thead>
+              <tr>
+                  <th style="display:none" class="auxSem"></th>
+                  <th>Fecha</th>
+                  <th>Empresa</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Ver Negociacion</th>
+              </tr>
+            </thead>
+            <tbody id="tableAlertas">
+              
+                  <tr data-id={{negocio.id}}>
+                      <td style="display:none" class="auxSem">
+                        <label id="contenido">
+                            <input type="checkbox" onclick="selNegocioModalAlerta()" data-id={{negocio.id}} class="filled-in" id="input_{{negocio.id}}"/>
+                            <span></span>
+                        </label>
+                      </td>
+                      <td>timestamp|date:"M d, Y</td>
+                      <td> razon_social</td>
+                      <td>first_name</td>
+                      <td>estado</td>
+                      <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                  </tr>
+            </tbody>
+          </table>
+
+
+      </div>
+
+   </div>
+  
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
 </div>
+
 
 
 {%endblock body%} 
