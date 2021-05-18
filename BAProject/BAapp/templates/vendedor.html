@@ -67,20 +67,8 @@ BuenaVentura Agronegocios
 			
       
    });
-
-
-
-
-
      
   });
-  
-  
-  
-  
-   
-    
-    
 </script>
 
 
@@ -249,6 +237,13 @@ BuenaVentura Agronegocios
     </div>
   </div>
 
+  <!------ Modals Notis ---------->
+
+  <div id="alertaNotis" class="modal">
+    <div id="modalNotis" class="modal-content">
+    </div>
+  </div>
+
   <!---------------->
     
   <!------ Modal Negociios ---------->
@@ -409,7 +404,7 @@ BuenaVentura Agronegocios
             {% for noti in lista_presupuestos%}
               <tr style="border-bottom: 0px; ">
                 <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
           </tbody>
@@ -426,7 +421,7 @@ BuenaVentura Agronegocios
             {% for noti in lista_logistica_noti %}
               <tr style="border-bottom: 0px; ">
                 <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
           </tbody>
@@ -444,7 +439,7 @@ BuenaVentura Agronegocios
             {% for noti in lista_vencimiento%}
               <tr style="border-bottom: 0px; ">
                 <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
-                <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red" onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
               </tr>
             {% endfor %}
           </tbody>
@@ -1027,6 +1022,22 @@ BuenaVentura Agronegocios
           console.log("Error")
       }
     })
+  };
+
+  function detalleNotis(idNoti){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleNotis' %}",
+      data: {'idNoti':idNoti,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalNotis").html(data);
+        $('#alertaNotis').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    });
   };
 
   function openModalAlerta(){

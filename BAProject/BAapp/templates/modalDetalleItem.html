@@ -41,7 +41,7 @@
   </table>
   <div style="height: 10px;"></div>
   <div class="center" style="border: 2px black solid ; border-radius: 6em; height: 60px;">
-  <span class="center"> {{item.articulo.descripcion}} </span>
+  <span class="center">{% if item.articulo.descripcion != None %}{{item.articulo.descripcion}}{% else %}Sin descripción {% endif %} </span>
   </div>
 </div>  
     <div class="row"> 

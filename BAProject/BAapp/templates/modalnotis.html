@@ -1,44 +1,71 @@
-{% extends 'base.html' %}
-{% block imports %}
-   {% load static %}
-{% endblock imports %}
-{% block style%}
+<style>
+.titulito{
+   font-size: 30px;
+   font-family: 'Montserrat';
+   text-align: center;
+ }
 
-body {
-  background-color: #white;
+
+ .barra{
+  background-color: #757474;
+  height: 40px;
+  
 }
 
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+</style>
 
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
-{% endblock style%}
-{% block title %}
-BuenaVentura Agronegocios
-{% endblock title %}   
-{%block body%}
-
- <!-- Modal Trigger -->
- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-
- <!-- Modal Structure -->
- <div id="modal1" class="modal">
-   <div class="modal-content">
-     <h4>Modal Header</h4>
-     <p>A bunch of text</p>
+  <div class="modal-content">
+   <div class="row" >
+      <div class="col s12 " ">
+         <div class="col s10 "><h4 class="left-align ">{{notificacion.titulo}}</h4></div>
+         <div class="col s2 "><span class="right-align" style="color: grey;">{{notificacion.timestamp|date:"M d, Y"}}  </span> </div>
+         <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
+      </div>
+      <br>
+      <div class="espacio col s12" style="height: 25px;"></div>
+      
+      <div class="col s12">
+         <div style="background-color: greenyellow; border-radius: 2em; height: 100px; " >
+      <div class="conteiner col s10 offset-s1">
+         <span style="margin-top: 0px;" >{% if notificacion.descripcion != None %}{{notificacion.descripcion}}{% else %}Sin descripción {% endif %}</span> 
+      </div>
+      <br>
+      <div class="espacio" style="height: 30px;"> </div>
+      </div>
+      <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
    </div>
-   <div class="modal-footer">
-     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+   
+      <div class="col s12">
+         
+         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> negocio relacionado</span> </div>
+         <div class="espacio" style="height: 30px;"> </div>
+         <table class="tablita" id="tablitaAlerta">
+            <thead>
+              <tr>
+                  <th style="display:none" class="auxSem"></th>
+                  <th>Fecha</th>
+                  <th>Empresa</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Ver Negocio</th>
+              </tr>
+            </thead>
+            <tbody id="tableAlertas">
+              
+                  <tr data-id={{negocio.id}}>
+                      <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+                      <td>{{negocio.comprador.empresa.razon_social}}</td>
+                      <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                      <td>{{negocio.estado}}</td>
+                      <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                  </tr>
+            </tbody>
+          </table>
+          <a href={{notificacion.hyperlink}}>Ver Negociación</a>
+      </div>
    </div>
- </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
 
-
-{% endblock body %}

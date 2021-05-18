@@ -19,9 +19,6 @@ from .scriptModels import *
 from datetime import date
 from BAapp.utils.utils import *
 
-def landing_page(request):
-    return render(request, 'Principal.html')
-
 def cuentas(request):
     return render(request, 'cuentas.html')
 
@@ -45,10 +42,6 @@ def cliente(request):
     return render(request, 'cliente.html')
 
 def check_user_group_after_login(request):
-    '''
-    Esta vista busca si el usuario pertenece a un grupo de usuario
-    especifico y lo redirecciona a su correspondiente url.
-    '''
     redirects = {
         'Administracion': redirect('vistaAdministrador'),
         'Comprador': redirect('vistaCliente'),
@@ -60,6 +53,12 @@ def check_user_group_after_login(request):
 
     red = redirects.get(request.user.groups.first().name, redirect('login'))
     return red
+
+def landing_page(request):
+    if (request.user.is_authenticated):
+        #return redirect (router)
+        return (check_user_group_after_login(request))
+    return render(request, 'Principal.html')
 
 def vistaAdministrador(request):
     mi_Administrador = Administrador.objects.get(persona__user=request.user)
@@ -201,6 +200,33 @@ def detalleAlerta(request):
                 else:
                     a.estado = "Cancelado"
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
+
+def detalleNotis(request):
+    if request.method == 'POST':
+        idNoti = request.POST['idNoti']        
+        notificacion = Notificacion.objects.get(id=int(idNoti))
+        print (notificacion.hyperlink)
+        first = notificacion.hyperlink.split("/",1)[1]
+        idNegocio = first.split("/",1)[1]
+        negocio = Negocio.objects.get(id=int(idNegocio))
+        propuesta = Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp')[:1]
+        envio = True
+        for b in propuesta:
+            envio = b.envio_comprador
+            id_prop = b.id
+        negocio.id_prop = id_prop
+        if (negocio.fecha_cierre is None):
+            if (envio):
+                negocio.estado = "Recibido"
+            else:
+                negocio.estado = "En Negociacion"
+        else:
+            if (negocio.aprobado):
+                negocio.estado = "Confirmado"
+            else:
+                negocio.estado = "Cancelado"
+        return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
+    return render (request, 'modalnotis.html')
 
 def detalleNegocio(request):
     if request.method == 'POST':
@@ -569,11 +595,11 @@ def setLogistica(request):
                 item.fecha_real_entrega = today
             item.save()
         envio = request.POST['envio']
+        negocio = Negocio.objects.get(id=negocioN)
         if (int(envio) == 1):
             receptor = request.POST['receptor']
             user = None
             if (int(receptor) == -1):
-                negocio = Negocio.objects.get(id=negocioN)
                 user = negocio.comprador.persona.user
             else:
                 logis = Logistica.objects.get(id=int(receptor))
@@ -591,6 +617,12 @@ def setLogistica(request):
                 'result' : 'Estados y Alerta enviados con exito.'
             }
         else:
+            notif = Notificacion(
+                titulo="Estados de Articulos modificados",
+                categoria="Logistica",
+                hyperlink=reverse('negocio', args=[negocioN,]),
+                user = negocio.comprador.persona.user)
+            notif.save()
             data = {
                 'result' : 'Estados cargados con exito.'
             }

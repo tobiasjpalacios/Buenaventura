@@ -28,6 +28,7 @@ urlpatterns = [
     path('detalleAlerta/', detalleAlerta, name="detalleAlerta"),
     path('detalleLogistica/', detalleLogistica, name="detalleLogistica"),
     path('detalleNegocio/', detalleNegocio, name="detalleNegocio"),
+    path('detalleNotis/', detalleNotis, name="detalleNotis"),
     path('detalleItem/', detalleItem, name="detalleItem"),
     path('sendAlertaLog/', sendAlertaLog, name="sendAlertaLog"),
     path('sendAlertaModal/', sendAlertaModal, name="sendAlertaModal"),
