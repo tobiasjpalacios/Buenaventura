@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse
  
 def loadModels(request):
-    """
+    
     # Carga de Vendedores
     for a in range(5):
         user = User.objects.create_user('Juan'+str(a+1), 'juan'+str(a+1)+'@thebeatles.com', 'hola'+str(a+1))
@@ -140,7 +140,7 @@ def loadModels(request):
             persona = p1,
             empresa = empresa
         )
-    """
+    
     #Carga de Gerentes
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)

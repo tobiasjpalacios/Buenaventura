@@ -11,13 +11,15 @@ from django.core import serializers
 from django.db import transaction
 from django.urls import reverse
 from django.utils.dateparse import parse_date
-
+from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES
 from .scriptModels import *
+from .decorators import *
 from datetime import date
 from BAapp.utils.utils import *
+
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -28,6 +30,7 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
+@group_required('Vendedor')
 def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
@@ -56,10 +59,10 @@ def check_user_group_after_login(request):
 
 def landing_page(request):
     if (request.user.is_authenticated):
-        #return redirect (router)
         return (check_user_group_after_login(request))
     return render(request, 'Principal.html')
 
+@group_required('Administracion')
 def vistaAdministrador(request):
     mi_Administrador = Administrador.objects.get(persona__user=request.user)
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
@@ -83,6 +86,7 @@ def vistaAdministrador(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
 
+@group_required('Logistica')
 def vistaLogistica(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf, 'L')
@@ -94,6 +98,7 @@ def vistaLogistica(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html',{'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'negocios_cerrados_confirmados':list(lnc)})
 
+@group_required('Proveedor')
 def vistaProveedor(request):
     #lnc = Lista Negocios Confirmados
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
@@ -111,6 +116,7 @@ def vistaProveedor(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})    
 
+@group_required('Gerente')
 def vistaGerente(request):
     mi_gerente = Gerente.objects.get(persona__user=request.user)
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
@@ -132,6 +138,7 @@ def vistaGerente(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})    
 
+@group_required('Comprador')
 def vistaCliente(request):
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnp = listasNA(negociosAbiertos, True)
@@ -154,7 +161,7 @@ def vistaCliente(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})    
 
-#Esta funcion muestra todos los componentes del HTML
+@group_required('Vendedor')
 def vendedor(request):
     #Negocios en Procesos
     negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
@@ -178,6 +185,7 @@ def vendedor(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
 
+@login_required
 def detalleAlerta(request):
     if request.method == 'POST':
         negocio = Negocio.objects.all().order_by('-timestamp')
@@ -201,6 +209,7 @@ def detalleAlerta(request):
                     a.estado = "Cancelado"
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
 
+@login_required
 def detalleNotis(request):
     if request.method == 'POST':
         idNoti = request.POST['idNoti']        
@@ -228,6 +237,7 @@ def detalleNotis(request):
         return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
     return render (request, 'modalnotis.html')
 
+@login_required
 def detalleNegocio(request):
     if request.method == 'POST':
         idProp = request.POST['idProp']        
@@ -261,6 +271,7 @@ def detalleNegocio(request):
         return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
     return render (request, 'modalDetalleNegocio.html')
 
+@login_required
 def detalleItem(request):
     if request.method == 'POST':
         idItem = request.POST['idItem']        
@@ -305,6 +316,7 @@ def detalleItem(request):
         return render (request, 'modalDetalleItem.html', {'item':item, 'logistica':logistica, 'estado_pago':estado_pago})
     return render (request, 'modalDetalleItem.html')
 
+@login_required
 def listaNL(request,negocioFilter,modulo):
     lista_negocios = []
     en_tiempo = False
@@ -435,6 +447,7 @@ def listaNL(request,negocioFilter,modulo):
             atrasado = False
     return lista_negocios
 
+@login_required
 def detalleLogistica(request):
     if request.method == 'POST':
         idProp = request.POST['idProp']
@@ -496,6 +509,7 @@ def detalleLogistica(request):
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
+@login_required
 def sendAlertaModal(request):
     data = {
         'result' : 'Error, la operacion fracaso.',
@@ -548,6 +562,7 @@ def sendAlertaModal(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
+@login_required
 def setLogistica(request):
     data = {
         'result' : 'Error, la operacion fracaso.'
@@ -629,6 +644,7 @@ def setLogistica(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
+@login_required
 def sendAlertaLog(request):
     data = {
         'result' : 'Error, la operacion fracaso.'
@@ -655,6 +671,7 @@ def sendAlertaLog(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
+@login_required
 def listaNCL(request, negocioFilter, tipo):
     lista_negocios = []
     persona = Persona.objects.get(user=request.user)
@@ -686,6 +703,7 @@ def listaNCL(request, negocioFilter, tipo):
             lista_negocios.append(lista)
     return lista_negocios
 
+@login_required
 def listaNC(negocioFilter):
     lista_negocios = []
     for a in negocioFilter:
@@ -772,6 +790,7 @@ def semaforoVencimiento(negocioFilter):
             esta_semana = False
             futuros = False
     return lista_vencidos,lista_semanas,lista_futuros
+
 
 def createAlertaNV(request):
     data = {
@@ -938,7 +957,7 @@ def calcularVencAtr(a, b):
         return False 
     else: 
         return True
-    
+
 def listaItemsPorVencer(listaNegociosC):
     lista_Items = []
     for a in listaNegociosC:
@@ -1010,8 +1029,7 @@ def listasNAA(request,negocioFilter, tipo):
             pass
     return lista_negocios
 
-class carga_excel(View):
-    
+class carga_excel(View):    
     def get(self,request):    
         return render(request, 'carga_excel.html')
     
@@ -1033,7 +1051,7 @@ def crear_negocio(request, comprador):
         )
     print (negocio)
     negocio.save()
-    return negocio 
+    return negocio
 
 def crear_propuesta(negocio,observacion):
     propuesta = Propuesta(
@@ -1156,8 +1174,6 @@ class ProveedorView(View):
         proveedor = Proveedor.objects.get(pk=kwargs["pk"])
         proveedor.delete()
         return HttpResponse(code=200)
-
-
 
 class ListCompradorView(View):
     def get(self, request, *args, **kwargs):
