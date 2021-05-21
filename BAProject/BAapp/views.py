@@ -11,7 +11,6 @@ from django.core import serializers
 from django.db import transaction
 from django.urls import reverse
 from django.utils.dateparse import parse_date
-from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES
@@ -185,7 +184,7 @@ def vendedor(request):
     lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
 
-@login_required
+
 def detalleAlerta(request):
     if request.method == 'POST':
         negocio = Negocio.objects.all().order_by('-timestamp')
@@ -209,7 +208,7 @@ def detalleAlerta(request):
                     a.estado = "Cancelado"
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
 
-@login_required
+
 def detalleNotis(request):
     if request.method == 'POST':
         idNoti = request.POST['idNoti']        
@@ -237,7 +236,7 @@ def detalleNotis(request):
         return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
     return render (request, 'modalnotis.html')
 
-@login_required
+
 def detalleNegocio(request):
     if request.method == 'POST':
         idProp = request.POST['idProp']        
@@ -271,7 +270,7 @@ def detalleNegocio(request):
         return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
     return render (request, 'modalDetalleNegocio.html')
 
-@login_required
+
 def detalleItem(request):
     if request.method == 'POST':
         idItem = request.POST['idItem']        
@@ -316,7 +315,7 @@ def detalleItem(request):
         return render (request, 'modalDetalleItem.html', {'item':item, 'logistica':logistica, 'estado_pago':estado_pago})
     return render (request, 'modalDetalleItem.html')
 
-@login_required
+
 def listaNL(request,negocioFilter,modulo):
     lista_negocios = []
     en_tiempo = False
@@ -447,7 +446,7 @@ def listaNL(request,negocioFilter,modulo):
             atrasado = False
     return lista_negocios
 
-@login_required
+
 def detalleLogistica(request):
     if request.method == 'POST':
         idProp = request.POST['idProp']
@@ -509,7 +508,7 @@ def detalleLogistica(request):
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
-@login_required
+
 def sendAlertaModal(request):
     data = {
         'result' : 'Error, la operacion fracaso.',
@@ -562,7 +561,7 @@ def sendAlertaModal(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
-@login_required
+
 def setLogistica(request):
     data = {
         'result' : 'Error, la operacion fracaso.'
@@ -644,7 +643,7 @@ def setLogistica(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
-@login_required
+
 def sendAlertaLog(request):
     data = {
         'result' : 'Error, la operacion fracaso.'
@@ -671,9 +670,9 @@ def sendAlertaLog(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
-@login_required
 def listaNCL(request, negocioFilter, tipo):
     lista_negocios = []
+    print (negocioFilter)
     persona = Persona.objects.get(user=request.user)
     empleadoL = None
     if (tipo=="L"):
@@ -703,7 +702,6 @@ def listaNCL(request, negocioFilter, tipo):
             lista_negocios.append(lista)
     return lista_negocios
 
-@login_required
 def listaNC(negocioFilter):
     lista_negocios = []
     for a in negocioFilter:
