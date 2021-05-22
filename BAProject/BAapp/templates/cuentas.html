@@ -53,51 +53,50 @@ BuenaVentura Agronegocios
 </script>
 
 <div class="row">
-    <div class="col hide-on-small-only l2 m3 vl ">
-        <ul class="section table-of-contents pinned ">
-          <li class= " button ver_vendedor" id="ver_vendedor"><a>Vendedor</a></li>
-          <li><a>Cliente</a></li>
-          <li><a href="#id2">Proveedor</a></li>
-          <li><a href="#id6">P.Logistica</a></li>
-          <li><a href="#id7">P.administrador</a></li>
-          
-          
-        </ul>
-      </div>
-        <div class="col l8">
-            <div class="inicio" id="inicio">
-                <h4> hola bienvenido a las cuentas </h4>
-            </div>
-            <div class="vendedor" id="vendedor">
-                <div class=" titulo  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
-                    <div  class="">
-                      <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="">Vendedor</span>
-                    </div>
-                  </div>
-                  <form action="{% url 'login' %}" method="POST"  class="col s12">
-                    {%csrf_token%}
-                    <div class="row">
-                      <div style="border-radius: 2em; background-color: #000000 ;height:45px;"class="center col s4 offset-s4">
-                        <input style="color:#004e20; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
-                      </div>
-                      <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
-                        <input style="color:#004e20;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="center">
-                        <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="center">
-                        <a style = "color: #005221" href="#">¿No sos usuario?</a>
-                        <br>
-                        <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
-                      </div>
-                    </div>
-                  </form>
+  <div class="col hide-on-small-only l2 m3 vl ">
+    <ul class="section table-of-contents pinned ">
+      <li class= " button ver_vendedor" id="ver_vendedor"><a>Vendedor</a></li>
+      <li><a>Cliente</a></li>
+      <li><a href="#id2">Proveedor</a></li>
+      <li><a href="#id6">P.Logistica</a></li>
+      <li><a href="#id7">P.administrador</a></li>  
+    </ul>
+  </div>
+  <div class="col l8">
+    <div class="inicio" id="inicio">
+      <h4> hola bienvenido a las cuentas </h4>
+    </div>
+    <div class="vendedor" id="vendedor">
+      <div class=" titulo  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
+        <div  class="">
+          <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="">Vendedor</span>
         </div>
+      </div>
+      <form action="{% url 'login' %}" method="POST"  class="col s12">
+        {%csrf_token%}
+        <div class="row">
+          <div style="border-radius: 2em; background-color: #000000 ;height:45px;"class="center col s4 offset-s4">
+            <input style="color:#004e20; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
+          </div>
+          <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
+            <input style="color:#004e20;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
+          </div>
+        </div>
+        <div class="row">
+          <div class="center">
+            <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="center">
+            <a style = "color: #005221" href="#">¿No sos usuario?</a>
+            <br>
+            <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 {%endblock body%}
