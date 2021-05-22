@@ -56,7 +56,8 @@
                 <tr>
                   <th>Articulo</th>
                   <th>Distribuidor</th>
-                  <th>Precio</th>
+                  <th>Precio venta</th>
+                  <th>Precio compra</th>
                   <th>Divisa</th>
                   <th>Cantidad</th>
                   <th>Operaciones</th>
@@ -67,8 +68,9 @@
               {% for item in prop.items.all %}
                 <tr>
                   <td>{{ item.articulo.marca }}</td>
-                  <td>{{ item.distribuidor }}</td>
-                  <td>{{ item.precio }}</td>
+                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
+                  <td class="white-text">{{ item.precio_venta }}</td>
+                  <td class="white-text">{{ item.precio_compra }}</td>
                   <td>{{ item.divisa }}</td>
                   <td>{{ item.cantidad }}</td>
                   <td></td>
@@ -77,10 +79,15 @@
             {% else %}
               {% for item in prop.items.all %}
                 <tr {% if item.aceptado %}class="green"{% endif %}>
-                  <td>{{ item.articulo.marca|default_if_none:'' }}</td>
+                  {% if item.articulo.marca == "NINGUNA" %}
+                    <td>{{ item.articulo.ingrediente|default_if_none:'' }}</td>
+                  {% else %}
+                    <td>{{ item.articulo.marca|default_if_none:'' }}</td>
+                  {% endif %}
                   <td>{{ item.distribuidor|default_if_none:'' }}</td>
                 {% if not item.aceptado %}
-                  <td><input type="number" name="precio" step=".01" value="{{ item.precio|default_if_none:''|stringformat:'.2f' }}"></td>
+                  <td><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
+                  <td><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
                   <td>
                     <select name="divisa" value="{{ item.divisa|default_if_none:'' }}">
                     {% for v,t in divisas %}
@@ -96,7 +103,8 @@
                     <a class="blue btn tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})">r</a>
                   </td>
                 {% else %}
-                  <td>{{ item.precio|stringformat:'.2f' }}</td>
+                  <td>{{ item.precio_venta|stringformat:'.2f' }}</td>
+                  <td>{{ item.precio_compra|stringformat:'.2f' }}</td>
                   <td>{{ item.divisa }}</td>
                   <td>{{ item.cantidad }}</td>
                   <td></td>
@@ -118,7 +126,10 @@
                       
                   </td>
                   <td>
-                    <input type="number" name="precio" step=".01">
+                    <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
+                  </td>
+                  <td>
+                    <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
                   </td>
                   <td>
                     <select name="divisa">
@@ -150,7 +161,8 @@
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
   var editable_fields = [
-    "precio",
+    "precio_venta",
+    "precio_compra",
     "divisa",
     "cantidad"
   ]
@@ -161,7 +173,7 @@
     $('select').formSelect();
     $("#form thead tr th").each(function(index){
       if ($(this).text() != "Operaciones"){
-        headers.push($(this).text().toLowerCase())
+        headers.push($(this).text().toLowerCase().replace(" ","_"))
       }
     })
     edits.new = {}

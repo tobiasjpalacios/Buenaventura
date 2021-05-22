@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from BAapp.views import *
-from BAapp.utils.utils import *
 
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
     path('compradores/',APIComprador.as_view() , name="api_comprador"),
     path('distribuidor/',APIDistribuidor.as_view() , name="api_distribuidor"),
+    path('empresa/',APIEmpresa.as_view() , name="api_empresa"),
 ]
 
 urlpatterns = [
@@ -17,10 +17,26 @@ urlpatterns = [
     path('chat/', chat, name="chat"),
     path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
+    path('createAlertaNV/', createAlertaNV, name="createAlertaNV"),
     path('vendedor/', vendedor, name="vendedor"),
+    path('router/', check_user_group_after_login, name="router"),
+    path('vistaAdministrador/', vistaAdministrador, name="vistaAdministrador"),
+    path('vistaLogistica/', vistaLogistica, name="vistaLogistica"),
+    path('vistaProveedor/', vistaProveedor, name="vistaProveedor"),
+    path('vistaGerente/', vistaGerente, name="vistaGerente"),
+    path('vistaCliente/', vistaCliente, name="vistaCliente"),
+    path('detalleAlerta/', detalleAlerta, name="detalleAlerta"),
+    path('detalleLogistica/', detalleLogistica, name="detalleLogistica"),
+    path('detalleNegocio/', detalleNegocio, name="detalleNegocio"),
+    path('detalleNotis/', detalleNotis, name="detalleNotis"),
+    path('detalleItem/', detalleItem, name="detalleItem"),
+    path('sendAlertaLog/', sendAlertaLog, name="sendAlertaLog"),
+    path('sendAlertaModal/', sendAlertaModal, name="sendAlertaModal"),
+    path('setLogistica/', setLogistica, name="setLogistica"),
+    path('detalleSemaforo/', detalleSemaforo, name="detalleSemaforo"),
+    path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),   
     path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
-    path('sheet_reader/', sheet_reader, name="sheet_reader"),
     path('cuentas/', cuentas, name="cuentas"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),

@@ -24,12 +24,8 @@ input[type=number] {
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}   
-{%block body%}
-
-
-
-
-
+{% block body%}
+{% load auth_extras %}
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 <script>
    $(document).ready(function(){
@@ -71,20 +67,8 @@ BuenaVentura Agronegocios
 			
       
    });
-
-
-
-
-
      
   });
-  
-  
-  
-  
-   
-    
-    
 </script>
 
 
@@ -235,192 +219,37 @@ BuenaVentura Agronegocios
     </ul>
   </div>
 
-  <!---------------->
+  <!--------Modal Semaforo Vencimiento -------->
+  <div id="modalSemaforoNegocio" class="modal">
+    <div id="modalSemaforo" class="modal-content">
+    </div>
+  </div>
 
+  <!--------Modal Semaforo Vencimiento -------->
+  <div id="modalDetalleLogistica" class="modal">
+    <div id="modalLogistica" class="modal-content">
+    </div>
+  </div>
   <!------ Modals  ---------->
 
   <div id="alerta" class="modal">
-    <div class="modal-content">
-      <h4 class="center">Alerta</h4>
-      <div class="row">
-        <h4 class="left">27/05/2021</h4>
-        <div class="right">  
-        <div class="input-field col s12">
-            
-            <select>
-              <option value=""  selected>Choose your option</option>
-              <option class="selected" value="1">Vencimientos</option>
-              <option value="2">Presupuesto</option>
-              <option value="3">Logistica</option>
-            </select>
-            <label> Tipo de Notificacion</label>
-            </div></div>
-
-           
-            
-            <table class="tablita">
-    <thead>
-      <tr>
-          <th>Fecha</th>
-          <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr>
-        <td>22/05/22</td>
-        <td>
-          <div style="overflow-y: scroll; height: 150px;" >
-          <ol class="collection" start="1">
-          <li class="collection-item" >Glifosato 20% </li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-          <li class="collection-item" >Atrazina 30% </li>
-          <li class="collection-item" > Aceite soja 50%</li>
-          <li class="collection-item" >Benomil 89%</li>
-        </ol>
-      </div>
-      </td>
-        <td class="center">Tecnocampo </td>
-        <td>Juan Perez</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-            <div class="row">
-              <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick=""> Seleccionar un negocio </a>
-              <form class="col s12">
-                <div class="row">
-                  <div class="input-field col s12">
-                    <textarea id="textarea1" class="materialize-textarea"></textarea>
-                    <label for="textarea1">Textarea</label>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-
-      </div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar</a>
+    <div id="modalAlerta" class="modal-content">
     </div>
   </div>
 
+  <!------ Modals Notis ---------->
 
-  <!------ Modal negocio  ---------->
-  
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <div class="row"  "> <h4>Negocio de ADAMA de FECHA 2021/05/06</h4></div>
-      <div class="row" ">
-      <div class="col s6"><span class="">Cliente Marcos Juarez</span> </div>
-      <div class="col s6"><span class="">Vendedor Matias Nuñez</span> </div>
-      <div class="row">
-        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
-        <table>
-        <thead>
-          <tr>
-              <th ></th>
-              <th>Item</th>
-              <th>Cant</th>
-              <th>precio</th>
-              <th>Fecha de pago</th>
-              <th>Estado</th>
-              <th></th>
-
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td >
-              <label id="contenido" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>En tiempo</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <label id="contenido1" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>En tiempo</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-          <tr class="red">
-            <td>
-              <label id="contenido2" >
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span></span>
-              </label>
-            </td>
-            <td>Glifosato</td>
-            <td>200</td>
-            <td>$0.87</td>
-            <td>27/05/21</td>
-            <td>vencido</td>
-            <td><a href="#modal2" class="btn-floating btn-small waves-effect waves-light modal-trigger  modal-close red  "><i class=" small material-icons ">search</i></a></td>
-          </tr>
-        </tbody>
-        
-      </table>
-
-      <form action="# " class="col s12 " id="campo">
-         <div class="file-field input-field">
-       <div class="btn">
-      <i class="material-icons">attach_file</i>
-       <input type="file">
-        </div>
-        <div class="file-path-wrapper">
-       <input class="file-path validate" type="text">
-     </div>
-        </div>
-       </form>
-
-      <a class="waves-effect waves-light btn botonsote red white-text col s12  " id="mostrar" onclick=""> Cambiar estado </a>
-      <a class="waves-effect waves-light btn botonsote green white-text col s12  " id="ocultar" onclick=""> Confirmar </a>
-      
-      </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Enviar alerta</a>
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+  <div id="alertaNotis" class="modal">
+    <div id="modalNotis" class="modal-content">
     </div>
   </div>
-  <!------ Modal Articulo ---------->
 
-  <div id="modal2" class="modal">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  <!---------------->
+    
+  <!------ Modal Negociios ---------->
+
+  <div id="modalDetalleNegocio" class="modal">
+    <div id="modalNegocio" class="modal-content">
     </div>
   </div>
 
@@ -504,21 +333,16 @@ BuenaVentura Agronegocios
                     </div>
       </div>
     </div>
+    <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">De Acuerdo</a>
   </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+
   </div>
-</div>
+  
 
 
 <!---------------->
                         
-
-
-
-
-
-
 <div class="row " >
   <!------- barra lateral de opciones --------->
   <div class="col hide-on-small-only l2 m3 vl ">
@@ -530,7 +354,9 @@ BuenaVentura Agronegocios
       <li><a href="#id7">Logistica</a></li>
       <li><a href="#id8">Comprobantes</a></li>
       <li><a href="#id8">Mas Opciones </a></li>
-      <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " href="#alerta"> Enviar Alerta</a></li>
+      {% if request.user|has_group:"Vendedor" %} 
+        <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
+      {% endif %}
       
   </ul>
   </div>
@@ -575,10 +401,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center">te llego un pedido de marcos smkith  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_presupuestos%}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -590,10 +418,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> El pedido de adama marcos juarez esta atrasado  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_logistica_noti %}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -606,10 +436,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-            </tr>
+            {% for noti in lista_vencimiento%}
+              <tr style="border-bottom: 0px; ">
+                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
+                <td><a class="btn-floating btn-small waves-effect waves-light red" onclick="detalleNotis('{{noti.id}}')"><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -619,9 +451,11 @@ BuenaVentura Agronegocios
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
   <!------------- fin de notificaciones---------------------->
-  
-  
+  {% if request.user|has_group:"Proveedor" or  request.user|has_group:"Logistica"%} 
+      
+  {% else %}
   <div id="id1" style="height: 63px;"></div>
+  
   <!---------------------------------Presupuestos titulo ---------------------------------------------->
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -661,7 +495,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{preprec.empresa}} </td>
         <td>{{preprec.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{preprec.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -703,7 +537,7 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{prepneg.empresa}}</td>
         <td>{{prepneg.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{prepneg.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
@@ -712,7 +546,7 @@ BuenaVentura Agronegocios
   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
   <!------------------------------------------------------------------------------->
-  
+  {% endif %}
   <div id="id2" style="height: 63px;"></div>
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -751,48 +585,52 @@ BuenaVentura Agronegocios
       </td>
         <td class="center">{{negocioConf.empresa}} </td>
         <td>{{negocioConf.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light green modal-trigger" onclick="detalleNegocio('{{negocioConf.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <div class="row"> 
-    <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
-  </div>
-  <table>
-    <thead>
-      <tr>
-          <th>Fecha</th>
-          <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
-      </tr>
-    </thead>
+  {% if request.user|has_group:"Logistica"%} 
+      
+  {% else %}
+    <div class="row"> 
+      <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Items</th>
+            <th class="center">Empresa</th>
+            <th>Cliente</th>
+            <th>Ver Negociacion</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      {% for negocioNoCerr in negocios_cerrados_no_confirmados %}
-      <tr>
-        <td>{{negocioNoCerr.fecha|date:"M d, Y"}}</td>
-        <td>
-          <div style="overflow-y: scroll; height: 150px;" >
-          <ol class="collection" start="1">
-            {% for item in negocioNoCerr.items %}
-          <li class="collection-item" >{{item}} </li>
-          {% endfor %}
-        </ol>
-      </div>
-      </td>
-        <td class="center">Tecnocampo </td>
-        <td>{{negocioNoCerr.comprador}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      <tbody>
+        {% for negocioNoCerr in negocios_cerrados_no_confirmados %}
+        <tr>
+          <td>{{negocioNoCerr.fecha|date:"M d, Y"}}</td>
+          <td>
+            <div style="overflow-y: scroll; height: 150px;" >
+            <ol class="collection" start="1">
+              {% for item in negocioNoCerr.items %}
+            <li class="collection-item" >{{item}} </li>
+            {% endfor %}
+          </ol>
+        </div>
+        </td>
+          <td class="center">Tecnocampo </td>
+          <td>{{negocioNoCerr.comprador}}</td>
+          <td><a class="btn-floating btn-small waves-effect waves-light blue modal-trigger" onclick="detalleNegocio('{{negocioNoCerr.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endif %}
 <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
 
-
+{% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -803,23 +641,24 @@ BuenaVentura Agronegocios
   </div>
   <div class="row">
     <div class=" bloque-izquierdo col l4 red"  >
-      <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
     </div>
     <div class="col l4 bloque-centro yellow" >
-      <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
     </div>
     <div class="col l4 bloque-derecho green">
-      <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
+      <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
     </div>
     <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger blue "><i class=" small material-icons ">search</i></a></td>
-            </tr>
-           
+            {% for vence in vencidos%}
+              <tr style="border-bottom: 0px;">
+                <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+              </tr>
+            {% endfor %}
           
           </tbody>
         </table>
@@ -833,11 +672,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
-            <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a href="#modal1" class="btn-floating btn-small waves-effect waves-light modal-trigger red "><i class=" small material-icons ">search</i></a></td>
+            {% for semanal in vencimiento_semanal %}
+            <tr style="border-bottom: 0px; ">  
+                <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
-           
+            {% endfor %}
           
           </tbody>
         </table>
@@ -851,11 +691,12 @@ BuenaVentura Agronegocios
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
+          {% for futuro in vencimiento_futuro %}
             <tr style="border-bottom: 0px; ">
-              <td class="opcion center"> Mar 05 2021  ADAMA .SA  </td>
-              <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">search</i></a></td>
+                <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
+                <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
             </tr>
-           
+            {% endfor %}
           
           </tbody>
         </table>
@@ -867,7 +708,7 @@ BuenaVentura Agronegocios
     </div>
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
-
+  {% endif %}
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
       <div class="">
@@ -879,48 +720,33 @@ BuenaVentura Agronegocios
     <table>
     <thead>
       <tr>
-          <th> Destinatario </th>
-          <th> Empresa</th>
+          <th>Destinatario </th>
+          <th>Empresa</th>
           <th>Destino</th>
-          <th> Fecha de hoy </th>
+          <th>Fecha de Entrega Programada</th>
           <th>Estado</th>
           <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr class=" yellow">
-        <td>Carlos perez</td>
-        <td>Adama</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title"> En tiempo </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
-      <tr class="ligth-blue">
-        <td>Alan</td>
-        <td>Helm </td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title"> En transito </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-        
-      </tr>
-      <tr class="green"> 
-        <td>Jonathan</td>
-        <td>Lollipop</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title" > entregado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
-      <tr class="red"> 
-        <td>Jonathan</td>
-        <td>Lollipop</td>
-        <td>pilar buenos aires  colon 1546 </td>
-        <td>27/05/2021</td>
-        <td class="card-title" > Atrasado </td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
-      </tr>
+      {% for logistica in lista_logistica %}
+        {% if logistica.estado == 'Atrasado' %}
+          <tr class=" red">
+        {% elif logistica.estado == 'Entregado' %}
+          <tr class="green">
+        {% elif logistica.estado == 'En Transito' %}
+          <tr class="ligth-blue">
+        {% else %}
+          <tr class="yellow">
+        {% endif %}
+            <td>{{logistica.destinatario}}</td>
+            <td>{{logistica.empresa}}</td>
+            <td>{{logistica.destino}}</td>
+            <td>{{logistica.fecha}}</td>
+            <td class="card-title">{{logistica.estado}}</td>
+            <td><a onclick="detalleLogistica('{{logistica.id_prop}}')" class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
+          </tr>
+      {% endfor %}
     </tbody>
   </table>
   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
@@ -1121,11 +947,11 @@ BuenaVentura Agronegocios
 </div>
   
 </div>  
- 
+
   
 
   <script>
-    $(document).ready(function(){
+  $(document).ready(function(){
     $('.scrollspy').scrollSpy(); 
   });
         
@@ -1143,7 +969,321 @@ BuenaVentura Agronegocios
   $(document).ready(function(){
     $('.tap-target').tapTarget();
   });
+ 
+  function searchBuscadorAlerta(){ 
+      var value = $("#inputBuscadorAlerta").val().toLowerCase();
+      $("#tablitaAlerta tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+  };
            
-    </script>
+  function detalleSemaforo(idProp, ind){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleSemaforo' %}",
+      data: {'idProp':idProp,'ind':ind,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalSemaforo").html(data);
+        $('#modalSemaforoNegocio').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+  function detalleLogistica(idProp){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleLogistica' %}",
+      data: {'idProp':idProp,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalLogistica").html(data);
+        $('#modalDetalleLogistica').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function detalleNegocio(idProp){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleNegocio' %}",
+      data: {'idProp':idProp,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalNegocio").html(data);
+        $('#modalDetalleNegocio').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function detalleNotis(idNoti){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleNotis' %}",
+      data: {'idNoti':idNoti,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalNotis").html(data);
+        $('#alertaNotis').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    });
+  };
+
+  function openModalAlerta(){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleAlerta' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalAlerta").html(data);
+        $('#alerta').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function detalleArticuloNegocio(idItem, funOrig){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleItem' %}",
+      data: {'idItem':idItem,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalNegocio").html(data);
+        $('#modalDetalleNegocio').modal('open');
+        if (funOrig == 2){
+          $('#modalDetalleLogistica').modal('close'); 
+        }
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+  
+  function selNegocioModalAlerta(){ 
+    $("#divFormSendAlerta").show();
+    $("#inputBuscadorAlerta").hide();
+    $("#btnSendAlerta").show();
+  };
+
+  function sendAlertaModal(){
+    var selected = new Array();
+    $('#tableAlertas input[type="checkbox"]:checked').each(function() {
+        selected.push($(this).attr('data-id'));
+    });    
+    var jsonText = JSON.stringify(selected);
+    var titulo = document.getElementById("tituloAlerta").value;
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlerta").value;
+      var categoria = document.getElementById("selectModalAlert").value;
+      $.ajax({
+          url: "{% url 'sendAlertaModal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){             
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#alerta').modal('close');
+              };   
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    };
+  };
+
+  function showChangeEstados(){
+    $('.auxSem').show();
+    $("#nego").hide();
+    $("#mostrarChgEstSem").hide();
+    $("#confirmarChgEstSem").show();
+  };
+
+  function formAlertaLog(){
+    $("#btnAlertaLog").hide();
+    $("#divFormSendAlertaLog").show();
+    $("#btnsendAlertaLog").show();
+    document.getElementById("idPideAlertaLog").value = 1;
+  };
+
+  function sendAlertaLog(){
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlertaLog").value;
+      var categoria = "Logistica";
+      var idNegocio = document.getElementById("idNegocioLog").value;
+      $.ajax({
+          url: "{% url 'sendAlertaLog' %}",
+          type: 'POST',
+          data: {'titulo':titulo,'descri':descri,'categoria':categoria,'idNegocio':idNegocio,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){ 
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#modalDetalleLogistica').modal('close');
+              };  
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    }
+    
+  };
+
+  function formAlertaSem(){
+    $("#btnAlertaSem").hide();
+    $("#divFormSendAlertaSemaforo").show();
+    document.getElementById("idPideAlertaSem").value = 1;
+  };
+  
+  function formAlertaSemCA(origen){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;    
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    $.ajax({
+        url: "{% url 'createAlertaNV' %}",
+        type: 'POST',
+        data: {'titulo':titulo,'descri':descri,
+            'idNegocio':idNegocio,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          console.log(data.result);
+          if (data.estado){
+            if (origen=='Sem'){
+              $('#modalSemaforoNegocio').modal('close');
+            }else{
+              $('#modalDetalleLogistica').modal('close'); 
+            }
+                 
+          } 
+          M.toast({html: data.result});
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    })      
+  }
+
+  function ocultarEstadoLog(){
+    $(".textEstado").hide();
+    $(".selecEstado").show();
+    $("#mostrarEstadoLog").hide();
+    $("#confirmarEstadoLog").show();
+  };
+
+  function cambiarEstadoLog(){
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    var descri = document.getElementById("descriAlertaLog").value;
+    var idPideAlertaLog = document.getElementById("idPideAlertaLog").value;
+    var receptor = document.getElementById("selectModalAlertLog").value;
+    if (idPideAlertaLog == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var estadosId = [];
+      var grid = document.getElementById("tablaLogEstados");
+      var selectInput = grid.getElementsByTagName("SELECT");
+      for (var i = 0; i < selectInput.length; i++) {
+          var estado=1;
+          var row = selectInput[i];
+          var id = $(row).data("id");
+          
+          if (row.value == 'Entregado') {
+            estado = 3
+          } else if (row.value == 'Atrasado') {
+            estado = 4
+          } else if (row.value == 'Transito'){
+            estado = 2
+          } else {
+            estado = 1
+          };
+          var value_log = estado +"-"+ id
+          estadosId.push(value_log);
+      };
+      var jsonText = JSON.stringify(estadosId);
+      console.log(titulo,descri);
+      $.ajax({
+        url: "{% url 'setLogistica' %}",
+        type: 'POST',
+        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'receptor':receptor,'envio':idPideAlertaLog,
+          csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          $('#modalDetalleLogistica').modal('close'); 
+            M.toast({html: data.result})
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    });
+    }
+         
+  };
+
+  function sendFechaPagoSemaforo(){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;
+    var tocadoAlerta = document.getElementById("idPideAlertaSem").value;
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    if (tocadoAlerta == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var ids = [];
+      var grid = document.getElementById("tableFechaPagoS");
+      var checkBoxes = grid.getElementsByTagName("INPUT");
+      for (var i = 0; i < checkBoxes.length; i++) {
+          if (checkBoxes[i].checked) {
+              var row = checkBoxes[i];
+              var id = $(row).data("id");
+              ids.push(id);
+          };
+      };
+      var jsonText = JSON.stringify(ids);
+      var vacio = 0
+      if (ids.length == 0){
+        vacio = 1
+      };
+      $.ajax({
+          url: "{% url 'setFechaPagoReal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,
+            'descri':descri,'vacio':vacio,'tocadoAlerta':tocadoAlerta,
+              csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){
+            if (data.estado){
+              console.log(data.estado);
+              $('#modalSemaforoNegocio').modal('close');     
+            } 
+            M.toast({html: data.result});
+            
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      })      
+    };
+  };
+
+  </script>
+
+  
 
 {% endblock body %}

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.core import exceptions
 from django.db import models, connection
+from django.db import migrations
 
 __author__ = 'confirm IT solutions'
 __email__ = 'contactus@confirm.ch'
@@ -130,12 +132,21 @@ class SearchManager(models.Manager):
     '''
     SearchManager which supports MySQL and MariaDB full-text search.
     '''
-
-    query_set = SearchQuerySet
-
+    query_set = models.QuerySet
     def __init__(self, fields=None):
         super(SearchManager, self).__init__()
         self.search_fields = fields
+        if (fields):
+            self.query_set = SearchQuerySet
+
+    def contribute_to_class(self, cls, name):
+        super(SearchManager, self).contribute_to_class(cls, name);
+
+        # this is the function that sets the model attribute. So we check
+        # here if it actually has the fields in the Meta class.
+        if (hasattr(self.model._meta,"search_fields")):
+            self.search_fields = self.model._meta.search_fields
+            self.query_set = SearchQuerySet
 
     def get_query_set(self):
         '''
@@ -150,4 +161,31 @@ class SearchManager(models.Manager):
         For more informations read the documentation string of the
         SearchQuerySet's search() method.
         '''
+        if (not self.search_fields):
+            raise exceptions.ImproperlyConfigured(
+                "Missing search_fields in the {} model".format(
+                    self.model._meta.label
+                )
+            )
         return self.get_query_set().search(query, **kwargs)
+
+    def get_operation(self):
+        if (not self.search_fields):
+            return None
+        index_name = "{}_fulltext_index".format(
+            self.model._meta.label.replace(".","_")
+        )
+        forward = 'CREATE FULLTEXT INDEX {index} ON {table} {fields}'.format(
+            index=index_name,
+            table=self.model._meta.db_table,
+            fields=str(self.search_fields).replace("'", "")
+        )
+        back = 'DROP INDEX {index} ON {table}'.format(
+            index=index_name,
+            table=self.model._meta.db_table
+        )
+        operation = migrations.RunSQL(
+            (forward,),
+            (back,)
+        )
+        return operation

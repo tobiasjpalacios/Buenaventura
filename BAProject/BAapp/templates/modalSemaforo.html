@@ -1,0 +1,81 @@
+<!------ Modal negocio  ---------->
+{% load auth_extras %}
+<div class="modal-content">
+      <div class="row" >
+        <h4>{{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4>
+      </div>
+      <div class="row">
+        <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
+        <div class="col s6"><span class="">Vendedor {{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</span> </div>
+      <div class="row">
+        <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+          <table>
+            <thead>
+              <tr>
+                  <th style="display:none" class="auxSem"></th>
+                  <th>Item</th>
+                  <th>Cant</th>
+                  <th>precio</th>
+                  <th>Fecha de pago</th>
+                  <th>Estado</th>
+                  <th></th>
+              </tr>
+            </thead>
+          <tbody id="tableFechaPagoS">
+          {% for item in items %}
+            {% if item.estado == "En Tiempo" %}
+              <tr>
+          {% else %}
+              <tr class="red">
+          {% endif %}
+                  <td style="display:none" class="auxSem">
+                      <label id="contenido">
+                          <input type="checkbox" data-id={{item.id}} class="filled-in" id="input_{{item.id}}"/>
+                          <span></span>
+                      </label>
+                  </td>
+                  <td>{{item.articulo.ingrediente}}</td>
+                  <td>{{item.cantidad}}</td>
+                  <td>${{item.precio_venta}}</td>
+                  <td>{{item.fecha_pago}}</td>
+                  <td>{{item.estado}}</td>
+                  <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+       {% if request.user|has_group:"Vendedor"%} 
+        <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarChgEstSem" onclick="showChangeEstados()"> Cambiar estado </a>
+      {% endif %}  
+        <form class="col s12" id="formSendAlertaSem" action ="#">
+          <div style="display:none" id="divFormSendAlertaSemaforo">
+            <input type="hidden" name="idNegocioSem" id="idNegocioSem" value={{negocio.id}}>
+            <input type="hidden" name="idPideAlertaSem" id="idPideAlertaSem" value="0">     
+            <p>Alerta</p>               
+            <div class="row">
+              <div class="input-field col s3">
+                <textarea id="tituloAlertaSem" name="tituloAlertaSem" class="materialize-textarea"></textarea>
+                <label for="titulo">Titulo</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <textarea id="descriAlertaSem" class="materialize-textarea"></textarea>
+                <label for="descri">Descripcion</label>
+              </div>
+            </div>              
+          </div>
+          </form>
+          {% if request.user|has_group:"Vendedor" %}
+            <a class="waves-effect waves-light btn botonsote green white-text col s12  "style="display:none" id="confirmarChgEstSem" onclick="sendFechaPagoSemaforo()"> Confirmar </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+   
+    <div class="modal-footer">
+      {% if request.user|has_group:"Vendedor"%} 
+        <a href="#!" id="btnAlertaSem" onclick="formAlertaSem()"class="waves-effect waves-green btn-flat">Enviar alerta</a>  
+      {% endif %}
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+    </div>

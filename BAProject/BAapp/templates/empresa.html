@@ -36,7 +36,7 @@ BuenaVentura Agronegocios
       <div class="row">
         <div class="center">
           <span class="card-title">
-              {%if proveedor %}
+              {%if empresa %}
                 <h4>Modificar empresa</h4>
               {% else %} 
                <h4>Registar nueva empresa</h4>
@@ -44,12 +44,21 @@ BuenaVentura Agronegocios
           </span>  
         </div>
       </div>
-      <div>
+
+        <div>
         {{ form.non_field_errors }}
         <div class="input-field col s6">
           {{ form.razon_social.errors }}
           <label for="{{ form.razon_social.id_for_label }}">Razón social</label>
           {{form.razon_social}}
+        </div>
+
+        <div>
+        {{ form.non_field_errors }}
+        <div class="input-field col s6">
+          {{ form.nombre_comercial.errors }}
+          <label for="{{ form.nombre_comercial.id_for_label }}">Nombre comercial</label>
+          {{form.nombre_comercial}}
         </div>
 
         <div class="input-field col s6">
@@ -64,14 +73,6 @@ BuenaVentura Agronegocios
           <input name="{{form.ingresos_brutos.name}}" id="{{form.ingresos_brutos.id_for_label}}" type="number" min="0" class="validate">
         </div>
         
-        <div class="input-field col s6">
-          {{ form.exclusion_ret.errors }}
-          <label>
-            <input type="checkbox" name="{{form.exclusion_ret.name}}">
-            <span>{{form.exclusion_ret.label}}</span>
-        </label>
-        </div>
-
         <div class="input-field col s12">
           {{ form.fecha_exclusion.errors }}
           <label for="{{ form.fecha_exclusion.id_for_label }}">Fecha de exclusion</label>
@@ -96,7 +97,7 @@ BuenaVentura Agronegocios
           {{form.retenciones}}
         </div>
       </div>
-
+ 
       </div>
       <div class="row">
         <div class="input-field col s6 offset-s3">

@@ -9,49 +9,46 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
-    <table class="centered bordered">
-      <thead>
+<div class="container">
+  <table class="centered bordered">
+    <thead>
+      <tr>
+          <th>Propuesta</th>
+          <th>Area</th>
+          <th>Fecha</th>
+          <th>Cobrado</th>
+          <th>Visualizacion</th>
+          <th>Observaciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for presupuesto in presupuestos %}
         <tr>
-            <th>Propuesta</th>
-            <th>Area</th>
-            <th>Fecha</th>
-            <th>Razón social</th>
-            <th>Total</th>
-            <th>Mes de pago</th>
-            <th>Cobrado</th>
-            <th>Observaciones</th>
+          <td>{{ presupuesto.propuesta }}</td>
+          <td>{{ presupuesto.area }}</td>
+          <td>{{ presupuesto.fecha }}</td>
+          <td>{% if presupuesto.cobrado == True %}Si{% else %}No{% endif %}</td>
+          <td>{% if presupuesto.visualizacion == True %}Si{% else %}No{% endif %}</td>
+          <td>{{ presupuesto.observaciones }}</td>
+          {% if user.is_superuser %}
+            <th>
+              <div>
+                <a class='btn-small waves-effect waves-light green' href="{% url 'presupuesto' presupuesto.pk %}"><i class="material-icons">edit</i></a>
+                <a class='btn-small waves-effect waves-light red' 
+                  onclick="abrirmodal('{{ presupuesto.id }}, {{ presupuesto.propuesta}}')"><i class="material-icons">delete</i></a>
+            </th>
+          {% endif %}
         </tr>
-      </thead>
-      <tbody>
-        {% for presupuesto in presupuestos %}
-          <tr>
-            <td>{{ presupuesto.propuesta }}</td>
-            <td>{{ presupuesto.area }}</td>
-            <td>{{ presupuesto.fecha }}</td>
-            <td>{{ presupuesto.razon_social }}</td>
-            <td>{{ presupuesto.total }}</td>
-            <td>{{ presupuesto.mes_de_pago }}</td>
-            <td>{% if presupuesto.cobrado == True %}Si{% else %}No{% endif %}</td>
-            <td>{{ presupuesto.observaciones }}</td>
-            {% if user.is_superuser %}
-              <th>
-                <div>
-                  <a class='btn-small waves-effect waves-light green' href="{% url 'presupuesto' presupuesto.pk %}"><i class="material-icons">edit</i></a>
-                  <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ presupuesto.id }}', '{{ presupuesto.propuesta}}', '{{ presupuesto.total }}')"><i class="material-icons">delete</i></a>
-              </th>
-            {% endif %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 <!-- Modal Structure -->
   <div id="delete" class="modal">
     <div class="modal-content">
       <h4>Confirmacion</h4>
-      <p>Esta seguro que quiere eliminar la propuesta <span id="removePropuesta"></span>con total de <span id="removeTotal"></span></p>
+      <p>Esta seguro que quiere eliminar la propuesta <span id="removePropuesta"></span></p>
     </div>
     <div class="modal-footer">
       <a class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
@@ -61,10 +58,11 @@ BuenaVentura Agronegocios
 
 <script type="text/javascript">
   var currentId;
-  function abrirmodal(id, propuesta, total){
-    $("#removeName")[0].innerText = propuesta;
-    $("#removeName")[1].innerText = total;
-    currentId = id;
+  function abrirmodal(all_data){
+    var data = all_data.split(",");
+    var span = document.getElementById("removePropuesta");
+    span.innerText = data[1];
+    currentId = data[0];
     $("#delete").modal('open');
   }
 

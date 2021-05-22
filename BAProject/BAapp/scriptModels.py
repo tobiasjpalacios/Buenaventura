@@ -30,8 +30,8 @@ def loadModels(request):
         v, created = Vendedor.objects.get_or_create(
             persona = p1
      )
-   
-
+    
+    #Proveedor
     empresa = Empresa.objects.get(pk=10)
     for a in range(5):
         user = User.objects.create_user('Lucia'+str(a+1), 'Lucia'+str(a+1)+'@thebeatles.com', 'Lucia'+str(a+1))
@@ -58,7 +58,61 @@ def loadModels(request):
             empresa = empresa
         )
     
-    #Carga de Compradores
+    #Logistica
+    empresa = Empresa.objects.get(pk=10)
+    for a in range(5):
+        user = User.objects.create_user('Gonzalo'+str(a+1), 'Gonzalo'+str(a+1)+'@thebeatles.com', 'Gonzalo'+str(a+1))
+        user.first_name = 'Gonzalo'+str(a+1)
+        user.last_name = 'Juaji'+str(a+1)
+        user.save()
+        grupoLogistica = Group.objects.get(name='Logistica') 
+        grupoLogistica.user_set.add(user)
+        t1, created = Telefono.objects.get_or_create(
+            numero = 555555
+        )
+        fecha_nacimiento = datetime.date.today()
+        p1, created = Persona.objects.get_or_create(
+            user = user,
+            dni = (50000000 + (a+1)),
+            fecha_nacimiento = fecha_nacimiento,
+            sexo = "MU",
+            telefono = t1
+        )
+        #Si la idea es que cada Logsitca sea de una empresa diferente
+        #empresa = Empresa.objects.get(pk=10+a)   
+        p, created = Logistica.objects.get_or_create(
+            persona = p1,
+            empresa = empresa
+        )
+    
+    #Administrador
+    empresa = Empresa.objects.get(pk=10)
+    for a in range(5):
+        user = User.objects.create_user('Jose'+str(a+1), 'Jose'+str(a+1)+'@thebeatles.com', 'Jose'+str(a+1))
+        user.first_name = 'Jose'+str(a+1)
+        user.last_name = 'Rodriguez'+str(a+1)
+        user.save()
+        grupoAdministrador = Group.objects.get(name='Administracion') 
+        grupoAdministrador.user_set.add(user)
+        t1, created = Telefono.objects.get_or_create(
+            numero = 666666
+        )
+        fecha_nacimiento = datetime.date.today()
+        p1, created = Persona.objects.get_or_create(
+            user = user,
+            dni = (60000000 + (a+1)),
+            fecha_nacimiento = fecha_nacimiento,
+            sexo = "MU",
+            telefono = t1
+        )
+        #Si la idea es que cada Logsitca sea de una empresa diferente
+        #empresa = Empresa.objects.get(pk=10+a)   
+        p, created = Administrador.objects.get_or_create(
+            persona = p1,
+            empresa = empresa
+        )
+    
+    #Carga de Compradores - Cliente
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)
     
@@ -86,16 +140,17 @@ def loadModels(request):
             persona = p1,
             empresa = empresa
         )
-
+    
     #Carga de Gerentes
     #Todos trabajan para la misma Empresa.
     #empresa = Empresa.objects.get(pk=10)
-  
     for a in range(5):
         user = User.objects.create_user('Steve'+str(a+1), 'Steve'+str(a+1)+'@thebeatles.com', 'Steve'+str(a+1))
         user.first_name = 'Steve'+str(a+1)
         user.last_name = 'Gates'+str(a+1)
         user.save()
+        grupoGerente = Group.objects.get(name='Gerente') 
+        grupoGerente.user_set.add(user)
         t1, created = Telefono.objects.get_or_create(
             numero = 444444
         )

@@ -64,38 +64,6 @@ BuenaVentura Agronegocios
             <label for="{{ form.fecha.id_for_label }}">Fecha</label>
             {{form.fecha}}
           </div>
-          
-          
-          <div class="input-field col s6">
-            {{ form.razon_social.errors }}
-            <label for="{{ form.razon_social.id_for_label }}">Razón social</label>
-            <input name="{{form.razon_social.name}}" id="{{ form.razon_social.id_for_label }}" type="text" class="validate">
-          </div>
-
-          <div class="input-field col s6">
-            {{ form.total.errors }}
-            <label for="{{ form.total.id_for_label }}">Total</label>
-            <input name="{{form.total.name}}" id="{{ form.total.id_for_label }}" type="number" min="0"  step="0.01" class="validate">
-          </div>
-
-          <div class="input-field col s6">
-            {{ form.user.errors }}
-            <label class="active" for="{{ form.nombre.id_for_label }}">Usuario</label>
-            <input name="{{form.user.name}}" id="{{ form.user.id_for_label }}" type="text" class="validate">          
-          </div>
-                    
-           <div class="input-field col s6">
-            {{ form.mes_de_pago.errors }}
-            <label for="{{ form.mes_de_pago.id_for_label }}">Mes de pago</label>
-            {{form.mes_de_pago}}
-          </div>
-          
-
-          <div class="input-field col s6">
-            {{ form.observaciones.errors }}
-            <label for="{{ form.observaciones.id_for_label }}">Observaciones</label>
-            <input name="{{form.observaciones.name}}" id="{{ form.observaciones.id_for_label }}" type="text" class="validate">            
-          </div>
 
            <div class="input-field col s6">
             {{ form.cobrado.errors }}
@@ -104,6 +72,20 @@ BuenaVentura Agronegocios
               <span>Cobrado</span>
             </label>
           </div>    
+          
+           <div class="input-field col s6">
+            {{ form.visualizacion.errors }}
+            <label>
+              <input type="checkbox" name="{{form.visualizacion.name}}" class="validate" />
+              <span>Visualizacion</span>
+            </label>
+          </div>    
+
+          <div class="input-field col s12">
+            {{ form.observaciones.errors }}
+            <label for="{{ form.observaciones.id_for_label }}">Observaciones</label>
+            <input name="{{form.observaciones.name}}" id="{{ form.observaciones.id_for_label }}" type="text" class="validate">            
+          </div>
         </div>
         <div class="row">
           <div class="input-field col s6 offset-s3">

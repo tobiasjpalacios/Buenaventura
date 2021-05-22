@@ -5,14 +5,12 @@ from .choices import *
 
 class ProveedorForm(ModelForm):
     fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    vencimiento_cai = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     class Meta:
         model = Proveedor
         fields = '__all__'
 
         widget = {
         'fecha_nacimiento': forms.TextInput(attrs={'class':'datepicker'}),
-        'vencimiento_cai': forms.TextInput(attrs={'class':'vencimiento_cai'}),
     }
 
 
@@ -35,8 +33,6 @@ class ArticuloForm(ModelForm):
 
 class PresupuestoForm(ModelForm):
     fecha = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
-    mes_de_pago = forms.DateField(widget = forms.DateInput(attrs={'class':'datepicker'}))
-
     class Meta:
         model = Presupuesto
         fields = '__all__'
@@ -44,7 +40,6 @@ class PresupuestoForm(ModelForm):
 
         widget = {
             'fecha': forms.TextInput(attrs={'class':'datepicker'}),
-            'fecha_de_pago': forms.TextInput(attrs={'class':'datepicker'}),
         }
 
 class PropuestaForm(ModelForm):

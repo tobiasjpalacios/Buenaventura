@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import django.db.models.options as options
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('search_fields',)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -126,5 +128,5 @@ STATIC_URL = '/static/'
 
 # Login
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'router'
 LOGOUT_REDIRECT_URL = 'home'

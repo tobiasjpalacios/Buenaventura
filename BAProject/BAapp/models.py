@@ -46,23 +46,33 @@ class Empleado(models.Model):
     class Meta():
         abstract = True
 
-
 class Comprador(Empleado):
     class Meta():
         default_related_name = "compradores"
-
 
 class Gerente(Empleado):
     class Meta():
         default_related_name = "gerentes"
 
 
-class Proveedor(Empleado):
+class Proveedor(models.Model):
+    persona = models.ForeignKey("Persona",on_delete=models.DO_NOTHING)
+    empresa = models.ManyToManyField("Empresa")
+
+    def __str__(self):
+        return "{} {} ".format(self.persona.user.last_name, self.persona.user.first_name)
+
+class Logistica(Empleado):
     class Meta():
-        default_related_name = "proveedores"
+        default_related_name = "logisticas"
+    
+class Administrador(Empleado):
+    class Meta():
+        default_related_name = "administradores"
 
 
 class Empresa(models.Model):
+    objects = SearchManager()
     razon_social = models.CharField(max_length=50)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
@@ -75,6 +85,14 @@ class Empresa(models.Model):
         null=True)
     domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
     retenciones = models.ManyToManyField("Retencion")
+
+    class Meta:
+        search_fields = (
+            'razon_social',
+            'nombre_comercial',
+            'cuit',
+            'categoria_iva',
+        )
 
     def __str__(self):
         return "{}".format(self.razon_social)
@@ -126,23 +144,26 @@ class Telefono(models.Model):
 
 
 class Articulo(models.Model):
-    objects = SearchManager(('marca','ingrediente','concentracion'))
+    objects = SearchManager()
     marca = models.CharField(max_length=50, null=False)
     ingrediente = models.CharField(max_length=200, null=False)
-    concentracion = models.CharField(max_length=50)
+    concentracion = models.CharField(max_length=50, null=True)
     banda_toxicologica = models.CharField(
         max_length=50,
-        choices=BANDA_TOXICOLOGICA_CHOICES)
+        choices=BANDA_TOXICOLOGICA_CHOICES, null=True)
     descripcion = models.CharField(max_length=50, blank=True, null=True)
-    unidad =  models.CharField(max_length=50, null=False)
-    formulacion = models.CharField(max_length=20, null=False)
+    unidad =  models.CharField(max_length=50, null=True)
+    formulacion = models.CharField(max_length=20, null=True)
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING,
         related_name="articulos")
 
+    class Meta:
+        search_fields = ('marca','ingrediente','concentracion')
+
     def __str__(self):
-        return 'Articulo: {}'.format(self.marca)
+        return 'Articulo:{} de {}'.format(self.ingrediente, self.marca)
 
 
 class Negocio(models.Model):
@@ -217,10 +238,13 @@ class ItemPropuesta(models.Model):
         "Articulo", 
         null=False, 
         on_delete=models.DO_NOTHING)
-    distribuidor = models.ForeignKey(
-        "Empresa",
-        null=True,
-        blank=True,
+    proveedor = models.ForeignKey(
+        "Proveedor",
+        null=False, 
+        on_delete=models.DO_NOTHING)
+    empresa = models.ForeignKey(
+        "Empresa", 
+        null=False, 
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 
@@ -267,7 +291,8 @@ class ItemPropuesta(models.Model):
     )
     tipo_pago = models.ForeignKey(
             "TipoPago",
-            null=False,
+            null=True,
+            blank = True,
             on_delete=models.DO_NOTHING,
         )
     tasa = models.CharField(
@@ -276,6 +301,14 @@ class ItemPropuesta(models.Model):
         blank=True,
         null=True
         )
+    fecha_salida_entrega = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    fecha_real_entrega = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     def calcularDiferencias(self, item2):
         dont = ('id','propuesta')
@@ -317,10 +350,6 @@ class Presupuesto(models.Model):
 
     def __str__(self):
         return 'Propuesta: {}'.format(self.propuesta.id)
-
-    def total(self):
-        return propuesta.calcularPrecio()
-
 
 class Notificacion(models.Model):
     titulo = models.CharField(max_length=255)

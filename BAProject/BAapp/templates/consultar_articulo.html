@@ -8,42 +8,47 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}   
-<table class="centered bordered" id="articulosTable"> 
-      <thead>
-        <tr>
-            <th>Marca</th>
-            <th>Ingrediente</th>
-            <th>Concentracion</th>
-            <th>Banda Toxicologica</th>
-            <th>Descripcion</th>
-            <th>Unidad</th>
-            <th>Formulacion</th>
-            <th>Empresa</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for articulo in articulos %}
-          <tr>
-            <td>{{ articulo.marca }}</td>
-            <td>{{ articulo.ingrediente }}</td>
-            <td>{{ articulo.concentracion }}</td>
-            <td>{{ articulo.banda_toxicologica }}</td>
-            <td>{{ articulo.descripcion }}</td>
-            <td>{{ articulo.unidad }}</td>
-            <td>{{ articulo.formulacion }}</td>
-            <td>{{ articulo.empresa }}</td>
-            {% if user.is_superuser %}
-              <th>
-                <div>
-                  <a class='btn-small waves-effect waves-light green' href="{% url 'articulo' articulo.pk %}"><i class="material-icons">edit</i></a>
-                  <a class='btn-small waves-effect waves-light red' 
-                    onclick="abrirmodal('{{ articulo.id }}', '{{ articulo.apellido }}, {{articulo.nombre }}')"><i class="material-icons">delete</i></a>
-              </th>
-            {% endif %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="container">
+  <div class="container">
+    <table class="centered bordered" id="articulosTable"> 
+          <thead>
+            <tr>
+                <th>Marca</th>
+                <th>Ingrediente</th>
+                <th>Concentracion</th>
+                <th>Banda Toxicologica</th>
+                <th>Descripcion</th>
+                <th>Unidad</th>
+                <th>Formulacion</th>
+                <th>Empresa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <input type="text" id="myInput" onkeyup="filter()" placeholder="Buscar ingredientes..">
+            {% for articulo in articulos %}
+              <tr>
+                <td>{{ articulo.marca }}</td>
+                <td>{{ articulo.ingrediente }}</td>
+                <td>{{ articulo.concentracion }}</td>
+                <td>{{ articulo.banda_toxicologica }}</td>
+                <td>{{ articulo.descripcion }}</td>
+                <td>{{ articulo.unidad }}</td>
+                <td>{{ articulo.formulacion }}</td>
+                <td>{{ articulo.empresa }}</td>
+                {% if user.is_superuser %}
+                  <th>
+                    <div>
+                      <a class='btn-small waves-effect waves-light green' href="{% url 'articulo' articulo.pk %}"><i class="material-icons">edit</i></a>
+                      <a class='btn-small waves-effect waves-light red' 
+                        onclick="abrirmodal('{{ articulo.id }}', '{{ articulo.apellido }}, {{articulo.nombre }}')"><i class="material-icons">delete</i></a>
+                  </th>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </div>
+</div>
 
 <!-- Modal Structure -->
   <div id="delete" class="modal">
@@ -58,26 +63,47 @@ BuenaVentura Agronegocios
   </div>
 
 <script type="text/javascript">
-  var currentId;
-  function abrirmodal(id, name){
-    $("#removeName")[0].innerText = name;
-    currentId = id;
-    $("#delete").modal('open');
-  }
+var currentId;
+function abrirmodal(id, name){
+  $("#removeName")[0].innerText = name;
+  currentId = id;
+  $("#delete").modal('open');
+}
 
-  function eliminararticulo(){
-    headers = {}
-    headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
-    fetch("/articulo/"+currentId, 
-      {
-        method: 'delete',
-        "headers": headers
-      }
-    ).then( function(result){
-      location.reload();
+function eliminararticulo(){
+  headers = {}
+  headers[window.drf.csrfHeaderName] = window.drf.csrfToken;
+  fetch("/articulo/"+currentId, 
+    {
+      method: 'delete',
+      "headers": headers
     }
-    )
+  ).then( function(result){
+    location.reload();
   }
+  )
+}
+  
+function filter() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("articulosTable");
+  tr = table.getElementsByTagName("tr");
 
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
 </script>
 {% endblock body %}

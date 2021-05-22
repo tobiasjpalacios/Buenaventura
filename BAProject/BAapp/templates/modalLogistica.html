@@ -1,0 +1,100 @@
+{% load auth_extras %}
+<div class="modal-content">
+    <h4>{{negocio.comprador.empresa.razon_social}} {{negocio.fechaaux|date:"M d, Y"}}</h4>
+    <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
+    <div class="col s6"><span class="">Vendedor {{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</span> </div>
+    <div class="row">
+    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
+    <table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Cant</th>
+            <th>Destino</th>
+            <th>Fecha de entrega</th>
+            <th class="textEstado">Estado</th>
+            <th style="display: none;" class="selecEstado">Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="tablaLogEstados">
+        {% for item in lista_items %}
+            {% if item.estado == 'Atrasado' %}
+                <tr class=" red">
+            {% elif item.estado == 'Entregado' %}
+                <tr class="green">
+            {% elif item.estado == 'Transito' %}
+                <tr class="ligth-blue">
+            {% else %}
+                <tr class="yellow">
+            {% endif %}
+                <td>{{item.articulo.ingrediente}}</td>
+                <td>{{item.cantidad}}</td>
+                <td>{{item.destino.direccion}} </td>
+                <td>{{item.fecha_entrega}}</td>
+                <td class="textEstado">{{item.estado}}</td>
+                <td class="selecEstado" style="display: none;">
+                    <select id="selectEstado'{{item.id}}'" data-id={{item.id}}>
+                        <option value={{item.estado}}>{{item.estado}}</option>
+                        {% for estado in item.estados %}
+                            <option value={{estado}} >{{estado}}</option>
+                        {% endfor %}
+                      </select>
+                      <label>Materialize Select</label>
+                </td>
+                <td><a onclick="detalleArticuloNegocio('{{item.id}}', 2)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    <br>
+    <form class="col s12" id="formSendAlertaLog" action ="#">
+        <div style="display:none" id="divFormSendAlertaLog">
+            <input type="hidden" name="idNegocioLog" id="idNegocioLog" value={{negocio.id}}>
+            <input type="hidden" name="idPideAlertaLog" id="idPideAlertaLog" value="0">
+          <p>Alerta</p>              
+          <div class="row">
+            <div class="input-field col s3">
+              <textarea id="tituloAlertaLog" name="tituloAlertaLog" class="materialize-textarea"></textarea>
+              <label for="titulo">Titulo</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="descriAlertaLog" class="materialize-textarea"></textarea>
+              <label for="descri">Descripcion</label>
+            </div>
+          </div> 
+        {% if request.user|has_group:"Vendedor" %} 
+            <select id="selectModalAlertLog">
+                <option class="selected" value="-1">{{cliente.persona.user.last_name}} {{cliente.persona.user.first_name}} - {{cliente.empresa.razon_social}}</option>
+                {% for proveedor in proveedores %}
+                    <option value={{proveedor.id}} >{{proveedor.persona.user.last_name}} {{proveedor.persona.user.last_name}}</option>
+                {% endfor %}
+            </select>             
+        {% endif %}
+        
+      </div>
+      </form>
+    {% if request.user|has_group:"Logistica" %} 
+        <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="btnsendAlertaLog" onclick="sendAlertaLog()"> Confirmar </a>
+    {% endif %}
+    {% if request.user|has_group:"Vendedor" %} 
+        <a class="waves-effect waves-light btn botonsote red white-text col s12" id="mostrarEstadoLog" onclick="ocultarEstadoLog()"> Cambiar estado </a>
+    {% endif %}
+    <a style="display: none;" class="waves-effect waves-light btn botonsote green white-text col s12" id="confirmarEstadoLog" onclick="cambiarEstadoLog()"> Confirmar </a>  
+    </div>
+    </div>
+</div>
+<div class="modal-footer">
+    {% if request.user|has_group:"Vendedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador"%} 
+        <a href="#!" id="btnAlertaLog" onclick="formAlertaLog()" class="waves-effect waves-green btn-flat">Enviar alerta</a>
+    {% endif %}
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
