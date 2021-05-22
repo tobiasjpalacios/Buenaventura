@@ -1,213 +1,66 @@
-{% extends 'base.html' %}
-{% block imports %}
-   {% load static %}
-{% endblock imports %}
-{% block style%}
-{% endblock style%}
-{% block title %}
-BuenaVentura Agronegocios
-{% endblock title %}   
-{%block body%}      
-    <div class="parallax-container">
-      <div class="parallax"><img src="{% static 'images/parallax.jpg' %}"></div>
-    </div>
-    <div class="section white">
-      <div style="border-radius: 2em;" class="row container">
-          <h2 class="header center green-text  "> Buenaventura Agronegocios</h2>
-          <p class=" center grey-text text-darken-3 lighten-3">
-               Buenaventura Agronegocios es una empresa que se constituyó
-              en febrero de 2019 y se encuentra conformada por sus socios
-              César Diaz, Juan José Priotti  y Matías Núñez. Cada uno de ellos
-              con amplia experiencia previa en agronegocios en empresas
-              líderes del mercado.
-              Trabajamos y desarrollamos nuestra actividad a nivel de canal
-              de distribución, asesorando y comercializando Agroinsumos,
-              Ventas de granos y Seguros agrícolas.</p>
-        </div>
-      
-      
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <!-- imports -->
+  <meta charset="utf-8">
+  <!--Import materialize.css-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <style type="text/css">
+  /*html {
+    font-family: "Montseratt";
+  }*/
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+  </script>    
+  <!-- style -->
+  <style type="text/css">
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: #4fad31;
+      opacity: 1; /* Firefox */
+      text-align: center;
+    }
+  </style>
+  <!-- title -->
+  <title>
+    Buenaventura Negocios
+  </title>
+</head>
+<body style="background-color: #005221">
+    <div style="background-color: #005221; height:80px; color:#ffffff; "> <center><br><img width="200" src="{% static 'images/Buenaventura_blanco.png' %}"></center> </div>
+    <div style="background-color: #4fad31; "class="center">
+      <br>
+      <center><img width="100px" src="{% static 'images/BV_darkgreen.png' %}"></center>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat; font-size: 200%;height: 10px"><b>Bienvenido/a</b></p>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Ingresá a tu panel de control</p>
+
       <div class="row">
-          <div class="col s12 m4" >
-            <div style="border-radius: 2em;" class="card blue-grey darken-1">
-              <div class="card-content white-text">
-                <span class="card-title">Nuestros socios </span>
-                <p>I am a very simple card. I am good at containing small bits of information.
-                I am convenient because I require little markup to use effectively.</p>
-              </div>
-              <div style="border-radius: 2em;" class="card-action">
-                <a href="Principal.html#socio">Mas Info +</a>
-                <a href="#">Acceder</a>
-              </div>
+        <form action="{% url 'login' %}" method="POST"  class="col s12">
+          {%csrf_token%}
+          <div class="row">
+            <div style="border-radius: 2em; background-color: #ffffff ;height:45px;"class="center col s4 offset-s4">
+              <input style="color:#005221; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
+            </div>
+            <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
+              <input style="color:#005221;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
             </div>
           </div>
-          <div class="col s12 m4" >
-              <div style="border-radius: 2em;" class=" card blue-grey darken-1">
-                <div class="card-content white-text">
-                  <span class="card-title">Quienes Somos</span>
-                  <p>I am a very simple card. I am good at containing small bits of information.
-                  I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div style="border-radius: 2em;" class="card-action">
-                  <a href="#">This is a link</a>
-                  <a href="#">This is a link</a>
-                </div>
-              </div>
+          <div class="row">
+            <div class="center">
+              <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
             </div>
-            <div class="col s12 m4" >
-              <div style="border-radius: 2em;"  class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                  <span class="card-title">Nuestros servicios</span>
-                  <p>I am a very simple card. I am good at containing small bits of information.
-                  I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div style="border-radius: 2em;" class="card-action">
-                  <a href="#">This is a link</a>
-                  <a href="#">This is a link</a>
-                </div>
-              </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <a style = "color: #005221" href="#">¿No sos usuario?</a>
+              <br>
+              <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
             </div>
+          </div>
+        </form>
       </div>
-     
-     
-     
-      <div class="row">
-          <div class="col s12 m4">
-              <div style="border-radius: 2em;" class="card  grey" >
-                <div class="card-image waves-effect waves-block waves-light">
-                  <img class="activator" src="{% static 'images/agro.png' %}">
-                </div>
-                <div style="border-radius: 2em;" class="card-content">
-                  <span class="card-title activator grey-text text-darken-4">Provedores<i class="material-icons right">more_vert</i></span>
-                  <p><a href="#">This is a link</a></p>
-                </div>
-                <div style="border-radius: 2em;" class="card-reveal">
-                  <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-                  <p>Here is some more information about this product that is only revealed once clicked on.</p>
-                </div>
-              </div>
-              </div>
-
-          <div class="col s12 m4">
-              <div style="border-radius: 2em;"  class="card  grey" >
-                <div class="card-image waves-effect waves-block waves-light">
-                  <img class="activator" src="{% static 'images/agro.png' %}">
-                </div>
-                <div style="border-radius: 2em;" class="card-content">
-                  <span class="card-title activator grey-text text-darken-4">Articulos<i class="material-icons right">more_vert</i></span>
-                  <p><a href="#">This is a link</a></p>
-                </div>
-                <div style="border-radius: 2em;" class="card-reveal">
-                  <span class="card-title grey-text text-darken-4">Articulos<i class="material-icons right">close</i></span>
-                  <p>Here is some more information about this product that is only revealed once clicked on.</p>
-                </div>
-              </div>
-              </div>
-          <div class="col s12 m4">
-            <div style="border-radius: 2em;" class="card  grey" >
-              <div class="card-image waves-effect waves-block waves-light">
-		<img class="activator"  src="{% static 'images/agro.png' %}">
-              </div>
-              <div style="border-radius: 2em;" class="card-content">
-                <span class="card-title activator grey-text text-darken-4">Clientes<i class="material-icons right">more_vert</i></span>
-                <p><a href="#">This is a link</a></p>
-              </div>
-              <div style="border-radius: 2em;" class="card-reveal">
-                <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-                <p>Here is some more information about this product that is only revealed once clicked on.</p>
-              </div>
-            </div>
-            </div>
-      </div>
-    
-  
-  
-  </div>
-    <div class="parallax-container">
-      <div class="parallax"><img src="{% static 'images/farmer.jpg' %}"></div>
     </div>
-    <div class="white section">
-      <div class="divider"></div>
-      <h3 name="socio "class="header center green-text  "> Principales Socios y Provedores</h3>
-      <div class="row"><p class="center"> contamos con el apoyo de marcas de renombre que nos avalan como los expertos que somos y como la mejor opcion a la hora de mover los hilos para que a vos te llegue lo que nesecitas</p></div>
-      
-      
-      
-      
-      
-      <div class="row "> 
-        <div class="slider hide">
-          <ul class="slides">
-            <li>
-              <img src="https://lorempixel.com/580/250/nature/1"> <!-- random image -->
-              <div class="caption center-align">
-                <h3>This is our big Tagline!</h3>
-                <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-              </div>
-            </li>
-            <li>
-              <img src="https://lorempixel.com/580/250/nature/2"> <!-- random image -->
-              <div class="caption left-align">
-                <h3>Left Aligned Caption</h3>
-                <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-              </div>
-            </li>
-            <li>
-              <img src="https://lorempixel.com/580/250/nature/3"> <!-- random image -->
-              <div class="caption right-align">
-                <h3>Right Aligned Caption</h3>
-                <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-              </div>
-            </li>
-            <li>
-              <img src="https://lorempixel.com/580/250/nature/4"> <!-- random image -->
-              <div class="caption center-align">
-                <h3>This is our big Tagline!</h3>
-                <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
-              </div>
-            </li>
-          </ul>
-        </div>
-            
-
-        <div class=" row ">
-          <img  class="materialboxed center-align col s6  offset-s3" width="500" src="{% static 'images/socios.png' %}">
-        </div>
-       
-        
-        
-        
-        <h5 class="center-align">Algunos de nuestro socios </h5>
-      
-      </div >
-      <div class="divider"></div>
-    </div>
-    <div class="parallax-container">
-      <div class="parallax"><img src="{% static 'images/agromedia.jpg' %}"></div>
-    </div>
-  <script>
-     
-          $(document).ready(function(){
-      $('.parallax').parallax();
-      });
-      
-      $('.carousel.carousel-slider').carousel({
-    
-  });
-
-
-  $(document).ready(function(){
-    $('.slider').slider();
-  });
-
-  $(document).ready(function(){
-    $('.materialboxed').materialbox();
-  });
-
-  $(document).ready(function(){
-    $('.carousel').carousel();
-  });
-      
-  </script>
-{%endblock body%}         
-    </body>
-  </html>
+</body>
+</html>
