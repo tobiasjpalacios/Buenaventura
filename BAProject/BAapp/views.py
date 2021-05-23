@@ -145,7 +145,7 @@ def filtrarNegocios(request):
                             prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
                             proveedores.append(prov)
                     a.proveedores = proveedores
-    return render(request,'tableNegociosFiltros.html',{'todos_negocios':todos_los_negocios} )
+    return render(request,'tempAux/tableNegociosFiltros.html',{'todos_negocios':todos_los_negocios} )
     
 def getIdsQuery(lista):
     listaId = []
@@ -790,6 +790,15 @@ def sendAlertaLog(request):
         return JsonResponse(data)
     return JsonResponse(data)
 
+def reloadLog(request):
+    grupo_activo = request.user.groups.all()[0].name
+    negociosCerrConf = None
+    lnl = None
+    if (grupo_activo == "Vendedor"):
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
+    return render(request, 'tempAux/tableSem.html', {'lista_logistica':lnl})
+
 def listaNCL(request, negocioFilter, tipo):
     lista_negocios = []
     print (negocioFilter)
@@ -909,6 +918,14 @@ def semaforoVencimiento(negocioFilter):
             futuros = False
     return lista_vencidos,lista_semanas,lista_futuros
 
+def reloadSem(request):
+    grupo_activo = request.user.groups.all()[0].name
+    negociosCerrConf = None
+    lnl = None
+    if (grupo_activo == "Vendedor"):
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+        lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
+    return render(request, 'tempAux/tableSem.html', {'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
 
 def createAlertaNV(request):
     data = {
@@ -939,7 +956,7 @@ def createAlertaNV(request):
             hyperlink=reverse('negocio', args=[negocio.id,]),
             user=negocio.vendedor.persona.user
         )
-        #notif.save()
+        notif.save()
         res = 'Alerta Enviada con Exito.'
         estado = True
     else:
