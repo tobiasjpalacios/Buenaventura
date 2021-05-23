@@ -23,8 +23,8 @@
             </thead>
             <tbody>
                 <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-                <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
-                <td>{{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</td>
+                <td>{{negocio.comprador.persona.user.get_full_name}}</td>
+                <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
                 <td>{{negocio.comprador.empresa.razon_social}}</td>
             </tbody>
         </table>
