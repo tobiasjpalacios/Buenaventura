@@ -37,6 +37,7 @@ urlpatterns = [
     path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),   
     path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
+    path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('cuentas/', cuentas, name="cuentas"),
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
