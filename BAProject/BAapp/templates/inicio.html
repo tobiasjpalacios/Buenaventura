@@ -109,27 +109,9 @@ BuenaVentura Agronegocios
          
          <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  Agregue los Articulos</span> </div>
          <br>
-            <table id="empTable">
-             <!--  <thead id="empThread"> -->
-              <<!-- tr id="tr_general" class="grey darken-1">
-                <th>Ingrediente</th>
-                <th>Marca</th>
-                <th>Distribuidor</th>
-              </tr>
-              <tr id="tr_pago" class="grey darken-1">
-                <th>Precio venta</th>
-                <th>Precio compra</th>
-                <th>Cantidad</th>
-                <th>Divisa</th>
-                <th>Tipo de pago</th>
-                <th>Tasa</th>
-                <th>Fecha de pago</th>
-              </tr>
-              <tr id="tr_logistica" class="grey darken-1">
-                <th>Fecha de entrega</th>
-              </tr> -->
-            <!-- </thead> -->
-            <tbody id="body"></tbody>
+         <span>hola</span>
+          <table id="empTable">
+            <span>chau</span>
           </table>
           <br>
          
@@ -296,8 +278,8 @@ var errors = [];
 
 
   function hideSend(){
-    var bodyT = document.getElementById('body');
     var divS = document.getElementById("divProp");
+    console.log(rowCnt);
     if (rowCnt < 1){
       divS.style.display = "none";
     }else {
@@ -399,8 +381,8 @@ var headers = ["Ingrediente", "Marca", "Distribuidor",
       th.appendChild(ele);
     };
   }
-  hideSend();
   rowCnt++;
+  hideSend();
 };
 
 function refreshMarca(inputId){
@@ -595,11 +577,11 @@ function validateData(rowCnt){
 };
 
 function submit(){
-  var empTab = document.getElementById('body');
+  var empTab = document.getElementById('empTable');
   if (validateData(rowCnt)) {
     var dict = [];
     var inputComp = document.getElementById('inputComp');
-    var vendedor = document.getElementById('vendedor');
+    var vendedor = document.getElementById('vendedorSpan');
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
