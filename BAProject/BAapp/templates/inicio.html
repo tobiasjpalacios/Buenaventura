@@ -592,7 +592,7 @@ function input_empresa(c, rowCnt,td){
   ele.setAttribute('autocomplete', 'off');
   var datalistDis = document.createElement('datalist');
   datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-
+ 
   td.appendChild(ele);
   td.appendChild(datalistDis);
   for (var i = 0; i < empresas_data.length; i++) {
@@ -602,6 +602,7 @@ function input_empresa(c, rowCnt,td){
     all_empresas.push(empresas_data[i].empresa);
     datalistDis.appendChild(optionDis);        
   }
+  
 }
 
 function input_divisa(c, rowCnt,td){

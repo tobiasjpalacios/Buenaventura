@@ -13,10 +13,10 @@ from django.urls import reverse
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
-from .choices import DIVISA_CHOICES, TASA_CHOICES
+from .choices import DIVISA_CHOICES, TASA_CHOICES, TIPO_DE_NEGOCIO_CHOICES
 from .scriptModels import *
 from .decorators import *
-from datetime import date
+from datetime import date, datetime
 from BAapp.utils.utils import *
 
 
@@ -34,8 +34,122 @@ def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
 
-def todos_negocios(request):
-    return render(request, 'todos_negocios.html')
+def todos_negocios(request):    
+    negocio = getNegociosToList()
+    grupo_activo = request.user.groups.all()[0].name
+    if (grupo_activo == 'Vendedor'):
+        for a in negocio:
+            a.proveedores = []
+            if (a.fecha_cierre is not None):
+                items = ItemPropuesta.objects.filter(propuesta__id = a.id_prop)
+                proveedores = []
+                id_proveedores = [] 
+                for b in items:
+                    if (b.proveedor.persona.id not in id_proveedores):
+                        id_proveedores.append(b.proveedor.persona.id)
+                        prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
+                        proveedores.append(prov)
+                a.proveedores = proveedores
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+def filtrarNegocios(request):
+    data = []
+    if (request.method == 'POST'):
+        vendedor = request.POST['vendedor']
+        estado = request.POST['estado']
+        tipo = request.POST['tipo']
+        tipoFecha = request.POST['tipoFecha']
+        fechaD = request.POST['fechaDesde']
+        fechaH = request.POST['fechaHasta']
+        lista_ids = []
+        id_carga = "" 
+        ourid2 = vendedor.replace('"', '')
+        for a in ourid2:
+            if (a == '['):
+                pass
+            elif (a == ']'):
+                lista_ids.append(int(id_carga))
+            elif (a != ','):
+                id_carga += str(a)
+            else:
+                lista_ids.append(int(id_carga))
+                id_carga = ""
+        listaVendedor = []
+        if (vendedor == "todos"):
+            listaVendedor = Negocio.objects.all().values_list('id', flat=True)            
+        else:    
+            listaVendedor = Negocio.objects.filter(vendedor__id__in = lista_ids).values_list('id', flat=True)
+        listaEstado = []
+        if (estado == "todos"):
+            listaEstado = Negocio.objects.all().values_list('id', flat=True)            
+        else:
+            todos_negocios = Negocio.objects.all()
+            for a in todos_negocios:
+                propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
+                envio = True
+                id_prop = -1
+                for b in propuesta:
+                    envio = b.envio_comprador
+                    id_prop = b.id
+                a.id_prop = id_prop
+                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+            for b in todos_negocios:
+                if (b.estado in estado):
+                    listaEstado.append(b.id)
+        listaTipo = []
+        if (tipo == "todos"):
+            listaTipo = Negocio.objects.all().values_list('id', flat=True)
+        else:
+            listaTipo = Negocio.objects.filter(tipo_de_negocio = get_from_tuple(TIPO_DE_NEGOCIO_CHOICES, tipo)).values_list('id', flat=True)
+        listaFecha = []
+        if (int(tipoFecha) == 0):
+            listaFecha = Negocio.objects.all().values_list('id', flat=True)
+        else:
+            fechaD = datetime.strptime(fechaD, "%B %d, %Y")
+            fechaH = datetime.strptime(fechaH, "%B %d, %Y")
+            if (int(tipoFecha) == 1):
+                listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH)).values_list('id', flat=True)
+            else:
+                listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH)).values_list('id', flat=True)
+        listaVendedor = getIdsQuery(listaVendedor)
+        listaEstado = getIdsQuery(listaEstado)
+        listaTipo = getIdsQuery(listaTipo)         
+        listaFecha = getIdsQuery(listaFecha)
+        listaNeg = set(listaVendedor).intersection(listaEstado)
+        listaNeg2 = set(listaNeg).intersection(listaTipo)
+        listaNegF = set(listaNeg2).intersection(listaFecha)    
+        todos_los_negocios = Negocio.objects.filter(id__in=list(listaNegF)).order_by('-timestamp')
+        for a in todos_los_negocios:
+            propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
+            envio = True
+            id_prop = -1
+            for b in propuesta:
+                envio = b.envio_comprador
+                id_prop = b.id
+            a.id_prop = id_prop
+            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+        grupo_activo = request.user.groups.all()[0].name
+        if (grupo_activo == 'Vendedor'):
+            for a in todos_los_negocios:
+                a.proveedores = []
+                if (a.fecha_cierre is not None):
+                    items = ItemPropuesta.objects.filter(propuesta__id = a.id_prop)
+                    proveedores = []
+                    id_proveedores = [] 
+                    for b in items:
+                        if (b.proveedor.persona.id not in id_proveedores):
+                            id_proveedores.append(b.proveedor.persona.id)
+                            prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
+                            proveedores.append(prov)
+                    a.proveedores = proveedores
+    return render(request,'tableNegociosFiltros.html',{'todos_negocios':todos_los_negocios} )
+    
+def getIdsQuery(lista):
+    listaId = []
+    for a in lista:
+        listaId.append(a)
+    return listaId
 
 def testeo(request):
     return render(request, 'testeo.html')
@@ -185,9 +299,20 @@ def vendedor(request):
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
 
 
-def detalleAlerta(request):
-    if request.method == 'POST':
-        negocio = Negocio.objects.all().order_by('-timestamp')
+def estadoNegocio(fecha_cierre, aprobado, envio):
+    if (fecha_cierre is None):
+        if (envio):
+            return "Recibido"
+        else:
+            return "En Negociacion"
+    else:
+        if (aprobado):
+            return "Confirmado"
+    return "Cancelado"
+
+def getNegociosToList():
+    negocio = Negocio.objects.all().order_by('-timestamp')
+    if (len(negocio) > 0):
         for a in negocio:
             propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
             envio = True
@@ -196,24 +321,19 @@ def detalleAlerta(request):
                 envio = b.envio_comprador
                 id_prop = b.id
             a.id_prop = id_prop
-            if (a.fecha_cierre is None):
-                if (envio):
-                    a.estado = "Recibido"
-                else:
-                    a.estado = "En Negociacion"
-            else:
-                if (a.aprobado):
-                    a.estado = "Confirmado"
-                else:
-                    a.estado = "Cancelado"
+            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+    return negocio
+
+def detalleAlerta(request):
+    if request.method == 'POST':
+        negocio = getNegociosToList()
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
 
 
 def detalleNotis(request):
     if request.method == 'POST':
         idNoti = request.POST['idNoti']        
-        notificacion = Notificacion.objects.get(id=int(idNoti))
-        print (notificacion.hyperlink)
+        notificacion = Notificacion.objects.get(id=int(idNoti))        
         first = notificacion.hyperlink.split("/",1)[1]
         idNegocio = first.split("/",1)[1]
         negocio = Negocio.objects.get(id=int(idNegocio))
@@ -262,9 +382,7 @@ def detalleNegocio(request):
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=administradorL.empresa.id)
         elif (grupo_activo == 'Proveedor'):
             proveedorP = Proveedor.objects.get(persona__id=persona.id)
-            print (proveedorP)
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
-            print (items)
         else:
             items = ItemPropuesta.objects.filter(propuesta__id = idProp)    
         return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
