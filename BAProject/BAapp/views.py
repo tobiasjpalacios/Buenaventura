@@ -57,31 +57,33 @@ def filtrarNegocios(request):
     data = []
     if (request.method == 'POST'):
         vendedor = request.POST['vendedor']
+        print (vendedor)
         estado = request.POST['estado']
         tipo = request.POST['tipo']
         tipoFecha = request.POST['tipoFecha']
         fechaD = request.POST['fechaDesde']
         fechaH = request.POST['fechaHasta']
-        lista_ids = []
-        id_carga = "" 
-        ourid2 = vendedor.replace('"', '')
-        for a in ourid2:
-            if (a == '['):
-                pass
-            elif (a == ']'):
-                lista_ids.append(int(id_carga))
-            elif (a != ','):
-                id_carga += str(a)
-            else:
-                lista_ids.append(int(id_carga))
-                id_carga = ""
+        error = False
         listaVendedor = []
         if (vendedor == "todos"):
-            listaVendedor = Negocio.objects.all().values_list('id', flat=True)            
-        else:    
+            listaVendedor = Negocio.objects.all().values_list('id', flat=True)
+        else:
+            lista_ids = []
+            id_carga = "" 
+            ourid2 = vendedor.replace('"', '')
+            for a in ourid2:
+                if (a == '['):
+                    pass
+                elif (a == ']'):
+                    lista_ids.append(int(id_carga))
+                elif (a != ','):
+                    id_carga += str(a)
+                else:
+                    lista_ids.append(int(id_carga))
+                    id_carga = ""    
             listaVendedor = Negocio.objects.filter(vendedor__id__in = lista_ids).values_list('id', flat=True)
         listaEstado = []
-        if (estado == "todos"):
+        if (estado == "todos" or estado == "[]"):
             listaEstado = Negocio.objects.all().values_list('id', flat=True)            
         else:
             todos_negocios = Negocio.objects.all()
@@ -1173,7 +1175,7 @@ def crear_propuesta(negocio,observacion):
     propuesta = Propuesta(
         negocio=negocio,
         observaciones=observacion,
-        timestamp=datetime.datetime.now(),
+        timestamp=datetime.now(),
         envio_comprador=False,
         visto=False,
         )    

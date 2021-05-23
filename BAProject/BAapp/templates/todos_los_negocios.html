@@ -191,7 +191,7 @@ BuenaVentura Agronegocios
                         {% endif %}
                     {% endif %}
                     <td class="green-text center">{{negocio.estado}}</td>
-                    <td><a class="btn red  modal-trigger" onclick="detalleNegocio('{{negocio.id_prop}}')">  <i class="large material-icons ">remove_red_eye</i></a></td>
+                    <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
                 </tr>
               {% endfor %}
               <!-- esto es la lista de negocios-->
@@ -261,14 +261,23 @@ BuenaVentura Agronegocios
   }
 
   function filtrar(){
+    var errores = 0;
     var vendedores = $('#selectVendedores').val();
     var vendedor = JSON.stringify(vendedores);
+    if(vendedor.length <= 2){
+      M.toast({html: 'Error! El filtro Vendedor no puede estar en blanco.'});
+      errores = 1;    
+    };
     var estaV = vendedores.includes("todos");
     if (estaV){
         vendedor = "todos";
     };
     var estados = $('#selectEstados').val();
     var estado = JSON.stringify(estados);
+    if (estado.length <= 2){
+        M.toast({html: 'Error! El filtro Estado no puede estar en blanco.'});
+        errores = 1;
+    }
     var estaE = estados.includes("todos");
     if (estaE){
         estado = "todos";
@@ -277,7 +286,6 @@ BuenaVentura Agronegocios
     var tipoFecha = $('#selectTipoFecha').val();
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
-    var errores = 0;
     if (tipoFecha != "0"){
         if (fechaDesde === ""){
           M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
