@@ -27,30 +27,96 @@ BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
 
-  <div class="float: right; row">
-    <div class="col m12 m8">
-      <div class="card blue-grey darken-1">
-        <div class="card-content white-text">
-          <span class="card-title center-align"> Agregue los articulos en los que esta interesado</span>
-          <span class="left-align">Vendedor: </span>
-          <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b><br>
-          <span class="left-align">Seleccione un comprador:</span><br>
-          <div class="row left-align col s6">
-            <input class ="error" type="text" id="inputComp" list="datalistComp">
-            <datalist id="datalistComp"></datalist>
-          </div>
-          <span class="left-align">Observacion:</span><br>
-          <div class="row left-align col s6">
-            <input class ="error" type="text" id="inputObser">
-          </div>
-          <br>
+<style>
+   
+  .titulo1 {
+   height: 60px;
+   border-bottom-left-radius: 1em;
+   border-bottom-right-radius: 1em;
+   
+   background-color: #757474;
+   font-family: 'Montserrat' ;
+
+ }
+
+ .barra{
+ background-color: #757474;
+ height: 40px;
+ 
+}
+.titulito{
+  font-size: 30px;
+  font-family: 'Montserrat';
+  text-align: center;
+}
+
+.cuadrado{
+  border-left: 2px solid rgba(128, 128, 128, 0.555) ;
+  border-right: 2px solid rgba(128, 128, 128, 0.555) ;
+  border-top: 2px solid rgba(128, 128, 128, 0.555) ;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.555) ;
+  border-color: rgba(128, 128, 128, 0.555);
+  
+}
+
+.boton{
+  border-radius: 2em;
+  width: 35%;
+}
+
+</style>
+
+ <div class="float: right; row">
+   <div class=" titulo1 col l6 m10 s8 offset-l3 offset-m1 offset-s1 " id="titulo"> 
+     
+     <div  class="">
+       <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left" > Nuevo Presupuesto </span>
+     </div>
+
+   </div>
+   <div style="height: 100px;" > </div>
+
+   
+   <div class="col m12 m8 white">
+     <div class=" ">
+       <div class="card-content ">
+         <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  Info basica</span> </div>
+         
+         <div style="height: 100px;"></div>
+         
+         <div class="row">
+           <div class=" cuadrado col s4 offset-s1" >
+             <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
+             <span class="left-align">Vendedor: </span>
+             <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b>
+           </div>
+         <div class="col cuadrado col s4 offset-s1" >
+           <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
+             <span class="left-align">Vendedor: </span>
+           <span class="left-align">Seleccione un comprador:</span><br>
+         <div class="row left-align col s12">
+           <input class ="error" type="text" id="inputComp" list="datalistComp">
+           <datalist id="datalistComp"></datalist>
+         </div>
+         </div>
+         
+       </div>
+       
+         
+         <br>
+         
+         
+         
+         <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  Agregue los Articulos</span> </div>
+         <br>
             <table id="empTable">
-              <thead>
-              <tr class="grey darken-1">
+             <!--  <thead id="empThread"> -->
+              <<!-- tr id="tr_general" class="grey darken-1">
                 <th>Ingrediente</th>
                 <th>Marca</th>
-                <th>Proveedor</th>
                 <th>Distribuidor</th>
+              </tr>
+              <tr id="tr_pago" class="grey darken-1">
                 <th>Precio venta</th>
                 <th>Precio compra</th>
                 <th>Cantidad</th>
@@ -58,53 +124,67 @@ BuenaVentura Agronegocios
                 <th>Tipo de pago</th>
                 <th>Tasa</th>
                 <th>Fecha de pago</th>
+              </tr>
+              <tr id="tr_logistica" class="grey darken-1">
                 <th>Fecha de entrega</th>
-                </tr>
-            </thead>
+              </tr> -->
+            <!-- </thead> -->
             <tbody id="body"></tbody>
           </table>
           <br>
-          
-          <div class="row">
-            <a class="blue waves-effect waves-light btn col s6 tooltipped" data-tooltip="Añadir una fila" onclick="addRow()">Agregar Artículo</a> 
-            <a  class="red waves-effect waves-light btn col s6  tooltipped" data-position="right" data-tooltip="Eliminar ultima fila" onclick="removeRow()">Eliminar Articulo</a> 
-          </div>
-          <div class="row" id="divProp" style="display:none">
-            <a class="green waves-effect waves-light col s12 btn" onclick="showModal()">Realizar Propuesta</a>
-          
-          </div>
-        </div>
-      </div>
-    </div>
+         
+         <div class="row">
+           <a class="boton blue waves-effect waves-light btn  tooltipped" data-tooltip="Añadir una fila" onclick="addRow()" style="margin-left: 10%;">Agregar Artículo</a> 
+           <a  class="boton red waves-effect waves-light btn  tooltipped"  data-tooltip="Eliminar ultima fila" onclick="removeRow()" style="margin-left: 10%;">Eliminar Articulo</a> 
+         </div>
+         <div class="row"> 
+             <div class="col s12">
+               <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Observaciones</span> </div>
+                
+               <div class="row left-align col s12">
+                 <input class ="error" type="text" id="inputObser">
+               </div>
+             </div>
+
+         </div>
+
+
+         <div class="row" id="divProp" style="display:none">
+           <a class="green waves-effect waves-light col s12 btn" onclick="showModal()">Realizar Propuesta</a>
+         
+         </div>
+       </div>
+     </div>
+   </div>
 </div>
 
 <!--
-  <i class="material-icons">cancel</i>
-  <i class="material-icons">add</i>
+ <i class="material-icons">cancel</i>
+ <i class="material-icons">add</i>
 -->
 <br>
 
 
-  <div class="fixed-action-btn">
-    <a class="btn-floating btn-large red">
-      <i class="large material-icons">dehaze</i>
-    </a>
-    <ul>
-      <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
-      <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar pedido "><i class="material-icons">cached</i></a></li>
-      <li><a class="btn-floating orange tooltipped" data-position="left"  data-tooltip="Nuevo Pedido"><i class="material-icons">add_circle</i></a></li>
-    </ul>
-  </div>
+ <div class="fixed-action-btn">
+   <a class="btn-floating btn-large red">
+     <i class="large material-icons">dehaze</i>
+   </a>
+   <ul>
+     <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
+     <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar pedido "><i class="material-icons">cached</i></a></li>
+     <li><a class="btn-floating orange tooltipped" data-position="left"  data-tooltip="Nuevo Pedido"><i class="material-icons">add_circle</i></a></li>
+   </ul>
+ </div>
 
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <h4>Advertencia!</h4>
-      <p>¿Desea realizar una Propuesta ?</p>
-    </div>
-    <div class="modal-footer">
-      <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">check</i></a>
-    </div>
-  </div>
+ <div id="modal1" class="modal">
+   <div class="modal-content">
+     <h4>Advertencia!</h4>
+     <p>¿Desea realizar una Propuesta ?</p>
+   </div>
+   <div class="modal-footer">
+     <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">check</i></a>
+   </div>
+ </div>
 
 <script>
 
@@ -138,12 +218,13 @@ function start_datepicker(){
     format: 'dd/mm/yyyy',
   });
 }
-
-var headers = [];
+var rowCnt = 0;
+var headers = ["Ingrediente", "Marca", "Distribuidor", 
+              "Precio venta", "Precio compra", "Cantidad", 
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega"];
 var savings_data;
 var compradores_data;
-var proveedores_data;
-var empresas_data;
+var distribuidores_data;
 var tipo_pago;
 var divisas = ["Dolar", "Pesos"];
 var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
@@ -152,18 +233,17 @@ var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2
 var isValidated = false;
 var all_ingredientes = [];
 var all_marcas = [];
-var all_proveedores = [];
-var all_empresas = [];
+var all_distribuidores = [];
 var all_tipoPago = [];
 var all_compradores = []
 var errors = [];
 
   $(document).ready(function(){
-  $("#empTable thead tr th").each(function(index){
-    if ($(this).text() != "Operaciones"){
-      headers.push($(this).text())
-    }
-  })
+  // $("#empTable thead tr th").each(function(index){
+  //   if ($(this).text() != "Operaciones"){
+  //     headers.push($(this).text())
+  //   }
+  // })
     $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
@@ -179,14 +259,6 @@ var errors = [];
       dataType: "json",
       success: function(data) {      
         distribuidores_data = data;
-      }
-    });
-    $.ajax({
-      type: "GET",
-      url: "{% url 'api_empresa' %}",
-      dataType: "json",
-      success: function(data) {      
-        empresas_data = data;
       }
     });
 
@@ -225,7 +297,6 @@ var errors = [];
 
   function hideSend(){
     var bodyT = document.getElementById('body');
-    var rowCnt = bodyT.rows.length;
     var divS = document.getElementById("divProp");
     if (rowCnt < 1){
       divS.style.display = "none";
@@ -236,42 +307,100 @@ var errors = [];
 
 function addRow() {
   var defaultPlace = ["0.00", "0.00", "0.00"]
-  var empTab = document.getElementById('body');
-  var rowCnt = empTab.rows.length;    // numero de columnas
-  var tr = empTab.insertRow(rowCnt); // numero de filas
-  for (var c = 0; c < headers.length; c++) {             
-    var td = document.createElement('td'); 
-    td = tr.insertCell(c);
+  var general = ["Ingrediente", "Marca", "Distribuidor"];
+  var pago = ["Precio venta", "Precio compra", "Cantidad", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
+  var logistica = ["Fecha de entrega"];
+
+  var empTab = document.getElementById('empTable');
+
+  var thread = document.createElement("thread"); // numero de filas
+  thread.setAttribute("id","thread"+rowCnt);
+
+  var input = document.createElement("input");
+  input.setAttribute("value","Articulo n°"+(rowCnt+1));
+  input.setAttribute("disabled",true);
+  thread.appendChild(input);
+
+  var tr1 = document.createElement("tr");
+  var tr2 = document.createElement("tr");
+  var tr3 = document.createElement("tr");
+
+  thread.appendChild(tr1);
+  thread.appendChild(tr2);
+  thread.appendChild(tr3);
+
+  empTab.appendChild(thread);
+  for(var i = 0; i < general.length; i++){
+    var th1 = document.createElement("th");
+    th1.setAttribute("id","th_"+general[i]+rowCnt);
+    th1.innerHTML = general[i];
+    tr1.appendChild(th1);
+  }
+
+  empTab.appendChild(thread);
+  for(var i = 0; i < pago.length; i++){
+    var th2 = document.createElement("th");
+    th2.setAttribute("id","th_"+pago[i]+rowCnt);
+    th2.innerHTML = pago[i];
+    tr2.appendChild(th2);
+  }
+  
+  empTab.appendChild(thread);
+  for(var i = 0; i < logistica.length; i++){
+    var th3 = document.createElement("th");
+    th3.setAttribute("id","th_"+logistica[i]+rowCnt);
+    th3.innerHTML = logistica[i];
+    tr3.appendChild(th3);
+  }
+  var br = document.createElement("br");
+  var br2 = document.createElement("br");
+  thread.appendChild(br);
+  thread.appendChild(br2); 
+
+var headers = ["Ingrediente", "Marca", "Distribuidor", 
+              "Precio venta", "Precio compra", "Cantidad", 
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega"];
+
+  for (var c = 0; c < headers.length; c++){    
     if (c==0) {
-      input_ingrediente(c, rowCnt,td)
+      var th = document.getElementById("th_Ingrediente"+rowCnt);
+      input_ingrediente(c, th)
     }else if(c==1){   
-      input_marca(c, rowCnt,td);
+      var th = document.getElementById("th_Marca"+rowCnt);
+      input_marca(c, th);
     }else if (c==2) {
-      input_proveedor(c, rowCnt,td);
-    }else if (c==3) {
-      input_empresa(c, rowCnt,td);
+      var th = document.getElementById("th_Distribuidor"+rowCnt);
+      input_distribuidor(c, th);
+    }else if (c==6) {
+      var th = document.getElementById("th_Divisa"+rowCnt);
+      input_divisa(c, th);
     }else if (c==7) {
-      input_divisa(c, rowCnt,td);
+      var th = document.getElementById("th_Tipo de pago"+rowCnt);
+      input_tipoPago(c, th);
     }else if (c==8) {
-      input_tipoPago(c, rowCnt,td);
-    }else if (c==9) {
-      input_tasa(c, rowCnt, td);
-    }else if(c==10){
-      input_fechaPago(c, rowCnt,td);
-    }else if (c==11) {
-      input_fechaEntrega(c, rowCnt, td);
+      var th = document.getElementById("th_Tasa"+rowCnt);
+      input_tasa(c, th);
+    }else if(c==9){
+      var th = document.getElementById("th_Fecha de pago"+rowCnt);
+      input_fechaPago(c, th);
+    }else if (c==10) {
+      var th = document.getElementById("th_Fecha de entrega"+rowCnt);
+      input_fechaEntrega(c, th);
     }else{
+      var th = document.getElementById("th_"+headers[c]+rowCnt);
       var ele = document.createElement('input');
       ele.setAttribute('type', 'text');
       ele.setAttribute('size', '4');
+
       ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
       ele.setAttribute('autocomplete', 'off');
       var pl = defaultPlace[c-3];
       ele.setAttribute('placeholder', pl);
-      td.appendChild(ele);
+      th.appendChild(ele);
     };
   }
   hideSend();
+  rowCnt++;
 };
 
 function refreshMarca(inputId){
@@ -297,9 +426,10 @@ function refreshMarca(inputId){
 }
 
 function removeRow(){
-  var empTab = document.getElementById('body');
-  var rowCnt = empTab.rows.length;    // numero de columnas
-  empTab.deleteRow(rowCnt-1); // numero de filas
+  console.log(rowCnt);
+  var thread = document.getElementById('thread'+(rowCnt-1));
+  thread.remove();
+  rowCnt--;
   hideSend();
 }
 
@@ -376,7 +506,7 @@ function validateData(rowCnt){
             }
           }
       }else if (j == 2) {
-        if (all_proveedores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+        if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
           isValidated = false;
@@ -386,7 +516,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if (j == 34) {
+      }else if (j == 3) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -394,7 +524,7 @@ function validateData(rowCnt){
           errors.push("El precio venta debe ser un número");
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 5) {
+      }else if (j == 4) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -405,7 +535,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 6) {
+      }else if (j == 5) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
           boolCant = false;
           var error = "La cantidad no puede estar vacia";
@@ -425,7 +555,7 @@ function validateData(rowCnt){
             input.style.borderColor = '#CF0029'; 
           }
         }
-      }else if (j == 7) {
+      }else if (j == 6) {
         if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -436,7 +566,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 8){
+      }else if(j == 7){
         if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -447,7 +577,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 9){
+      }else if(j == 8){
          if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
           isValidated = true;
          }else{
@@ -466,12 +596,10 @@ function validateData(rowCnt){
 
 function submit(){
   var empTab = document.getElementById('body');
-  var rowCnt = empTab.rows.length;
   if (validateData(rowCnt)) {
     var dict = [];
     var inputComp = document.getElementById('inputComp');
-    var inputObser = document.getElementById('inputObser');
-    var vendedor = document.getElementById("vendedorSpan").innerHTML;
+    var vendedor = document.getElementById('vendedor');
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
@@ -484,8 +612,7 @@ function submit(){
      var aux_dict = {
         'data':dict,
         'comprador':inputComp.value,
-        'vendedor':vendedor,
-        'observacion':inputObser
+        'vendedor':vendedor.value,
      }
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
@@ -514,7 +641,7 @@ function submit(){
 
 // funciones de los inputs
 
-function input_ingrediente(c, rowCnt,td){
+function input_ingrediente(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
@@ -538,7 +665,7 @@ function input_ingrediente(c, rowCnt,td){
 }
 
 
-function input_marca(c, rowCnt,td){
+function input_marca(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
@@ -560,13 +687,13 @@ function input_marca(c, rowCnt,td){
   }
 }
 
-function input_proveedor(c, rowCnt,td){
+function input_distribuidor(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
   ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Proveedor');
+  ele.setAttribute('placeholder', 'Distribuidor');
   ele.setAttribute('autocomplete', 'off');
   var datalistDis = document.createElement('datalist');
   datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
@@ -575,36 +702,14 @@ function input_proveedor(c, rowCnt,td){
   td.appendChild(datalistDis);
   for (var i = 0; i < distribuidores_data.length; i++) {
     var optionDis = document.createElement('option');
-    optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
+    optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
     optionDis.setAttribute('id','option'+i);
-    all_proveedores.push(distribuidores_data[i].nombre);
+    all_distribuidores.push(distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
     datalistDis.appendChild(optionDis);        
   }
 }
 
-function input_empresa(c, rowCnt,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Empresa');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistDis = document.createElement('datalist');
-  datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-
-  td.appendChild(ele);
-  td.appendChild(datalistDis);
-  for (var i = 0; i < empresas_data.length; i++) {
-    var optionDis = document.createElement('option');
-    optionDis.setAttribute('value',''+empresas_data[i].empresa);
-    optionDis.setAttribute('id','option'+i);
-    all_empresas.push(empresas_data[i].empresa);
-    datalistDis.appendChild(optionDis);        
-  }
-}
-
-function input_divisa(c, rowCnt,td){
+function input_divisa(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('size', '9');
@@ -626,7 +731,7 @@ function input_divisa(c, rowCnt,td){
   }
 }
 
-function input_tipoPago(c, rowCnt,td){
+function input_tipoPago(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
@@ -649,7 +754,7 @@ function input_tipoPago(c, rowCnt,td){
   }
 }
 
-function input_tasa(c, rowCnt,td){
+function input_tasa(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('size', '9');
@@ -671,7 +776,7 @@ function input_tasa(c, rowCnt,td){
   }
 }
 
-function input_fechaPago(c, rowCnt,td){
+function input_fechaPago(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('size', '18');
@@ -683,7 +788,7 @@ function input_fechaPago(c, rowCnt,td){
   start_datepicker();
 }
 
-function input_fechaEntrega(c, rowCnt, td){
+function input_fechaEntrega(c, td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('size', '1');
@@ -695,10 +800,11 @@ function input_fechaEntrega(c, rowCnt, td){
   start_datepicker();
 }
 
-function desactivarTasa(rowCnt){
-  var inputPago = document.getElementById("input7."+rowCnt).value;
-  var datalistTasa = document.getElementById("input8."+rowCnt);
-  var inputTasa = document.getElementById("input8."+rowCnt);
+function desactivarTasa(row){
+  console.log(row);
+  var inputPago = document.getElementById("input7."+row).value;
+  var datalistTasa = document.getElementById("input8."+row);
+  var inputTasa = document.getElementById("input8."+row);
   if (inputPago.toLowerCase() =="contado") {
     inputTasa.disabled = true;
     inputTasa.setAttribute("placeholder","/");
@@ -708,5 +814,4 @@ function desactivarTasa(rowCnt){
   }
 }
 </script>
-
 {% endblock body %}
