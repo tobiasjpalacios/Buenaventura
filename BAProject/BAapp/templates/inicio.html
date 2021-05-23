@@ -121,7 +121,7 @@ BuenaVentura Agronegocios
          </div>
          <div class="row"> 
              <div class="col s12">
-               <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Observaciones</span> </div>
+               <div  class="col s12 barra center-align " ><span class="titulito center-align white-text" id="observaciones"> Observaciones</span> </div>
                 
                <div class="row left-align col s12">
                  <input class ="error" type="text" id="inputObser">
@@ -279,7 +279,6 @@ var errors = [];
 
   function hideSend(){
     var divS = document.getElementById("divProp");
-    console.log(rowCnt);
     if (rowCnt < 1){
       divS.style.display = "none";
     }else {
@@ -582,6 +581,7 @@ function submit(){
     var dict = [];
     var inputComp = document.getElementById('inputComp');
     var vendedor = document.getElementById('vendedorSpan');
+    var observaciones = document.getElementById('observaciones');
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
@@ -594,8 +594,10 @@ function submit(){
      var aux_dict = {
         'data':dict,
         'comprador':inputComp.value,
-        'vendedor':vendedor.value,
+        'vendedor':vendedor.innerHTML,
+        'observaciones': observaciones.innerHTML,
      }
+     console.log(aux_dict);
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
       headers: {
@@ -684,9 +686,10 @@ function input_distribuidor(c,td){
   td.appendChild(datalistDis);
   for (var i = 0; i < distribuidores_data.length; i++) {
     var optionDis = document.createElement('option');
-    optionDis.setAttribute('value',''+distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+    console.log(distribuidores_data[i]);
+    optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
     optionDis.setAttribute('id','option'+i);
-    all_distribuidores.push(distribuidores_data[i].nombre+' - '+distribuidores_data[i].empresa);
+    all_distribuidores.push(distribuidores_data[i].nombre);
     datalistDis.appendChild(optionDis);        
   }
 }
@@ -783,7 +786,6 @@ function input_fechaEntrega(c, td){
 }
 
 function desactivarTasa(row){
-  console.log(row);
   var inputPago = document.getElementById("input7."+row).value;
   var datalistTasa = document.getElementById("input8."+row);
   var inputTasa = document.getElementById("input8."+row);

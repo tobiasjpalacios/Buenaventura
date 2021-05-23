@@ -240,11 +240,7 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
         "Proveedor",
-        null=False, 
-        on_delete=models.DO_NOTHING)
-    empresa = models.ForeignKey(
-        "Empresa", 
-        null=False, 
+        null=True, 
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 

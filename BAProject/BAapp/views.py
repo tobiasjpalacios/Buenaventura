@@ -57,7 +57,6 @@ def filtrarNegocios(request):
     data = []
     if (request.method == 'POST'):
         vendedor = request.POST['vendedor']
-        print (vendedor)
         estado = request.POST['estado']
         tipo = request.POST['tipo']
         tipoFecha = request.POST['tipoFecha']
@@ -624,7 +623,6 @@ def detalleLogistica(request):
                     #Atrasado
                     b.estado = 'Atrasado'
                     b.estados = ('En Tiempo','Transito', 'Entregado')
-        print (proveedores)
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
@@ -640,7 +638,6 @@ def sendAlertaModal(request):
         categoria = request.POST['categoria']
         ourid = request.POST['jsonText']
         ourid2 = ourid.replace('"', '')
-        print (ourid2)
         if (len(ourid2) <= 2):
             data = {
                 'result' : 'Error! No ha seleccionado ningún Negocio!',
@@ -801,7 +798,6 @@ def reloadLog(request):
 
 def listaNCL(request, negocioFilter, tipo):
     lista_negocios = []
-    print (negocioFilter)
     persona = Persona.objects.get(user=request.user)
     empleadoL = None
     if (tipo=="L"):
@@ -1060,7 +1056,6 @@ def detalleSemaforo(request):
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True, proveedor__id=proveedorP.id)        
         else:
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True)
-        print (items)
         today = date.today()
         d1 = today.strftime("%d/%m/%Y")
         for a in items:
@@ -1174,17 +1169,14 @@ class carga_excel(View):
 
 def crear_negocio(request, comprador):
     chunks = comprador.split(' ')
-    print (chunks)
     comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
     comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
     comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
     vendedor_obj = Vendedor.objects.get(persona__user=request.user)
-    print (request.user, vendedor_obj)
     negocio = Negocio(
         comprador = comprador_obj,
         vendedor = vendedor_obj
         )
-    print (negocio)
     negocio.save()
     return negocio
 
@@ -1225,6 +1217,7 @@ class APIDistribuidor(View):
                 context = Persona.objects.none()
             tmp = {
                 'nombre':User.objects.get(id=tmp_persona).get_full_name()
+
             }
             proveedores.append(tmp)
         return JsonResponse(list(proveedores), safe=False)
@@ -1301,7 +1294,6 @@ class ProveedorView(View):
         form = ProveedorForm(request.POST, instance=proveedor)
         if form.is_valid():
             proveedor = form.save()
-            print("here")
             return redirect('admin')
         return render(request, 'proveedor.html', context={"form":form})
 
@@ -1415,7 +1407,7 @@ class NegocioView(View):
             art = {}
             for f in i._meta.get_fields():
                 val = getattr(i,f.name)
-                if (f.is_relation):
+                if (f.is_relation and val):
                     art[f.name] = val.id
                 else:
                     art[f.name] = val
@@ -1445,7 +1437,6 @@ class NegocioView(View):
                 for f in tmp._meta.get_fields():
                     if (f.name=="propuesta" or f.name=="id"):
                         continue
-                    print(f.name)
                     if (f.is_relation):
                         obj = get_object_or_404(
                             f.related_model,
@@ -1571,7 +1562,7 @@ class APIArticulos(View):
     def post(self,request):
         recieved = json.loads(request.body.decode("utf-8"))
         comprador = recieved.get("comprador")
-        observacion = recieved.get("observacion")
+        observacion = recieved.get("observaciones")
         negocio = crear_negocio(request, comprador)
         propuesta = crear_propuesta(negocio,observacion)
         data = recieved.get("data")
@@ -1580,33 +1571,29 @@ class APIArticulos(View):
             actual = data[i]
             marca = actual.get("Marca")
             ingrediente = actual.get("Ingrediente")
-            empresa = actual.get("Distribuidor")
-            proveedor = actual.get("Proveedor") 
+            distribuidor = actual.get("Distribuidor")
             tipo_pago_str = actual.get("Tipo de pago")
             divisa_tmp = actual.get("Divisa")
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
             articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
-
             #quilombo para traer al objecto proveedor
-            if len(proveedor.strip()) != 0:
-                get_prov = actual.get("Proveedor").split(" ")
-                prov_usr = User.objects.filter(first_name=get_prov[0],last_name=get_prov[1]).values("id")
-                prov_per = Persona.objects.filter(user_id__in=prov_usr)
-                proveedor = Proveedor.objects.get(persona_id__in=prov_per)
-            else:
-                proveedor = None
-            
+        
             #quilombo para traer al objecto empresa
-            if len(empresa.strip()) != 0:
-                get_empresa = actual.get("Distribuidor").split(" ")
+            if len(distribuidor.strip()) != 0:
+                get_distribuidor = actual.get("Distribuidor").split(" ")
+                nombre = get_distribuidor[0].strip()
+                apellido = get_distribuidor[1].strip()
                 #distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
                 #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                empresa = Empresa.objects.get(razon_social=empresa)
+                prov_usr = User.objects.filter(first_name=nombre,last_name=apellido).values("id")
+                prov_per = Persona.objects.filter(user_id__in=prov_usr)
+                proveedor = Proveedor.objects.get(persona_id__in=prov_per)
                 #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
             else:
-                empresa = None
+                proveedor = None
+
             #traer el objecto tipo de pago
             if len(actual.get("Tipo de pago").strip()) != 0:
                 tipo_pago = TipoPago.objects.get(nombre=tipo_pago_str)
@@ -1625,7 +1612,6 @@ class APIArticulos(View):
             
             item = ItemPropuesta(
                 articulo=articulo, 
-                empresa=empresa,
                 proveedor=proveedor,
                 propuesta=propuesta,
                 precio_venta=precio_venta,
