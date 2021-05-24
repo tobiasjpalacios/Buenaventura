@@ -201,9 +201,9 @@ function start_datepicker(){
   });
 }
 var rowCnt = 0;
-var headers = ["Ingrediente", "Marca", "Distribuidor", 
-              "Precio venta", "Precio compra", "Cantidad", 
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega"];
+var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+              "Precio venta", "Precio compra", 
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 var savings_data;
 var compradores_data;
 var distribuidores_data;
@@ -287,10 +287,9 @@ var errors = [];
   };
 
 function addRow() {
-  var defaultPlace = ["0.00", "0.00", "0.00"]
-  var general = ["Ingrediente", "Marca", "Distribuidor"];
-  var pago = ["Precio venta", "Precio compra", "Cantidad", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
-  var logistica = ["Fecha de entrega"];
+  var general = ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
+  var pago = ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
+  var logistica = ["Fecha de entrega","Destino"];
 
   var empTab = document.getElementById('empTable');
 
@@ -338,9 +337,9 @@ function addRow() {
   thread.appendChild(br);
   thread.appendChild(br2); 
 
-var headers = ["Ingrediente", "Marca", "Distribuidor", 
-              "Precio venta", "Precio compra", "Cantidad", 
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega"];
+var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+              "Precio venta", "Precio compra", 
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
   for (var c = 0; c < headers.length; c++){    
     if (c==0) {
@@ -352,6 +351,9 @@ var headers = ["Ingrediente", "Marca", "Distribuidor",
     }else if (c==2) {
       var th = document.getElementById("th_Distribuidor"+rowCnt);
       input_distribuidor(c, th);
+    }else if (c==3) {
+      var th = document.getElementById("th_Cantidad"+rowCnt);
+      input_cantidad(c,th);
     }else if (c==6) {
       var th = document.getElementById("th_Divisa"+rowCnt);
       input_divisa(c, th);
@@ -367,6 +369,9 @@ var headers = ["Ingrediente", "Marca", "Distribuidor",
     }else if (c==10) {
       var th = document.getElementById("th_Fecha de entrega"+rowCnt);
       input_fechaEntrega(c, th);
+    }else if (c==11) {
+      var th = document.getElementById("th_Destino"+rowCnt);
+      input_destino(c,th);
     }else{
       var th = document.getElementById("th_"+headers[c]+rowCnt);
       var ele = document.createElement('input');
@@ -375,8 +380,7 @@ var headers = ["Ingrediente", "Marca", "Distribuidor",
 
       ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
       ele.setAttribute('autocomplete', 'off');
-      var pl = defaultPlace[c-3];
-      ele.setAttribute('placeholder', pl);
+      ele.setAttribute('placeholder', "0.00");
       th.appendChild(ele);
     };
   }
@@ -407,7 +411,6 @@ function refreshMarca(inputId){
 }
 
 function removeRow(){
-  console.log(rowCnt);
   var thread = document.getElementById('thread'+(rowCnt-1));
   thread.remove();
   rowCnt--;
@@ -498,25 +501,6 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }
       }else if (j == 3) {
-        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          errors.push("El precio venta debe ser un número");
-          input.style.borderColor = '#CF0029'; 
-        }
-      }else if (j == 4) {
-        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "El precio compra debe ser un número";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029'; 
-        }
-      }else if (j == 5) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
           boolCant = false;
           var error = "La cantidad no puede estar vacia";
@@ -535,6 +519,25 @@ function validateData(rowCnt){
             }
             input.style.borderColor = '#CF0029'; 
           }
+        }
+      }else if (j == 4) {
+        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          errors.push("El precio venta debe ser un número");
+          input.style.borderColor = '#CF0029'; 
+        }
+      }else if (j == 5) {
+        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          isValidated = true;
+        }else{
+          isValidated = false;
+          var error = "El precio compra debe ser un número";
+          if (errors.indexOf(error) < 0) {
+            errors.push(error);
+          }
+          input.style.borderColor = '#CF0029'; 
         }
       }else if (j == 6) {
         if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
@@ -597,7 +600,6 @@ function submit(){
         'vendedor':vendedor.innerHTML,
         'observaciones': observaciones.innerHTML,
      }
-     console.log(aux_dict);
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
       headers: {
@@ -612,7 +614,6 @@ function submit(){
         window.location = url;
      });
   }else{
-    console.log(errors);
     var print_errors="";
     for (var i = 0; i < errors.length; i++) {
       print_errors = print_errors.concat('\n'+errors[i])
@@ -686,12 +687,22 @@ function input_distribuidor(c,td){
   td.appendChild(datalistDis);
   for (var i = 0; i < distribuidores_data.length; i++) {
     var optionDis = document.createElement('option');
-    console.log(distribuidores_data[i]);
     optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
     optionDis.setAttribute('id','option'+i);
     all_distribuidores.push(distribuidores_data[i].nombre);
     datalistDis.appendChild(optionDis);        
   }
+}
+
+function input_cantidad(c,td){
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('size', '4');
+
+    ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+    ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('placeholder', "0.00");
+    td.appendChild(ele);
 }
 
 function input_divisa(c,td){
@@ -783,6 +794,17 @@ function input_fechaEntrega(c, td){
   ele.setAttribute('autocomplete', 'off');
   td.appendChild(ele);
   start_datepicker();
+}
+
+function input_destino(c, td){
+  var ele = document.createElement('input');
+  ele.setAttribute('type', 'text');
+  ele.setAttribute('size', '4');
+
+  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  ele.setAttribute('autocomplete', 'off');
+  ele.setAttribute('placeholder', "Destino");
+  td.appendChild(ele);
 }
 
 function desactivarTasa(row){

@@ -18,7 +18,7 @@ from .scriptModels import *
 from .decorators import *
 from datetime import date, datetime
 from BAapp.utils.utils import *
-
+from django.core.exceptions import ObjectDoesNotExist
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -1566,20 +1566,24 @@ class APIArticulos(View):
         negocio = crear_negocio(request, comprador)
         propuesta = crear_propuesta(negocio,observacion)
         data = recieved.get("data")
-        domicilio = Domicilio.objects.get(id=1)
         for i in range(len(data)):
             actual = data[i]
             marca = actual.get("Marca")
             ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
+            domicilio_str = actual.get("Destino")
             tipo_pago_str = actual.get("Tipo de pago")
             divisa_tmp = actual.get("Divisa")
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
             articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
-            #quilombo para traer al objecto proveedor
-        
+            try:
+                domicilio = Domicilio.objects.get(direccion=domicilio_str)
+            except ObjectDoesNotExist:
+                domicilio = Domicilio(direccion=domicilio_str)
+                domicilio.save()
+
             #quilombo para traer al objecto empresa
             if len(distribuidor.strip()) != 0:
                 get_distribuidor = actual.get("Distribuidor").split(" ")
