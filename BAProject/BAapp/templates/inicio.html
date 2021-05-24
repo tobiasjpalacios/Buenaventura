@@ -301,6 +301,7 @@ function addRow() {
 
   var thread = document.createElement("thread"); // numero de filas
   thread.setAttribute("id","thread"+rowCnt);
+  empTab.appendChild(thread);
 
   var input = document.createElement("input");
   input.setAttribute("value","Articulo n°"+(rowCnt+1));
@@ -312,50 +313,56 @@ function addRow() {
   var tr3 = document.createElement("tr");
 
   
-  var div1 = document.createElement("div");
-  div1.setAttribute("class","barra col s12");
-  div1.classList.add('barra1')
+  var outerGeneral = document.createElement("div");
+  var innerGeneral = document.createElement("div");
+  var outerFinanciamiento = document.createElement("div");
+  var innerFinanciamiento = document.createElement("div");
+  var outerLogistica = document.createElement("div");
+  var innerLogistica = document.createElement("div");
+
+  outerGeneral.appendChild(innerGeneral);
+  outerGeneral.appendChild(tr1);
+  thread.appendChild(outerGeneral);
+
+
+  outerFinanciamiento.appendChild(innerFinanciamiento);
+  outerFinanciamiento.appendChild(tr2);
+  thread.appendChild(outerFinanciamiento);
+
+  
+  outerLogistica.appendChild(innerLogistica);
+  outerLogistica.appendChild(tr3);
+  thread.appendChild(outerLogistica);
+
+  innerGeneral.setAttribute("class","barra col s12");
+  innerGeneral.classList.add('barra1');
   var nom1 = document.createElement("input");
-  nom1.setAttribute("value"," Informacion general")
-  nom1.setAttribute("class"," titulito")
-  div1.appendChild(nom1)
-  thread.appendChild(div1)
-  thread.appendChild(tr1);
+  nom1.setAttribute("value"," Informacion general");
+  nom1.setAttribute("class"," titulito");
+  innerGeneral.appendChild(nom1);
   
-  var div2 = document.createElement("div");
-  div2.setAttribute("class","barra col s12");
-  div2.classList.add('barra1')
+  innerFinanciamiento.setAttribute("class","barra col s12");
+  innerFinanciamiento.classList.add('barra1');
   var nom2 = document.createElement("input");
-  nom2.setAttribute("value"," Montos y financiamiento")
-  nom2.setAttribute("class"," titulito")
-  div2.appendChild(nom2)
-  thread.appendChild(div2)
-  thread.appendChild(tr2);
+  nom2.setAttribute("value"," Montos y financiamiento");
+  nom2.setAttribute("class"," titulito");
+  innerFinanciamiento.appendChild(nom2);
+
   
-  var div3 = document.createElement("div");
-  div3.setAttribute("class","barra col s12");
-  div3.classList.add('barra1')
+  innerLogistica.setAttribute("class","barra col s12");
+  innerLogistica.classList.add('barra1');
   var nom3 = document.createElement("input");
-  nom3.setAttribute("value"," Configuracion de logistica")
-  nom3.setAttribute("class"," titulito")
-  div3.appendChild(nom3)
-  thread.appendChild(div3)
-  thread.appendChild(tr3);
-
+  nom3.setAttribute("value"," Configuracion de logistica");
+  nom3.setAttribute("class"," titulito");
+  innerLogistica.appendChild(nom3);
   
-  
-
-
-  empTab.appendChild(thread);
   for(var i = 0; i < general.length; i++){
     var th1 = document.createElement("th");
     th1.setAttribute("id","th_"+general[i]+rowCnt);
     th1.innerHTML = general[i];
     tr1.appendChild(th1);
-    
   }
 
-  empTab.appendChild(thread);
   for(var i = 0; i < pago.length; i++){
     var th2 = document.createElement("th");
     th2.setAttribute("id","th_"+pago[i]+rowCnt);
@@ -363,7 +370,6 @@ function addRow() {
     tr2.appendChild(th2);
   }
   
-  empTab.appendChild(thread);
   for(var i = 0; i < logistica.length; i++){
     var th3 = document.createElement("th");
     th3.setAttribute("id","th_"+logistica[i]+rowCnt);
