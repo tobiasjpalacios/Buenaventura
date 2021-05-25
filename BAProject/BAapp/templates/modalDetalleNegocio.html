@@ -37,10 +37,21 @@
             </tbody>
         </table>
         <div class="col s12" style="border-bottom: 2px grey solid;"></div>
-    </div>  
-    <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-        <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{resultado}}</span>
-    </div>
+    </div> 
+    {% if resultado == 'Cancelado' %}
+        <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+            <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{resultado}}</span>
+        </div>
+    {% elif resultado == 'Confirmado' %}
+        <div class="row" style="border-radius: 2em; background-color: green; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{resultado}}</span>
+        </div>
+    {% else %}
+        <div class="row" style="border-radius: 2em; background-color: rgb(112, 191, 223); box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+            <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{resultado}}</span>
+        </div>
+    {% endif %} 
+    
     <div class="row"> 
         <div class="row"> 
             <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
@@ -94,5 +105,5 @@
         </div>
     </div>
   <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
   </div>
