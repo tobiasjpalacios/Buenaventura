@@ -17,15 +17,23 @@
         <table>
             <thead>
                 <th>Fecha</th>
-                <th>Cliente</th>
+                {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                    <th>Cliente</th>
+                {% endif %}
                 <th>Vendedor</th>
-                <th>Empresa</th>
+                {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                    <th>Empresa</th>
+                {% endif %}
             </thead>
             <tbody>
                 <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-                <td>{{negocio.comprador.persona.user.get_full_name}}</td>
+                {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                    <td>{{negocio.comprador.persona.user.get_full_name}}</td>
+                {% endif %}
                 <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
-                <td>{{negocio.comprador.empresa.razon_social}}</td>
+                {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                    <td>{{negocio.comprador.empresa.razon_social}}</td>
+                {% endif %}
             </tbody>
         </table>
         <div class="col s12" style="border-bottom: 2px grey solid;"></div>
@@ -42,7 +50,9 @@
                 <tr>
                     <th>Item</th>
                     <th>Marca</th>
-                    <th>Distribuidor</th>
+                    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                        <th>Distribuidor</th>
+                    {% endif %}
                     <th>Cant</th>
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
                         <th>Precio Venta</th>
@@ -50,8 +60,10 @@
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
                         <th>Precio Compra</th>
                     {% endif %}
-                    <th>divisa</th> 
-                    <th>Forma de pago</th>
+                    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
+                        <th>divisa</th> 
+                        <th>Forma de pago</th>
+                    {% endif %}
                     <th></th>
                 </tr>
             </thead>
@@ -60,7 +72,9 @@
                 <tr>
                     <td>{{item.articulo.ingrediente}}</td>
                     <td>{{item.articulo.marca}}</td>
-                    <td>{{item.empresa.razon_social}}</td>
+                    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                        <td>{{item.empresa.razon_social}}</td>
+                    {% endif %}
                     <td>{{item.cantidad}}</td>
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
                         <td>${{item.precio_venta}}</td>
@@ -68,8 +82,10 @@
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
                         <td>${{item.precio_compra}}</td>
                     {% endif %}
-                    <td>{{item.divisa}}</td>
-                    <td>{{item.tipo_pago.nombre}}</td>
+                    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
+                        <td>{{item.divisa}}</td>
+                        <td>{{item.tipo_pago.nombre}}</td>
+                    {% endif %}
                     <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
                 </tr>
             {% endfor %}
