@@ -8,7 +8,9 @@
                 {{negocio.fecha_cierre|date:"M d, Y"}}
             {% endif %}
         </td>
-        <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}</td>
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+                    <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}</td>
+                    {% endif %}
         <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
         <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
         {% if request.user|has_group:"Vendedor"%}
@@ -27,6 +29,6 @@
             {% endif %}
         {% endif %}
         <td class="green-text center">{{negocio.estado}}</td>
-        <td><a class="btn red  modal-trigger" onclick="detalleNegocio('{{negocio.id_prop}}')">  <i class="large material-icons ">remove_red_eye</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
     </tr>
 {% endfor %}

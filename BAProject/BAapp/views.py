@@ -34,24 +34,101 @@ def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
 
-def todos_negocios(request):    
-    negocio = getNegociosToList()
-    grupo_activo = request.user.groups.all()[0].name
+def getNegociosForList(request, grupo_activo, tipo):
+    negocio = []
     if (grupo_activo == 'Vendedor'):
-        for a in negocio:
-            a.proveedores = []
-            if (a.fecha_cierre is not None):
-                items = ItemPropuesta.objects.filter(propuesta__id = a.id_prop)
-                proveedores = []
-                id_proveedores = [] 
-                for b in items:
-                    if (b.proveedor.persona.id not in id_proveedores):
-                        id_proveedores.append(b.proveedor.persona.id)
-                        prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
-                        proveedores.append(prov)
-                a.proveedores = proveedores
+        if (tipo == 2):
+            negocio = Negocio.objects.all().values_list('id', flat=True)
+        else:
+            negocios = Negocio.objects.all().order_by('-timestamp')
+            negocio = getNegociosToList(negocios)
+            for a in negocio:
+                a.proveedores = getProveedoresNegocio(a)
+
+    elif (grupo_activo == 'Comprador'):
+        if (tipo == 2):
+            negocio = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp').values_list('id', flat=True)
+        else:
+            negocios = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp')
+            negocio = getNegociosToList(negocios)
+    elif (grupo_activo == 'Gerente'):
+        mi_gerente = Gerente.objects.get(persona__user=request.user)
+        if (tipo == 2):
+            negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp').values_list('id', flat=True)
+        else:
+            negocios = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp')
+            negocio = getNegociosToList(negocios)
+    elif (grupo_activo == 'Proveedor'):
+        negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-timestamp')
+        lista_ids = []
+        for a in negocios:
+            empleadoP = Proveedor.objects.get(persona__user=request.user)
+            id_prop = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id', flat=True)[:1]
+            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
+            if (len(items) > 0):                
+                lista_ids.append(a.id)
+        if (tipo == 2):
+            negocio = lista_ids
+        else:
+            negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-timestamp')
+            negocio = getNegociosToList(negocios)
+    elif (grupo_activo == 'Administracion'):
+        negocios = Negocio.objects.all().order_by('-timestamp')
+        lista_ids = []
+        for a in negocios:
+            empleadoA = Administrador.objects.get(persona__user=request.user)
+            id_prop = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id', flat=True)[:1]
+            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoA.empresa.id)
+            if (len(items) > 0):
+                lista_ids.append(a.id)
+        if (tipo == 2):
+            negocio = lista_ids
+        else:
+            negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-timestamp')
+            negocio = getNegociosToList(negocios)
+    else:
+        negocio = []
+    return negocio
+
+def todos_negocios(request):    
+    grupo_activo = request.user.groups.all()[0].name
+    negocio = getNegociosForList(request,grupo_activo,1)
     vendedor = Vendedor.objects.all()    
     return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+def todosFiltro(request, tipo):
+    grupo_activo = request.user.groups.all()[0].name
+    negocios_permitidos = getNegociosForList(request,grupo_activo,2)
+    negocio = []
+    negocioAux = []
+    print (tipo)
+    estado = ""
+    if (int(tipo) == 1):
+        estado = "Recibido"
+    elif (int(tipo) == 2):
+        estado = "En Negociación"
+    elif (int(tipo) == 3):
+        estado = "Confirmado"
+    else:
+        estado = "Cancelado"
+    todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
+    print (negocios_permitidos)
+    for a in todos_negocios:
+        propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
+        propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+        id_prop = propuesta[0][0]
+        envio = propuesta[0][1]
+        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+            envio = not envio
+        a.id_prop = id_prop
+        a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+        print (a.estado, estado)
+    for b in todos_negocios:        
+        if (b.estado == estado):
+            b.proveedores = getProveedoresNegocio(b)
+            negocioAux.append(b)
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocioAux), 'todos_vendedores':vendedor})
 
 def filtrarNegocios(request):
     data = []
@@ -64,8 +141,10 @@ def filtrarNegocios(request):
         fechaH = request.POST['fechaHasta']
         error = False
         listaVendedor = []
+        grupo_activo = request.user.groups.all()[0].name
+        negocios_permitidos = getNegociosForList(request,grupo_activo,2)
         if (vendedor == "todos"):
-            listaVendedor = Negocio.objects.all().values_list('id', flat=True)
+            listaVendedor = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
             lista_ids = []
             id_carga = "" 
@@ -80,12 +159,12 @@ def filtrarNegocios(request):
                 else:
                     lista_ids.append(int(id_carga))
                     id_carga = ""    
-            listaVendedor = Negocio.objects.filter(vendedor__id__in = lista_ids).values_list('id', flat=True)
+            listaVendedor = Negocio.objects.filter(vendedor__id__in = lista_ids,id__in=negocios_permitidos).values_list('id', flat=True)
         listaEstado = []
-        if (estado == "todos" or estado == "[]"):
-            listaEstado = Negocio.objects.all().values_list('id', flat=True)            
+        if (estado == "todos"):
+            listaEstado = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)            
         else:
-            todos_negocios = Negocio.objects.all()
+            todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
             for a in todos_negocios:
                 propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
                 envio = True
@@ -100,19 +179,19 @@ def filtrarNegocios(request):
                     listaEstado.append(b.id)
         listaTipo = []
         if (tipo == "todos"):
-            listaTipo = Negocio.objects.all().values_list('id', flat=True)
+            listaTipo = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
-            listaTipo = Negocio.objects.filter(tipo_de_negocio = get_from_tuple(TIPO_DE_NEGOCIO_CHOICES, tipo)).values_list('id', flat=True)
+            listaTipo = Negocio.objects.filter(tipo_de_negocio = get_from_tuple(TIPO_DE_NEGOCIO_CHOICES, tipo),id__in=negocios_permitidos).values_list('id', flat=True)
         listaFecha = []
         if (int(tipoFecha) == 0):
-            listaFecha = Negocio.objects.all().values_list('id', flat=True)
+            listaFecha = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
             fechaD = datetime.strptime(fechaD, "%B %d, %Y")
             fechaH = datetime.strptime(fechaH, "%B %d, %Y")
             if (int(tipoFecha) == 1):
-                listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH)).values_list('id', flat=True)
+                listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
             else:
-                listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH)).values_list('id', flat=True)
+                listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
         listaTipo = getIdsQuery(listaTipo)         
@@ -133,17 +212,7 @@ def filtrarNegocios(request):
         grupo_activo = request.user.groups.all()[0].name
         if (grupo_activo == 'Vendedor'):
             for a in todos_los_negocios:
-                a.proveedores = []
-                if (a.fecha_cierre is not None):
-                    items = ItemPropuesta.objects.filter(propuesta__id = a.id_prop)
-                    proveedores = []
-                    id_proveedores = [] 
-                    for b in items:
-                        if (b.proveedor.persona.id not in id_proveedores):
-                            id_proveedores.append(b.proveedor.persona.id)
-                            prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
-                            proveedores.append(prov)
-                    a.proveedores = proveedores
+                a.proveedores = getProveedoresNegocio(a)
     return render(request,'tempAux/tableNegociosFiltros.html',{'todos_negocios':todos_los_negocios} )
     
 def getIdsQuery(lista):
@@ -151,6 +220,19 @@ def getIdsQuery(lista):
     for a in lista:
         listaId.append(a)
     return listaId
+
+def getProveedoresNegocio(negocio):
+    proveedores = []
+    if (negocio.fecha_cierre is not None):
+        items = ItemPropuesta.objects.filter(propuesta__id = negocio.id_prop)
+        proveedores = []
+        id_proveedores = [] 
+        for b in items:
+            if (b.proveedor.persona.id not in id_proveedores):
+                id_proveedores.append(b.proveedor.persona.id)
+                prov = b.proveedor.persona.user.last_name + " " + b.proveedor.persona.user.first_name  
+                proveedores.append(prov)
+    return proveedores
 
 def testeo(request):
     return render(request, 'testeo.html')
@@ -205,11 +287,19 @@ def vistaLogistica(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf, 'L')
     lnl = listaNL(request,negociosCerrConf,'L')
-    lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Presupuesto').order_by('-timestamp')
-    #lln = Lista Logistica Notificaciones
-    lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
-    #lvn = Lista Vencimiento Notificaciones
-    lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+    lista_ids = []
+    """
+    notis = Notificacion.objects.all()
+    for a in notis:
+        first = a.hyperlink.split("/",1)[1]
+        idNegocio = first.split("/",1)[1]
+        negocio = Negocio.objects.get(id=int(idNegocio)) 
+        if (int(negocio.comprador.empresa.id) == int(mi_gerente.empresa.id)):
+            lista_ids.append(a.id)   
+    """
+    lpn = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Presupuesto').order_by('-timestamp')
+    lln = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Logistica').order_by('-timestamp')
+    lvn = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html',{'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'negocios_cerrados_confirmados':list(lnc)})
 
 @group_required('Proveedor')
@@ -247,9 +337,17 @@ def vistaGerente(request):
     #Logistica
     lnl = listaNL(request,negociosCerrConf,'G')
     #Notificaciones
-    lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Presupuesto').order_by('-timestamp')
-    lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
-    lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+    notis = Notificacion.objects.all()
+    lista_ids = []
+    for a in notis:
+        first = a.hyperlink.split("/",1)[1]
+        idNegocio = first.split("/",1)[1]
+        negocio = Negocio.objects.get(id=int(idNegocio)) 
+        if (int(negocio.comprador.empresa.id) == int(mi_gerente.empresa.id)):
+            lista_ids.append(a.id)   
+    lpn = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Presupuesto').order_by('-timestamp')
+    lln = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Logistica').order_by('-timestamp')
+    lvn = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Vencimiento').order_by('-timestamp')
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})    
 
 @group_required('Comprador')
@@ -305,14 +403,13 @@ def estadoNegocio(fecha_cierre, aprobado, envio):
         if (envio):
             return "Recibido"
         else:
-            return "En Negociacion"
+            return "En Negociación"
     else:
         if (aprobado):
             return "Confirmado"
     return "Cancelado"
 
-def getNegociosToList():
-    negocio = Negocio.objects.all().order_by('-timestamp')
+def getNegociosToList(negocio):
     if (len(negocio) > 0):
         for a in negocio:
             propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
@@ -327,9 +424,9 @@ def getNegociosToList():
 
 def detalleAlerta(request):
     if request.method == 'POST':
-        negocio = getNegociosToList()
+        negocios = Negocio.objects.all().order_by('-timestamp')
+        negocio = getNegociosToList(negocios)
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
-
 
 def detalleNotis(request):
     if request.method == 'POST':
@@ -344,16 +441,10 @@ def detalleNotis(request):
             envio = b.envio_comprador
             id_prop = b.id
         negocio.id_prop = id_prop
-        if (negocio.fecha_cierre is None):
-            if (envio):
-                negocio.estado = "Recibido"
-            else:
-                negocio.estado = "En Negociacion"
-        else:
-            if (negocio.aprobado):
-                negocio.estado = "Confirmado"
-            else:
-                negocio.estado = "Cancelado"
+        grupo_activo = request.user.groups.all()[0].name
+        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+            envio = not envio
+        negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
         return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
     return render (request, 'modalnotis.html')
 
@@ -363,16 +454,11 @@ def detalleNegocio(request):
         idProp = request.POST['idProp']        
         propuesta = Propuesta.objects.get(id=idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
-        resultado = "Cancelado"
-        if (negocio.fecha_cierre is None):
-            if (propuesta.envio_comprador):
-                resultado = "Recibido"
-            else:
-                resultado = "Negociando"
-        else:
-            if (negocio.aprobado):
-                resultado = "Confirmado"
         grupo_activo = request.user.groups.all()[0].name
+        envio = propuesta.envio_comprador
+        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+            envio = not envio
+        resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
         items = None
         persona = Persona.objects.get(user=request.user)
         if (grupo_activo == 'Logistica'):
@@ -399,16 +485,13 @@ def detalleItem(request):
         resultado = calcularVencAtr(item.fecha_entrega, d1)
         logistica = "Atrasado"
         if (item.fecha_real_entrega is not None):
-            #Entregado
             logistica = "Entregado"
         else:
             if (resultado):
-                if (item.fecha_salida_entrega is None):
-                    #En Tiempo
-                    logistica = "En Tiempo"
-                else:
-                    #En Transito
-                    logistica = "En Transito"
+                if (item.fecha_salida_entrega is None):                    
+                    logistica = "A Tiempo"
+                else:                    
+                    logistica = "En Tránsito"
         diaA = int(d1[0:2])
         mesA = int(d1[3:5])
         añoA = int(d1[6:10])
@@ -419,7 +502,7 @@ def detalleItem(request):
         difM = (mesP - mesA)
         difA = (añoP - añoA)
         proxMes = (diaP + 30 - diaA)
-        estado_pago = "Pago"
+        estado_pago = "Pago Realizado"
         if (item.fecha_real_pago is None):
             if ((mesA == 12 and mesP == 1) and (difA == 1)):
                 difM = 1
@@ -499,7 +582,7 @@ def listaNL(request,negocioFilter,modulo):
                 else:
                     if (resultado):
                         if (b.fecha_salida_entrega is None):
-                            #En Tiempo
+                            #A Tiempo
                             en_tiempo = True
                             if (primero_tiempo):
                                 fecha_tiempo = b.fecha_entrega
@@ -539,11 +622,11 @@ def listaNL(request,negocioFilter,modulo):
                 destino = destino_atrasado
                 fecha = fecha_atrasado
             elif (en_tiempo):
-                estado = "En Tiempo"
+                estado = "A Tiempo"
                 destino = destino_tiempo
                 fecha = fecha_tiempo
             elif (en_transito):
-                estado = "En Transito"
+                estado = "En Tránsito"
                 destino = destino_transito
                 fecha = fecha_transito
             else:
@@ -601,35 +684,36 @@ def detalleLogistica(request):
         today = date.today()
         d1 = today.strftime("%d/%m/%Y")
         for b in items:
-            b.estados = ('Atrasado', 'En Tiempo', 'Entregado', 'Aceptado')
+            b.estados = ('Atrasado', 'A Tiempo', 'Entregado', 'Aceptado')
             resultado = calcularVencAtr(b.fecha_entrega, d1)
             if (b.fecha_real_entrega is not None):
                 #Entregado
                 b.estado = 'Entregado'
-                b.estados = ('Atrasado', 'En Tiempo', 'Transito')
+                b.estados = ('Atrasado', 'A Tiempo', 'En Tránsito')
             else:
                 if (resultado):
                     if (b.fecha_salida_entrega is None):
-                        #En Tiempo
-                        b.estado = 'En Tiempo'
+                        #A Tiempo
+                        b.estado = 'A Tiempo'
                         b.estados = ('Transito', 'Entregado','Atrasado')
                         
                     else:
                         #En Transito
-                        b.estado = 'Transito'
-                        b.estados = ('Entregado','Atrasado','En Tiempo')
+                        b.estado = 'En Tránsito'
+                        b.estados = ('Entregado','Atrasado','A Tiempo')
                         
                 else:
                     #Atrasado
                     b.estado = 'Atrasado'
-                    b.estados = ('En Tiempo','Transito', 'Entregado')
+                    b.estados = ('A Tiempo','En Tránsito', 'Entregado')
+        print (proveedores)
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
 
 def sendAlertaModal(request):
     data = {
-        'result' : 'Error, la operacion fracaso.',
+        'result' : 'Error, la operacion fracasó.',
         'estado': False
     }
     if request.method == 'POST':
@@ -672,7 +756,7 @@ def sendAlertaModal(request):
                 notif.save()
                 id_carga = ""
         data = {
-            'result' : 'Alerta/s Enviada/s con Exito.',
+            'result' : 'Alerta/s Enviada/s con éxito.',
             'estado': True
         }
         return JsonResponse(data)
@@ -681,7 +765,7 @@ def sendAlertaModal(request):
 
 def setLogistica(request):
     data = {
-        'result' : 'Error, la operacion fracaso.'
+        'result' : 'Error, la operacion fracasó.'
     }
     if request.method == 'POST':
         ourid = request.POST['jsonText']
@@ -745,17 +829,18 @@ def setLogistica(request):
                 user=user)
             notif.save()
             data = {
-                'result' : 'Estados y Alerta enviados con exito.'
+                'result' : 'Estados y Alerta enviados con éxito.'
             }
         else:
             notif = Notificacion(
                 titulo="Estados de Articulos modificados",
+                descripcion = "Estado/s modificado/s con éxito.",
                 categoria="Logistica",
                 hyperlink=reverse('negocio', args=[negocioN,]),
                 user = negocio.comprador.persona.user)
             notif.save()
             data = {
-                'result' : 'Estados cargados con exito.'
+                'result' : 'Estados cargados con éxito.'
             }
         return JsonResponse(data)
     return JsonResponse(data)
@@ -763,7 +848,7 @@ def setLogistica(request):
 
 def sendAlertaLog(request):
     data = {
-        'result' : 'Error, la operacion fracaso.'
+        'result' : 'Error, la operacion fracasó.'
     }
     if request.method == 'POST':
         titulo = request.POST['titulo']
@@ -781,7 +866,7 @@ def sendAlertaLog(request):
             user=user)
         notif.save()
         data = {
-            'result' : 'Alerta Enviada con Exito.',
+            'result' : 'Alerta Enviada con éxito.',
             'estado': True
         }
         return JsonResponse(data)
@@ -793,8 +878,8 @@ def reloadLog(request):
     lnl = None
     if (grupo_activo == "Vendedor"):
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
-        lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
-    return render(request, 'tempAux/tableSem.html', {'lista_logistica':lnl})
+        lnl = listaNL(request,negociosCerrConf,'V')
+    return render(request, 'tempAux/tableLogisR.html', {'lista_logistica':lnl})
 
 def listaNCL(request, negocioFilter, tipo):
     lista_negocios = []
@@ -816,11 +901,13 @@ def listaNCL(request, negocioFilter, tipo):
         else:
             items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id).values_list('articulo__ingrediente', flat=True)
         comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+        vendedor = negocio.vendedor.persona.user.last_name +" "+negocio.vendedor.persona.user.first_name
         if (items.count() > 0):
             lista = {
                 'fecha':fecha_p,
                 'items':list(items),
                 'comprador': comprador,
+                'vendedor': vendedor,
                 'empresa':negocio.comprador.empresa.razon_social,
                 'id_prop': id_prop
             }
@@ -925,12 +1012,12 @@ def reloadSem(request):
 
 def createAlertaNV(request):
     data = {
-        'result' : 'Error, la operacion fracaso.'
+        'result' : 'Error, la operacion fracasó.'
     }
     titulo = request.POST['titulo']
     descri = request.POST['descri']
     categoria = request.POST['categoria']
-    res = 'Fechas de Pago cargados con exito.'
+    res = 'Fecha/s de Pago cargada/s con éxito.'
     estado = True
     idNegocio = request.POST['idNegocio']
     idN = int(idNegocio)
@@ -953,10 +1040,10 @@ def createAlertaNV(request):
             user=negocio.vendedor.persona.user
         )
         notif.save()
-        res = 'Alerta Enviada con Exito.'
+        res = 'Alerta Enviada con éxito.'
         estado = True
     else:
-        res = 'Error! El Titulo de la Alerta no puede estar vacío.'
+        res = 'Error! El Titulo de la Alerta no puede estar en blanco.'
         estado = False
     data = {
         'result' : res,
@@ -966,7 +1053,7 @@ def createAlertaNV(request):
 
 def setFechaPagoReal(request):
     data = {
-        'result' : 'Error, la operacion fracaso.'
+        'result' : 'Error, la operacion fracasó.'
     }
     if request.method == 'POST':
         ourid = request.POST['jsonText']
@@ -988,7 +1075,7 @@ def setFechaPagoReal(request):
             titulo = request.POST['titulo']
             descri = request.POST['descri']
             alerta = request.POST['tocadoAlerta'] 
-            res = 'Fechas de Pago cargados con exito.'
+            res = 'Fechas de Pago cargados con éxito.'
             estado = True
             idNegocio = request.POST['idNegocio']
             idN = int(idNegocio)
@@ -1044,7 +1131,6 @@ def detalleSemaforo(request):
         propuesta = Propuesta.objects.get(id = idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
         grupo_activo = request.user.groups.all()[0].name
-        #items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True).order_by('fecha_pago')
         items = None
         if (grupo_activo == 'Administracion'):
             persona = Persona.objects.get(user=request.user)
@@ -1062,11 +1148,11 @@ def detalleSemaforo(request):
             if (ind == "1"):
                 resultado = calcularVencAtr(a.fecha_pago, d1)
                 if (resultado):
-                    a.estado = "En Tiempo"
+                    a.estado = "A Tiempo"
                 else:
                     a.estado = "Vencido"
             else:
-                a.estado = "En Tiempo"
+                a.estado = "A Tiempo"
         return render (request, 'modalSemaforo.html', {'negocio':negocio, 'propuesta':propuesta,'items':items})
     return redirect(render)
 

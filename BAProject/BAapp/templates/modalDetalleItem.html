@@ -4,7 +4,7 @@
     <div class="row" > 
   <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
     <div class="">
-      <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/logopres.png' %}">Info Articulo</span>
+      <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/logopres.png' %}">Info Artículo</span>
     </div>
   </div>
 </div>
@@ -16,21 +16,25 @@
   <thead>
     <th>Ingrediente</th>
     <th>Marca</th>
-    <th>Proveedor</th>
+    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+      <th>Proveedor</th>
+    {% endif %}
   </thead>
   <tbody>
     <td>{{item.articulo.ingrediente}}</td>
     <td>{{item.articulo.marca}}</td>
-    <td>{{item.proveedor.persona.user.last_name}} {{item.proveedor.persona.user.first_name}}</td>
+    {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+      <td>{{item.proveedor.persona.user.get_full_name}}</td>
+    {% endif %}
   </tbody>
   </table>
   <div class="col s12" style="border-bottom: 2px grey solid;"></div>
   <table>
   <thead>
-    <th>Concetracion</th>
-    <th>Banda toxicologica</th>
+    <th>Concentración</th>
+    <th>Banda Toxicológica</th>
     <th>Unidad</th>
-    <th>formulacion</th>
+    <th>Formulación</th>
   </thead>
   <tbody>
   <td>{{item.articulo.concentracion}}</td>
@@ -58,7 +62,9 @@
           {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
             <th>Precio Compra</th>
           {% endif %}
-          <th>divisa</th>
+          {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
+            <th>Divisa</th>
+          {% endif %}          
       </tr>
     </thead>
     <tbody>
@@ -70,7 +76,9 @@
         {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
           <td>${{item.precio_compra}} </td>
         {% endif %}
-        <td>{{item.divisa}}</td>
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
+          <td>{{item.divisa}}</td>
+        {% endif %} 
       </tr>
     </tbody>
   </table>
@@ -78,39 +86,55 @@
   <table>
     <thead>
       <tr>
-          <th>Tipo de pago</th>
-          <th>Tasa</th>
+          {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
+            <th>Tipo de pago</th>
+            <th>Tasa</th>
+          {% endif %}
           <th>Fecha de pago acordada</th>
-          <th>Realizacion del pago</th>
+          <th>Realización del pago</th>
       </tr>
     </thead>
 
     <tbody>
       <tr>
-        <td>{{item.tipo_pago.nombre}}</td>
-        <td>{{item.tasa}}%</td>
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+          <td>{{item.tipo_pago.nombre}}</td>
+          <td>{{item.tasa}}%</td>
+        {% endif %}
         <td>{{item.fecha_pago}}</td>
-        <td>{{item.fecha_real_pago|date:"d/m/y"}}</td>
-      </tr>
+          {% if item.fecha_real_pago != None %}
+            <td>{{item.fecha_real_pago|date:"d/m/y"}}</td>
+          {% else %}
+            <td>Sin Realizar</td>
+          {% endif %}
+        </tr>
     </tbody>
     
   </table>
   <div class="col s12" style="border-bottom: 2px grey solid; padding-top: ;"></div>
   <div style="height: 10px;"></div>
-  <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-    <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{estado_pago}} </span>
-    </div>
-  
-    
-    </div>
-    <div class="row"> 
+  {% if estado_pago == 'Atrasado' %}
+      <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{estado_pago}} </span>
+      </div>
+    {% elif estado_pago == 'Vence esta Semana' %}
+      <div class="row" style="border-radius: 2em; background-color: rgb(112, 191, 223); box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago}}</span>
+      </div>
+    {% else %}
+      <div class="row" style="border-radius: 2em; background-color: green; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago}}</span>
+      </div>
+    {% endif %}
+  </div>
+  <div class="row"> 
     <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Logistica</span> </div>
-    </div>
-    <table>
+  </div>
+  <table>
     <thead>
       <tr>
           <th>Destino</th>
-          <th>Fecha entrega</th>
+          <th>Fecha de entrega pactada</th>
           <th>Fecha de Salida</th>
           <th>Fecha de llegada a destino </th>
       </tr>
@@ -119,17 +143,40 @@
       <tr>
         <td>{{item.destino.direccion}}</td>
         <td>{{item.fecha_entrega}} </td>
-        <td>{{item.fecha_salida_entrega|date:"d/m/y"}} </td>
-        <td>{{item.fecha_real_entrega|date:"d/m/y"}} </td>
+        {% if item.fecha_salida_entrega != None %}
+          <td>{{item.fecha_salida_entrega|date:"d/m/y"}}</td>
+        {% else %}
+          <td>No hay datos de la Salida</td>
+        {% endif %}
+        {% if item.fecha_real_entrega != None %}
+          <td>{{item.fecha_real_entrega|date:"d/m/y"}}</td>
+        {% else %}
+          <td>No hay datos de la Entrega</td>
+        {% endif %}
       </tr>
     </tbody>
     
   </table>
   <div style="height: 10px;"></div>
-  <div class="row" style="border-radius: 2em; background-color: yellow; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-    <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
+    {% if logistica == 'Atrasado' %}
+      <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
+      </div>
+    {% elif logistica == 'Entregado' %}
+      <div class="row" style="border-radius: 2em; background-color: green; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
+      </div>
+    {% elif logistica == 'En Tránsito' %}
+      <div class="row" style="border-radius: 2em; background-color: rgb(112, 191, 223); box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
+      </div>
+    {% else %}
+    <div class="row" style="border-radius: 2em; background-color: yellow; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
+      <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{logistica}}</span>
     </div>
+    {% endif %}
+  
   </div>
   <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
   </div>
