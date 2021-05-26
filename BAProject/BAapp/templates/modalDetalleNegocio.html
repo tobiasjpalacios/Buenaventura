@@ -76,6 +76,49 @@
             </tbody>
         </table>
         </div>
+        <div class="row">
+            <div class="row"> 
+                <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Comprobantes</span> </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Emisor</th>
+                        <th>Distribuidor</th>
+                        <th>Cant</th>
+                        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
+                            <th>Precio Venta</th>
+                        {% endif %}
+                        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                            <th>Precio Compra</th>
+                        {% endif %}
+                        <th>divisa</th> 
+                        <th>Forma de pago</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>Factura</td>
+                        <td> Carlos alberto - adama </td>
+                        <td>{{item.empresa.razon_social}}</td>
+                        <td>{{item.cantidad}}</td>
+                        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
+                            <td>${{item.precio_venta}}</td>
+                        {% endif %}
+                        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
+                            <td>${{item.precio_compra}}</td>
+                        {% endif %}
+                        <td>{{item.divisa}}</td>
+                        <td>{{item.tipo_pago.nombre}}</td>
+                        <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
   <div class="modal-footer">
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Correcto</a>

@@ -45,14 +45,18 @@ BuenaVentura Agronegocios
  
 }
 
+.active , .barra1:hover {
+  background-color: #504c4c;
+}
+
 .barra1{
  background-color: #7c6b6b;
  height: 40px;
  
 }
 .titulito{
-  color: aliceblue;
-  font-size: 30px;
+  color :white ;
+  font-size: 20px;
   font-family: 'Montserrat';
   text-align: center;
 }
@@ -83,7 +87,7 @@ BuenaVentura Agronegocios
    </div>
    <div style="height: 100px;" > </div>
 
-   
+   <button id="flip" onclick="">hola que tal</button>
    <div class="col m12 m8 white">
      <div class=" ">
        <div class="card-content ">
@@ -232,7 +236,13 @@ var errors = [];
   //     headers.push($(this).text())
   //   }
   // })
-    $.ajax({
+  $("#flip").click(function(){
+    $("#ocultar").slideToggle("slow");
+  });
+  
+
+  
+  $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
       dataType: "json",
@@ -282,7 +292,7 @@ var errors = [];
     hideSend();
   });
 
-
+  
   function hideSend(){
     var divS = document.getElementById("divProp");
     if (rowCnt < 1){
@@ -296,6 +306,8 @@ function addRow() {
   var general = ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
   var pago = ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
   var logistica = ["Fecha de entrega","Destino"];
+
+  console.log(coll)
 
   var empTab = document.getElementById('empTable');
 
@@ -311,14 +323,15 @@ function addRow() {
   var tr1 = document.createElement("tr");
   var tr2 = document.createElement("tr");
   var tr3 = document.createElement("tr");
-
+  tr1.setAttribute("class","content")
   
   var outerGeneral = document.createElement("div");
-  var innerGeneral = document.createElement("div");
+  var innerGeneral = document.createElement("button");
   var outerFinanciamiento = document.createElement("div");
-  var innerFinanciamiento = document.createElement("div");
+  var innerFinanciamiento = document.createElement("button");
   var outerLogistica = document.createElement("div");
-  var innerLogistica = document.createElement("div");
+  var innerLogistica = document.createElement("button");
+
 
   outerGeneral.appendChild(innerGeneral);
   outerGeneral.appendChild(tr1);
@@ -333,27 +346,31 @@ function addRow() {
   outerLogistica.appendChild(innerLogistica);
   outerLogistica.appendChild(tr3);
   thread.appendChild(outerLogistica);
-
-  innerGeneral.setAttribute("class","barra col s12");
+  innerGeneral.setAttribute("class"," col s12");
   innerGeneral.classList.add('barra1');
-  var nom1 = document.createElement("input");
+  innerGeneral.setAttribute("id","barra1")
+  var nom1 = document.createElement("a");
   nom1.setAttribute("value"," Informacion general");
-  nom1.setAttribute("class"," titulito");
+  nom1.setAttribute("class"," titulito center-align col s12");
+  nom1.innerHTML="Informacion General"
   innerGeneral.appendChild(nom1);
   
-  innerFinanciamiento.setAttribute("class","barra col s12");
+  innerFinanciamiento.setAttribute("class","col s12");
   innerFinanciamiento.classList.add('barra1');
-  var nom2 = document.createElement("input");
-  nom2.setAttribute("value"," Montos y financiamiento");
-  nom2.setAttribute("class"," titulito");
+  innerFinanciamiento.setAttribute("id","barra1")
+  var nom2 = document.createElement("a");
+  nom2.setAttribute("value","  Montos y financiamiento");
+  nom2.setAttribute("class"," titulito center-align col s11 ");
+  nom2.innerHTML=" Montos y Financiamiento"
   innerFinanciamiento.appendChild(nom2);
-
   
-  innerLogistica.setAttribute("class","barra col s12");
+  innerLogistica.setAttribute("class","col s12");
   innerLogistica.classList.add('barra1');
-  var nom3 = document.createElement("input");
-  nom3.setAttribute("value"," Configuracion de logistica");
-  nom3.setAttribute("class"," titulito");
+  innerLogistica.setAttribute("id","barra1")
+  var nom3 = document.createElement("a");
+  nom3.setAttribute("content"," Configuracion de logistica");
+  nom3.setAttribute("class"," titulito center-align col s12 ");
+  nom3.innerHTML="configuracion de logistica"
   innerLogistica.appendChild(nom3);
   
   for(var i = 0; i < general.length; i++){
@@ -863,5 +880,30 @@ function desactivarTasa(row){
     inputTasa.setAttribute("placeholder","Tasa");
   }
 }
+
+
+var coll = document.getElementsByClassName("barra1");
+iz=0
+var iz;
+console.log(coll)
+console.log(iz )
+
+for (iz = 0; iz < coll.length; iz++) {
+  console.log("arranco")
+  coll[iz].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    console.log("hola"+coll[iz])
+    console.log(content)
+    if (content.style.display === "none") {
+      content.style.display = "block";
+    } else {
+      content.style.display = "none";
+    }
+  });
+}
+console.log("hola")
+
+
 </script>
 {% endblock body %}
