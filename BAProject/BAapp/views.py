@@ -101,7 +101,6 @@ def todosFiltro(request, tipo):
     negocios_permitidos = getNegociosForList(request,grupo_activo,2)
     negocio = []
     negocioAux = []
-    print (tipo)
     estado = ""
     if (int(tipo) == 1):
         estado = "Recibido"
@@ -112,7 +111,6 @@ def todosFiltro(request, tipo):
     else:
         estado = "Cancelado"
     todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
-    print (negocios_permitidos)
     for a in todos_negocios:
         propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
         propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
@@ -122,7 +120,6 @@ def todosFiltro(request, tipo):
             envio = not envio
         a.id_prop = id_prop
         a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
-        print (a.estado, estado)
     for b in todos_negocios:        
         if (b.estado == estado):
             b.proveedores = getProveedoresNegocio(b)
@@ -166,12 +163,9 @@ def filtrarNegocios(request):
         else:
             todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
             for a in todos_negocios:
-                propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
-                envio = True
-                id_prop = -1
-                for b in propuesta:
-                    envio = b.envio_comprador
-                    id_prop = b.id
+                propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+                id_prop = propuesta[0][0]
+                envio = propuesta[0][1]
                 a.id_prop = id_prop
                 a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
             for b in todos_negocios:
@@ -201,12 +195,9 @@ def filtrarNegocios(request):
         listaNegF = set(listaNeg2).intersection(listaFecha)    
         todos_los_negocios = Negocio.objects.filter(id__in=list(listaNegF)).order_by('-timestamp')
         for a in todos_los_negocios:
-            propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
-            envio = True
-            id_prop = -1
-            for b in propuesta:
-                envio = b.envio_comprador
-                id_prop = b.id
+            propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+            id_prop = propuesta[0][0]
+            envio = propuesta[0][1]
             a.id_prop = id_prop
             a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
         grupo_activo = request.user.groups.all()[0].name
@@ -412,12 +403,9 @@ def estadoNegocio(fecha_cierre, aprobado, envio):
 def getNegociosToList(negocio):
     if (len(negocio) > 0):
         for a in negocio:
-            propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
-            envio = True
-            id_prop = -1
-            for b in propuesta:
-                envio = b.envio_comprador
-                id_prop = b.id
+            propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+            id_prop = propuesta[0][0]
+            envio = propuesta[0][1]
             a.id_prop = id_prop
             a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
     return negocio
@@ -435,11 +423,9 @@ def detalleNotis(request):
         first = notificacion.hyperlink.split("/",1)[1]
         idNegocio = first.split("/",1)[1]
         negocio = Negocio.objects.get(id=int(idNegocio))
-        propuesta = Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp')[:1]
-        envio = True
-        for b in propuesta:
-            envio = b.envio_comprador
-            id_prop = b.id
+        propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+        id_prop = propuesta[0][0]
+        envio = propuesta[0][1]
         negocio.id_prop = id_prop
         grupo_activo = request.user.groups.all()[0].name
         if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
@@ -706,7 +692,6 @@ def detalleLogistica(request):
                     #Atrasado
                     b.estado = 'Atrasado'
                     b.estados = ('A Tiempo','En Tránsito', 'Entregado')
-        print (proveedores)
         return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
