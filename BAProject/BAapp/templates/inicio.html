@@ -293,6 +293,11 @@ var errors = [];
   });
 
   
+
+
+
+
+  
   function hideSend(){
     var divS = document.getElementById("divProp");
     if (rowCnt < 1){
@@ -302,13 +307,14 @@ var errors = [];
     }
   };
 
+
+
 function addRow() {
   var general = ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
   var pago = ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
   var logistica = ["Fecha de entrega","Destino"];
 
-  console.log(coll)
-
+  
   var empTab = document.getElementById('empTable');
 
   var thread = document.createElement("thread"); // numero de filas
@@ -327,6 +333,7 @@ function addRow() {
   
   var outerGeneral = document.createElement("div");
   var innerGeneral = document.createElement("button");
+  innerGeneral.setAttribute("type","button")
   var outerFinanciamiento = document.createElement("div");
   var innerFinanciamiento = document.createElement("button");
   var outerLogistica = document.createElement("div");
@@ -447,7 +454,31 @@ var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad",
   }
   rowCnt++;
   hideSend();
+
+  var coll = document.getElementsByClassName("barra1");
+var iz;
+  for (var iz = 0; iz < coll.length; iz++) {
+    coll[iz].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      debugger
+      if (content.style.display === "none") {
+        content.style.display = "block";
+      } else {
+        content.style.display = "none";
+      } 
+  });
+}
+  
+  
+  
+ 
+  
+  
+
 };
+
+
 
 function refreshMarca(inputId){
   var input = document.getElementById('input0.'+inputId).value;
@@ -882,28 +913,11 @@ function desactivarTasa(row){
 }
 
 
-var coll = document.getElementsByClassName("barra1");
-iz=0
-var iz;
-console.log(coll)
-console.log(iz )
 
-for (iz = 0; iz < coll.length; iz++) {
-  console.log("arranco")
-  coll[iz].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    console.log("hola"+coll[iz])
-    console.log(content)
-    if (content.style.display === "none") {
-      content.style.display = "block";
-    } else {
-      content.style.display = "none";
-    }
-  });
-}
+
+console.log()
 console.log("hola")
-
+console.log("iz = "+iz+ " coll "+coll.length )
 
 </script>
 {% endblock body %}
