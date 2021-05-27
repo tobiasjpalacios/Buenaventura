@@ -355,7 +355,10 @@ function addRow() {
   thread.appendChild(outerLogistica);
   innerGeneral.setAttribute("class"," col s12");
   innerGeneral.classList.add('barra1');
-  innerGeneral.setAttribute("id","barra1")
+  var id = "innerGeneral"+rowCnt;
+  innerGeneral.setAttribute("id",id);
+  innerGeneral.setAttribute("style","none");
+  innerGeneral.setAttribute("onclick",`closeDiv(${id})`);
   var nom1 = document.createElement("a");
   nom1.setAttribute("value"," Informacion general");
   nom1.setAttribute("class"," titulito center-align col s12");
@@ -364,7 +367,10 @@ function addRow() {
   
   innerFinanciamiento.setAttribute("class","col s12");
   innerFinanciamiento.classList.add('barra1');
-  innerFinanciamiento.setAttribute("id","barra1")
+  var id = ("innerFinanciamiento"+rowCnt);
+  innerFinanciamiento.setAttribute("id",id);
+  innerFinanciamiento.setAttribute("style","none");
+  innerFinanciamiento.setAttribute("onclick",`closeDiv(${id})`);
   var nom2 = document.createElement("a");
   nom2.setAttribute("value","  Montos y financiamiento");
   nom2.setAttribute("class"," titulito center-align col s11 ");
@@ -373,7 +379,10 @@ function addRow() {
   
   innerLogistica.setAttribute("class","col s12");
   innerLogistica.classList.add('barra1');
-  innerLogistica.setAttribute("id","barra1")
+  var id = "innerLogistica"+rowCnt;
+  innerLogistica.setAttribute("id",id);
+  innerLogistica.setAttribute("style","none");
+  innerLogistica.setAttribute("onclick",`closeDiv(${id})`);
   var nom3 = document.createElement("a");
   nom3.setAttribute("content"," Configuracion de logistica");
   nom3.setAttribute("class"," titulito center-align col s12 ");
@@ -455,30 +464,30 @@ var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad",
   rowCnt++;
   hideSend();
 
-  var coll = document.getElementsByClassName("barra1");
-var iz;
-  for (var iz = 0; iz < coll.length; iz++) {
-    coll[iz].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var content = this.nextElementSibling;
-      debugger
-      if (content.style.display === "none") {
-        content.style.display = "block";
-      } else {
-        content.style.display = "none";
-      } 
-  });
-}
-  
-  
-  
- 
-  
-  
-
+//   var coll = document.getElementsByClassName("barra1");
+// var iz;
+//   for (var iz = 0; iz < coll.length; iz++) {
+//     coll[iz].addEventListener("click", function() {
+//       this.classList.toggle("active");
+//       var content = this.nextElementSibling;
+//       debugger
+//       if (content.style.display === "none") {
+//         content.style.display = "block";
+//       } else {
+//         content.style.display = "none";
+//       } 
+//   });
+// }
 };
 
-
+function closeDiv(divName){
+  var content = divName.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  } 
+}
 
 function refreshMarca(inputId){
   var input = document.getElementById('input0.'+inputId).value;
@@ -915,9 +924,9 @@ function desactivarTasa(row){
 
 
 
-console.log()
-console.log("hola")
-console.log("iz = "+iz+ " coll "+coll.length )
+// console.log()
+// console.log("hola")
+// console.log("iz = "+iz+ " coll "+coll.length )
 
 </script>
 {% endblock body %}
