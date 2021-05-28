@@ -33,32 +33,15 @@ BuenaVentura Agronegocios
 
 <!-- Modal Structure -->
 <div id="modal1" class="modal">
-  <div class="modal-content">
-   <div class="row" >
-      <div class="col s12 " ">
-         <div class="col s10 "><h4 class="left-align ">Titulo</h4></div>
-         <div class="col s2 "><span class="right-align" style="color: grey;">27 de abril 20:30 hs  </span> </div>
-         <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
-      </div>
-      <br>
-      <div class="espacio col s12" style="height: 25px;"></div>
-      
-      <div class="col s12">
-         <div style="background-color: greenyellow; border-radius: 2em; height: 100px; " >
-      <div class="conteiner col s10 offset-s1">
-         <span style="margin-top: 0px;" >   espacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcionespacio para la descripcion</span> 
-      </div>
-      <br>
-      <div class="espacio" style="height: 30px;"> </div>
-      </div>
-      <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
-   </div>
-   
-      <div class="col s12">
-         
-         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> negocio relacionado</span> </div>
-         <div class="espacio" style="height: 30px;"> </div>
-         <table class="tablita" id="tablitaAlerta">
+   <div class="modal-content">
+      <h4 class="center">Alerta</h4>
+      <div class="row">
+        <h4 class="left">27/05/2021</h4>
+        <div class="right">  
+          </div>
+          <input id="inputBuscadorAlerta" placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text">
+          <br><br>
+          <table class="tablita" id="tablitaAlerta">
             <thead>
               <tr>
                   <th style="display:none" class="auxSem"></th>
@@ -66,11 +49,11 @@ BuenaVentura Agronegocios
                   <th>Empresa</th>
                   <th>Cliente</th>
                   <th>Estado</th>
-                  <th>Ver Negociacion</th>
+                  <th>Ver Negociación</th>
               </tr>
             </thead>
             <tbody id="tableAlertas">
-              
+              {% for negocio in negocios%}
                   <tr data-id={{negocio.id}}>
                       <td style="display:none" class="auxSem">
                         <label id="contenido">
@@ -78,21 +61,56 @@ BuenaVentura Agronegocios
                             <span></span>
                         </label>
                       </td>
-                      <td>timestamp|date:"M d, Y</td>
-                      <td> razon_social</td>
-                      <td>first_name</td>
-                      <td>estado</td>
+                      <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+                      <td> {{negocio.comprador.empresa.razon_social}}</td>
+                      <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                      <td>{{negocio.estado}}</td>
                       <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
                   </tr>
+              {% endfor %}
             </tbody>
           </table>
-
-
+          <div class="row">
+            <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
+            <br>
+            <form class="col s12" id="formSendAlerta" action ="#">
+              <div style="display:none" id="divFormSendAlerta">
+                <input type="hidden" name="idNegocioAlerta" id="idNegocioAlerta" value={{negocio.id}}> 
+                <div class="row">
+                  <div class="input-field col s4">
+                    <select id="selectModalAlert">
+                      <option class="selected" value="Vencimiento">Vencimientos</option>
+                      <option value="Presupuesto">Presupuesto</option>
+                      <option value="Logistica">Logistica</option>
+                    </select>
+                    <label> Tipo de Notificacion</label>
+                  </div>
+                </div>             
+                <div class="row">
+                  <div class="input-field col s3">
+                    <textarea id="tituloAlerta" name="tituloAlerta" class="materialize-textarea"></textarea>
+                    <label for="titulo">Titulo</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <textarea id="descriAlerta" class="materialize-textarea"></textarea>
+                    <label for="descri">Descripcion</label>
+                  </div>
+                </div>              
+            </div>
+            </form>
+          </div>
+        </div>
       </div>
-
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+      <a href="#!" style="display:none" id="btnSendAlerta" onclick="sendAlertaModal()" class="waves-effect waves-green btn-flat">Enviar</a>
+    </div>
+  </div>
    </div>
   
-  </div>
+  
   <div class="modal-footer">
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
   </div>

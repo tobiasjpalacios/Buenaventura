@@ -1,5 +1,25 @@
 {% load static %}
 {% load auth_extras %}
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+        $('#esconder').hide();
+ 
+        $('#show').click(function(){
+			$('#esconder').show();
+            $('#show').hide()                
+        });
+        $('#cancelar').click(function(){
+			$('#esconder').hide();
+            $('#show').show()                
+        });
+            
+ 
+ 
+    });
+     
+</script>
+
 <div class="modal-content">
     <div class="row" > 
         <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
@@ -113,22 +133,47 @@
                         <th>Tipo</th>
                         <th>Emisor</th>
                         <th>Fecha</th>
-                     
+                        <th>Archivo</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for item in items %}
                     <tr>
                         <td>Factura</td>
                         <td> Carlos alberto - adama </td>
                         <td>27/01/21</td>
-            
+                        <td>combrobantenmuevo.pdf</td>
                         <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
                     </tr>
-                {% endfor %}
+                    <tr>
+                        <td>orden de pago</td>
+                        <td> Carlos alberto - adama </td>
+                        <td>27/01/21</td>
+                        <td>combrobantenmuevo.pdf</td>
+                        <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
+                    </tr>
+                    
                 </tbody>
+           
             </table>
+            <br>
+            
+            <a class="waves-effect waves-light btn col s12  green" style="border-radius: 2em;" id="show"><i class="material-icons right">add</i>agregar</a>
+            <div class="row " style="border-color: rgba(128, 128, 128, 0.5); border: rgba(128, 128, 128, 0.5) 2px solid; border-radius: 2em;" id="esconder" >
+                <div class="conteiner">
+                    <div class="input-field col s6">
+                        <select>
+                          <option value="" disabled selected>Selecione</option>
+                          <option value="1">Factura</option>
+                          <option value="2">Orden de pago</option>
+                          <option value="3">Remito</option>
+                        </select>
+                        <label> tipo de factura a agregar</label>
+                      </div>
+                      <a class="waves-effect waves-light btn col s5 " style="border-radius: 2em; margin-top: 15px;"><i class="material-icons right">add</i>agregar</a>
+                      <a id="cancelar" class="btn-floating btn-small waves-effect waves-light modal-trigger  red " style="margin-top: 15px; margin-left: 10px;"><i class=" small material-icons ">close</i></a>
+                </div>
+            </div>
         </div>
     </div>
   <div class="modal-footer">
