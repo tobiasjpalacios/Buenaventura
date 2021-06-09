@@ -4,6 +4,8 @@ import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
 from django.http import JsonResponse
 from django.forms import inlineformset_factory
@@ -16,7 +18,7 @@ from .models import *
 from .choices import DIVISA_CHOICES, TASA_CHOICES, TIPO_DE_NEGOCIO_CHOICES
 from .scriptModels import *
 from .decorators import *
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -114,12 +116,15 @@ def todosFiltro(request, tipo):
     for a in todos_negocios:
         propuesta = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp')[:1]
         propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-        id_prop = propuesta[0][0]
-        envio = propuesta[0][1]
-        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
-            envio = not envio
-        a.id_prop = id_prop
-        a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            envio = propuesta[0][1]
+            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+                envio = not envio
+            a.id_prop = id_prop
+            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
     for b in todos_negocios:        
         if (b.estado == estado):
             b.proveedores = getProveedoresNegocio(b)
@@ -164,10 +169,13 @@ def filtrarNegocios(request):
             todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
             for a in todos_negocios:
                 propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-                id_prop = propuesta[0][0]
-                envio = propuesta[0][1]
-                a.id_prop = id_prop
-                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+                if (not propuesta):
+                    pass
+                else:
+                    id_prop = propuesta[0][0]
+                    envio = propuesta[0][1]
+                    a.id_prop = id_prop
+                    a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
             for b in todos_negocios:
                 if (b.estado in estado):
                     listaEstado.append(b.id)
@@ -196,10 +204,13 @@ def filtrarNegocios(request):
         todos_los_negocios = Negocio.objects.filter(id__in=list(listaNegF)).order_by('-timestamp')
         for a in todos_los_negocios:
             propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-            id_prop = propuesta[0][0]
-            envio = propuesta[0][1]
-            a.id_prop = id_prop
-            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+            if (not propuesta):
+                pass
+            else:
+                id_prop = propuesta[0][0]
+                envio = propuesta[0][1]
+                a.id_prop = id_prop
+                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
         grupo_activo = request.user.groups.all()[0].name
         if (grupo_activo == 'Vendedor'):
             for a in todos_los_negocios:
@@ -401,14 +412,19 @@ def estadoNegocio(fecha_cierre, aprobado, envio):
     return "Cancelado"
 
 def getNegociosToList(negocio):
+    lista_negocios = []
     if (len(negocio) > 0):
         for a in negocio:
             propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-            id_prop = propuesta[0][0]
-            envio = propuesta[0][1]
-            a.id_prop = id_prop
-            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
-    return negocio
+            if (not propuesta):
+                pass
+            else:
+                id_prop = propuesta[0][0]
+                envio = propuesta[0][1]
+                a.id_prop = id_prop
+                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+                lista_negocios.append(a)
+    return lista_negocios
 
 def detalleAlerta(request):
     if request.method == 'POST':
@@ -424,14 +440,17 @@ def detalleNotis(request):
         idNegocio = first.split("/",1)[1]
         negocio = Negocio.objects.get(id=int(idNegocio))
         propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-        id_prop = propuesta[0][0]
-        envio = propuesta[0][1]
-        negocio.id_prop = id_prop
-        grupo_activo = request.user.groups.all()[0].name
-        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
-            envio = not envio
-        negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
-        return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
+        if (not propuesta):
+            return render (request, 'modalnotis.html')
+        else:
+            id_prop = propuesta[0][0]
+            envio = propuesta[0][1]
+            negocio.id_prop = id_prop
+            grupo_activo = request.user.groups.all()[0].name
+            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+                envio = not envio
+            negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
+            return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
     return render (request, 'modalnotis.html')
 
 
@@ -466,18 +485,19 @@ def detalleItem(request):
     if request.method == 'POST':
         idItem = request.POST['idItem']        
         item = ItemPropuesta.objects.get(id = idItem)
-        today = date.today()
-        d1 = today.strftime("%d/%m/%Y")
-        resultado = calcularVencAtr(item.fecha_entrega, d1)
+        today = datetime.today()
+        fechaEntrega = datetime.strptime(item.fecha_entrega, "%d/%m/%Y")
+        resultado = calcularVencAtr(fechaEntrega, today)
         logistica = "Atrasado"
         if (item.fecha_real_entrega is not None):
             logistica = "Entregado"
         else:
-            if (resultado):
+            if (not resultado):
                 if (item.fecha_salida_entrega is None):                    
                     logistica = "A Tiempo"
                 else:                    
                     logistica = "En Tránsito"
+        """
         diaA = int(d1[0:2])
         mesA = int(d1[3:5])
         añoA = int(d1[6:10])
@@ -500,6 +520,18 @@ def detalleItem(request):
                 estado_pago = "Vence esta Semana"
             else:
                 estado_pago = "Vencimiento Futuro"
+        """
+        estado_pago = "Pago Realizado"
+        if (item.fecha_real_pago is None):                
+            date_time_obj = datetime.strptime(item.fecha_pago, "%d/%m/%Y")
+            if (date_time_obj < today):
+                estado_pago = "Atrasado" 
+            else:
+                difDias = (today - date_time_obj).days                        
+                if ((difDias * (-1)) <= 7):
+                    estado_pago = "Vence esta Semana"
+                else:
+                    estado_pago = "Vencimiento Futuro"
         return render (request, 'modalDetalleItem.html', {'item':item, 'logistica':logistica, 'estado_pago':estado_pago})
     return render (request, 'modalDetalleItem.html')
 
@@ -513,125 +545,132 @@ def listaNL(request,negocioFilter,modulo):
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name        
-        #P = Proveedor
-        if (modulo == 'P'):    
-            persona = Persona.objects.get(user=request.user)
-            empleadoP = Proveedor.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
-        #L = Logistica   
-        elif (modulo == 'L'):
-            persona = Persona.objects.get(user=request.user)
-            empleadoL = Logistica.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id)
-        #A = Administrador 
-        elif (modulo == 'A'):
-            persona = Persona.objects.get(user=request.user)
-            administradorL = Administrador.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=administradorL.empresa.id)
-        else:
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
-        if (items.count() < 1):
+        if (not propuesta):
             pass
         else:
-            destino = ""
-            estado = ""
-            destino_tiempo = ""
-            fecha_tiempo = "00/00/0000"
-            destino_transito = ""
-            fecha_transito = "00/00/0000"
-            destino_entregado = ""
-            fecha_entregado = "00/00/0000"
-            destino_atrasado = ""
-            fecha_atrasado = "00/00/0000"
-            primero_tiempo = True
-            primero_transito = True
-            primero_entregado = True
-            primero_atrasado = True
-            today = date.today()
-            d1 = today.strftime("%d/%m/%Y")
-            for b in items:
-                resultado = calcularVencAtr(b.fecha_entrega, d1)
-                if (b.fecha_real_entrega is not None):
-                    #Entregado
-                    entregado = True
-                    if (primero_entregado):
-                        fecha_entregado = b.fecha_entrega
-                        destino_entregado = b.destino.direccion
-                        primero_entregado = False
-                    else:
-                        res = calcularVencAtr(b.fecha_entrega, fecha_entregado)
-                        if (not res):
+            id_prop = propuesta[0][0]
+            comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name        
+            #P = Proveedor
+            if (modulo == 'P'):    
+                persona = Persona.objects.get(user=request.user)
+                empleadoP = Proveedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
+            #L = Logistica   
+            elif (modulo == 'L'):
+                persona = Persona.objects.get(user=request.user)
+                empleadoL = Logistica.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id)
+            #A = Administrador 
+            elif (modulo == 'A'):
+                persona = Persona.objects.get(user=request.user)
+                administradorL = Administrador.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=administradorL.empresa.id)
+            else:
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
+            if (items.count() < 1):
+                pass
+            else:
+                destino = ""
+                estado = ""
+                destino_tiempo = ""
+                fecha_tiempo = "00/00/0000"
+                destino_transito = ""
+                fecha_transito = "00/00/0000"
+                destino_entregado = ""
+                fecha_entregado = "00/00/0000"
+                destino_atrasado = ""
+                fecha_atrasado = "00/00/0000"
+                primero_tiempo = True
+                primero_transito = True
+                primero_entregado = True
+                primero_atrasado = True
+                today = datetime.today()
+                for b in items:
+                    fechaEntrega = datetime.strptime(b.fecha_entrega, "%d/%m/%Y")
+                    resultado = calcularVencAtr(fechaEntrega, today)
+                    print (resultado)
+                    if (b.fecha_real_entrega is not None):
+                        #Entregado
+                        entregado = True
+                        if (primero_entregado):
                             fecha_entregado = b.fecha_entrega
                             destino_entregado = b.destino.direccion
-                else:
-                    if (resultado):
-                        if (b.fecha_salida_entrega is None):
-                            #A Tiempo
-                            en_tiempo = True
-                            if (primero_tiempo):
-                                fecha_tiempo = b.fecha_entrega
-                                destino_tiempo = b.destino.direccion
-                                primero_tiempo = False
-                            else:
-                                res = calcularVencAtr(b.fecha_entrega, fecha_tiempo)
-                                if (not res):
+                            primero_entregado = False
+                        else:
+                            fechaEntregado = datetime.strptime(fecha_entregado, "%d/%m/%Y")
+                            res = calcularVencAtr(b.fecha_entrega, fecha_entregado)
+                            if (not res):
+                                fecha_entregado = b.fecha_entrega
+                                destino_entregado = b.destino.direccion
+                    else:
+                        if (not resultado):
+                            if (b.fecha_salida_entrega is None):
+                                #A Tiempo
+                                en_tiempo = True
+                                if (primero_tiempo):
                                     fecha_tiempo = b.fecha_entrega
                                     destino_tiempo = b.destino.direccion
-                        else:
-                            #En Transito
-                            en_transito = True
-                            if (primero_transito):
-                                fecha_transito = b.fecha_entrega
-                                destino_transito = b.destino.direccion
-                                primero_transito = False
+                                    primero_tiempo = False
+                                else:
+                                    fechaTiempo = datetime.strptime(fecha_tiempo, "%d/%m/%Y")
+                                    res = calcularVencAtr(fechaEntrega, fechaTiempo)
+                                    if (not res):
+                                        fecha_tiempo = b.fecha_entrega
+                                        destino_tiempo = b.destino.direccion
                             else:
-                                res = calcularVencAtr(b.fecha_entrega, fecha_transito)
-                                if (not res):
+                                #En Transito
+                                en_transito = True
+                                if (primero_transito):
                                     fecha_transito = b.fecha_entrega
                                     destino_transito = b.destino.direccion
-                    else:
-                        #Atrasado
-                        atrasado = True
-                        if (primero_atrasado):
-                                fecha_atrasado = b.fecha_entrega    
-                                destino_atrasado = b.destino.direccion
-                                primero_atrasado = False
+                                    primero_transito = False
+                                else:
+                                    res = calcularVencAtr(b.fecha_entrega, fecha_transito)
+                                    if (not res):
+                                        fecha_transito = b.fecha_entrega
+                                        destino_transito = b.destino.direccion
                         else:
-                            res = calcularVencAtr(b.fecha_entrega, fecha_atrasado)
-                            if (not res):
-                                fecha_atrasado = b.fecha_entrega
-                                destino_atrasado = b.destino.direccion
-            if (atrasado):
-                estado = "Atrasado"
-                destino = destino_atrasado
-                fecha = fecha_atrasado
-            elif (en_tiempo):
-                estado = "A Tiempo"
-                destino = destino_tiempo
-                fecha = fecha_tiempo
-            elif (en_transito):
-                estado = "En Tránsito"
-                destino = destino_transito
-                fecha = fecha_transito
-            else:
-                estado = "Entregado"
-                destino = destino_entregado
-                fecha = fecha_entregado      
-            lista = {
-                'fecha':fecha,
-                'destinatario': comprador,
-                'destino': destino,
-                'id_prop':id_prop,
-                'empresa':negocio.comprador.empresa.razon_social,
-                'estado':estado
-            }
-            lista_negocios.append(lista)
-            en_tiempo = False
-            en_transito = False
-            entregado = False
-            atrasado = False
+                            #Atrasado
+                            atrasado = True
+                            if (primero_atrasado):
+                                    fecha_atrasado = b.fecha_entrega    
+                                    destino_atrasado = b.destino.direccion
+                                    primero_atrasado = False
+                            else:
+                                fechaAtrasado = datetime.strptime(fecha_atrasado, "%d/%m/%Y")
+                                res = calcularVencAtr(b.fecha_entrega, fecha_atrasado)
+                                if (not res):
+                                    fecha_atrasado = b.fecha_entrega
+                                    destino_atrasado = b.destino.direccion
+                if (atrasado):
+                    estado = "Atrasado"
+                    destino = destino_atrasado
+                    fecha = fecha_atrasado
+                elif (en_tiempo):
+                    estado = "A Tiempo"
+                    destino = destino_tiempo
+                    fecha = fecha_tiempo
+                elif (en_transito):
+                    estado = "En Tránsito"
+                    destino = destino_transito
+                    fecha = fecha_transito
+                else:
+                    estado = "Entregado"
+                    destino = destino_entregado
+                    fecha = fecha_entregado      
+                lista = {
+                    'fecha':fecha,
+                    'destinatario': comprador,
+                    'destino': destino,
+                    'id_prop':id_prop,
+                    'empresa':negocio.comprador.empresa.razon_social,
+                    'estado':estado
+                }
+                lista_negocios.append(lista)
+                en_tiempo = False
+                en_transito = False
+                entregado = False
+                atrasado = False
     return lista_negocios
 
 
@@ -667,17 +706,17 @@ def detalleLogistica(request):
                 else:
                     lista_ids.append(a.proveedor.id)
             proveedores = Proveedor.objects.filter(id__in=lista_ids) 
-        today = date.today()
-        d1 = today.strftime("%d/%m/%Y")
+        today = datetime.today()
         for b in items:
             b.estados = ('Atrasado', 'A Tiempo', 'Entregado', 'Aceptado')
-            resultado = calcularVencAtr(b.fecha_entrega, d1)
+            fechaEntrega = datetime.strptime(b.fecha_entrega, "%d/%m/%Y")
+            resultado = calcularVencAtr(fechaEntrega, today)
             if (b.fecha_real_entrega is not None):
                 #Entregado
                 b.estado = 'Entregado'
                 b.estados = ('Atrasado', 'A Tiempo', 'En Tránsito')
             else:
-                if (resultado):
+                if (not resultado):
                     if (b.fecha_salida_entrega is None):
                         #A Tiempo
                         b.estado = 'A Tiempo'
@@ -782,7 +821,7 @@ def setLogistica(request):
             if (primero):
                 negocioN = item.propuesta.negocio.id
                 primero = False
-            estado = lista_estados[a]
+            estado = lista_estados[a]            
             if (estado == 1 or estado == 4):
                 item.fecha_real_entrega = None
                 item.fecha_salida_entrega = None
@@ -879,24 +918,27 @@ def listaNCL(request, negocioFilter, tipo):
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        if (tipo == "P"):
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoL.id)
+        if (not propuesta):
+            pass
         else:
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id).values_list('articulo__ingrediente', flat=True)
-        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-        vendedor = negocio.vendedor.persona.user.last_name +" "+negocio.vendedor.persona.user.first_name
-        if (items.count() > 0):
-            lista = {
-                'fecha':fecha_p,
-                'items':list(items),
-                'comprador': comprador,
-                'vendedor': vendedor,
-                'empresa':negocio.comprador.empresa.razon_social,
-                'id_prop': id_prop
-            }
-            lista_negocios.append(lista)
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            if (tipo == "P"):
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoL.id)
+            else:
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id).values_list('articulo__ingrediente', flat=True)
+            comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+            vendedor = negocio.vendedor.persona.user.last_name +" "+negocio.vendedor.persona.user.first_name
+            if (items.count() > 0):
+                lista = {
+                    'fecha':fecha_p,
+                    'items':list(items),
+                    'comprador': comprador,
+                    'vendedor': vendedor,
+                    'empresa':negocio.comprador.empresa.razon_social,
+                    'id_prop': id_prop
+                }
+                lista_negocios.append(lista)
     return lista_negocios
 
 def listaNC(negocioFilter):
@@ -904,18 +946,21 @@ def listaNC(negocioFilter):
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
-        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-        lista = {
-            'fecha':fecha_p,
-            'items':list(items),
-            'comprador': comprador,
-            'empresa':negocio.comprador.empresa.razon_social,
-            'id_prop': id_prop
-        }
-        lista_negocios.append(lista)
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
+            comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+            lista = {
+                'fecha':fecha_p,
+                'items':list(items),
+                'comprador': comprador,
+                'empresa':negocio.comprador.empresa.razon_social,
+                'id_prop': id_prop
+            }
+            lista_negocios.append(lista)
     return lista_negocios
 
 def semaforoVencimiento(negocioFilter):
@@ -923,67 +968,84 @@ def semaforoVencimiento(negocioFilter):
     lista_semanas = []
     lista_futuros = []
     today = date.today()
-    d1 = today.strftime("%d/%m/%Y")
+    today2 = datetime.today()
+    """
+    d1 = today.strftime("%d/%m/%Y")    
     diaA = int(d1[0:2])
     mesA = int(d1[3:5])
     añoA = int(d1[6:10])
+    """
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        items = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True).values_list('articulo__ingrediente', 'fecha_pago')
-        if (items.count() > 0):
-            comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-            id_propuesta = id_prop        
-            vencidos = False
-            esta_semana = False
-            futuros = False
-            for a in items:
-                diaP = int(a[1][0:2])
-                mesP = int(a[1][3:5])
-                añoP = int(a[1][6:10])
-                difD = (diaP - diaA)
-                difM = (mesP - mesA)
-                difA = (añoP - añoA)
-                proxMes = (diaP + 30 - diaA)
-                if ((mesA == 12 and mesP == 1) and (difA == 1)):
-                    difM = 1
-                if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-                    vencidos = True 
-                elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
-                    esta_semana = True
-                elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
-                    esta_semana = True
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True).values_list('articulo__ingrediente', 'fecha_pago')
+            if (items.count() > 0):
+                comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+                id_propuesta = id_prop        
+                vencidos = False
+                esta_semana = False
+                futuros = False
+                for a in items:                    
+                    date_time_obj = datetime.strptime(a[1], "%d/%m/%Y")
+                    if (date_time_obj < today2):
+                        vencidos = True
+                    else:
+                        difDias = (today2 - date_time_obj).days                        
+                        if ((difDias * (-1)) <= 7):
+                            esta_semana = True
+                        else:
+                            futuros = True
+                    """
+                    diaP = int(a[1][0:2])
+                    mesP = int(a[1][3:5])
+                    añoP = int(a[1][6:10])
+                    difD = (diaP - diaA)
+                    difM = (mesP - mesA)
+                    difA = (añoP - añoA)
+                    proxMes = (diaP + 30 - diaA)
+                    if ((mesA == 12 and mesP == 1) and (difA == 1)):
+                        difM = 1
+                    if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
+                        vencidos = True 
+                    elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
+                        esta_semana = True
+                    elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
+                        esta_semana = True
+                    else:
+                        futuros = True
+                    """
+                if (vencidos):
+                    lista = {
+                        'fecha':fecha_p,
+                        'comprador': comprador,
+                        'id_propuesta': id_propuesta,
+                        'empresa':negocio.comprador.empresa.razon_social
+                    }
+                    lista_vencidos.append(lista)
+                elif (esta_semana):
+                    lista = {
+                        'fecha':fecha_p,
+                        'comprador': comprador,
+                        'id_propuesta': id_propuesta,
+                        'empresa':negocio.comprador.empresa.razon_social
+                    }
+                    lista_semanas.append(lista)
                 else:
-                    futuros = True
-            if (vencidos):
-                lista = {
-                    'fecha':fecha_p,
-                    'comprador': comprador,
-                    'id_propuesta': id_propuesta,
-                    'empresa':negocio.comprador.empresa.razon_social
-                }
-                lista_vencidos.append(lista)
-            elif (esta_semana):
-                lista = {
-                    'fecha':fecha_p,
-                    'comprador': comprador,
-                    'id_propuesta': id_propuesta,
-                    'empresa':negocio.comprador.empresa.razon_social
-                }
-                lista_semanas.append(lista)
-            else:
-                lista = {
-                    'fecha':fecha_p,
-                    'comprador': comprador,
-                    'id_propuesta': id_propuesta,
-                    'empresa':negocio.comprador.empresa.razon_social
-                }
-                lista_futuros.append(lista)
-            vencidos = False
-            esta_semana = False
-            futuros = False
+                    lista = {
+                        'fecha':fecha_p,
+                        'comprador': comprador,
+                        'id_propuesta': id_propuesta,
+                        'empresa':negocio.comprador.empresa.razon_social
+                    }
+                    lista_futuros.append(lista)
+                vencidos = False
+                esta_semana = False
+                futuros = False
     return lista_vencidos,lista_semanas,lista_futuros
 
 def reloadSem(request):
@@ -1127,11 +1189,11 @@ def detalleSemaforo(request):
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True, proveedor__id=proveedorP.id)        
         else:
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, fecha_real_pago__isnull=True)
-        today = date.today()
-        d1 = today.strftime("%d/%m/%Y")
+        today = datetime.today()
         for a in items:
             if (ind == "1"):
-                resultado = calcularVencAtr(a.fecha_pago, d1)
+                fechaPago = datetime.strptime(a.fecha_pago, "%d/%m/%Y")
+                resultado = calcularVencAtr(fechaPago, today)
                 if (resultado):
                     a.estado = "A Tiempo"
                 else:
@@ -1142,33 +1204,22 @@ def detalleSemaforo(request):
     return redirect(render)
 
 def calcularVencAtr(a, b):
-    diaA = int(b[0:2])
-    mesA = int(b[3:5])
-    añoA = int(b[6:10])
-    diaP = int(a[0:2])
-    mesP = int(a[3:5])
-    añoP = int(a[6:10])
-    difD = (diaP - diaA)
-    difM = (mesP - mesA)
-    difA = (añoP - añoA)
-    proxMes = (diaP + 30 - diaA)
-    if ((mesA == 12 and mesP == 1) and (difA == 1)):
-        difM = 1
-    if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-        return False 
-    else: 
+    if (a < b):
         return True
-
+    return False    
 def listaItemsPorVencer(listaNegociosC):
     lista_Items = []
     for a in listaNegociosC:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        items = list(ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente','fecha_pago'))
-        for b in items:
-            lista_Items.append(b)
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            items = list(ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente','fecha_pago'))
+            for b in items:
+                lista_Items.append(b)
     return lista_Items
 
 def listasNA(negocioFilter, tipo):
@@ -1176,46 +1227,18 @@ def listasNA(negocioFilter, tipo):
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp','envio_comprador','visto')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        envio = propuesta[0][2]
-        visto = propuesta[0][3]
-        valor_visto = "No"
-        if (visto):
-            valor_visto = "Si"
-        if (envio == tipo):
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
-            comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-            lista = {
-                'fecha':fecha_p,
-                'items':list(items),
-                'comprador': comprador,
-                'empresa':(negocio.comprador.empresa.razon_social),
-                'visto': valor_visto,
-                'id_prop': id_prop
-            }
-            lista_negocios.append(lista)
-        else:
+        if (not propuesta):
             pass
-    return lista_negocios
-
-def listasNAA(request,negocioFilter, tipo):
-    lista_negocios = []
-    persona = Persona.objects.get(user=request.user)
-    empleadoL = Administrador.objects.get(persona__id=persona.id)
-    for a in negocioFilter:
-        negocio = Negocio.objects.get(id=a)
-        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp','envio_comprador','visto')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        envio = propuesta[0][2]
-        visto = propuesta[0][3]
-        valor_visto = "No"
-        if (visto):
-            valor_visto = "Si"
-        if (envio == tipo):
-            items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id).values_list('articulo__ingrediente', flat=True)
-            if (items.count() > 0):
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            envio = propuesta[0][2]
+            visto = propuesta[0][3]
+            valor_visto = "No"
+            if (visto):
+                valor_visto = "Si"
+            if (envio == tipo):
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
                 comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
                 lista = {
                     'fecha':fecha_p,
@@ -1226,8 +1249,42 @@ def listasNAA(request,negocioFilter, tipo):
                     'id_prop': id_prop
                 }
                 lista_negocios.append(lista)
-        else:
+            else:
+                pass
+    return lista_negocios
+
+def listasNAA(request,negocioFilter, tipo):
+    lista_negocios = []
+    persona = Persona.objects.get(user=request.user)
+    empleadoL = Administrador.objects.get(persona__id=persona.id)
+    for a in negocioFilter:
+        negocio = Negocio.objects.get(id=a)
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp','envio_comprador','visto')[:1])
+        if (not propuesta):
             pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            envio = propuesta[0][2]
+            visto = propuesta[0][3]
+            valor_visto = "No"
+            if (visto):
+                valor_visto = "Si"
+            if (envio == tipo):
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id).values_list('articulo__ingrediente', flat=True)
+                if (items.count() > 0):
+                    comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+                    lista = {
+                        'fecha':fecha_p,
+                        'items':list(items),
+                        'comprador': comprador,
+                        'empresa':(negocio.comprador.empresa.razon_social),
+                        'visto': valor_visto,
+                        'id_prop': id_prop
+                    }
+                    lista_negocios.append(lista)
+            else:
+                pass
     return lista_negocios
 
 class carga_excel(View):    
@@ -1582,10 +1639,36 @@ def cargarListasNegociosAbiertos(negocioFilter, tipo):
     for a in negocioFilter:
         negocio = Negocio.objects.get(id=a)
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp','envio_comprador')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        envio = propuesta[0][2]
-        if (envio == tipo):
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
+            envio = propuesta[0][2]
+            if (envio == tipo):
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
+                comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
+                lista = {
+                    'fecha':fecha_p,
+                    'items':list(items),
+                    'comprador': comprador,
+                    'empresa':negocio.comprador.empresa.razon_social
+                }
+                lista_negocios.append(lista)
+            else:
+                pass
+    return lista_negocios
+
+def cargarListasNegociosCerrados(negocioFilter):
+    lista_negocios = []
+    for a in negocioFilter:
+        negocio = Negocio.objects.get(id=a)
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
+        if (not propuesta):
+            pass
+        else:
+            id_prop = propuesta[0][0]
+            fecha_p = propuesta[0][1]
             items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
             comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
             lista = {
@@ -1595,26 +1678,6 @@ def cargarListasNegociosAbiertos(negocioFilter, tipo):
                 'empresa':negocio.comprador.empresa.razon_social
             }
             lista_negocios.append(lista)
-        else:
-            pass
-    return lista_negocios
-
-def cargarListasNegociosCerrados(negocioFilter):
-    lista_negocios = []
-    for a in negocioFilter:
-        negocio = Negocio.objects.get(id=a)
-        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        id_prop = propuesta[0][0]
-        fecha_p = propuesta[0][1]
-        items = ItemPropuesta.objects.filter(propuesta__id = id_prop).values_list('articulo__ingrediente', flat=True)
-        comprador = negocio.comprador.persona.user.last_name +" "+negocio.comprador.persona.user.first_name
-        lista = {
-            'fecha':fecha_p,
-            'items':list(items),
-            'comprador': comprador,
-            'empresa':negocio.comprador.empresa.razon_social
-        }
-        lista_negocios.append(lista)
     return lista_negocios
 
 class APIArticulos(View):
@@ -1712,3 +1775,12 @@ def get_from_tuple(my_tuple, value):
         if y==value:
             ret = x
     return ret
+
+def successPassword(request):
+    return render(request, 'tempAux/successPass.html')
+
+class PasswordsChangeView(PasswordChangeView):
+    form_class = PasswordsChangingForm
+
+    def get_success_url(self):
+        return reverse('successPassword')

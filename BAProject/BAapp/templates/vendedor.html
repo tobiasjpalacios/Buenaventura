@@ -1176,16 +1176,17 @@ BuenaVentura Agronegocios
           var estado=1;
           var row = selectInput[i];
           var id = $(row).data("id");
-          
+          console.log(row.value);
           if (row.value == 'Entregado') {
             estado = 3
           } else if (row.value == 'Atrasado') {
-            estado = 4
-          } else if (row.value == 'En Tránsito'){
+            estado = 1
+          } else if (row.value == 'En'){
             estado = 2
           } else {
-            estado = 1
-          };
+            estado = 4
+          };          
+          console.log(estado);
           var value_log = estado +"-"+ id
           estadosId.push(value_log);
       };
