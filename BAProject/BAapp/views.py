@@ -439,7 +439,7 @@ def detalleNotis(request):
         first = notificacion.hyperlink.split("/",1)[1]
         idNegocio = first.split("/",1)[1]
         negocio = Negocio.objects.get(id=int(idNegocio))
-        propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
         if (not propuesta):
             return render (request, 'modalnotis.html')
         else:
