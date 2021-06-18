@@ -1784,3 +1784,175 @@ class PasswordsChangeView(PasswordChangeView):
 
     def get_success_url(self):
         return reverse('successPassword')
+
+def formFactura(request, *args, **kwargs):
+    if request.method == 'POST':
+        form = FacturaForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = FacturaForm()
+        tipo = "Factura"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formRemito(request):
+    if request.method == 'POST':
+        form = RemitoForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = RemitoForm()
+        tipo = "Remito"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formOrdenDeCompra(request):
+    if request.method == 'POST':
+        form = OrdenDeCompraForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = OrdenDeCompraForm()
+        tipo = "OrdenDeCompra"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formOrdenDePago(request):
+    if request.method == 'POST':
+        form = OrdenDePagoForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = OrdenDePagoForm()
+        tipo = "OrdenDePago"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formContansiaRentencion(request):
+    if request.method == 'POST':
+        form = ContansiaRentencionForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = ContansiaRentencionForm()
+        tipo = "ContansiaRentencion"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formRecibo(request):
+    if request.method == 'POST':
+        form = ReciboForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = ReciboForm()
+        tipo = "Recibo"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formCheque(request):
+    if request.method == 'POST':
+        form = ChequesForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            instance = form.save()
+            return redirect("home")
+        else:
+            print(form.errors)  
+    else:
+        form = ChequesForm()
+        tipo = "Cheques"
+        context = {
+            'form':form,
+            'tipo':tipo,
+            }
+        return render(request, 'modalForm.html', context)
+  
+
+def formCuentaCorriente(request):
+    if request.method == 'POST':
+        form = CuentaCorrientesForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = CuentaCorrientesForm()
+        tipo = "CuentaCorrientes"
+        context = {
+        'form':form,
+        'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formFacturaComision(request):
+    if request.method == 'POST':
+        form = FacturaComisionesForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+                form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = FacturaComisionesForm()
+        tipo = "FacturaComisiones"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+
+def formNota(request):
+    if request.method == 'POST':
+        form = NotaForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)  
+        return redirect("home")
+    else:
+        form = NotaForm()
+        tipo = "Nota"
+        context = {
+            'form':form,
+            'tipo':tipo
+        }
+        return render(request, 'modalForm.html', context)
+

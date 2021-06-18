@@ -364,3 +364,191 @@ class Notificacion(models.Model):
 
     class Meta:
         ordering = ('-timestamp',)
+
+class Factura(models.Model):
+    #id 
+    #emisor - usuario - proveedor
+    #receptor - get_comprador()
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    fecha_vencimiento = models.DateField(null=False)
+    
+    numero_factura = models.IntegerField(null = True)
+    
+    proveedor = models.ForeignKey(
+        "Proveedor", 
+        null = True, 
+        on_delete=models.DO_NOTHING)
+    tipo_pago = models.ForeignKey(
+            "TipoPago",
+            null=True,
+            blank = True,
+            on_delete=models.DO_NOTHING,
+        )
+    monto = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+
+    documento = models.FileField(upload_to='media/facturas/%Y/%m/%d', null=True, blank=True)
+
+    class Meta():
+        default_related_name = "facturas"
+
+class Remito(models.Model):
+    #emisor proveedor
+    #cliente - get_comprador()
+    #tienen q poder cargarlo los vendedores tmb
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    fecha_vencimiento = models.DateField(null=False)
+    
+    proveedor = models.ForeignKey(
+        "Proveedor", 
+        null = True, 
+        on_delete=models.DO_NOTHING)
+	#desc_productos 
+    lote = models.CharField(max_length=255)
+    observaciones = models.TextField(null=True)
+
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+    class Meta():
+        default_related_name = "remitos"
+
+
+
+class OrdenDeCompra(models.Model):
+    #emisor: comprador
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    recibe_proveedor = models.ForeignKey(
+        "Proveedor", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+	
+	
+class OrdenDePago(models.Model): 
+    #emisor: comprador
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    factura = models.ForeignKey(
+        "Factura", 
+        null = False, 
+        on_delete=models.DO_NOTHING) 
+    recibe_proveedor = models.ForeignKey(
+        "Proveedor",
+        null=False, 
+        on_delete=models.DO_NOTHING)
+
+    monto = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+   
+	
+class ContansiaRentencion(models.Model):
+    #emisor: comprador
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    recibe_proveedor = models.ForeignKey(
+        "Proveedor",
+        null=True, 
+        on_delete=models.DO_NOTHING) 
+    importe = models.FloatField()
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+	#negocio(cliente-provedores-fecha)
+	
+class Recibo(models.Model):
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    recibe_proveedor = models.ForeignKey(
+        "Proveedor",
+        null=True, 
+        on_delete=models.DO_NOTHING)
+    monto = models.PositiveIntegerField(null=False ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+	#(recibe) cliente
+	#proveedor a cliente 
+	#items 
+	
+class Cheque(models.Model):
+    #emite cliente
+	#fecha subida 
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+    class Meta():
+        default_related_name = "cheques"
+
+class CuentaCorriente(models.Model):
+	#emite proveedor
+	#fecha subida 
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+    class Meta():
+        default_related_name = "cuentas_corrientes"
+
+class FacturaComision(models.Model):
+	#carga vendedor()
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    recibe_proveedor = models.ForeignKey(
+        "Proveedor",
+        null=True, 
+        on_delete=models.DO_NOTHING)
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+    class Meta():
+        default_related_name = "facturas_comisiones"
+	
+class Nota(models.Model):
+    #emite proveedor 
+	#recibe get_comprador() 
+	#nro_factura()
+    negocio = models.ForeignKey(
+        "Negocio", 
+        null = False, 
+        on_delete=models.DO_NOTHING)
+
+    fecha_emision = models.DateField(null=False)
+    tipo_nota = models.CharField(
+        max_length=15,
+        choices=TIPO_NOTA,
+        null=False
+        )
+    documento = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True)
+    class Meta():
+        default_related_name = "notas"
