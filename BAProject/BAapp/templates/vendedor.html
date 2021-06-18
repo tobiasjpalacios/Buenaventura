@@ -237,6 +237,57 @@ BuenaVentura Agronegocios
     </div>
   </div>
 
+  <div id="factura" class="modal">
+    <div id="modalFormFactura" class="modal-content">
+    </div>
+  </div>
+
+  <div id="remito" class="modal">
+    <div id="modalFormRemito" class="modal-content">
+    </div>
+  </div>
+
+  <div id="ordenDeCompra" class="modal">
+    <div id="modalFormOrdenDeCompra" class="modal-content">
+    </div>
+  </div>
+
+  <div id="ordenDePago" class="modal">
+    <div id="modalFormOrdenDePago" class="modal-content">
+    </div>
+  </div>
+
+  <div id="contansiaRentencion" class="modal">
+    <div id="modalFormContansiaRentencion" class="modal-content">
+    </div>
+  </div>
+
+  <div id="recibo" class="modal">
+    <div id="modalFormRecibo" class="modal-content">
+    </div>
+  </div>
+
+  <div id="cheques" class="modal">
+    <div id="modalFormCheques" class="modal-content">
+    </div>
+  </div>
+
+  <div id="cuentaCorrientes" class="modal">
+    <div id="modalformCuentaCorriente" class="modal-content">
+    </div>
+  </div>
+
+  <div id="facturaComisiones" class="modal">
+    <div id="modalformFacturaComision" class="modal-content">
+    </div>
+  </div>
+
+  <div id="nota" class="modal">
+    <div id="modalFormNota" class="modal-content">
+    </div>
+  </div>
+
+
   <!------ Modals Notis ---------->
 
   <div id="alertaNotis" class="modal">
@@ -806,31 +857,65 @@ BuenaVentura Agronegocios
   </div>
   <div class="row">
     <ul class="collapsible black-text">
-                    <li>
+      <li>
                       <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
                       <div class="collapsible-body">
-                        <a class="btn waves"> Cargar Factura </a>
+                        <a class="btn waves" onclick="openModalFormFactura()"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">book</i>Remitos</div>
-                      <div class="collapsible-body"></div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormRemitos()"> Cargar </a>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de Compra</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormOrdenDeCompra()"> Cargar </a>
+                      </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
-                      <div class="collapsible-body"></div>
-                    </li>
-                    <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
-                      <div class="collapsible-body"></div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormOrdenDePago()"> Cargar </a>
+                      </div>
                     </li>  
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
-                      <div class="collapsible-body"></div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>ContansiaRentencion</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormContansiaRentencion()"> Cargar </a>
+                      </div>
                     </li>
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
-                      <div class="collapsible-body"></div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Recibo</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormRecibo()"> Cargar </a>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Cheques</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormCheques()"> Cargar </a>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>CuentaCorrientes</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalformCuentaCorriente()"> Cargar </a>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>FacturaComisiones</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalformFacturaComision()"> Cargar </a>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Nota</div>
+                      <div class="collapsible-body">
+                        <a class="btn waves" onclick="openModalFormNota()"> Cargar </a>
+                      </div>
                     </li>
                   </ul>
                   <div style="border: 2px solid grey; margin: px;" class="">
@@ -1023,6 +1108,146 @@ BuenaVentura Agronegocios
       success: function (data) { 
         $("#modalAlerta").html(data);
         $('#alerta').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormFactura(){
+    $.ajax({
+      url: "{% url 'formFactura' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormFactura").html(data);
+        $('#factura').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormRemitos(){
+    $.ajax({
+      url: "{% url 'formFactura' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormRemito").html(data);
+        $('#remito').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormOrdenDeCompra(){
+    $.ajax({
+      url: "{% url 'formOrdenDeCompra' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormOrdenDeCompra").html(data);
+        $('#ordenDeCompra').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormOrdenDePago(){
+    $.ajax({
+      url: "{% url 'formOrdenDePago' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormOrdenDePago").html(data);
+        $('#ordenDePago').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormContansiaRentencion(){
+    $.ajax({
+      url: "{% url 'formContansiaRentencion' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormContansiaRentencion").html(data);
+        $('#contansiaRentencion').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormRecibo(){
+    $.ajax({
+      url: "{% url 'formRecibo' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormRecibo").html(data);
+        $('#recibo').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormCheques(){
+    $.ajax({
+      url: "{% url 'formCheque' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormCheques").html(data);
+        $('#cheques').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalformCuentaCorriente(){
+    $.ajax({
+      url: "{% url 'formCuentaCorriente' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalformCuentaCorriente").html(data);
+        $('#cuentaCorrientes').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalformFacturaComision(){
+    $.ajax({
+      url: "{% url 'formFacturaComision' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalformFacturaComision").html(data);
+        $('#facturaComisiones').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalFormNota(){
+    $.ajax({
+      url: "{% url 'formNota' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalFormNota").html(data);
+        $('#nota').modal('open'); 
       },
       error: function (response) {
           console.log("Error")
