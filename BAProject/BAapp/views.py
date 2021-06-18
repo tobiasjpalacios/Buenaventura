@@ -1787,11 +1787,11 @@ class PasswordsChangeView(PasswordChangeView):
 
 def formFactura(request, *args, **kwargs):
     if request.method == 'POST':
-        form = FacturaForm(request.POST)
+        form = FacturaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1808,11 +1808,11 @@ def formFactura(request, *args, **kwargs):
 
 def formRemito(request):
     if request.method == 'POST':
-        form = RemitoForm(request.POST or None)
+        form = RemitoForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1829,11 +1829,11 @@ def formRemito(request):
 
 def formOrdenDeCompra(request):
     if request.method == 'POST':
-        form = OrdenDeCompraForm(request.POST or None)
+        form = OrdenDeCompraForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1850,11 +1850,11 @@ def formOrdenDeCompra(request):
 
 def formOrdenDePago(request):
     if request.method == 'POST':
-        form = OrdenDePagoForm(request.POST or None)
+        form = OrdenDePagoForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1871,11 +1871,11 @@ def formOrdenDePago(request):
 
 def formContansiaRentencion(request):
     if request.method == 'POST':
-        form = ContansiaRentencionForm(request.POST or None)
+        form = ContansiaRentencionForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1892,11 +1892,11 @@ def formContansiaRentencion(request):
 
 def formRecibo(request):
     if request.method == 'POST':
-        form = ReciboForm(request.POST or None)
+        form = ReciboForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1916,8 +1916,8 @@ def formCheque(request):
         form = ChequesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1936,8 +1936,8 @@ def formCuentaCorriente(request):
         form = CuentaCorrientesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1957,8 +1957,8 @@ def formFacturaComision(request):
         form = FacturaComisionesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
@@ -1978,8 +1978,8 @@ def formNota(request):
         form = NotaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
+            form.documento = (documento.name,documento)
             instance = form.save()
-            instance.documento.save(documento.name,documento)
             return redirect("home")
             return HttpResponse("Carga Exitosa")
         else:
