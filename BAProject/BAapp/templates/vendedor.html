@@ -212,9 +212,9 @@ BuenaVentura Agronegocios
       <i class="large material-icons">add</i>
     </a>
     <ul>
-      <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
-      <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar Presupuesto "><i class="material-icons">cached</i></a></li>
-      <li><a class="btn-floating yellow tooltipped" data-position="left"  data-tooltip="Nuevo Presupuesto"><i class="material-icons">add_circle</i></a></li>
+      <li><a class="btn-floating green tooltipped"  href="https://web.whatsapp.com/" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
+      <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip=" Generar Alerta"><i class="material-icons">announcement</i></a></li>
+      <li><a class="btn-floating yellow tooltipped" data-position="left"  data-tooltip="Nuevo Presupuesto"  href="{% url 'inicio'  %}"><i class="material-icons">add_circle</i></a></li>
       
     </ul>
   </div>
@@ -253,7 +253,10 @@ BuenaVentura Agronegocios
     </div>
   </div>
 
-  <!---------------->
+
+    
+ 
+
   <!------ Modal Combrobantes ---------->
 
 <div id="comprobante" class="modal">
@@ -347,29 +350,31 @@ BuenaVentura Agronegocios
   <!------- barra lateral de opciones --------->
   <div class="col hide-on-small-only l2 m3 vl ">
     <ul class="section table-of-contents pinned ">
-      <li><a href="#notis">Notificaciones</a></li>
+      <li><a href="#">Notificaciones</a></li>
       <li><a href="#id1">Presupuestos</a></li>
       <li><a href="#id2">Negocios</a></li>
-      <li><a href="#id6">Vencimientos</a></li>
-      <li><a href="#id7">Logistica</a></li>
-      <li><a href="#id8">Comprobantes</a></li>
-      <li><a href="#id8">Mas Opciones </a></li>
+      <li><a href="#id3">Vencimientos</a></li>
+      <li><a href="#id3">Logistica</a></li>
+      <li><a href="#id3">Comprobantes</a></li>
+      <li><a href="#id4">Mas Opciones </a></li>
+      <li><hr style="width: 250%;"></li>
       {% if request.user|has_group:"Vendedor" %} 
-        <li><a class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
+        <li><a style=" width: 14%;" class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
       {% endif %}
-      
+      <li><a style="position: relative; margin-top: 25px; width: 14%;" class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned "  href="{% url 'inicio'  %}" onclick="openModalAlerta()"> Nuevo Negocio</a></li>
+     
   </ul>
   </div>
   <!----------------------------------->
 
-<a id="notis"></a>
+<a id=""></a>
   <!--------------area general --------------------->
   <div class="col  l10 m9">
     
     <!---------------titulo notificaciones -------------------->
     <div  class="row "> 
       <div class=" titulo  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
-        <div  class="">
+        <div id="" class="notis">
           <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/notis.png' %}"> Notificaciones</span>
         </div>
       </div>
@@ -410,7 +415,6 @@ BuenaVentura Agronegocios
           </tbody>
         </table>
       </div>
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
     </div>
     <!----------------------------------->
     <!-----------------notificaciones logistica ------------------>
@@ -427,7 +431,6 @@ BuenaVentura Agronegocios
           </tbody>
         </table>
       </div>
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
     </div>
     <!----------------------------------->
 
@@ -445,7 +448,6 @@ BuenaVentura Agronegocios
           </tbody>
         </table>
       </div>
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
     </div>
     <!----------------------------------->
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
@@ -579,7 +581,7 @@ BuenaVentura Agronegocios
   <div class="row"> 
     <div style="background-color:  3cad41;" class="col s12 barraa center-align " ><span class="titulito center-align white-text"> Confirmados</span> </div>
   </div>
-  <table>
+  <div class="row"> <table>
     <thead>
       <tr>
           <th>Fecha</th>
@@ -620,7 +622,8 @@ BuenaVentura Agronegocios
       {% endfor %}
     </tbody>
   </table>
-
+</div>
+ 
   <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 3 %}" > Ver todos </a>
   {% if request.user|has_group:"Logistica"%} 
       
@@ -629,7 +632,8 @@ BuenaVentura Agronegocios
     <div class="row"> 
       <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
     </div>
-    <table>
+    <div class="row">
+      <table>
       <thead>
         <tr>
             <th>Fecha</th>
@@ -670,11 +674,12 @@ BuenaVentura Agronegocios
         {% endfor %}
       </tbody>
     </table>
-
-    <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 4 %}"> Ver todos </a>
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
+</div>
+   
+    <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 4 %}"> Ver todos </a>
+    
 {% endif %}
-
 
 {% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
@@ -688,13 +693,13 @@ BuenaVentura Agronegocios
   <div class="row">
     <div id="tablesSem">
       <div class=" bloque-izquierdo col l4 red"  >
-        <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
+        <span style="margin-left: 60px ;  "class="text-align center titulito white-text "><img class="imgchica text-align left white-text"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
       </div>
       <div class="col l4 bloque-centro yellow" >
-        <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
+        <span style="margin-left: 20px; "class="text-align center titulito grey-text "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
       </div>
       <div class="col l4 bloque-derecho green">
-        <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
+        <span class="text-align center titulito "><img class="imgchica text-align left white-text"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
       </div>
       <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
         <div style="overflow-y: scroll; height: 550px;">
@@ -710,7 +715,7 @@ BuenaVentura Agronegocios
             </tbody>
           </table>
         </div>
-        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+        
       </div>
       <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
         <div style="overflow-y: scroll; height: 550px;">
@@ -725,7 +730,7 @@ BuenaVentura Agronegocios
             </tbody>
           </table>
         </div>
-        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+    
       </div>
       <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
         <div style="overflow-y: scroll; height: 550px;">
@@ -740,7 +745,7 @@ BuenaVentura Agronegocios
             </tbody>
           </table>
         </div>
-        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+
       </div>    
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
@@ -873,7 +878,7 @@ BuenaVentura Agronegocios
       </div>
       
       
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+      
     </div>
      <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
       <div style="overflow-y: scroll; height: 550px;">

@@ -4,115 +4,137 @@
 {% load static %}
 {% endblock imports %}
 {% block style%}
+ 
+body {
+  background-color: #e0e0e0;
+}
+
 {% endblock style%}
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}  
+<script>
+$(document).ready(function() {
+    M.updateTextFields();
+  });
 
-<style>
-.titulito{
-   font-size: 30px;
-   font-family: 'Montserrat';
-   text-align: center;
- }
-
-
- .barra{
-  background-color: #757474;
-  height: 40px;
-  
-}
-
-</style>
-
-
-
-<!-- Modal Trigger -->
-<a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-
-<!-- Modal Structure -->
-<div id="modal1" class="modal">
-   <div class="modal-content">
-      <h4 class="center">Alerta</h4>
-      <div class="row">
-        <h4 class="left">27/05/2021</h4>
-        <div class="right">  
-          </div>
-          <input id="inputBuscadorAlerta" placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text">
-          <br><br>
-          <table class="tablita" id="tablitaAlerta">
+</script>
+<div class="row "> 
+  <div class="col s12">
+      <br>
+    <div style="border-radius: 2em; height: 50px;" class="card white col s8 offset-s2"> 
+         <span class="col s3" style=" font-size: 30px; border-radius: 2em;">Enviado por Juan Perez</span>
+      <span class="col s4 offset-s2 " style="font-size: 20px; position: relative; top: 10px; border-radius: 2em; height: 30px;">Fecha 27/07/05</span>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col s12 ">
+      <div class="card col s8 offset-s4">
+        <div class="card-content ">
+          <span class="left "> 27/05/30 16.00</span>
+        </div>
+        <div class="card-action">
+          <table>
             <thead>
               <tr>
-                  <th style="display:none" class="auxSem"></th>
-                  <th>Fecha</th>
-                  <th>Empresa</th>
-                  <th>Cliente</th>
-                  <th>Estado</th>
-                  <th>Ver Negociación</th>
+                  <th>Articulo</th>
+                  <th>tipo pago</th>
+                  <th>tasa</th>
+                  <th>fecha pago</th>
+                  <th>destino</th>
+                  <th>operaciones</th>
+                  <th>Ver mas</th>
               </tr>
             </thead>
-            <tbody id="tableAlertas">
-              {% for negocio in negocios%}
-                  <tr data-id={{negocio.id}}>
-                      <td style="display:none" class="auxSem">
-                        <label id="contenido">
-                            <input type="checkbox" onclick="selNegocioModalAlerta()" data-id={{negocio.id}} class="filled-in" id="input_{{negocio.id}}"/>
-                            <span></span>
-                        </label>
-                      </td>
-                      <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-                      <td> {{negocio.comprador.empresa.razon_social}}</td>
-                      <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
-                      <td>{{negocio.estado}}</td>
-                      <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
-                  </tr>
-              {% endfor %}
+    
+            <tbody>
+              <tr>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="Glifosato" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> divisa</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="Alvin Jean" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> tipo pago</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="8.20" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> tasa</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="8.20" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2">fecha pago</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="8.20" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> destino</label>
+                  </div>
+                </td>
+                <td>
+                  <a  class="  btn-small btn-floating waves-effect waves-light green"><i class="material-icons">check</i></a>
+                  <a class=" btn-small btn-floating waves-effect waves-light red"><i class="material-icons">close</i></a>
+                  <a style="top: 38px; right:35px;"class=" btn-small btn-floating waves-effect waves-light blue"><i class="material-icons">save</i></a>
+                  <a style="top: 5px;"class=" btn-small btn-floating waves-effect waves-light orange"><i class="material-icons">undo</i></a>
+                </td>
+              <td>
+                <a class=" btn-large waves-effect waves-light red"><i class="material-icons">keyboard_arrow_left</i></a>
+              </td>
+              
+              
+              
+              </tr>
+              <tr>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> Ingrediente</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> Distribuidor</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> Precio venta</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> Precio compra</label>
+                  </div>
+                </td>
+                <td>
+                  <div class="input-field" style="">
+                    <input value="" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2"> Cantidad</label>
+                  </div>
+                </td>
+                <td>
+                  <a class="waves-effect waves-light btn">añadir</a>
+                </td>
+              </tr>
             </tbody>
           </table>
-          <div class="row">
-            <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
-            <br>
-            <form class="col s12" id="formSendAlerta" action ="#">
-              <div style="display:none" id="divFormSendAlerta">
-                <input type="hidden" name="idNegocioAlerta" id="idNegocioAlerta" value={{negocio.id}}> 
-                <div class="row">
-                  <div class="input-field col s4">
-                    <select id="selectModalAlert">
-                      <option class="selected" value="Vencimiento">Vencimientos</option>
-                      <option value="Presupuesto">Presupuesto</option>
-                      <option value="Logistica">Logistica</option>
-                    </select>
-                    <label> Tipo de Notificacion</label>
-                  </div>
-                </div>             
-                <div class="row">
-                  <div class="input-field col s3">
-                    <textarea id="tituloAlerta" name="tituloAlerta" class="materialize-textarea"></textarea>
-                    <label for="titulo">Titulo</label>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="input-field col s12">
-                    <textarea id="descriAlerta" class="materialize-textarea"></textarea>
-                    <label for="descri">Descripcion</label>
-                  </div>
-                </div>              
-            </div>
-            </form>
-          </div>
         </div>
       </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-      <a href="#!" style="display:none" id="btnSendAlerta" onclick="sendAlertaModal()" class="waves-effect waves-green btn-flat">Enviar</a>
+
     </div>
-  </div>
-   </div>
   
-  
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
   </div>
 </div>
 
