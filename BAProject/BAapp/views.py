@@ -1789,7 +1789,11 @@ def formFactura(request, *args, **kwargs):
     if request.method == 'POST':
         form = FacturaForm(request.POST)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1806,7 +1810,11 @@ def formRemito(request):
     if request.method == 'POST':
         form = RemitoForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1823,7 +1831,11 @@ def formOrdenDeCompra(request):
     if request.method == 'POST':
         form = OrdenDeCompraForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1840,7 +1852,11 @@ def formOrdenDePago(request):
     if request.method == 'POST':
         form = OrdenDePagoForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1857,7 +1873,11 @@ def formContansiaRentencion(request):
     if request.method == 'POST':
         form = ContansiaRentencionForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1874,7 +1894,11 @@ def formRecibo(request):
     if request.method == 'POST':
         form = ReciboForm(request.POST or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1891,8 +1915,11 @@ def formCheque(request):
     if request.method == 'POST':
         form = ChequesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
+            documento = request.FILES['documento']
             instance = form.save()
+            instance.documento.save(documento.name,documento)
             return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
     else:
@@ -1903,13 +1930,16 @@ def formCheque(request):
             'tipo':tipo,
             }
         return render(request, 'modalForm.html', context)
-  
 
 def formCuentaCorriente(request):
     if request.method == 'POST':
         form = CuentaCorrientesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1926,7 +1956,11 @@ def formFacturaComision(request):
     if request.method == 'POST':
         form = FacturaComisionesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-                form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
@@ -1943,7 +1977,11 @@ def formNota(request):
     if request.method == 'POST':
         form = NotaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-            form.save()
+            documento = request.FILES['documento']
+            instance = form.save()
+            instance.documento.save(documento.name,documento)
+            return redirect("home")
+            return HttpResponse("Carga Exitosa")
         else:
             print(form.errors)  
         return redirect("home")
