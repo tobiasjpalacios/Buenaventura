@@ -1,0 +1,19 @@
+{% load static %}
+{% for logistica in lista_logistica %}
+    {% if logistica.estado == 'Atrasado' %}
+        <tr class=" red">
+    {% elif logistica.estado == 'Entregado' %}
+        <tr class="green">
+    {% elif logistica.estado == 'En Transito' %}
+        <tr class="ligth-blue">
+    {% else %}
+        <tr class="yellow">
+    {% endif %}
+        <td>{{logistica.destinatario}}</td>
+        <td>{{logistica.empresa}}</td>
+        <td>{{logistica.destino}}</td>
+        <td>{{logistica.fecha}}</td>
+        <td class="card-title">{{logistica.estado}}</td>
+        <td><a onclick="detalleLogistica('{{logistica.id_prop}}')" class="btn-floating btn-small waves-effect waves-light red "><i class=" small material-icons ">info</i></a></td>
+        </tr>
+{% endfor %}

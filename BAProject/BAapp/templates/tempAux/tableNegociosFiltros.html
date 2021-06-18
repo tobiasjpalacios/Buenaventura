@@ -1,0 +1,34 @@
+{% load auth_extras %}
+{% for negocio in todos_negocios %}
+    <tr>
+        <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+        <td>{% if negocio.fecha_cierre is null %} 
+                Sin Definir
+            {% else %}
+                {{negocio.fecha_cierre|date:"M d, Y"}}
+            {% endif %}
+        </td>
+        {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+                    <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}</td>
+                    {% endif %}
+        <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
+        <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
+        {% if request.user|has_group:"Vendedor"%}
+            {% if negocio.fecha_cierre is not None %}
+                <td> 
+                    <div style="overflow-y: scroll; height: 150px;" >
+                    <ol class="collection" start="1">
+                        {% for prov in negocio.proveedores %}
+                            <li class="collection-item">{{prov}}</li>
+                        {% endfor %}
+                    </ol>
+                    </div>
+                </td>
+            {% else %}
+                <td>Por Definir</td>
+            {% endif %}
+        {% endif %}
+        <td class="green-text center">{{negocio.estado}}</td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+    </tr>
+{% endfor %}

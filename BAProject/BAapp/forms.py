@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm
+from django.contrib.auth.forms import PasswordChangeForm, User
 from .models import *
 from .choices import *
 
@@ -68,3 +69,14 @@ class EmpresaForm(ModelForm):
         widget = {
             'fecha_exclusion': forms.TextInput(attrs={'class':'datepicker'}),
         }
+
+class PasswordsChangingForm(PasswordChangeForm):
+    old_password = forms.TextInput()
+    new_password1 = forms.TextInput()
+    new_password2 = forms.TextInput()
+
+    class Meta:
+        model = User
+        fields = ('old_password','new_password1','new_password2')
+    
+        

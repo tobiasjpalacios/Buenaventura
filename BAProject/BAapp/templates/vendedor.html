@@ -386,7 +386,7 @@ BuenaVentura Agronegocios
     </div>
     <div class="col l4 bloque-centro" >
       <span style="margin-left: 60px; "class="text-align center titulito grey-text">
-      <img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Logistica 
+      <img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Logística 
       <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
     </div>
     <div class="col l4 bloque-derecho">
@@ -475,9 +475,14 @@ BuenaVentura Agronegocios
       <tr>
           <th>Fecha</th>
           <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
+          {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+            <th class="center">Empresa</th>
+            <th>Cliente</th>
+          {% endif %}
+          {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+          <th>Vendedor</th>
+          {% endif %}
+          <th>Ver Negociación</th>
       </tr>
     </thead>
     <tbody>
@@ -493,22 +498,27 @@ BuenaVentura Agronegocios
         </ol>
       </div>
       </td>
-        <td class="center">{{preprec.empresa}} </td>
-        <td>{{preprec.comprador}}</td>
+        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+          <td class="center">{{preprec.empresa}} </td>
+          <td>{{preprec.comprador}}</td>
+        {% endif %}
+        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+          <td>{{preprec.vendedor}}</td>
+          {% endif %}
         <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{preprec.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a class="waves-effect waves-light btn botonsote red white-text col s12" > Ver todos </a>
+  <a class="waves-effect waves-light btn botonsote red white-text col s12"  href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
   
   </div>
   
   
   <!------------------------------------------------------------------------------->
-  <!--------------------------------en negociacion ----------------------------------------------->
+  <!--------------------------------en Negociación ----------------------------------------------->
   <div class="row"> 
-    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> En Negociacion</span> </div>
+    <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> En Negociación</span> </div>
   </div>
   <div class="row">
     <table>
@@ -516,9 +526,14 @@ BuenaVentura Agronegocios
       <tr>
           <th>Fecha</th>
           <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
+          {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+            <th class="center">Empresa</th>
+            <th>Cliente</th>
+          {% endif %}
+          {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+          <th>Vendedor</th>
+          {% endif %}
+          <th>Ver Negociación</th>
       </tr>
     </thead>
 
@@ -535,14 +550,19 @@ BuenaVentura Agronegocios
         </ol>
       </div>
       </td>
-        <td class="center">{{prepneg.empresa}}</td>
-        <td>{{prepneg.comprador}}</td>
+      {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+          <td class="center">{{prepneg.empresa}} </td>
+          <td>{{prepneg.comprador}}</td>
+        {% endif %}
+        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+          <td>{{prepneg.vendedor}}</td>
+          {% endif %}
         <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{prepneg.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-  <a class="waves-effect waves-light btn botonsote red white-text col s12" > Ver todos </a>
+  <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 2 %}" > Ver todos </a>
   <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
   <!------------------------------------------------------------------------------->
@@ -564,13 +584,18 @@ BuenaVentura Agronegocios
       <tr>
           <th>Fecha</th>
           <th>Items</th>
-          <th class="center">Empresa</th>
-          <th>Cliente</th>
-          <th>Ver Negociacion</th>
+          {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+            <th class="center">Empresa</th>
+            <th>Cliente</th>
+          {% endif %}
+          {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+              <th>Vendedor</th>
+          {% endif %}
+          <th>Ver Negociación</th>
       </tr>
     </thead>
 
-    <tbody>
+    <tbody id="tableNegCerradosConfirmados">
       {% for negocioConf in negocios_cerrados_confirmados %}
       <tr>
         <td>{{negocioConf.fecha|date:"M d, Y"}}</td>
@@ -583,16 +608,24 @@ BuenaVentura Agronegocios
         </ol>
       </div>
       </td>
-        <td class="center">{{negocioConf.empresa}} </td>
-        <td>{{negocioConf.comprador}}</td>
+      {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+          <td class="center">{{negocioConf.empresa}} </td>
+          <td>{{negocioConf.comprador}}</td>
+      {% endif %}
+      {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+          <td>{{negocioConf.vendedor}}</td>
+      {% endif %}
         <td><a class="btn-floating btn-small waves-effect waves-light green modal-trigger" onclick="detalleNegocio('{{negocioConf.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 3 %}" > Ver todos </a>
   {% if request.user|has_group:"Logistica"%} 
       
   {% else %}
+    <br>
     <div class="row"> 
       <div style="background-color: ed0023;" class="col s12 barrac center-align " ><span class="titulito center-align white-text"> Cancelados</span> </div>
     </div>
@@ -601,9 +634,14 @@ BuenaVentura Agronegocios
         <tr>
             <th>Fecha</th>
             <th>Items</th>
-            <th class="center">Empresa</th>
-            <th>Cliente</th>
-            <th>Ver Negociacion</th>
+            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+              <th class="center">Empresa</th>
+              <th>Cliente</th>
+            {% endif %}
+            {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+              <th>Vendedor</th>
+            {% endif %}
+            <th>Ver Negociación</th>
         </tr>
       </thead>
 
@@ -620,15 +658,23 @@ BuenaVentura Agronegocios
           </ol>
         </div>
         </td>
-          <td class="center">Tecnocampo </td>
+        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+          <td class="center">{{negocioNoCerr.empresa}} </td>
           <td>{{negocioNoCerr.comprador}}</td>
+        {% endif %}
+        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+            <td>{{negocioNoCerr.vendedor}}</td>
+        {% endif %}
           <td><a class="btn-floating btn-small waves-effect waves-light blue modal-trigger" onclick="detalleNegocio('{{negocioNoCerr.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    <a class="waves-effect waves-light btn botonsote red white-text col s12" href="{% url 'todosFiltro' 4 %}"> Ver todos </a>
+    <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
 {% endif %}
-<div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
+
 
 {% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
@@ -640,79 +686,70 @@ BuenaVentura Agronegocios
     </div>
   </div>
   <div class="row">
-    <div class=" bloque-izquierdo col l4 red"  >
-      <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
-    </div>
-    <div class="col l4 bloque-centro yellow" >
-      <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
-    </div>
-    <div class="col l4 bloque-derecho green">
-      <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
-    </div>
-    <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
-      <div style="overflow-y: scroll; height: 550px;">
-        <table >
-          <tbody >
-            {% for vence in vencidos%}
-              <tr style="border-bottom: 0px;">
-                <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
-                <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+    <div id="tablesSem">
+      <div class=" bloque-izquierdo col l4 red"  >
+        <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
+      </div>
+      <div class="col l4 bloque-centro yellow" >
+        <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
+      </div>
+      <div class="col l4 bloque-derecho green">
+        <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
+      </div>
+      <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
+        <div style="overflow-y: scroll; height: 550px;">
+          <table >
+            <tbody >
+              {% for vence in vencidos%}
+                <tr style="border-bottom: 0px;">
+                  <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                  <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+                </tr>
+              {% endfor %}
+            
+            </tbody>
+          </table>
+        </div>
+        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+      </div>
+      <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
+        <div style="overflow-y: scroll; height: 550px;">
+          <table >
+            <tbody >
+              {% for semanal in vencimiento_semanal %}
+              <tr style="border-bottom: 0px; ">  
+                  <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                  <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
               </tr>
-            {% endfor %}
-          
-          </tbody>
-        </table>
-        
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
       </div>
-      
-      
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
-    </div>
-     <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
-      <div style="overflow-y: scroll; height: 550px;">
-        <table >
-          <tbody >
-            {% for semanal in vencimiento_semanal %}
-            <tr style="border-bottom: 0px; ">  
-                <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
-                <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
-            </tr>
-            {% endfor %}
-          
-          </tbody>
-        </table>
-        
-      </div>
-      
-      
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
-    </div>
-     <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
-      <div style="overflow-y: scroll; height: 550px;">
-        <table >
-          <tbody >
-          {% for futuro in vencimiento_futuro %}
-            <tr style="border-bottom: 0px; ">
-                <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
-                <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
-            </tr>
-            {% endfor %}
-          
-          </tbody>
-        </table>
-        
-      </div>
-      
-      
-      <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
-    </div>
+      <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
+        <div style="overflow-y: scroll; height: 550px;">
+          <table >
+            <tbody >
+            {% for futuro in vencimiento_futuro %}
+              <tr style="border-bottom: 0px; ">
+                  <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
+                  <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+      </div>    
     <div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>
   </div>
+</div>
   {% endif %}
   <div class="row" > 
     <div class=" titulo1  col l6 m10 s8 offset-l3 offset-m1 offset-s1  ">
       <div class="">
-        <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/tick.png' %}"> Logistica</span>
+        <span style=" font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left"  src="{% static 'images/tick.png' %}"> Logística</span>
       </div>
     </div>
   </div>
@@ -728,14 +765,14 @@ BuenaVentura Agronegocios
           <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="tableLogisticaR">
       {% for logistica in lista_logistica %}
         {% if logistica.estado == 'Atrasado' %}
           <tr class=" red">
         {% elif logistica.estado == 'Entregado' %}
           <tr class="green">
-        {% elif logistica.estado == 'En Transito' %}
-          <tr class="ligth-blue">
+        {% elif logistica.estado == 'En Tránsito' %}
+          <tr class="ligthblue">
         {% else %}
           <tr class="yellow">
         {% endif %}
@@ -767,74 +804,7 @@ BuenaVentura Agronegocios
                     <li>
                       <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
                       <div class="collapsible-body">
-                        <table>
-                            <thead>
-                              <tr>
-                                  <th>Fecha emision</th>
-                                  <th>Proveedor</th>
-                                  <th>Articulos</th>
-                                  <th>Importe c/IVA</th>
-                                  <th></th>
-                                  <th></th>
-                              </tr>
-                            </thead>
-                    
-                            <tbody>
-                              <tr>
-                                <td>17/01/2020</td>
-                                <td>Tecnocampo</td>
-                                <td>
-                                    <ol class="collection" start="1">
-                                        <li class="collection-item" >Glifosato 20% </li>
-                                        <li class="collection-item" >Atrazina 30% </li>
-                                        <li class="collection-item" > Aceite soja 50%</li>
-                                        <li class="collection-item" >Benomil 89%</li>
-                                      </ol>
-                                </td>
-                                <td>$150.000</td>
-                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
-                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
-                              </tr>
-                              <tr>
-                                <td>05/06/2020</td>
-                                <td>ADAMA</td>
-                                <td>
-                                    <ol class="collection" start="1">
-                                        <li class="collection-item" >Glifosato 20% </li>
-                                        <li class="collection-item" >Atrazina 30% </li>
-                                        <li class="collection-item" > Aceite soja 50%</li>
-                                        <li class="collection-item" >Benomil 89%</li>
-                                      </ol>
-                                </td>
-                                <td>$376.000</td>
-                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
-                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
-                              </tr>
-                              <tr>
-                                <td>12/08/2020</td>
-                                <td>Speedagro</td>
-                                <td >
-                                    <div style="overflow-y: scroll; height: 150px;" >
-                                        <ol class="collection" start="1">
-                                        <li class="collection-item" >Glifosato 20% </li>
-                                        <li class="collection-item" >Atrazina 30% </li>
-                                        <li class="collection-item" > Aceite soja 50%</li>
-                                        <li class="collection-item" >Benomil 89%</li>
-                                        <li class="collection-item" >Atrazina 30% </li>
-                                        <li class="collection-item" > Aceite soja 50%</li>
-                                        <li class="collection-item" >Benomil 89%</li>
-                                        <li class="collection-item" >Atrazina 30% </li>
-                                        <li class="collection-item" > Aceite soja 50%</li>
-                                        <li class="collection-item" >Benomil 89%</li>
-                                    </ol></div>
-                                </td>
-                                <td>$5.000</td>
-                                <td><a class="green-text waves-ligth" href="#">Leer online</a></td> 
-                                <td><a class="btn red ">  <i class="large material-icons">arrow_downward</i></a></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        
+                        <a class="btn waves"> Cargar Factura </a>
                       </div>
                     </li>
                     <li>
@@ -1206,21 +1176,21 @@ BuenaVentura Agronegocios
           var estado=1;
           var row = selectInput[i];
           var id = $(row).data("id");
-          
+          console.log(row.value);
           if (row.value == 'Entregado') {
             estado = 3
           } else if (row.value == 'Atrasado') {
-            estado = 4
-          } else if (row.value == 'Transito'){
+            estado = 1
+          } else if (row.value == 'En'){
             estado = 2
           } else {
-            estado = 1
-          };
+            estado = 4
+          };          
+          console.log(estado);
           var value_log = estado +"-"+ id
           estadosId.push(value_log);
       };
-      var jsonText = JSON.stringify(estadosId);
-      console.log(titulo,descri);
+      var jsonText = JSON.stringify(estadosId);      
       $.ajax({
         url: "{% url 'setLogistica' %}",
         type: 'POST',
@@ -1228,12 +1198,24 @@ BuenaVentura Agronegocios
           csrfmiddlewaretoken: '{{ csrf_token }}'},
         success: function(data){
           $('#modalDetalleLogistica').modal('close'); 
-            M.toast({html: data.result})
+          M.toast({html: data.result})
+          $.ajax({
+            url: "{% url 'reloadLog' %}",
+            type: 'GET',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function(data){
+                    $('#tableLogisticaR').html(data);
+                },
+                error: function (data) {
+                  console.log(data.result)
+              }
+            });
         },
         error: function (data) {
-            console.log(data.result)
+            M.toast({html: data.result})
         }
-    });
+      });
     }
          
   };
@@ -1273,6 +1255,18 @@ BuenaVentura Agronegocios
               $('#modalSemaforoNegocio').modal('close');     
             } 
             M.toast({html: data.result});
+            $.ajax({
+              url: "{% url 'reloadSem' %}",
+              type: 'GET',
+              data: {
+                  csrfmiddlewaretoken: '{{ csrf_token }}'},
+                  success: function(data){
+                      $('#tablesSem').html(data);
+                  },
+                  error: function (data) {
+                    console.log(data.result)
+                }
+            });
             
           },
           error: function (data) {

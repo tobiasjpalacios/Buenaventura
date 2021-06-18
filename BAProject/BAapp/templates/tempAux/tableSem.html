@@ -1,0 +1,57 @@
+{% load static %}
+<div class=" bloque-izquierdo col l4 red"  >
+  <span style="margin-left: 60px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
+</div>
+<div class="col l4 bloque-centro yellow" >
+  <span style="margin-left: 20px; "class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Proximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
+</div>
+<div class="col l4 bloque-derecho green">
+  <span class="text-align center titulito "><img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
+</div>
+<div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
+  <div style="overflow-y: scroll; height: 550px;">
+    <table >
+      <tbody >
+        {% for vence in vencidos%}
+          <tr style="border-bottom: 0px;">
+            <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+            <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+          </tr>
+        {% endfor %}
+      
+      </tbody>
+    </table>
+  </div>
+  <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+</div>
+<div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
+  <div style="overflow-y: scroll; height: 550px;">
+    <table >
+      <tbody >
+        {% for semanal in vencimiento_semanal %}
+        <tr style="border-bottom: 0px; ">  
+            <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+            <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+</div>
+<div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
+  <div style="overflow-y: scroll; height: 550px;">
+    <table >
+      <tbody >
+      {% for futuro in vencimiento_futuro %}
+        <tr style="border-bottom: 0px; ">
+            <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
+            <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a class="waves-effect waves-light btn col s8 offset-s2 botonsito grey darken-3" > Ver Todas</a>
+</div>    
+<div class="col s12 " style="height: 70px; background-color:  #3cad42;" ></div>

@@ -5,6 +5,30 @@
  */
 
 
+.titulo {
+  height: 60px;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  
+  background-color: #e30613;
+  font-family: 'Montserrat' ;
+}
+
+.titulo1 {
+  height: 60px;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  
+  background-color: #757474;
+  font-family: 'Montserrat' ;
+}
+
+
+
+
+
+
+ 
  body {
   display: flex;
   min-height: 100vh;
