@@ -1,48 +1,55 @@
 <div class="modal-content">
-    <h4 class="center">{{tipo}}</h4>
-    <div class="row">
-      <div class="right">  
-        </div>
-        {% if tipo == "Cheques" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formCheque' %}">
-        {% elif tipo == "Facturas" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formFactura' %}">
-        {% elif tipo == "Remito" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formRemito' %}">
-        {% elif tipo == "OrdenDeCompra" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formOrdenDeCompra' %}">
-        {% elif tipo == "OrdenDePago" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formFactura' %}">
-        {% elif tipo == "ContansiaRentencion" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formContansiaRentencion' %}">
-        {% elif tipo == "Recibo" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formRecibo' %}">
-        {% elif tipo == "CuentaCorrientes" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formCuentaCorriente' %}">
-        {% elif tipo == "FacturaComisiones" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formFacturaComision' %}">
-        {% elif tipo == "Nota" %}
-        <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formNota' %}">
-        {% endif %}
-          {% csrf_token %}
-          {{form.as_p}}
-          <input type="submit" value="Guardar"/>
-        </form> 
-        </div>
+  <h4 class="center">{{tipo}}</h4>
+  <div class="row">
+    <div class="right">  
+      </div>
+      {% if tipo == "Cheque" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formCheque' %}">
+      {% elif tipo == "Factura" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formFactura' %}">
+      {% elif tipo == "Remito" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formRemito' %}">
+      {% elif tipo == "OrdenDeCompra" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formOrdenDeCompra' %}">
+      {% elif tipo == "OrdenDePago" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formOrdenDePago' %}">
+      {% elif tipo == "ContansiaRentencion" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formContansiaRentencion' %}">
+      {% elif tipo == "Recibo" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formRecibo' %}">
+      {% elif tipo == "CuentaCorrientes" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formCuentaCorriente' %}">
+      {% elif tipo == "FacturaComisiones" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formFacturaComision' %}">
+      {% elif tipo == "Nota" %}
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formNota' %}">
+      {% endif %}
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Guardar"/>
+      </form> 
       </div>
     </div>
+  </div>
 </div>
 
 <script>
 $(document).ready(function(){
-    $('select').formSelect();
-  });
+  $('select').formSelect();
+});
 
 $(document).ready(function(){
-    $('.datepicker').datepicker({
-    	format: 'dd/mm/yyyy',
-    	yearRange: [1920,2050] 
-    });
+  $('.datepicker').datepicker({
+    format: 'dd/mm/yyyy',
+    yearRange: [1920,3000] 
   });
+});
+
+$(document).ready(function(){
+  $('.datepicker2').datepicker({
+    format: 'dd/mm/yyyy',
+    yearRange: [1920,3000] 
+  });
+});
 
 </script>

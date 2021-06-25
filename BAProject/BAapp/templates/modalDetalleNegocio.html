@@ -127,37 +127,306 @@
             <div class="row"> 
                 <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Comprobantes</span> </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Emisor</th>
-                        <th>Fecha</th>
-                        <th>Archivo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Factura</td>
-                        <td> Carlos alberto - adama </td>
-                        <td>27/01/21</td>
-                        <td>combrobantenmuevo.pdf</td>
-                        <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
-                    </tr>
-                    <tr>
-                        <td>orden de pago</td>
-                        <td> Carlos alberto - adama </td>
-                        <td>27/01/21</td>
-                        <td>combrobantenmuevo.pdf</td>
-                        <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i class=" small material-icons ">search</i></a></td>
-                    </tr>
-                    
-                </tbody>
-           
-            </table>
+
             <br>
             
+            <div class="row " style="border-color: rgba(128, 128, 128, 0.5); border: rgba(128, 128, 128, 0.5) 2px solid; border-radius: 2em;" id="mostrar" >
+                <div class="conteiner">
+                    <div class="input-field col s6">
+                        <select id='selecBuscar'>
+                          <option value="" disabled selected>Selecione</option>
+                          <option value="1">Factura</option>
+                          <option value="2">Remito</option>
+                          <option value="3">Orden De Compra</option>
+                          <option value="4">Orden De Pago</option>
+                          <option value="5">Contansia Rentencion</option>
+                          <option value="6">Recibo</option>
+                          <option value="7">Cheque</option>
+                          <option value="8">CuentaCorriente</option>
+                          <option value="9">FacturaComision</option>
+                          <option value="10">Nota</option>
+                        </select>
+                      </div>
+                      <a class="waves-effect waves-light btn col s5 " onclick="buscarComprobante()" style="border-radius: 2em; margin-top: 15px;">Buscar</a>
+                </div>
+                <br>
+
+                <div class="row" id="tablaFactura">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>vencimiento</th>
+                            <th>numero</th>
+                            <th>proveedor</th>
+                            <th>tipo pago</th>
+                            <th>monto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for factura in comprobantes.facturas %}
+                        <tr>
+                            <td>{{ factura.negocio }}</td>
+                            <td>{{ factura.fecha_emision }}</td>
+                            <td>{{ factura.fecha_vencimiento }}</td>
+                            <td>{{ factura.numero_factura }}</td>
+                            <td>{{ factura.proveedor }}</td>
+                            <td>{{ factura.tipo_pago }}</td>
+                            <td>{{ factura.monto }}</td>
+                            <td>
+                                <a href="{{factura.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaRemito">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>vencimiento</th>
+                            <th>proveedor</th>
+                            <th>lote</th>
+                            <th>observaciones</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for remito in comprobantes.remitos %}
+                        <tr>
+                            <td>{{ remito.negocio }}</td>
+                            <td>{{ remito.fecha_emision }}</td>
+                            <td>{{ remito.fecha_vencimiento }}</td>
+                            <td>{{ remito.proveedor }}</td>
+                            <td>{{ remito.lote }}</td>
+                            <td>{{ remito.observaciones }}</td>
+                            <td>
+                                <a href="{{remito.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaOrdenDeCompra">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>proveedor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ordenDeCompra in comprobantes.ordenesDeCompra %}
+                        <tr>
+                            <td>{{ ordenDeCompra.negocio }}</td>
+                            <td>{{ ordenDeCompra.fecha_emision }}</td>
+                            <td>{{ ordenDeCompra.recibe_proveedor }}</td>
+                            <td>
+                                <a href="{{ordenDeCompra.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaOrdenDePago">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>factura</th>
+                            <th>proveedor</th>
+                            <th>monto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ordenDePago in comprobantes.ordenesDePago %}
+                        <tr>
+                            <td>{{ ordenDePago.negocio }}</td>
+                            <td>{{ ordenDePago.fecha_emision }}</td>
+                            <td>{{ ordenDePago.factura }}</td>
+                            <td>{{ ordenDePago.recibe_proveedor }}</td>
+                            <td>{{ ordenDePago.monto }}</td>
+                            <td>
+                                <a href="{{ordenDePago.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaContansiaRentencion">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>proveedor</th>
+                            <th>importe</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contansiaRentencion in comprobantes.contansiasRentencion %}
+                        <tr>
+                            <td>{{ contansiaRentencion.negocio }}</td>
+                            <td>{{ contansiaRentencion.fecha_emision }}</td>
+                            <td>{{ contansiaRentencion.recibe_proveedor }}</td>
+                            <td>{{ contansiaRentencion.importe }}</td>
+                            <td>
+                                <a href="{{contansiaRentencion.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaRecibo">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>proveedor</th>
+                            <th>monto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recibo in comprobantes.recibos %}
+                        <tr>
+                            <td>{{ recibo.negocio }}</td>
+                            <td>{{ recibo.fecha_emision }}</td>
+                            <td>{{ recibo.recibe_proveedor }}</td>
+                            <td>{{ recibo.monto }}</td>
+                            <td>
+                                <a href="{{recibo.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaCheque">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>observaciones</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cheque in comprobantes.cheques %}
+                        <tr>
+                            <td>{{ cheque.negocio }}</td>
+                            <td>{{ cheque.fecha_emision }}</td>
+                            <td>{{ cheque.observaciones }}</td>
+                            <td>
+                                <a href="{{cheque.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaCuentaCorriente">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cuentaCorriente in comprobantes.cuentasCorriente %}
+                        <tr>
+                            <td>{{ cuentaCorriente.negocio }}</td>
+                            <td>{{ cuentaCorriente.fecha_emision }}</td>
+                            <td>
+                                <a href="{{cuentaCorriente.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                
+                <div class="row" id="tablaFacturaComision">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>proveedor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for facturaComision in comprobantes.facturasComision %}
+                        <tr>
+                            <td>{{ facturaComision.negocio }}</td>
+                            <td>{{ facturaComision.fecha_emision }}</td>
+                            <td>{{ facturaComision.recibe_proveedor }}</td>
+                            <td>
+                                <a href="{{facturaComision.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+                <div class="row" id="tablaNota">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>negocio</th>
+                            <th>emision</th>
+                            <th>tipo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nota in comprobantes.notas %}
+                        <tr>
+                            <td>{{ nota.negocio }}</td>
+                            <td>{{ nota.fecha_emision }}</td>
+                            <td>{{ nota.tipo_nota }}</td>
+                            <td>
+                                <a href="{{nota.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+
+            </div>
+            
+
+
+            </div>
+
             <a class="waves-effect waves-light btn col s12  green" style="border-radius: 2em;" id="show"><i class="material-icons right">add</i>agregar</a>
             <div class="row " style="border-color: rgba(128, 128, 128, 0.5); border: rgba(128, 128, 128, 0.5) 2px solid; border-radius: 2em;" id="esconder" >
                 <div class="conteiner">
@@ -178,4 +447,205 @@
     </div>
   <div class="modal-footer">
     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
-  </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('select').formSelect();
+        $('#esconder').hide();
+        esconderComprobantes();
+
+        $('#show').click(function () {
+            $('#esconder').show();
+            $('#show').hide()
+        });
+        $('#cancelar').click(function () {
+            $('#esconder').hide();
+            $('#show').show()
+        });
+        
+    });
+    
+    function buscarComprobante(){
+        esconderComprobantes();
+        var valor = $('#selecBuscar').val();
+        if (valor == '1'){
+            $('#tablaFactura').show();
+        }
+        if (valor == '2'){
+            $('#tablaRemito').show();
+        }
+        if (valor == '3'){
+            $('#tablaOrdenDeCompra').show();
+        }
+        if (valor == '4'){
+            $('#tablaOrdenDePago').show();
+        }
+        if (valor == '5'){
+            $('#tablaContansiaRentencion').show();
+        }
+        if (valor == '6'){
+            $('#tablaRecibo').show();
+        }
+        if (valor == '7'){
+            $('#tablaCheque').show();
+        }
+        if (valor == '8'){
+            $('#tablaCuentaCorriente').show();
+        }
+        if (valor == '9'){
+            $('#tablaFacturaComision').show();
+        }
+        if (valor == '10'){
+            $('#tablaNota').show();
+        }
+    }
+
+    function esconderComprobantes(){
+        $('#tablaFactura').hide()
+        $('#tablaRemito').hide()
+        $('#tablaOrdenDeCompra').hide()
+        $('#tablaOrdenDePago').hide()
+        $('#tablaContansiaRentencion').hide()
+        $('#tablaRecibo').hide();
+        $('#tablaCheque').hide()
+        $('#tablaCuentaCorriente').hide()
+        $('#tablaFacturaComision').hide()
+        $('#tablaNota').hide()        
+    }
+
+
+    function openModalFormFactura() {
+        $.ajax({
+            url: "{% url 'formFactura' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormFactura").html(data);
+                $('#factura').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormRemitos() {
+        $.ajax({
+            url: "{% url 'formFactura' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRemito").html(data);
+                $('#remito').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormOrdenDeCompra() {
+        $.ajax({
+            url: "{% url 'formOrdenDeCompra' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDeCompra").html(data);
+                $('#ordenDeCompra').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormOrdenDePago() {
+        $.ajax({
+            url: "{% url 'formOrdenDePago' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDePago").html(data);
+                $('#ordenDePago').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormContansiaRentencion() {
+        $.ajax({
+            url: "{% url 'formContansiaRentencion' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormContansiaRentencion").html(data);
+                $('#contansiaRentencion').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormRecibo() {
+        $.ajax({
+            url: "{% url 'formRecibo' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRecibo").html(data);
+                $('#recibo').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormCheques() {
+        $.ajax({
+            url: "{% url 'formCheque' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormCheques").html(data);
+                $('#cheques').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalformCuentaCorriente() {
+        $.ajax({
+            url: "{% url 'formCuentaCorriente' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformCuentaCorriente").html(data);
+                $('#cuentaCorrientes').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalformFacturaComision() {
+        $.ajax({
+            url: "{% url 'formFacturaComision' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformFacturaComision").html(data);
+                $('#facturaComisiones').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    function openModalFormNota() {
+        $.ajax({
+            url: "{% url 'formNota' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormNota").html(data);
+                $('#nota').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    
+</script>

@@ -476,8 +476,31 @@ def detalleNegocio(request):
             proveedorP = Proveedor.objects.get(persona__id=persona.id)
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
         else:
-            items = ItemPropuesta.objects.filter(propuesta__id = idProp)    
-        return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
+            items = ItemPropuesta.objects.filter(propuesta__id = idProp) 
+            facturas = Factura.objects.filter(negocio=propuesta.negocio)
+            remitos = Remito.objects.filter(negocio=propuesta.negocio)
+            ordenesDeCompra = OrdenDeCompra.objects.filter(negocio=negocio)
+            ordenesDePago = OrdenDePago.objects.filter(negocio=negocio)
+            contansias = ContansiaRentencion.objects.filter(negocio=negocio)
+            recibos = Recibo.objects.filter(negocio=negocio)
+            cheques = Cheque.objects.filter(negocio=negocio)
+            cuentasCorriente = CuentaCorriente.objects.filter(negocio=negocio)
+            facturasComision = FacturaComision.objects.filter(negocio=negocio)
+            notas = Nota.objects.filter(negocio=negocio)
+
+            comprobantes = {
+                "facturas": facturas,
+                "remitos": remitos,
+                "ordenesDeCompra": ordenesDeCompra,
+                "ordenesDePago": ordenesDePago,
+                "contansias": contansias,
+                "recibos": recibos,
+                "cheques": cheques,
+                "cuentasCorriente": cuentasCorriente,
+                "facturasComision": facturasComision,
+                "notas": notas,          
+            }   
+        return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
     return render (request, 'modalDetalleNegocio.html')
 
 
@@ -1785,7 +1808,7 @@ class PasswordsChangeView(PasswordChangeView):
     def get_success_url(self):
         return reverse('successPassword')
 
-def formFactura(request, *args, **kwargs):
+def formFactura(request):
     if request.method == 'POST':
         form = FacturaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1797,6 +1820,7 @@ def formFactura(request, *args, **kwargs):
         else:
             print(form.errors)  
         return redirect("home")
+
     else:
         form = FacturaForm()
         tipo = "Factura"
@@ -1924,7 +1948,7 @@ def formCheque(request):
             print(form.errors)  
     else:
         form = ChequesForm()
-        tipo = "Cheques"
+        tipo = "Cheque"
         context = {
             'form':form,
             'tipo':tipo,
@@ -1993,4 +2017,3 @@ def formNota(request):
             'tipo':tipo
         }
         return render(request, 'modalForm.html', context)
-

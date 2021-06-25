@@ -1,0 +1,39 @@
+{% extend modalDetalleNegocio.html %}
+
+{% block list %}
+
+    <h2>Facturas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>negocio</th>
+                <th>fecha_emision</th>
+                <th>fecha_vencimiento</th>
+                <th>numero_factura</th>
+                <th>proveedor</th>
+                <th>tipo_pago</th>
+                <th>monto</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for factura in facturas %}
+            <tr>
+                <td>{{ tactura.negocio }}</td>
+                <td>{{ tactura.fecha_emision }}</td>
+                <td>{{ tactura.fecha_vencimiento }}</td>
+                <td>{{ tactura.numero_factura }}</td>
+                <td>{{ tactura.proveedor }}</td>
+                <td>{{ tactura.tipo_pago }}</td>
+                <td>{{ tactura.monto }}</td>
+                <td>
+                    <a href="{{factura.documento.url}}" class="btn btn-primary btn-sm">
+                        descargar
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock list %}
