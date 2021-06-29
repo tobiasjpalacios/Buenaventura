@@ -21,6 +21,7 @@ from .decorators import *
 from datetime import date, datetime, timedelta
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -731,7 +732,7 @@ def detalleLogistica(request):
                     #Atrasado
                     b.estado = 'Atrasado'
                     b.estados = ('A Tiempo','En Tránsito', 'Entregado')
-        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
+        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'clientes':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
 
@@ -1542,10 +1543,13 @@ class NegocioView(View):
             last['items'].append(art)
         context = {
             "negocio": negocio,
-            "propuestas": reversed(negocio.propuestas.all().reverse()[:2]),
-            "last": json.dumps(last),
+            "propuestas": reversed(negocio.propuestas.all().reverse()),
+            "last": json.dumps(last,cls=DjangoJSONEncoder),
             "divisas": DIVISA_CHOICES,
-            "distribuidores": Empresa.objects.all()
+            'tasas': TASA_CHOICES,
+            "distribuidores": Proveedor.objects.all(),
+            "tipo_pagos": TipoPago.objects.all(),
+            "destinos": Domicilio.objects.all()
         }
         return render(request, 'negocio.html', context)
 
@@ -1585,7 +1589,7 @@ class NegocioView(View):
             request.user.get_full_name(),
             "aceptada" if completed else "actualizada"
         )
-        catergoria = "Propuesta {}".format(
+        categoria = "Propuesta {}".format(
             "aceptada" if completed else "actualizada"
         )
         user = None
@@ -1593,7 +1597,7 @@ class NegocioView(View):
             user=negocio.comprador.persona.user
         else:
             user=negocio.vendedor.persona.user
-        notif = models.Notificacion(
+        notif = Notificacion(
             titulo=titulo,
             categoria=categoria,
             hyperlink=reverse('negocio', args=[negocio.id,]),
@@ -1784,213 +1788,3 @@ class PasswordsChangeView(PasswordChangeView):
 
     def get_success_url(self):
         return reverse('successPassword')
-
-def formFactura(request, *args, **kwargs):
-    if request.method == 'POST':
-        form = FacturaForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = FacturaForm()
-        tipo = "Factura"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formRemito(request):
-    if request.method == 'POST':
-        form = RemitoForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = RemitoForm()
-        tipo = "Remito"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formOrdenDeCompra(request):
-    if request.method == 'POST':
-        form = OrdenDeCompraForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = OrdenDeCompraForm()
-        tipo = "OrdenDeCompra"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formOrdenDePago(request):
-    if request.method == 'POST':
-        form = OrdenDePagoForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = OrdenDePagoForm()
-        tipo = "OrdenDePago"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formContansiaRentencion(request):
-    if request.method == 'POST':
-        form = ContansiaRentencionForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = ContansiaRentencionForm()
-        tipo = "ContansiaRentencion"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formRecibo(request):
-    if request.method == 'POST':
-        form = ReciboForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = ReciboForm()
-        tipo = "Recibo"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formCheque(request):
-    if request.method == 'POST':
-        form = ChequesForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-    else:
-        form = ChequesForm()
-        tipo = "Cheques"
-        context = {
-            'form':form,
-            'tipo':tipo,
-            }
-        return render(request, 'modalForm.html', context)
-
-def formCuentaCorriente(request):
-    if request.method == 'POST':
-        form = CuentaCorrientesForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = CuentaCorrientesForm()
-        tipo = "CuentaCorrientes"
-        context = {
-        'form':form,
-        'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formFacturaComision(request):
-    if request.method == 'POST':
-        form = FacturaComisionesForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = FacturaComisionesForm()
-        tipo = "FacturaComisiones"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-
-def formNota(request):
-    if request.method == 'POST':
-        form = NotaForm(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            documento = request.FILES['documento']
-            form.documento = (documento.name,documento)
-            instance = form.save()
-            return redirect("home")
-            return HttpResponse("Carga Exitosa")
-        else:
-            print(form.errors)  
-        return redirect("home")
-    else:
-        form = NotaForm()
-        tipo = "Nota"
-        context = {
-            'form':form,
-            'tipo':tipo
-        }
-        return render(request, 'modalForm.html', context)
-

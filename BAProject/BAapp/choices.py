@@ -80,8 +80,3 @@ TIPO_DE_NEGOCIO_CHOICES = (
 	("VT","Venta"),
 	("CS","Consignacion"),
 )
-
-TIPO_NOTA = (
-	("CR","Credito"),
-	("DV","Devito"),
-)

@@ -78,19 +78,5 @@ urlpatterns = [
     path('api/', include(apipatters)),
     path('filterArticulo/<str:ingrediente>', filterArticulo, name="filterArticulo"),
     path('getPagos/', getPagos, name="getPagos"),
-
-    #crear comprobantes
-
-    path('formFactura/', formFactura, name="formFactura"),
-    path('formRemito/', formRemito, name="formRemito"),
-    path('formOrdenDeCompra/', formOrdenDeCompra, name="formOrdenDeCompra"),
-    path('formOrdenDePago/', formOrdenDePago, name="formOrdenDePago"),
-    path('formContansiaRentencion/', formContansiaRentencion, name="formContansiaRentencion"),
-    path('formRecibo/', formRecibo, name="formRecibo"),
-    path('formCheque/', formCheque, name="formCheque"),
-    path('formCuentaCorriente/', formCuentaCorriente, name="formCuentaCorriente"),
-    path('formFacturaComision/', formFacturaComision, name="formFacturaComision"),
-    path('formNota/', formNota, name="formNota"),
-
-
+    
 ]
