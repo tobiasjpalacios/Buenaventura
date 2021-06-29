@@ -21,6 +21,7 @@ from .decorators import *
 from datetime import date, datetime, timedelta
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -731,7 +732,7 @@ def detalleLogistica(request):
                     #Atrasado
                     b.estado = 'Atrasado'
                     b.estados = ('A Tiempo','En Tránsito', 'Entregado')
-        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
+        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'clientes':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
 
@@ -1542,10 +1543,13 @@ class NegocioView(View):
             last['items'].append(art)
         context = {
             "negocio": negocio,
-            "propuestas": reversed(negocio.propuestas.all().reverse()[:2]),
-            "last": json.dumps(last),
+            "propuestas": reversed(negocio.propuestas.all().reverse()),
+            "last": json.dumps(last,cls=DjangoJSONEncoder),
             "divisas": DIVISA_CHOICES,
-            "distribuidores": Empresa.objects.all()
+            'tasas': TASA_CHOICES,
+            "distribuidores": Proveedor.objects.all(),
+            "tipo_pagos": TipoPago.objects.all(),
+            "destinos": Domicilio.objects.all()
         }
         return render(request, 'negocio.html', context)
 
@@ -1585,7 +1589,7 @@ class NegocioView(View):
             request.user.get_full_name(),
             "aceptada" if completed else "actualizada"
         )
-        catergoria = "Propuesta {}".format(
+        categoria = "Propuesta {}".format(
             "aceptada" if completed else "actualizada"
         )
         user = None
@@ -1593,7 +1597,7 @@ class NegocioView(View):
             user=negocio.comprador.persona.user
         else:
             user=negocio.vendedor.persona.user
-        notif = models.Notificacion(
+        notif = Notificacion(
             titulo=titulo,
             categoria=categoria,
             hyperlink=reverse('negocio', args=[negocio.id,]),
