@@ -26,10 +26,10 @@ BuenaVentura Agronegocios
       <div class="input-field col s6">
         <select>
           <option value="" disabled selected>Elija su opcion</option>
-<!--           {% for proveedor in proveedores %}
-          	<option value="{{ proveedor.id }}">{{proveedor.nombre}}, {{proveedor.apellido}}</option> o lo que sea
+          {% for proveedor in proveedores %}
+          	<option value="{{ proveedor.id }}">{{proveedor.persona.user.last_name}}, {{proveedor.persona.user.first_name}}</option>
           {% endfor %}
- -->        </select>
+       </select>
         <label>Proveedor</label>
       </div>
 </div>

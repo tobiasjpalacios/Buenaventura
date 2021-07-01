@@ -14,7 +14,7 @@ def loadModels(request):
         user.first_name = 'Juan'+str(a+1)
         user.last_name = 'Perez'+str(a+1)
         user.save()
-        grupoVendedor = Group.objects.get(name='Vendedor') 
+        grupoVendedor = Group.objects.get(name='Vendedor')
         grupoVendedor.user_set.add(user)
         t1, created = Telefono.objects.get_or_create(
             numero = 111111

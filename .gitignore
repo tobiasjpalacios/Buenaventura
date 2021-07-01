@@ -136,3 +136,6 @@ dmypy.json
 */**/migrations/
 *.sqlite3
 mariadb.conf
+
+#VS Code
+.vscode

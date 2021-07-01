@@ -245,7 +245,8 @@ class ItemPropuesta(models.Model):
     propuesta = models.ForeignKey(
         "Propuesta", 
         related_name="items",
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
     cantidad = models.IntegerField(
         null=True, 
         blank=True

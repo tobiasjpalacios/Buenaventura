@@ -213,8 +213,8 @@ $(document).ready(function(){
 
 function start_datepicker(){
     $('.datepicker').datepicker({
-    format: 'dd/mm/yyyy',
-  });
+      format: 'dd/mm/yyyy',
+    });
 }
 var rowCnt = 0;
 var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
@@ -710,7 +710,7 @@ function submit(){
     var dict = [];
     var inputComp = document.getElementById('inputComp');
     var vendedor = document.getElementById('vendedorSpan');
-    var observaciones = document.getElementById('observaciones');
+    var observaciones = document.getElementById('inputObser');
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
@@ -724,7 +724,7 @@ function submit(){
         'data':dict,
         'comprador':inputComp.value,
         'vendedor':vendedor.innerHTML,
-        'observaciones': observaciones.innerHTML,
+        'observaciones': observaciones.value,
      }
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
