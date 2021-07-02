@@ -79,80 +79,6 @@ body {
 <h3>Comprador: {{ negocio.comprador }}</h3>
 <h3>Vendedor: {{ negocio.vendedor }}</h3>
 {% for prop in propuestas %}
-<<<<<<< HEAD
-  <div class="row">
-    <div class="col s12 m9 {% if prop.envio_comprador %}push-m3{%endif%}">
-      <div class="card ">
-        <div class="card-content  ">
-          <span class="card-title">
-          {% if prop.envio_comprador %}
-            {{ negocio.comprador }}
-          {% else %}
-            {{ negocio.vendedor }}
-          {% endif %}
-          </span>
-          <div class="row">
-            <table {% if forloop.last %}id="form"{%endif%}>
-              <thead>  
-                <tr>
-                  <th>Articulo</th>
-                  <th>Distribuidor</th>
-                  <th>Precio venta</th>
-                  <th>Precio compra</th>
-                  <th>Divisa</th>
-                  <th>Cantidad</th>
-                  <th>Tipo de pago</th>
-                  <th>Operaciones</th>
-                </tr>
-              </thead>
-              <tbody>
-            {% if not forloop.last %}
-              {% for item in prop.items.all %}
-                <tr>
-                  <td>{{ item.articulo.marca }}</td>
-                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
-                  <td class="white-text">{{ item.precio_venta }}</td>
-                  <td class="white-text">{{ item.precio_compra }}</td>
-                  <td>{{ item.divisa }}</td>
-                  <td>{{ item.cantidad }}</td>
-                  <td>{{ item.tipo_pago }}</td>
-                  <td></td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              {% for item in prop.items.all %}
-                <tr {% if item.aceptado %}class="green"{% endif %}>
-                  {% if item.articulo.marca == "NINGUNA" %}
-                    <td>{{ item.articulo.ingrediente|default_if_none:'' }}</td>
-                  {% else %}
-                    <td>{{ item.articulo.marca|default_if_none:'' }}</td>
-                  {% endif %}
-                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
-                {% if not item.aceptado %}
-                  <td><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                  <td><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
-                  <td>
-                    <select name="divisa" value="{{ item.divisa|default_if_none:'' }}">
-                    {% for v,t in divisas %}
-                      <option value="{{ v }}">{{ t }}</option>
-                    {% endfor %}
-                    </select>
-                  </td>
-                  <td><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
-                  <td>
-                    <a class="btn tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})">o</a>
-                    <a class="red btn tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})">x</a>
-                    <a class="yellow btn tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})">e</a>
-                    <a class="blue btn tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})">r</a>
-                  </td>
-                {% else %}
-                  <td>{{ item.precio_venta|stringformat:'.2f' }}</td>
-                  <td>{{ item.precio_compra|stringformat:'.2f' }}</td>
-                  <td>{{ item.divisa }}</td>
-                  <td>{{ item.cantidad }}</td>
-                  <td> <td>{{ item.tipo_pago }}</td></td>
-                  <td></td>
-=======
 <style>
   .show{{prop.id}} {
     }
@@ -275,7 +201,6 @@ body {
                   <td class="show1">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
                   <td class="show1">{{ item.articulo.marca|default_if_none:'' }}</td>
->>>>>>> be1fd8f6529f9b09b844a8b04c8b0c1ab9066772
                 {% endif %}
                 <td class="show1">{{ item.proveedor|default_if_none:'' }}</td>
               {% if not item.aceptado %}
