@@ -68,9 +68,29 @@
   .action-btn {
     margin: 3px !important;
   }
+  .approved {
+    text-align: center;
+    color: green;
+  }
+  .canceled {
+    text-align: center;
+    color: red;
+  }
 {% endblock %}
 {% block title %}Negocios{% endblock title %}
 {%block body%}
+{% if negocio.aprobado %}
+<div class="approved">
+  <h2>Negocio confirmado ✓</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
+{% if negocio.cancelado %}
+<div class="canceled">
+  <h2>Negocio cancelado ✗</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
 <h3>Comprador: {{ negocio.comprador }}</h3>
 <h3>Vendedor: {{ negocio.vendedor }}</h3>
 {% for prop in propuestas %}
@@ -88,8 +108,7 @@
     transition: all .4s ease;
   }
 </style>
-{% if not prop.items.count == 0 or not prop.items == None %}
-{% if not forloop.last %}
+{% if not prop.items.count == 0 %}
 <div class="row">
   <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
     <div class="card grey lighten-3">
@@ -121,7 +140,7 @@
             </thead>
             <tbody>
             {% for item in prop.items.all %}
-              <tr {% if item.aceptado %}class="green"{% endif %}>
+              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
                 <td class="show{{prop.id}}">{{ item.proveedor|default_if_none:'' }}</td>
                 <td class="show{{prop.id}}">{{ item.cantidad }}</td>
@@ -134,7 +153,7 @@
                 <td class="not-show{{prop.id}}">{{ item.fecha_entrega }}</td>
                 <td class="not-show{{prop.id}}">{{ item.destino }}</td>
                 <td>
-                  <a class="red btn-large waves-effect" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}});"><i class="i{{prop.id}} material-icons">keyboard_arrow_right</i></a>
+                  <a class="red btn-large waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}});"><i class="i{{prop.id}} material-icons">keyboard_arrow_right</i></a>
                 </td>
               </tr>
             {% endfor %}
@@ -157,8 +176,8 @@
   });
 </script>
 {% endif %}
-{% endif %}
 {% if forloop.last %}
+{% if not negocio.aprobado and not negocio.cancelado %}
 <div class="row">
   <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
     <div class="card grey lighten-3">
@@ -191,7 +210,7 @@
             </thead>
             <tbody>
             {% for item in prop.items.all %}
-              <tr {% if item.aceptado %}class="green"{% endif %}>
+              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 {% if item.articulo.marca == "NINGUNA" %}
                   <td class="show1">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
@@ -204,6 +223,7 @@
                 <td class="show1"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
                 <td class="show1">
                   <select name="divisa">
+                    <option value="" {% if item.divisa == None or item.divisa == "" %}selected{% endif %} disabled>Elija una divisa</option>
                   {% for v,t in divisas %}
                     <option value="{{ v }}" {% if v == item.divisa and item.divisa != None %}selected{% endif %}>{{ t }}</option>
                   {% endfor %}
@@ -211,6 +231,7 @@
                 </td>
                 <td class="not-show1">
                   <select name="tipo_pago">
+                    <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
                   {% endfor %}
@@ -218,8 +239,8 @@
                 </td>
                 <td class="not-show1">
                   <select name="tasa">
-                  {% for v,t in tasas %}
-                    <option value="{{ v }}" {% if v == item.tasa and item.tasa != None %}selected{% endif %}>{{ t }}</option>
+                    {% for v,t in tasas %}
+                    <option value="{{ v }}" {% if v == item.tasa %}selected{% endif %}{% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
                   </select>
                 </td>
@@ -227,6 +248,7 @@
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
                 <td class="not-show1">
                   <select name="destino">
+                    <option value="" {% if item.destino == None %}selected {% endif %}disabled>Elija destino</option>
                   {% for destino in destinos %}
                     <option value="{{ destino.id }}" {% if destino.direccion == item.destino.direccion and item.destino != None %}selected{% endif %}>{{ destino.direccion }}</option>
                   {% endfor %}
@@ -251,7 +273,7 @@
                 <td></td>
               {% endif %}
               <td>
-                <a class="red btn-large waves-effect" id="btn-sm-1" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
+                <a class="red btn-large waves-effect waves-light" id="btn-sm-1" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
               </td>
               </tr>
             {% endfor %}
@@ -285,15 +307,16 @@
                 </td>
                 <td class="not-show1">
                   <select name="tipo_pago">
+                    <option value="" selected disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
-                    <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
+                    <option value="{{ tipo_pago.id }}">{{ tipo_pago.nombre }}</option>
                   {% endfor %}
                   </select>
                 </td>
                 <td class="not-show1">
                   <select name="tasa">
                   {% for v,t in tasas %}
-                    <option value="{{ v }}" {% if v == item.tasa and item.tasa != None %}selected{% endif %}>{{ t }}</option>
+                    <option value="{{ v }}" {% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
                   </select>
                 </td>
@@ -301,8 +324,9 @@
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
                 <td class="not-show1">
                   <select name="destino">
+                    <option value="" selected disabled>Elija destino</option>
                   {% for destino in destinos %}
-                    <option value="{{ destino.id }}" {% if destino.direccion == item.destino.direccion and item.destino != None %}selected{% endif %}>{{ destino.direccion }}</option>
+                    <option value="{{ destino.id }}">{{ destino.direccion }}</option>
                   {% endfor %}
                   </select>
                 </td>
@@ -318,14 +342,29 @@
           <span>Observaciones</span>
           <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
           <br><br>
-            <a class="btn" onclick="submitProp()">Enviar</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#modalSend" onclick="beforeSubmit();">Enviar</a>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endif %}
+{% endif %}
 {% endfor %}
+
+{% if not negocio.aprobado and not negocio.cancelado %}
+<div id="modalSend" class="modal">
+  <div class="modal-content">
+    <h4>Enviar propuesta</h4>
+    <p>Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">CANCELAR</a>
+    <a onclick="submitProp()" class="modal-action modal-close waves-effect waves-green btn-flat">ENVIAR</a>
+  </div>
+</div>
+{% endif %}
+
 <script type="text/javascript">
 
   var last = {{ last | safe }};
@@ -387,9 +426,11 @@
       $('[id="' + this.id + '"]:gt(0)').remove();
     });
 
+    "{% if not negocio.aprobado and not negocio.cancelado %}"
     $([document.documentElement, document.body]).animate({
       scrollTop: $("#form").offset().top
     }, 500);
+    "{% endif %}"
 
   });
 
@@ -541,7 +582,49 @@
     $("#artSearch").val("");
   }
 
-  function submitProp(){
+  function beforeSubmit() {
+    var proc = {}
+    var errors = false;
+    var errorFields = [];
+    proc.observaciones = $("#observaciones").val();
+    proc.items = [];
+    edits.items.forEach(element => {
+      if (element.hasOwnProperty("articulo")){
+        proc.items.push(element)
+      }
+    })
+    var acc = []
+    var count = 0;
+    proc.items.forEach(element => {
+      for (k in element) {
+        if (k == "aceptado") {
+          var v = element[k];
+          acc.push(v);
+        }
+      }
+      count++;
+    })
+    if (count == 0) {
+      acc = [false];
+    }
+    var checker = arr => arr.every(Boolean);
+    var modalTitle = $("#modalSend .modal-content h4");
+    var modalBody = $("#modalSend .modal-content p");
+    if (checker(acc)) {
+      modalTitle.text("Confirmar negocio");
+      modalBody.text("Estás a punto de confirmar el negocio. ¿Deseas continuar con la operación?");
+    }
+    else if (count == 0) {
+      modalTitle.text("Cancelar negocio");
+      modalBody.text("Estás a punto de cancelar el negocio. ¿Deseas continuar con la operación?");
+    }
+    else {
+      modalTitle.text("Enviar propuesta");
+      modalBody.text("Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?");
+    }
+  }
+
+  function submitProp() {
     var proc = {}
     var errors = false;
     var errorFields = [];
@@ -558,7 +641,7 @@
         if (!(jQuery.inArray(k, els) != -1)) {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
-            if (v == null || (v == 0 && k != "tasa")) {
+            if (v == null || (v == 0 && k != "tasa") || v == "") {
               errorFields.push("El campo \""+k+"\" contiene errores.");
               errors = true;
             }

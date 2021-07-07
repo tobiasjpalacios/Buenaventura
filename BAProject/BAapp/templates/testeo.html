@@ -10,8 +10,17 @@ BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}  
 
-
-
+<h1>Aprobados</h1>
+{% for n in negAp %}
+{{n}}
+<br>
+{% endfor %}
+<br>
+<h1>No aprobados</h1>
+{% for n in negNoAp %}
+{{n}}
+<br>
+{% endfor %}
 
 
 {%endblock body%} 

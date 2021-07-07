@@ -58,6 +58,7 @@ DIVISA_CHOICES = (
 )
 
 TASA_CHOICES = (
+	(None,"Elija tasa"),
 	("0","0%"),
 	("0.3","0.3%"),
 	("0.4","0.4%"),
