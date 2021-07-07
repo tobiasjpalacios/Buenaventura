@@ -188,6 +188,7 @@ class Negocio(models.Model):
         choices=TIPO_DE_NEGOCIO_CHOICES 
     )
     aprobado = models.BooleanField(default=False)
+    cancelado = models.BooleanField(default=False)
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)

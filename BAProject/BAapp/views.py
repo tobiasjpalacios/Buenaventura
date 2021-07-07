@@ -1,10 +1,9 @@
 import json
-import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
 from django.http import JsonResponse
@@ -22,6 +21,7 @@ from datetime import date, datetime, timedelta
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -32,6 +32,7 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
+@login_required(login_url='/', redirect_field_name='router')
 @group_required('Vendedor')
 def inicio(request):
     #loadModels(request)
@@ -238,7 +239,15 @@ def getProveedoresNegocio(negocio):
     return proveedores
 
 def testeo(request):
-    return render(request, 'testeo.html')
+
+    neg = Negocio.objects.all()
+
+    context = {
+        'negAp': neg.filter(aprobado=True),
+        'negNoAp': neg.filter(aprobado=False)
+    }
+
+    return render(request, 'testeo.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -271,7 +280,7 @@ def vistaAdministrador(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf, 'A')
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNCL(request,negociosCerrRech, 'A')
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -311,7 +320,7 @@ def vistaProveedor(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf,'P')
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNCL(request,negociosCerrRech,'P')
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -333,7 +342,7 @@ def vistaGerente(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -362,7 +371,7 @@ def vistaCliente(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -386,7 +395,7 @@ def vendedor(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -1523,6 +1532,10 @@ class PropuestaView(View):
 class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
+
+        if not negocio.vendedor.persona.user == request.user and not negocio.comprador.persona.user == request.user:
+            return redirect('home')
+
         data = negocio.propuestas.last()
         last = {
             'items': [],
@@ -1604,6 +1617,24 @@ class NegocioView(View):
             user=user
         )
         notif.save()
+
+        propuesta = Propuesta.objects.filter(negocio=negocio).last()
+        itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
+        acc = []
+        
+        for i in itemsProp:
+            acc.append(i.aceptado)
+        
+        if all(acc) and not itemsProp.count() == 0:
+            negocio.aprobado = True
+            negocio.fecha_cierre = datetime.now()
+            negocio.save()
+
+        if len(data.get('items')) == 0:
+            negocio.cancelado = True
+            negocio.fecha_cierre = datetime.now()
+            negocio.save()
+
         return render(request, 'negocio.html')
 
 class ListEmpresaView(View):
