@@ -46,19 +46,19 @@ BuenaVentura Agronegocios
 }
 
 .active , .barra1:hover {
-  background-color: #504c4c;
+  font-weight: bold;
 }
 
 .barra1{
- background-color: #7c6b6b;
+ 
  height: 40px;
  
 }
 .titulito{
-  color :white ;
+  color :black ;
   font-size: 20px;
   font-family: 'Montserrat';
-  text-align: center;
+  text-align: left;
 }
 
 .cuadrado{
@@ -75,6 +75,12 @@ BuenaVentura Agronegocios
   width: 35%;
 }
 
+.iconito{
+  position: relative;
+  top: 5px;
+}
+
+
 </style>
 
  <div class="float: right; row">
@@ -87,7 +93,7 @@ BuenaVentura Agronegocios
    </div>
    <div style="height: 100px;" > </div>
 
-   <button id="flip" onclick="">hola que tal</button>
+   
    <div class="col m12 m8 white">
      <div class=" ">
        <div class="card-content ">
@@ -207,8 +213,8 @@ $(document).ready(function(){
 
 function start_datepicker(){
     $('.datepicker').datepicker({
-      format: 'dd/mm/yyyy',
-    });
+    format: 'dd/mm/yyyy',
+  });
 }
 var rowCnt = 0;
 var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
@@ -332,12 +338,12 @@ function addRow() {
   tr1.setAttribute("class","content")
   
   var outerGeneral = document.createElement("div");
-  var innerGeneral = document.createElement("button");
+  var innerGeneral = document.createElement("div");
   innerGeneral.setAttribute("type","button")
   var outerFinanciamiento = document.createElement("div");
-  var innerFinanciamiento = document.createElement("button");
+  var innerFinanciamiento = document.createElement("div");
   var outerLogistica = document.createElement("div");
-  var innerLogistica = document.createElement("button");
+  var innerLogistica = document.createElement("div");
 
 
   outerGeneral.appendChild(innerGeneral);
@@ -353,18 +359,27 @@ function addRow() {
   outerLogistica.appendChild(innerLogistica);
   outerLogistica.appendChild(tr3);
   thread.appendChild(outerLogistica);
-  innerGeneral.setAttribute("class"," col s12");
+  innerGeneral.setAttribute("class"," col s12 left-align ");
   innerGeneral.classList.add('barra1');
+  
   var id = "innerGeneral"+rowCnt;
   innerGeneral.setAttribute("id",id);
   innerGeneral.setAttribute("style","none");
   innerGeneral.setAttribute("onclick",`closeDiv(${id})`);
+  
   var nom1 = document.createElement("a");
   nom1.setAttribute("value"," Informacion general");
-  nom1.setAttribute("class"," titulito center-align col s12");
+  nom1.setAttribute("class"," titulito col s10");
   nom1.innerHTML="Informacion General"
   innerGeneral.appendChild(nom1);
   
+  var icon1 = document.createElement("i");
+  icon1.setAttribute("value","expand_more")
+  icon1.setAttribute("class","material-icons iconito")
+  icon1.innerHTML="expand_more"
+  nom1.appendChild(icon1);
+
+
   innerFinanciamiento.setAttribute("class","col s12");
   innerFinanciamiento.classList.add('barra1');
   var id = ("innerFinanciamiento"+rowCnt);
@@ -373,10 +388,15 @@ function addRow() {
   innerFinanciamiento.setAttribute("onclick",`closeDiv(${id})`);
   var nom2 = document.createElement("a");
   nom2.setAttribute("value","  Montos y financiamiento");
-  nom2.setAttribute("class"," titulito center-align col s11 ");
+  nom2.setAttribute("class"," titulito  col s12 ");
   nom2.innerHTML=" Montos y Financiamiento"
   innerFinanciamiento.appendChild(nom2);
-  
+  var icon2 = document.createElement("i");
+  icon2.setAttribute("value","expand_more")
+  icon2.setAttribute("class","material-icons iconito")
+  icon2.innerHTML="expand_more"
+  nom2.appendChild(icon2);
+
   innerLogistica.setAttribute("class","col s12");
   innerLogistica.classList.add('barra1');
   var id = "innerLogistica"+rowCnt;
@@ -385,10 +405,15 @@ function addRow() {
   innerLogistica.setAttribute("onclick",`closeDiv(${id})`);
   var nom3 = document.createElement("a");
   nom3.setAttribute("content"," Configuracion de logistica");
-  nom3.setAttribute("class"," titulito center-align col s12 ");
+  nom3.setAttribute("class"," titulito  col s12 ");
   nom3.innerHTML="configuracion de logistica"
   innerLogistica.appendChild(nom3);
-  
+  var icon = document.createElement("i");
+  icon.setAttribute("value","expand_more")
+  icon.setAttribute("class","material-icons iconito")
+  icon.innerHTML="expand_more"
+  nom3.appendChild(icon);
+
   for(var i = 0; i < general.length; i++){
     var th1 = document.createElement("th");
     th1.setAttribute("id","th_"+general[i]+rowCnt);
@@ -685,7 +710,7 @@ function submit(){
     var dict = [];
     var inputComp = document.getElementById('inputComp');
     var vendedor = document.getElementById('vendedorSpan');
-    var observaciones = document.getElementById('inputObser');
+    var observaciones = document.getElementById('observaciones');
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
       for (var j = 0; j < headers.length; j++) {
@@ -699,7 +724,7 @@ function submit(){
         'data':dict,
         'comprador':inputComp.value,
         'vendedor':vendedor.innerHTML,
-        'observaciones': observaciones.value,
+        'observaciones': observaciones.innerHTML,
      }
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
