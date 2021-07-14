@@ -434,19 +434,19 @@ BuenaVentura Agronegocios
     <!----------------Area de Notificaciones------------------->
   <div class="row">
     <!----------------Titulitos ------------------->
-    <div class=" bloque-izquierdo col l4 "  >
+    <div class=" bloque-izquierdo col s4 l4 "  >
       <span style="margin-left: 60px; "class="text-align center titulito grey-text">
-      <img class="imgchica text-align left"  src="{% static 'images/presupuesto.png' %}"> Presupuestos
+      <img class="imgchica text-align left hide-on-small-only"  src="{% static 'images/presupuesto.png' %}"> Presupuestos
        <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
     </div>
-    <div class="col l4 bloque-centro" >
+    <div class="col l4 s4 bloque-centro" >
       <span style="margin-left: 60px; "class="text-align center titulito grey-text">
-      <img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Logística 
+      <img class="imgchica text-align left hide-on-small-only"  src="{% static 'images/logistica.png' %}"> Logística 
       <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
     </div>
-    <div class="col l4 bloque-derecho">
+    <div class="col l4 s4 bloque-derecho">
       <span style="margin-left: 60px; "class="text-align center titulito grey-text">
-      <img class="imgchica text-align left"  src="{% static 'images/vencimientos.png' %}"> Vencimientos 
+      <img class="imgchica text-align left hide-on-small-only"  src="{% static 'images/vencimientos.png' %}"> Vencimientos 
       <span  style="margin-top:15px ;" class="new badge left-align">4</span> </span>
     </div>
     <!------------------------------------------------------------------------------->
@@ -485,7 +485,8 @@ BuenaVentura Agronegocios
     <!----------------------------------->
 
     <!-------------notificaciones vencmientos ---------------------->
-     <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
+
+    <div class="col  s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
       <div style="overflow-y: scroll; height: 550px;">
         <table >
           <tbody >
@@ -562,7 +563,7 @@ BuenaVentura Agronegocios
       {% endfor %}
     </tbody>
   </table>
-  <a class="waves-effect waves-light btn botonsote red white-text col s12"  href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
+  <a class="center-align waves-effect waves-light btn-large botonsote red white-text col s4 offset-s4"   href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
   
   </div>
   
@@ -746,14 +747,14 @@ BuenaVentura Agronegocios
   </div>
   <div class="row">
     <div id="tablesSem">
-      <div class=" bloque-izquierdo col l4 red"  >
-        <span style="margin-left: 60px ;  "class="text-align center titulito white-text "><img class="imgchica text-align left white-text"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
+      <div class=" bloque-izquierdo col s4  l4 red"  >
+        <span style="margin-left: 60px ;  "class="text-align center titulito white-text "><img class="hide-on-med-and-down imgchica text-align left white-text"  src="{% static 'images/presupuesto.png' %}"> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
       </div>
-      <div class="col l4 bloque-centro yellow" >
-        <span style="margin-left: 20px; "class="text-align center titulito grey-text "><img class="imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
+      <div class="col l4 bloque-centro yellow s4" >
+        <span style="margin-left: 20px; "class="text-align center titulito grey-text "><img class="hide-on-med-and-down imgchica text-align left"  src="{% static 'images/logistica.png' %}"> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
       </div>
-      <div class="col l4 bloque-derecho green">
-        <span class="text-align center titulito "><img class="imgchica text-align left white-text"  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
+      <div class="col l4 bloque-derecho green s4">
+        <span class="text-align center titulito "><img class="hide-on-med-and-down imgchica text-align left white-text "  src="{% static 'images/vencimientos.png' %}">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
       </div>
       <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
         <div style="overflow-y: scroll; height: 550px;">

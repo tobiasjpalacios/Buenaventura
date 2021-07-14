@@ -80,7 +80,48 @@ BuenaVentura Agronegocios
   top: 5px;
 }
 
+.entrada{
+  border-radius: 2em; 
+  background-color: white ;
+  height:45px; 
+  border: 2px solid green;
 
+}
+
+.cancelar{
+  border-bottom: 0px solid #000; 
+  box-shadow: 0 0px 0 0 #000; 
+  border: #000; 
+  border-radius: 2em;
+}
+
+/* label color */
+.input-field label {
+     color: #000;
+   }
+   /* label focus color */
+   .input-field input[type=text]:focus + label {
+     color: #000;
+   }
+   /* label underline focus color */
+   .input-field input[type=text]:focus {
+     border-bottom: 0px solid #000;
+     box-shadow: 0 0px 0 0 #000;
+   }
+   /* valid color */
+   .input-field input[type=text].valid {
+     border-bottom: 1px solid #000;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* invalid color */
+   .input-field input[type=text].invalid {
+     border-bottom: 1px solid #000;
+     box-shadow: 0 1px 0 0 #000;
+   }
+   /* icon prefix focus color */
+   .input-field .prefix.active {
+     color: #000;
+   }
 </style>
 
  <div class="float: right; row">
@@ -91,23 +132,43 @@ BuenaVentura Agronegocios
      </div>
 
    </div>
-   <div style="height: 100px;" > </div>
+   <div style="height: 150px;" > </div>
 
    
-   <div class="col m12 m8 white">
-     <div class=" ">
+   <div class=" card center offset-m2 col  m8 white">
+    <div class=" card " style=" width: 100%; height: 50px; background-color: rgba(25, 141, 45 );;" ></div>
+    
+    <div style="border: 2px solid rgba(128, 128, 128, 0.555)  " class=" ">
        <div class="card-content ">
-         <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  Info basica</span> </div>
+        
          
          <div style="height: 100px;"></div>
          
          <div class="row">
-           <div class=" cuadrado col s4 offset-s1" >
+           
+          <div class="row"> 
+            <div class="col s6"> 
+              <span class="col s4 right-align" > de </span>
+              <h4 class="col s6 ">{{ user.get_username }}</h4>
+            </div>
+            <div class="col s6"> 
+              <span class="col s4 left-align"> Para</span>
+              <div class="row entrada col s7 left-align">
+                <input style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em; font-size: 120%;" class ="cancelar error center-align" type="text" id="inputComp" list="datalistComp">
+                <datalist id="datalistComp"></datalist>
+              </div>
+            </div>
+            
+            
+          </div>
+          
+          <div class=" cuadrado col s4 offset-s1 hide " >
              <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
              <span class="left-align">Vendedor: </span>
              <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b>
            </div>
-         <div class="col cuadrado col s4 offset-s1" >
+         
+           <div class="col cuadrado col s4 offset-s1 hide" >
            <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
              <span class="left-align">Vendedor: </span>
            <span class="left-align">Seleccione un comprador:</span><br>
@@ -152,8 +213,10 @@ BuenaVentura Agronegocios
          
          </div>
        </div>
+      
      </div>
-   </div>
+     <div style="height: 20px;"></div>
+    </div>
 </div>
 
 <!--
@@ -333,8 +396,11 @@ function addRow() {
   thread.appendChild(input);
 
   var tr1 = document.createElement("tr");
+  tr1.style.display = "none";
   var tr2 = document.createElement("tr");
+  tr2.style.display = "none";
   var tr3 = document.createElement("tr");
+  tr3.style.display = "none";
   tr1.setAttribute("class","content")
   
   var outerGeneral = document.createElement("div");
@@ -369,8 +435,10 @@ function addRow() {
   
   var nom1 = document.createElement("a");
   nom1.setAttribute("value"," Informacion general");
-  nom1.setAttribute("class"," titulito col s10");
+  nom1.setAttribute("class"," card titulito col l6 m12 s12");
   nom1.innerHTML="Informacion General"
+  nom1.style.border = "2px red solid"
+  nom1.style.borderRadius="2em"
   innerGeneral.appendChild(nom1);
   
   var icon1 = document.createElement("i");
@@ -388,8 +456,10 @@ function addRow() {
   innerFinanciamiento.setAttribute("onclick",`closeDiv(${id})`);
   var nom2 = document.createElement("a");
   nom2.setAttribute("value","  Montos y financiamiento");
-  nom2.setAttribute("class"," titulito  col s12 ");
+  nom2.setAttribute("class","  card titulito  col l6 m12 s12 ");
   nom2.innerHTML=" Montos y Financiamiento"
+  nom2.style.border = "2px red solid"
+  nom2.style.borderRadius="2em"
   innerFinanciamiento.appendChild(nom2);
   var icon2 = document.createElement("i");
   icon2.setAttribute("value","expand_more")
@@ -405,7 +475,9 @@ function addRow() {
   innerLogistica.setAttribute("onclick",`closeDiv(${id})`);
   var nom3 = document.createElement("a");
   nom3.setAttribute("content"," Configuracion de logistica");
-  nom3.setAttribute("class"," titulito  col s12 ");
+  nom3.setAttribute("class"," card titulito  col l6 m12 s12 ");
+  nom3.style.border = "2px red solid"
+  nom3.style.borderRadius="2em"
   nom3.innerHTML="configuracion de logistica"
   innerLogistica.appendChild(nom3);
   var icon = document.createElement("i");
@@ -512,6 +584,7 @@ function closeDiv(divName){
   } else {
     content.style.display = "none";
   } 
+  
 }
 
 function refreshMarca(inputId){
