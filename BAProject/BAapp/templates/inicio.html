@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load auth_extras %}
 {% block imports %}
    {% load static %}
 {% endblock imports %}
@@ -164,14 +165,13 @@ BuenaVentura Agronegocios
           
           <div class=" cuadrado col s4 offset-s1 hide " >
              <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
-             <span class="left-align">Vendedor: </span>
+             <span class="left-align">{% if request.user|has_group:'Comprador' %}Comprador: {% elif request.user|has_group:'Vendedor' %}Vendedor: {% endif %}</span>
              <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b>
            </div>
          
            <div class="col cuadrado col s4 offset-s1 hide" >
            <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
-             <span class="left-align">Vendedor: </span>
-           <span class="left-align">Seleccione un comprador:</span><br>
+              <span class="left-align">{% if request.user|has_group:'Comprador' %}Seleccione un vendedor: {% elif request.user|has_group:'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
          <div class="row left-align col s12">
            <input class ="error" type="text" id="inputComp" list="datalistComp">
            <datalist id="datalistComp"></datalist>
@@ -247,7 +247,12 @@ BuenaVentura Agronegocios
    </div>
  </div>
 
-<script>
+ <script>
+
+  var userIsComprador = false;
+  "{% if request.user|has_group:'Comprador' %}"
+  userIsComprador = true;
+  "{% endif %}"
 
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('#botonsito');
@@ -280,7 +285,10 @@ function start_datepicker(){
   });
 }
 var rowCnt = 0;
-var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+var headers = (userIsComprador) ? 
+              ["Ingrediente", "Marca", "Cantidad", "Precio",
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"]
+              : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
               "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 var savings_data;
@@ -344,7 +352,7 @@ var errors = [];
   $(document).ready(function(){
     $.ajax({
       type: "GET",
-      url: "{% url 'api_comprador' %}",
+      url: "{% if request.user|has_group:'Vendedor' %}{% url 'api_comprador' %}{% elif request.user|has_group:'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
       dataType: "json",
       success: function(data) {      
         compradores_data = data;
@@ -379,8 +387,8 @@ var errors = [];
 
 
 function addRow() {
-  var general = ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
-  var pago = ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
+  var general = (userIsComprador) ? ["Ingrediente", "Marca", "Cantidad"] : ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
+  var pago = (userIsComprador) ? ["Precio", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
   var logistica = ["Fecha de entrega","Destino"];
 
   
@@ -511,52 +519,101 @@ function addRow() {
   thread.appendChild(br);
   thread.appendChild(br2); 
 
-var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+var headers = (userIsComprador) ?
+              ["Ingrediente", "Marca", "Cantidad", "Precio", 
+              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"] 
+              : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
               "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
-  for (var c = 0; c < headers.length; c++){    
-    if (c==0) {
-      var th = document.getElementById("th_Ingrediente"+rowCnt);
-      input_ingrediente(c, th)
-    }else if(c==1){   
-      var th = document.getElementById("th_Marca"+rowCnt);
-      input_marca(c, th);
-    }else if (c==2) {
-      var th = document.getElementById("th_Distribuidor"+rowCnt);
-      input_distribuidor(c, th);
-    }else if (c==3) {
-      var th = document.getElementById("th_Cantidad"+rowCnt);
-      input_cantidad(c,th);
-    }else if (c==6) {
-      var th = document.getElementById("th_Divisa"+rowCnt);
-      input_divisa(c, th);
-    }else if (c==7) {
-      var th = document.getElementById("th_Tipo de pago"+rowCnt);
-      input_tipoPago(c, th);
-    }else if (c==8) {
-      var th = document.getElementById("th_Tasa"+rowCnt);
-      input_tasa(c, th);
-    }else if(c==9){
-      var th = document.getElementById("th_Fecha de pago"+rowCnt);
-      input_fechaPago(c, th);
-    }else if (c==10) {
-      var th = document.getElementById("th_Fecha de entrega"+rowCnt);
-      input_fechaEntrega(c, th);
-    }else if (c==11) {
-      var th = document.getElementById("th_Destino"+rowCnt);
-      input_destino(c,th);
-    }else{
-      var th = document.getElementById("th_"+headers[c]+rowCnt);
-      var ele = document.createElement('input');
-      ele.setAttribute('type', 'text');
-      ele.setAttribute('size', '4');
+  console.log(headers);
 
-      ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-      ele.setAttribute('autocomplete', 'off');
-      ele.setAttribute('placeholder', "0.00");
-      th.appendChild(ele);
-    };
+  if (userIsComprador) {
+    for (var c = 0; c < headers.length; c++){    
+      if (c==0) {
+        var th = document.getElementById("th_Ingrediente"+rowCnt);
+        input_ingrediente(c, th)
+      }else if(c==1){   
+        var th = document.getElementById("th_Marca"+rowCnt);
+        input_marca(c, th);
+      }else if (c==2) {
+        var th = document.getElementById("th_Cantidad"+rowCnt);
+        input_cantidad(c,th);
+      }else if (c==4) {
+        var th = document.getElementById("th_Divisa"+rowCnt);
+        input_divisa(c, th);
+      }else if (c==5) {
+        var th = document.getElementById("th_Tipo de pago"+rowCnt);
+        input_tipoPago(c, th);
+      }else if (c==6) {
+        var th = document.getElementById("th_Tasa"+rowCnt);
+        input_tasa(c, th);
+      }else if(c==7){
+        var th = document.getElementById("th_Fecha de pago"+rowCnt);
+        input_fechaPago(c, th);
+      }else if (c==8) {
+        var th = document.getElementById("th_Fecha de entrega"+rowCnt);
+        input_fechaEntrega(c, th);
+      }else if (c==9) {
+        var th = document.getElementById("th_Destino"+rowCnt);
+        input_destino(c,th);
+      }else{
+        var th = document.getElementById("th_"+headers[c]+rowCnt);
+        var ele = document.createElement('input');
+        ele.setAttribute('type', 'text');
+        ele.setAttribute('size', '4');
+  
+        ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+        ele.setAttribute('autocomplete', 'off');
+        ele.setAttribute('placeholder', "0.00");
+        th.appendChild(ele);
+      };
+    }
+  }
+  else {
+    for (var c = 0; c < headers.length; c++){   
+      if (c==0) {
+        var th = document.getElementById("th_Ingrediente"+rowCnt);
+        input_ingrediente(c, th)  
+      }else if(c==1){   
+        var th = document.getElementById("th_Marca"+rowCnt);
+        input_marca(c, th);
+      }else if (c==2) {
+        var th = document.getElementById("th_Distribuidor"+rowCnt);
+        input_distribuidor(c, th);
+      }else if (c==3) {
+        var th = document.getElementById("th_Cantidad"+rowCnt);
+        input_cantidad(c,th);
+      }else if (c==6) {
+        var th = document.getElementById("th_Divisa"+rowCnt);
+        input_divisa(c, th);
+      }else if (c==7) {
+        var th = document.getElementById("th_Tipo de pago"+rowCnt);
+        input_tipoPago(c, th);
+      }else if (c==8) {
+        var th = document.getElementById("th_Tasa"+rowCnt);
+        input_tasa(c, th);
+      }else if(c==9){
+        var th = document.getElementById("th_Fecha de pago"+rowCnt);
+        input_fechaPago(c, th);
+      }else if (c==10) {
+        var th = document.getElementById("th_Fecha de entrega"+rowCnt);
+        input_fechaEntrega(c, th);
+      }else if (c==11) {
+        var th = document.getElementById("th_Destino"+rowCnt);
+        input_destino(c,th);
+      }else{
+        var th = document.getElementById("th_"+headers[c]+rowCnt);
+        var ele = document.createElement('input');
+        ele.setAttribute('type', 'text');
+        ele.setAttribute('size', '4');
+  
+        ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+        ele.setAttribute('autocomplete', 'off');
+        ele.setAttribute('placeholder', "0.00");
+        th.appendChild(ele);
+      };
+    }
   }
   rowCnt++;
   hideSend();
@@ -575,7 +632,7 @@ var headers = ["Ingrediente", "Marca", "Distribuidor", "Cantidad",
 //       } 
 //   });
 // }
-};
+}
 
 function closeDiv(divName){
   var content = divName.nextElementSibling;
@@ -623,9 +680,10 @@ function showModal(){
 function validateData(rowCnt){
   var boolComp = false;
   var inputComprador = document.getElementById("inputComp");
+  var distOrComp = (userIsComprador) ? "vendedor" : "comprador";
   if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
     boolComp = false;
-    var error = "El comprador no puede estar vacio";
+    var error = "El "+distOrComp+" no puede estar vacio";
     if (errors.indexOf(error) < 0) {
       errors.push(error);
     }
@@ -635,7 +693,7 @@ function validateData(rowCnt){
       boolComp = true;
     }else{
       boolComp = false;
-      var error = "El comprador seleccionado no está dentro de las opciones permitidas";
+      var error = "El "+distOrComp+" seleccionado no está dentro de las opciones permitidas";
       if (errors.indexOf(error) < 0) {
         errors.push(error);
       }
@@ -688,7 +746,7 @@ function validateData(rowCnt){
               input.style.borderColor = '#CF0029';
             }
           }
-      }else if (j == 2) {
+      }else if (!userIsComprador && j == 2) {
         if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -699,7 +757,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if (j == 3) {
+      }else if ((!userIsComprador && j == 3) || (userIsComprador && j == 2)) {
         if (input.value === null || input.value.match(/^ *$/) !== null) {
           boolCant = false;
           var error = "La cantidad no puede estar vacia";
@@ -719,7 +777,7 @@ function validateData(rowCnt){
             input.style.borderColor = '#CF0029'; 
           }
         }
-      }else if (j == 4) {
+      }else if ((!userIsComprador && j == 4) || (userIsComprador && j == 3)) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -727,7 +785,7 @@ function validateData(rowCnt){
           errors.push("El precio venta debe ser un número");
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 5) {
+      }else if (!userIsComprador && j == 5) {
         if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -738,7 +796,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029'; 
         }
-      }else if (j == 6) {
+      }else if ((!userIsComprador && j == 6) || (userIsComprador && j == 4)) {
         if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -749,7 +807,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 7){
+      }else if((!userIsComprador && j == 7) || (userIsComprador && j == 5)){
         if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -760,7 +818,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if(j == 8){
+      }else if ((!userIsComprador && j == 8) || (userIsComprador && j == 6)){
          if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
           isValidated = true;
          }else{
@@ -783,22 +841,57 @@ function submit(){
     var dict = [];
     var inputComp = document.getElementById('inputComp');
     var vendedor = document.getElementById('vendedorSpan');
-    var observaciones = document.getElementById('observaciones');
+    var observaciones = document.getElementById('inputObser');
+    if (userIsComprador) {
+      headers.push("Precio compra");
+      headers.push("Distribuidor");
+    }
+    for (var i in headers) {
+      if (userIsComprador && headers[i] == "Precio") {
+        headers[i] = "Precio venta";
+      }
+    }
      for (var i = 0; i < rowCnt; i++) {
       var tmp_dict = {};
+      var tmp = {};
       for (var j = 0; j < headers.length; j++) {
-        var input = document.getElementById('input'+j+'.'+i+'');
-        var tmp = {};
-        tmp_dict[headers[j]] = input.value;
+        var input = null;
+        if (headers[j] == "Precio compra" && userIsComprador) {
+          input = 0;
+          tmp_dict[headers[j]] = input;
+        }
+        else if (headers[j] == "Distribuidor" && userIsComprador) {
+          // agregar distribuidor nulo cuando se pueda
+          input = 1;
+          tmp_dict[headers[j]] = input;
+        }
+        else {
+          input = document.getElementById('input'+j+'.'+i+'');
+          tmp_dict[headers[j]] = input.value;
+        }
       }
       dict.push(tmp_dict);
      }
-     var aux_dict = {
-        'data':dict,
-        'comprador':inputComp.value,
-        'vendedor':vendedor.innerHTML,
-        'observaciones': observaciones.innerHTML,
+     var aux_dict = {};
+     if (!userIsComprador) {
+       aux_dict = {
+          'data':dict,
+          'comprador':inputComp.value,
+          'vendedor':vendedor.innerHTML,
+          'observaciones': observaciones.value,
+          'envio_comprador': false,
+       }
      }
+     else {
+       aux_dict = {
+          'data':dict,
+          'comprador':vendedor.innerHTML,
+          'vendedor':inputComp.value,
+          'observaciones': observaciones.value,
+          'envio_comprador': true,
+       }
+     }
+     console.log(aux_dict);
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
       headers: {
