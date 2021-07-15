@@ -266,10 +266,10 @@ class ItemPropuesta(models.Model):
         blank=True, 
         null=True
     )
-    destino = models.ForeignKey(
-        "Domicilio", 
-        null=True, 
-        on_delete=models.DO_NOTHING
+    destino = models.CharField(
+        max_length=255,
+        null=True,
+        default=""
     )
     fecha_entrega = models.CharField(
         null=True,
