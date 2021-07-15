@@ -76,26 +76,16 @@ body {
   .approved {
     text-align: center;
     color: green;
+    margin: 100px;
   }
   .canceled {
     text-align: center;
     color: red;
+    margin: 100px;
   }
 {% endblock %}
 {% block title %}Negocios{% endblock title %}
 {%block body%}
-{% if negocio.aprobado %}
-<div class="approved">
-  <h2>Negocio confirmado ✓</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
-</div>
-{% endif %}
-{% if negocio.cancelado %}
-<div class="canceled">
-  <h2>Negocio cancelado ✗</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
-</div>
-{% endif %}
 <h3>Comprador: {{ negocio.comprador }}</h3>
 <h3>Vendedor: {{ negocio.vendedor }}</h3>
 {% for prop in propuestas %}
@@ -130,10 +120,14 @@ body {
             <thead>  
               <tr>
                 <th class="show{{prop.id}}">Articulo</th>
+                {% if not request.user|has_group:'Comprador' %}
                 <th class="show{{prop.id}}">Distribuidor</th>
+                {% endif %}
                 <th class="show{{prop.id}}">Cantidad</th>
-                <th class="show{{prop.id}}">Precio venta</th>
+                <th class="show{{prop.id}}">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                {% if not request.user|has_group:'Comprador' %}
                 <th class="show{{prop.id}}">Precio compra</th>
+                {% endif %}
                 <th class="show{{prop.id}}">Divisa</th>
                 <th class="not-show{{prop.id}}">Tipo pago</th>
                 <th class="not-show{{prop.id}}">Tasa</th>
@@ -147,10 +141,14 @@ body {
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
+                {% if not request.user|has_group:'Comprador' %}
                 <td class="show{{prop.id}}">{{ item.proveedor|default_if_none:'' }}</td>
+                {% endif %}
                 <td class="show{{prop.id}}">{{ item.cantidad }}</td>
                 <td class="show{{prop.id}}">{{ item.precio_venta }}</td>
+                {% if not request.user|has_group:'Comprador' %}
                 <td class="show{{prop.id}}">{{ item.precio_compra }}</td>
+                {% endif %}
                 <td class="show{{prop.id}}">{{ item.divisa }}</td>
                 <td class="not-show{{prop.id}}">{{ item.tipo_pago }}</td>
                 <td class="not-show{{prop.id}}">{{ item.tasa }}%</td>
@@ -199,10 +197,10 @@ body {
             <thead>  
               <tr>
                 <th class="show1">Articulo</th>
-                <th class="show1">Distribuidor</th>
+                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Distribuidor</th>
                 <th class="show1">Cantidad</th>
-                <th class="show1">Precio venta</th>
-                <th class="show1">Precio compra</th>
+                <th class="show1">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Precio compra</th>
                 <th class="show1">Divisa</th>
                 <th class="not-show1">Tipo pago</th>
                 <th class="not-show1">Tasa</th>
@@ -221,11 +219,13 @@ body {
                 {% else %}
                   <td class="show1">{{ item.articulo.marca|default_if_none:'' }}</td>
                 {% endif %}
+                {% if not request.user|has_group:'Comprador' %}
                 <td class="show1">{{ item.proveedor|default_if_none:'' }}</td>
+                {% endif %}
               {% if not item.aceptado %}
                 <td class="show1"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
                 <td class="show1"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show1"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
                 <td class="show1">
                   <select name="divisa">
                     <option value="" {% if item.divisa == None or item.divisa == "" %}selected{% endif %} disabled>Elija una divisa</option>
@@ -240,6 +240,7 @@ body {
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
                   {% endfor %}
+                    <option value="CONTADO">CONTADO</option>
                   </select>
                 </td>
                 <td class="not-show1">
@@ -252,12 +253,7 @@ body {
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
                 <td class="not-show1">
-                  <select name="destino">
-                    <option value="" {% if item.destino == None %}selected {% endif %}disabled>Elija destino</option>
-                  {% for destino in destinos %}
-                    <option value="{{ destino.id }}" {% if destino.direccion == item.destino.direccion and item.destino != None %}selected{% endif %}>{{ destino.direccion }}</option>
-                  {% endfor %}
-                  </select>
+                  <input type="text" name="destino" value="{{item.destino}}"/>
                 </td>
                 <td>
                   <a class="action-btn btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons">check</i></a>
@@ -268,7 +264,7 @@ body {
               {% else %}
                 <td class="show1">{{ item.cantidad }}</td>
                 <td class="show1">{{ item.precio_venta|stringformat:'.2f' }}</td>
-                <td class="show1">{{ item.precio_compra|stringformat:'.2f' }}</td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">{{ item.precio_compra|stringformat:'.2f' }}</td>
                 <td class="show1">{{ item.divisa }}</td>
                 <td class="not-show1">{{ item.tipo_pago }}</td>
                 <td class="not-show1">{{ item.tasa }}%</td>
@@ -287,19 +283,19 @@ body {
                     <input type="hidden" id='artValue'>
                     <input type="text" name='articulo' id='artSearch' class="autocomplete">
                 </td>
-                <td class="show1">
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
                   <datalist id='distResults'>
                   {% for dist in distribuidores %}
                     <option data-value="{{ dist.id }}" value="{{ dist.persona }}"></option>
                   {% endfor %}
                   </datalist>
-                </td class="show1">
+                </td>
                 <td class="show1"><input type="number" name="cantidad"></td>
                 <td class="show1">
                   <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
                 </td>
-                <td class="show1">
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
                 </td>
                 <td class="show1">
@@ -316,6 +312,7 @@ body {
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}">{{ tipo_pago.nombre }}</option>
                   {% endfor %}
+                    <option value="CONTADO">CONTADO</option>
                   </select>
                 </td>
                 <td class="not-show1">
@@ -328,12 +325,7 @@ body {
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
                 <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
                 <td class="not-show1">
-                  <select name="destino">
-                    <option value="" selected disabled>Elija destino</option>
-                  {% for destino in destinos %}
-                    <option value="{{ destino.id }}">{{ destino.direccion }}</option>
-                  {% endfor %}
-                  </select>
+                  <input type="text" name="destino" value=""/>
                 </td>
                 <td><a class="btn-floating waves-effect btn-large tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
                 <td>
@@ -356,6 +348,19 @@ body {
 {% endif %}
 {% endif %}
 {% endfor %}
+
+{% if negocio.aprobado %}
+<div class="approved" id="approved">
+  <h2>Negocio confirmado ✓</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
+{% if negocio.cancelado %}
+<div class="canceled" id="canceled">
+  <h2>Negocio cancelado ✗</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
 
 {% if not negocio.aprobado and not negocio.cancelado %}
 <div id="modalSend" class="modal">
@@ -431,13 +436,28 @@ body {
       $('[id="' + this.id + '"]:gt(0)').remove();
     });
 
+    var elId = ""
     "{% if not negocio.aprobado and not negocio.cancelado %}"
-    $([document.documentElement, document.body]).animate({
-      scrollTop: $("#form").offset().top
-    }, 500);
+    elId = "#form"
+    "{% elif negocio.aprobado and not negocio.cancelado %}"
+    elId = "#approved"
+    "{% elif not negocio.aprobado and negocio.cancelado %}"
+    elId = "#canceled"
     "{% endif %}"
+    $([document.documentElement, document.body]).animate({
+      scrollTop: $(elId).offset().top
+    }, 500);
 
   });
+
+  var userIsComprador = false;
+  "{% if request.user|has_group:'Comprador' %}"
+  userIsComprador = true;
+  "{% endif %}"
+
+  if (userIsComprador) {
+    $(".customerHide").hide();
+  }
 
   var sm = false
 
@@ -449,8 +469,8 @@ body {
     var thNotShow = $("th.not-show"+n+"");
     var iAnim = $("i.i"+n+"");
 
-    thShow.toggleClass("show"+n+" not-show"+n+"")
-    tdShow.toggleClass("show"+n+" not-show"+n+"")
+    thShow.toggleClass("show"+n+" not-show"+n+"");
+    tdShow.toggleClass("show"+n+" not-show"+n+"");
     tdNotShow.toggleClass("not-show"+n+" show"+n+"");
     thNotShow.toggleClass("not-show"+n+" show"+n+"");
     iAnim.toggleClass("rotate");
@@ -501,18 +521,25 @@ body {
     var n = {}, errors=false;
     console.log("addArt");
     headers.forEach(element => {
+      if (userIsComprador) {
+        if (element == "precio") {
+          element = "precio_venta";
+        }
+      }
       var input = $($("#extra").find('[name="'+element+'"]'))[0];
       var artId = parseInt($("#artValue")[0].value);
       if (!input.value){
-        errors = true;
-        $(input).addClass("invalid")
+        if (userIsComprador && !(input.name == "distribuidor" || input.name == "precio_compra")) {
+          errors = true;
+          $(input).addClass("invalid")
+        }
       }
       if (element === "distribuidor"){
         element = "proveedor";
         var opt = $("#distResults [value='"+input.value+"']");
         n[element] = opt.data('value');
       } else {
-        if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago" || input.name == "destino"){
+        if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
           n[element] = parseInt(input.value);
         }else {
           n[element] = input.value;
@@ -521,6 +548,10 @@ body {
           n["fecha_real_entrega"] = null;
           n["fecha_real_pago"] = null;
           n["fecha_salida_entrega"] = null;
+          if (userIsComprador) {
+            // cambiar proveedor a nulo cuando se pueda
+            n["proveedor"] = 1;
+          }
         }
       }
     })
@@ -533,7 +564,6 @@ body {
 
     var divisa = "";
     var tipo_pago = "";
-    var destino = "";
 
     "{% for v,t in divisas %}"
     if ("{{v}}" == n.divisa) {
@@ -547,12 +577,6 @@ body {
     }
     "{% endfor %}"
 
-    "{% for destino in destinos %}"
-    if (parseInt("{{destino.id}}") == n.destino) {
-      destino = "{{destino.direccion}}";
-    }
-    "{% endfor %}"
-
     if (sm) {
       showMore(1);
     }
@@ -561,16 +585,20 @@ body {
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
     <td class=\"show1\">"+$("#artSearch")[0].value+"</td>\
+    {% if not request.user|has_group:'Comprador' %}\
     <td class=\"show1\">"+$("#distSearch")[0].value+"</td>\
+    {% endif %}\
     <td class=\"show1\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
     <td class=\"show1\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
+    {% if not request.user|has_group:'Comprador' %}\
     <td class=\"show1\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
+    {% endif %}\
     <td class=\"show1\"><select name=\"divisa\"><option value=\""+n.divisa+"\" selected disabled>"+divisa+"</option>{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
-    <td class=\"not-show1\"><select name=\"tipo_pago\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><select name=\"tipo_pago\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}<option value=\"CONTADO\">CONTADO</option></select></td>\
     <td class=\"not-show1\"><select name=\"tasa\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\">{{ t }}</option>{% endfor %}</select></td>\
     <td class=\"not-show1\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
     <td class=\"not-show1\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
-    <td class=\"not-show1\"><select name=\"destino\"><option value=\""+n.destino+"\" selected disabled>"+destino+"</option>{% for destino in destinos %}<option value=\"{{ destino.id }}\">{{ destino.direccion }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
     <td>\
       <a class=\"red btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons\">delete</i></a>\
       <a class=\"yellow btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons\">save</i></a>\
@@ -579,6 +607,11 @@ body {
     ";
     $('select').formSelect();
     headers.forEach(element => {
+      if (userIsComprador) {
+        if (element == "precio") {
+          element = "precio_venta";
+        }
+      }
       var input = $($("#extra").find('[name="'+element+'"]'))
       input.val("");
       input.removeClass(["invalid"])
@@ -640,20 +673,27 @@ body {
         proc.items.push(element)
       }
     })
-    var els = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega"];
+    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega"];
     proc.items.forEach(element => {
       for (k in element) {
-        if (!(jQuery.inArray(k, els) != -1)) {
+        if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
-            if (v == null || (v == 0 && k != "tasa") || v == "") {
-              errorFields.push("El campo \""+k+"\" contiene errores.");
-              errors = true;
+            if (v == null || (v == 0 && k != "tasa") || v == "" || v == undefined) {
+              if (userIsComprador && !((k == "precio_compra" && v == 0) || (k == "proveedor" && (v == "" || v == null)))) {
+                errorFields.push("El campo \""+k+"\" contiene errores.");
+                errors = true;
+              }
             }
+            if (userIsComprador && k == "proveedor" && v == null) {
+            // cambiar proveedor a nulo cuando se pueda
+            element[k] = 1;
+          }
           }
         }
       }
     })
+    console.log(proc);
     var print_errors = "";
     for (var i = 0; i < errorFields.length; i++) {
       print_errors = print_errors.concat('\n'+errorFields[i])

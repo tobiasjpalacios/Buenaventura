@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
     path('compradores/',APIComprador.as_view() , name="api_comprador"),
+    path('vendedores/',APIVendedor.as_view() , name="api_vendedor"),
     path('distribuidor/',APIDistribuidor.as_view() , name="api_distribuidor"),
     path('empresa/',APIEmpresa.as_view() , name="api_empresa"),
 ]
