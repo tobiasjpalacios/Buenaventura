@@ -172,10 +172,8 @@ BuenaVentura Agronegocios
            <div class="col cuadrado col s4 offset-s1 hide" >
            <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
               <span class="left-align">{% if request.user|has_group:'Comprador' %}Seleccione un vendedor: {% elif request.user|has_group:'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
-         <div class="row left-align col s12">
-           <input class ="error" type="text" id="inputComp" list="datalistComp">
-           <datalist id="datalistComp"></datalist>
-         </div>
+            </div>
+         
          </div>
          
        </div>
