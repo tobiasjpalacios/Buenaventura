@@ -235,16 +235,15 @@ body {
                   </select>
                 </td>
                 <td class="not-show1">
-                  <select name="tipo_pago">
+                  <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
                   {% endfor %}
-                    <option value="CONTADO">CONTADO</option>
                   </select>
                 </td>
                 <td class="not-show1">
-                  <select name="tasa">
+                  <select name="tasa" id="tas{{item.id}}">
                     {% for v,t in tasas %}
                     <option value="{{ v }}" {% if v == item.tasa %}selected{% endif %}{% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
@@ -277,6 +276,11 @@ body {
                 <a class="red btn-large waves-effect waves-light" id="btn-sm-1" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
               </td>
               </tr>
+              <script>
+                $(document).ready(function() {
+                  contadoTasa("{{item.id}}");
+                });
+              </script>
             {% endfor %}
               <tr id="extra">
                 <td class="show1">
@@ -307,16 +311,15 @@ body {
                   </select>
                 </td>
                 <td class="not-show1">
-                  <select name="tipo_pago">
+                  <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
                     <option value="" selected disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}">{{ tipo_pago.nombre }}</option>
                   {% endfor %}
-                    <option value="CONTADO">CONTADO</option>
                   </select>
                 </td>
                 <td class="not-show1">
-                  <select name="tasa">
+                  <select name="tasa" id="tasAdd">
                   {% for v,t in tasas %}
                     <option value="{{ v }}" {% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
@@ -459,6 +462,20 @@ body {
     $(".customerHide").hide();
   }
 
+  function contadoTasa(aggId) {
+    var tipo_pago = document.getElementById("tp"+aggId);
+    var tasa = document.getElementById("tas"+aggId);
+    var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
+    if (selectedText.toLowerCase() === "contado") {
+      tasa.disabled = true;
+      tasa.value = '0';
+    }
+    else {
+      tasa.disabled = false;
+    }
+    $('select').formSelect();
+  }
+
   var sm = false
 
   function showMore(n) {
@@ -517,8 +534,11 @@ body {
     });
   }
 
+  var counter = 0;
+
   function addArt(){
     var n = {}, errors=false;
+    var rowId = "NewRow"+counter
     console.log("addArt");
     headers.forEach(element => {
       if (userIsComprador) {
@@ -529,9 +549,15 @@ body {
       var input = $($("#extra").find('[name="'+element+'"]'))[0];
       var artId = parseInt($("#artValue")[0].value);
       if (!input.value){
-        if (userIsComprador && !(input.name == "distribuidor" || input.name == "precio_compra")) {
+        if (userIsComprador) {
+          if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+            errors = true;
+            $(input).addClass("invalid");
+          }
+        }
+        else {
           errors = true;
-          $(input).addClass("invalid")
+          $(input).addClass("invalid");
         }
       }
       if (element === "distribuidor"){
@@ -581,6 +607,10 @@ body {
       showMore(1);
     }
 
+    if (tipo_pago.toLowerCase() == "contado") {
+      n.tasa = 0;
+    }
+
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
@@ -594,8 +624,8 @@ body {
     <td class=\"show1\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
     {% endif %}\
     <td class=\"show1\"><select name=\"divisa\"><option value=\""+n.divisa+"\" selected disabled>"+divisa+"</option>{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
-    <td class=\"not-show1\"><select name=\"tipo_pago\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}<option value=\"CONTADO\">CONTADO</option></select></td>\
-    <td class=\"not-show1\"><select name=\"tasa\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\">{{ t }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
     <td class=\"not-show1\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
     <td class=\"not-show1\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
     <td class=\"not-show1\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
@@ -618,6 +648,8 @@ body {
     })
     $('select').formSelect();
     $("#artSearch").val("");
+    counter = counter + 1;
+    contadoTasa(rowId);
   }
 
   function beforeSubmit() {
@@ -680,15 +712,15 @@ body {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
             if (v == null || (v == 0 && k != "tasa") || v == "" || v == undefined) {
-              if (userIsComprador && !((k == "precio_compra" && v == 0) || (k == "proveedor" && (v == "" || v == null)))) {
+              if (userIsComprador && !((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
                 errorFields.push("El campo \""+k+"\" contiene errores.");
                 errors = true;
               }
             }
             if (userIsComprador && k == "proveedor" && v == null) {
-            // cambiar proveedor a nulo cuando se pueda
-            element[k] = 1;
-          }
+              // cambiar proveedor a nulo cuando se pueda
+              element[k] = 1;
+            }
           }
         }
       }
