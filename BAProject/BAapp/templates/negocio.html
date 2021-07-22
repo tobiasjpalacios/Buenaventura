@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
+{% load auth_extras %}
 {% block imports %}
    {% load static %}
    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
 {% endblock imports %}
 {% block style %}
+
+body {
+  background-color: #e0e0e0;
+}
+
 .autocomplete-suggestions {
     background-color: #fff;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
@@ -33,129 +39,345 @@
   &.autocomplete-selected {
     background-color: #888;
   }
+  .show1 {
+  }
+  .not-show1 {
+    display: none;
+  }
+  .datepicker-day-button {
+    color: black;
+  }
+  .datepicker-row > .is-selected > .datepicker-day-button {
+    color: white !important;
+  }
+  .datepicker-row > .is-today > .datepicker-day-button {
+    color: #26a69a;
+  }
+  .i1 {
+    -webkit-transition: all .4s ease;
+    -moz-transition: all .4s ease;
+    -ms-transition: all .4s ease;
+    -o-transition: all .4s ease;
+    transition: all .4s ease;
+  }
+  .rotate {
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+  }
+  table.striped > tbody > tr:nth-child(odd) {
+    background-color: #e0e0e0;
+  }
+  .action-btn {
+    margin: 3px !important;
+  }
+  .approved {
+    text-align: center;
+    color: green;
+    margin: 100px;
+  }
+  .canceled {
+    text-align: center;
+    color: red;
+    margin: 100px;
+  }
 {% endblock %}
 {% block title %}Negocios{% endblock title %}
 {%block body%}
 <h3>Comprador: {{ negocio.comprador }}</h3>
 <h3>Vendedor: {{ negocio.vendedor }}</h3>
 {% for prop in propuestas %}
-  <div class="row">
-    <div class="col s12 m9 {% if prop.envio_comprador %}push-m3{%endif%}">
-      <div class="card blue-grey darken-1">
-        <div class="card-content white-text">
-          <span class="card-title">
-          {% if prop.envio_comprador %}
-            {{ negocio.comprador }}
-          {% else %}
-            {{ negocio.vendedor }}
-          {% endif %}
-          </span>
-          <div class="row">
-            <table {% if forloop.last %}id="form"{%endif%}>
-              <thead>  
-                <tr>
-                  <th>Articulo</th>
-                  <th>Distribuidor</th>
-                  <th>Precio venta</th>
-                  <th>Precio compra</th>
-                  <th>Divisa</th>
-                  <th>Cantidad</th>
-                  <th>Operaciones</th>
-                </tr>
-              </thead>
-              <tbody>
-            {% if not forloop.last %}
-              {% for item in prop.items.all %}
-                <tr>
-                  <td>{{ item.articulo.marca }}</td>
-                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
-                  <td class="white-text">{{ item.precio_venta }}</td>
-                  <td class="white-text">{{ item.precio_compra }}</td>
-                  <td>{{ item.divisa }}</td>
-                  <td>{{ item.cantidad }}</td>
-                  <td></td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              {% for item in prop.items.all %}
-                <tr {% if item.aceptado %}class="green"{% endif %}>
-                  {% if item.articulo.marca == "NINGUNA" %}
-                    <td>{{ item.articulo.ingrediente|default_if_none:'' }}</td>
-                  {% else %}
-                    <td>{{ item.articulo.marca|default_if_none:'' }}</td>
-                  {% endif %}
-                  <td>{{ item.distribuidor|default_if_none:'' }}</td>
-                {% if not item.aceptado %}
-                  <td><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                  <td><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
-                  <td>
-                    <select name="divisa" value="{{ item.divisa|default_if_none:'' }}">
-                    {% for v,t in divisas %}
-                      <option value="{{ v }}">{{ t }}</option>
-                    {% endfor %}
-                    </select>
-                  </td>
-                  <td><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
-                  <td>
-                    <a class="btn tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})">o</a>
-                    <a class="red btn tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})">x</a>
-                    <a class="yellow btn tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})">e</a>
-                    <a class="blue btn tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})">r</a>
-                  </td>
-                {% else %}
-                  <td>{{ item.precio_venta|stringformat:'.2f' }}</td>
-                  <td>{{ item.precio_compra|stringformat:'.2f' }}</td>
-                  <td>{{ item.divisa }}</td>
-                  <td>{{ item.cantidad }}</td>
-                  <td></td>
+<style>
+  .show{{prop.id}} {
+    }
+  .not-show{{prop.id}} {
+    display: none;
+  }
+  .i{{prop.id}} {
+    -webkit-transition: all .4s ease;
+    -moz-transition: all .4s ease;
+    -ms-transition: all .4s ease;
+    -o-transition: all .4s ease;
+    transition: all .4s ease;
+  }
+</style>
+{% if not prop.items.count == 0 %}
+<div class="row">
+  <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
+    <div class="card grey lighten-3">
+      <div class="card-content dark-text">
+        <span class="card-title">
+        {% if prop.envio_comprador %}
+          {{ negocio.comprador }}
+        {% else %}
+          {{ negocio.vendedor }}
+        {% endif %}
+        </span>
+        <div class="row">
+          <table class="centered striped">
+            <thead>  
+              <tr>
+                <th class="show{{prop.id}}">Articulo</th>
+                {% if not request.user|has_group:'Comprador' %}
+                <th class="show{{prop.id}}">Distribuidor</th>
                 {% endif %}
-                </tr>
-              {% endfor %}
-                <tr id="extra">
-                  <td>
-                      <input type="hidden" name='articulo' id='artValue'>
-                      <input type="text" id='artSearch' class="autocomplete">
-                  </td>
-                  <td>
-                    <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
-                    <datalist id='distResults'>
-                    {% for dist in distribuidores %}
-                      <option data-value="{{ dist.id }}" value="{{ dist.razon_social }}"></option>
-                    {% endfor %}
-                    </datalist>
-                      
-                  </td>
-                  <td>
-                    <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
-                  </td>
-                  <td>
-                    <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
-                  </td>
-                  <td>
-                    <select name="divisa">
-                      <option value="" disabled selected>Elija una divisa</option>
-                    {% for v,t in divisas %}
-                      <option value="{{ v }}">{{ t }}</option>
-                    {% endfor %}
-                    </select>
-                  </td>
-                  <td><input type="number" name="cantidad"></td>
-                  <td><a class="btn" onclick="addArt()">Agregar</a></td>
-                </tr>
-            {% endif %}
-              </tbody>
-            </table>
-          {% if forloop.last %}
-            <a class="btn" onclick="submitProp()">Enviar</a>
-          {% endif %}
-          </div>
-          <span>Observaciones</span>
-          <p>{{ prop.observaciones }}</p>
+                <th class="show{{prop.id}}">Cantidad</th>
+                <th class="show{{prop.id}}">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                {% if not request.user|has_group:'Comprador' %}
+                <th class="show{{prop.id}}">Precio compra</th>
+                {% endif %}
+                <th class="show{{prop.id}}">Divisa</th>
+                <th class="not-show{{prop.id}}">Tipo pago</th>
+                <th class="not-show{{prop.id}}">Tasa</th>
+                <th class="not-show{{prop.id}}">Fecha pago</th>
+                <th class="not-show{{prop.id}}">Fecha entrega</th>
+                <th class="not-show{{prop.id}}">Destino</th>
+                <th>Ver más</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in prop.items.all %}
+              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
+                <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
+                {% if not request.user|has_group:'Comprador' %}
+                <td class="show{{prop.id}}">{{ item.proveedor|default_if_none:'' }}</td>
+                {% endif %}
+                <td class="show{{prop.id}}">{{ item.cantidad }}</td>
+                <td class="show{{prop.id}}">{{ item.precio_venta }}</td>
+                {% if not request.user|has_group:'Comprador' %}
+                <td class="show{{prop.id}}">{{ item.precio_compra }}</td>
+                {% endif %}
+                <td class="show{{prop.id}}">{{ item.divisa }}</td>
+                <td class="not-show{{prop.id}}">{{ item.tipo_pago }}</td>
+                <td class="not-show{{prop.id}}">{{ item.tasa }}%</td>
+                <td class="not-show{{prop.id}}">{{ item.fecha_pago }}</td>
+                <td class="not-show{{prop.id}}">{{ item.fecha_entrega }}</td>
+                <td class="not-show{{prop.id}}">{{ item.destino }}</td>
+                <td>
+                  <a class="red btn-large waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}});"><i class="i{{prop.id}} material-icons">keyboard_arrow_right</i></a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="card-action">
+          <span>Observaciones:</span>
+          <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
         </div>
       </div>
     </div>
   </div>
+</div>
+<script>
+  var btn_sm_{{prop.id}} = document.getElementById('btn-sm-{{prop.id}}');
+
+  $(btn_sm_{{prop.id}}).each(function () {
+    $('[id="' + this.id + '"]:gt(0)').remove();
+  });
+</script>
+{% endif %}
+{% if forloop.last %}
+{% if not negocio.aprobado and not negocio.cancelado %}
+<div class="row">
+  <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
+    <div class="card grey lighten-3">
+      <div class="card-content dark-text">
+        <span class="card-title">
+        {% if prop.envio_comprador %}
+          {{ negocio.comprador }}
+        {% else %}
+          {{ negocio.vendedor }}
+        {% endif %}
+        </span>
+        <div class="row">
+          <table class="centered striped" {% if forloop.last %}id="form"{%endif%}>
+            <thead>  
+              <tr>
+                <th class="show1">Articulo</th>
+                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Distribuidor</th>
+                <th class="show1">Cantidad</th>
+                <th class="show1">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Precio compra</th>
+                <th class="show1">Divisa</th>
+                <th class="not-show1">Tipo pago</th>
+                <th class="not-show1">Tasa</th>
+                <th class="not-show1">Fecha pago</th>
+                <th class="not-show1">Fecha entrega</th>
+                <th class="not-show1">Destino</th>
+                <th>Operaciones</th>
+                <th>Ver más</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in prop.items.all %}
+              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
+                {% if item.articulo.marca == "NINGUNA" %}
+                  <td class="show1">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
+                {% else %}
+                  <td class="show1">{{ item.articulo.marca|default_if_none:'' }}</td>
+                {% endif %}
+                {% if not request.user|has_group:'Comprador' %}
+                <td class="show1">{{ item.proveedor|default_if_none:'' }}</td>
+                {% endif %}
+              {% if not item.aceptado %}
+                <td class="show1"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
+                <td class="show1"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show1">
+                  <select name="divisa">
+                    <option value="" {% if item.divisa == None or item.divisa == "" %}selected{% endif %} disabled>Elija una divisa</option>
+                  {% for v,t in divisas %}
+                    <option value="{{ v }}" {% if v == item.divisa and item.divisa != None %}selected{% endif %}>{{ t }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1">
+                  <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
+                    <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
+                  {% for tipo_pago in tipo_pagos %}
+                    <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1">
+                  <select name="tasa" id="tas{{item.id}}">
+                    {% for v,t in tasas %}
+                    <option value="{{ v }}" {% if v == item.tasa %}selected{% endif %}{% if v == None %}selected disabled{% endif %}>{{ t }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
+                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
+                <td class="not-show1">
+                  <input type="text" name="destino" value="{{item.destino}}"/>
+                </td>
+                <td>
+                  <a class="action-btn btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons">check</i></a>
+                  <a class="action-btn red btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons">delete</i></a>
+                  <a class="action-btn yellow btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons">save</i></a>
+                  <a class="action-btn blue btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})"><i class="material-icons">undo</i></a>
+                </td>
+              {% else %}
+                <td class="show1">{{ item.cantidad }}</td>
+                <td class="show1">{{ item.precio_venta|stringformat:'.2f' }}</td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">{{ item.precio_compra|stringformat:'.2f' }}</td>
+                <td class="show1">{{ item.divisa }}</td>
+                <td class="not-show1">{{ item.tipo_pago }}</td>
+                <td class="not-show1">{{ item.tasa }}%</td>
+                <td class="not-show1">{{ item.fecha_pago }}</td>
+                <td class="not-show1">{{ item.fecha_entrega }}</td>
+                <td class="not-show1">{{ item.destino }}</td>
+                <td></td>
+              {% endif %}
+              <td>
+                <a class="red btn-large waves-effect waves-light" id="btn-sm-1" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
+              </td>
+              </tr>
+              <script>
+                $(document).ready(function() {
+                  contadoTasa("{{item.id}}");
+                });
+              </script>
+            {% endfor %}
+              <tr id="extra">
+                <td class="show1">
+                    <input type="hidden" id='artValue'>
+                    <input type="text" name='articulo' id='artSearch' class="autocomplete">
+                </td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
+                  <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
+                  <datalist id='distResults'>
+                  {% for dist in distribuidores %}
+                    <option data-value="{{ dist.id }}" value="{{ dist.persona }}"></option>
+                  {% endfor %}
+                  </datalist>
+                </td>
+                <td class="show1"><input type="number" name="cantidad"></td>
+                <td class="show1">
+                  <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
+                </td>
+                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
+                  <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
+                </td>
+                <td class="show1">
+                  <select name="divisa">
+                    <option value="" disabled selected>Elija una divisa</option>
+                  {% for v,t in divisas %}
+                    <option value="{{ v }}">{{ t }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1">
+                  <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
+                    <option value="" selected disabled>Elija tipo pago</option>
+                  {% for tipo_pago in tipo_pagos %}
+                    <option value="{{ tipo_pago.id }}">{{ tipo_pago.nombre }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1">
+                  <select name="tasa" id="tasAdd">
+                  {% for v,t in tasas %}
+                    <option value="{{ v }}" {% if v == None %}selected disabled{% endif %}>{{ t }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
+                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
+                <td class="not-show1">
+                  <input type="text" name="destino" value=""/>
+                </td>
+                <td><a class="btn-floating waves-effect btn-large tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
+                <td>
+                  <a class="red btn-large waves-effect" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-action">
+          <span>Observaciones</span>
+          <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
+          <br><br>
+            <a class="waves-effect waves-light btn modal-trigger" href="#modalSend" onclick="beforeSubmit();">Enviar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endif %}
 {% endfor %}
+
+{% if negocio.aprobado %}
+<div class="approved" id="approved">
+  <h2>Negocio confirmado ✓</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
+{% if negocio.cancelado %}
+<div class="canceled" id="canceled">
+  <h2>Negocio cancelado ✗</h2>
+  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+</div>
+{% endif %}
+
+{% if not negocio.aprobado and not negocio.cancelado %}
+<div id="modalSend" class="modal">
+  <div class="modal-content">
+    <h4>Enviar propuesta</h4>
+    <p>Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">CANCELAR</a>
+    <a onclick="submitProp()" class="modal-action modal-close waves-effect waves-green btn-flat">ENVIAR</a>
+  </div>
+</div>
+{% endif %}
+
 <script type="text/javascript">
 
   var last = {{ last | safe }};
@@ -164,16 +386,25 @@
     "precio_venta",
     "precio_compra",
     "divisa",
-    "cantidad"
+    "cantidad",
+    "tipo_pago",
+    "tasa",
+    "destino",
+    "fecha_entrega",
+    "fecha_pago",
+    "observaciones"
   ]
   var headers = []
 
   $(document).ready(function(){
+    $('.datepicker').datepicker({
+      format: 'dd/mm/yyyy',
+    });
     $('.tooltipped').tooltip();
     $('select').formSelect();
     $("#form thead tr th").each(function(index){
-      if ($(this).text() != "Operaciones"){
-        headers.push($(this).text().toLowerCase().replace(" ","_"))
+      if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
+        headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
       }
     })
     edits.new = {}
@@ -202,7 +433,68 @@
       },
     });
 
+    var btn_sm_1 = document.getElementById('btn-sm-1');
+    
+    $(btn_sm_1).each(function () {
+      $('[id="' + this.id + '"]:gt(0)').remove();
+    });
+
+    var elId = ""
+    "{% if not negocio.aprobado and not negocio.cancelado %}"
+    elId = "#form"
+    "{% elif negocio.aprobado and not negocio.cancelado %}"
+    elId = "#approved"
+    "{% elif not negocio.aprobado and negocio.cancelado %}"
+    elId = "#canceled"
+    "{% endif %}"
+    $([document.documentElement, document.body]).animate({
+      scrollTop: $(elId).offset().top
+    }, 500);
+
   });
+
+  var userIsComprador = false;
+  "{% if request.user|has_group:'Comprador' %}"
+  userIsComprador = true;
+  "{% endif %}"
+
+  if (userIsComprador) {
+    $(".customerHide").hide();
+  }
+
+  function contadoTasa(aggId) {
+    var tipo_pago = document.getElementById("tp"+aggId);
+    var tasa = document.getElementById("tas"+aggId);
+    var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
+    if (selectedText.toLowerCase() === "contado") {
+      tasa.disabled = true;
+      tasa.value = '0';
+    }
+    else {
+      tasa.disabled = false;
+    }
+    $('select').formSelect();
+  }
+
+  var sm = false
+
+  function showMore(n) {
+
+    var tdShow = $("td.show"+n+"");
+    var thShow = $("th.show"+n+"");
+    var tdNotShow = $("td.not-show"+n+"");
+    var thNotShow = $("th.not-show"+n+"");
+    var iAnim = $("i.i"+n+"");
+
+    thShow.toggleClass("show"+n+" not-show"+n+"");
+    tdShow.toggleClass("show"+n+" not-show"+n+"");
+    tdNotShow.toggleClass("not-show"+n+" show"+n+"");
+    thNotShow.toggleClass("not-show"+n+" show"+n+"");
+    iAnim.toggleClass("rotate");
+
+    sm = !sm
+
+  }
 
   function accept(index){
     console.log("accept")
@@ -234,84 +526,225 @@
 
   function reset(index){
     console.log("reset");
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"])
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"]);
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
       input.val(edits.items[index][element]) 
-    })
-    $("#select")
+    });
   }
+
+  var counter = 0;
 
   function addArt(){
     var n = {}, errors=false;
-    console.log("art")
+    var rowId = "NewRow"+counter
+    console.log("addArt");
     headers.forEach(element => {
-      var input = $($("#extra").find('[name="'+element+'"]'))[0]
+      if (userIsComprador) {
+        if (element == "precio") {
+          element = "precio_venta";
+        }
+      }
+      var input = $($("#extra").find('[name="'+element+'"]'))[0];
+      var artId = parseInt($("#artValue")[0].value);
       if (!input.value){
-        errors = true;
-        $(input).addClass("invalid")
+        if (userIsComprador) {
+          if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+            errors = true;
+            $(input).addClass("invalid");
+          }
+        }
+        else {
+          errors = true;
+          $(input).addClass("invalid");
+        }
       }
       if (element === "distribuidor"){
-        var opt = $("#distResults [value='"+input.value+"']")
-        n[element] = opt.data('value')
+        element = "proveedor";
+        var opt = $("#distResults [value='"+input.value+"']");
+        n[element] = opt.data('value');
       } else {
-        if (input.type == "number" || input.type == "hidden"){
-          n[element] = parseInt(input.value)
+        if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
+          n[element] = parseInt(input.value);
         }else {
-          n[element] = input.value
+          n[element] = input.value;
+          n["articulo"] = artId;
+          n["pagado"] = false;
+          n["fecha_real_entrega"] = null;
+          n["fecha_real_pago"] = null;
+          n["fecha_salida_entrega"] = null;
+          if (userIsComprador) {
+            // cambiar proveedor a nulo cuando se pueda
+            n["proveedor"] = 1;
+          }
         }
       }
     })
     if (errors){
       return;
     }
-    n.destino = 1;
     n.aceptado = false;
 
     edits.items.push(n);
+
+    var divisa = "";
+    var tipo_pago = "";
+
+    "{% for v,t in divisas %}"
+    if ("{{v}}" == n.divisa) {
+      divisa = "{{t}}";
+    }
+    "{% endfor %}"
+
+    "{% for tipo_pago in tipo_pagos %}"
+    if (parseInt("{{tipo_pago.id}}") == n.tipo_pago) {
+      tipo_pago = "{{tipo_pago.nombre}}";
+    }
+    "{% endfor %}"
+
+    if (sm) {
+      showMore(1);
+    }
+
+    if (tipo_pago.toLowerCase() == "contado") {
+      n.tasa = 0;
+    }
+
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td>"+$("#artSearch")[0].value+"</td>\
-    <td>"+$("#distSearch")[0].value+"</td>\
-    <td><input type=\"number\" name=\"precio\" step=\".01\" value="+n.precio+"></td>\
-    <td><select value=\""+n.divisa+"\" name=\"divisa\">{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
-    <td><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
+    <td class=\"show1\">"+$("#artSearch")[0].value+"</td>\
+    {% if not request.user|has_group:'Comprador' %}\
+    <td class=\"show1\">"+$("#distSearch")[0].value+"</td>\
+    {% endif %}\
+    <td class=\"show1\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
+    <td class=\"show1\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
+    {% if not request.user|has_group:'Comprador' %}\
+    <td class=\"show1\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
+    {% endif %}\
+    <td class=\"show1\"><select name=\"divisa\"><option value=\""+n.divisa+"\" selected disabled>"+divisa+"</option>{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
+    <td class=\"not-show1\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show1\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
+    <td class=\"not-show1\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
+    <td class=\"not-show1\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
     <td>\
-      <a class=\"red btn tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\">x</a>\
-      <a class=\"yellow btn tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\">e</a>\
+      <a class=\"red btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons\">delete</i></a>\
+      <a class=\"yellow btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons\">save</i></a>\
     </td>\
-    "
+    <td></td>\
+    ";
     $('select').formSelect();
     headers.forEach(element => {
+      if (userIsComprador) {
+        if (element == "precio") {
+          element = "precio_venta";
+        }
+      }
       var input = $($("#extra").find('[name="'+element+'"]'))
       input.val("");
       input.removeClass(["invalid"])
     })
     $('select').formSelect();
     $("#artSearch").val("");
+    counter = counter + 1;
+    contadoTasa(rowId);
   }
 
-  function submitProp(){
+  function beforeSubmit() {
     var proc = {}
-    proc.observaciones = ""
+    var errors = false;
+    var errorFields = [];
+    proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
       if (element.hasOwnProperty("articulo")){
         proc.items.push(element)
       }
     })
-    fetch("",{
-    method:'POST',
-    headers: {
-      [window.drf.csrfHeaderName]: window.drf.csrfToken,
-      'Content-Type':'application/json',
-    },
-    body: JSON.stringify(proc),
-   })
-    .then(a => {location.reload()})
-    .catch(a => {console.log(a)})
+    var acc = []
+    var count = 0;
+    proc.items.forEach(element => {
+      for (k in element) {
+        if (k == "aceptado") {
+          var v = element[k];
+          acc.push(v);
+        }
+      }
+      count++;
+    })
+    if (count == 0) {
+      acc = [false];
+    }
+    var checker = arr => arr.every(Boolean);
+    var modalTitle = $("#modalSend .modal-content h4");
+    var modalBody = $("#modalSend .modal-content p");
+    if (checker(acc)) {
+      modalTitle.text("Confirmar negocio");
+      modalBody.text("Estás a punto de confirmar el negocio. ¿Deseas continuar con la operación?");
+    }
+    else if (count == 0) {
+      modalTitle.text("Cancelar negocio");
+      modalBody.text("Estás a punto de cancelar el negocio. ¿Deseas continuar con la operación?");
+    }
+    else {
+      modalTitle.text("Enviar propuesta");
+      modalBody.text("Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?");
+    }
+  }
+
+  function submitProp() {
+    var proc = {}
+    var errors = false;
+    var errorFields = [];
+    proc.observaciones = $("#observaciones").val();
+    proc.items = [];
+    edits.items.forEach(element => {
+      if (element.hasOwnProperty("articulo")){
+        proc.items.push(element)
+      }
+    })
+    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega"];
+    proc.items.forEach(element => {
+      for (k in element) {
+        if (!(jQuery.inArray(k, elems) != -1)) {
+          if (element.hasOwnProperty(k)) {
+            var v = element[k];
+            if (v == null || (v == 0 && k != "tasa") || v == "" || v == undefined) {
+              if (userIsComprador && !((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
+                errorFields.push("El campo \""+k+"\" contiene errores.");
+                errors = true;
+              }
+            }
+            if (userIsComprador && k == "proveedor" && v == null) {
+              // cambiar proveedor a nulo cuando se pueda
+              element[k] = 1;
+            }
+          }
+        }
+      }
+    })
+    console.log(proc);
+    var print_errors = "";
+    for (var i = 0; i < errorFields.length; i++) {
+      print_errors = print_errors.concat('\n'+errorFields[i])
+    }
+    if (errors) {
+      swal("Oops!", print_errors, "error");
+    }
+    else {
+      fetch("",{
+        method:'POST',
+        headers: {
+          [window.drf.csrfHeaderName]: window.drf.csrfToken,
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify(proc),
+      })
+        .then(a => {location.reload()})
+        .catch(a => {console.log(a)})
+    }
   }
 </script>
 {%endblock body%}

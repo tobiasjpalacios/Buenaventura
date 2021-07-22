@@ -1,10 +1,9 @@
 import json
-import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
 from django.http import JsonResponse
@@ -21,6 +20,8 @@ from .decorators import *
 from datetime import date, datetime, timedelta
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -31,7 +32,8 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
-@group_required('Vendedor')
+@login_required(login_url='/', redirect_field_name='router')
+@group_required('Vendedor', 'Comprador')
 def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
@@ -237,7 +239,15 @@ def getProveedoresNegocio(negocio):
     return proveedores
 
 def testeo(request):
-    return render(request, 'testeo.html')
+
+    neg = Negocio.objects.all()
+
+    context = {
+        'negAp': neg.filter(aprobado=True),
+        'negNoAp': neg.filter(aprobado=False)
+    }
+
+    return render(request, 'testeo.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -270,7 +280,7 @@ def vistaAdministrador(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf, 'A')
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNCL(request,negociosCerrRech, 'A')
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -310,7 +320,7 @@ def vistaProveedor(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNCL(request,negociosCerrConf,'P')
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNCL(request,negociosCerrRech,'P')
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -332,7 +342,7 @@ def vistaGerente(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__empresa__id=mi_gerente.empresa.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -361,7 +371,7 @@ def vistaCliente(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -385,7 +395,7 @@ def vendedor(request):
     negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=False).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -617,14 +627,14 @@ def listaNL(request,negocioFilter,modulo):
                         entregado = True
                         if (primero_entregado):
                             fecha_entregado = b.fecha_entrega
-                            destino_entregado = b.destino.direccion
+                            destino_entregado = b.destino
                             primero_entregado = False
                         else:
                             fechaEntregado = datetime.strptime(fecha_entregado, "%d/%m/%Y")
                             res = calcularVencAtr(b.fecha_entrega, fecha_entregado)
                             if (not res):
                                 fecha_entregado = b.fecha_entrega
-                                destino_entregado = b.destino.direccion
+                                destino_entregado = b.destino
                     else:
                         if (not resultado):
                             if (b.fecha_salida_entrega is None):
@@ -632,39 +642,39 @@ def listaNL(request,negocioFilter,modulo):
                                 en_tiempo = True
                                 if (primero_tiempo):
                                     fecha_tiempo = b.fecha_entrega
-                                    destino_tiempo = b.destino.direccion
+                                    destino_tiempo = b.destino
                                     primero_tiempo = False
                                 else:
                                     fechaTiempo = datetime.strptime(fecha_tiempo, "%d/%m/%Y")
                                     res = calcularVencAtr(fechaEntrega, fechaTiempo)
                                     if (not res):
                                         fecha_tiempo = b.fecha_entrega
-                                        destino_tiempo = b.destino.direccion
+                                        destino_tiempo = b.destino
                             else:
                                 #En Transito
                                 en_transito = True
                                 if (primero_transito):
                                     fecha_transito = b.fecha_entrega
-                                    destino_transito = b.destino.direccion
+                                    destino_transito = b.destino
                                     primero_transito = False
                                 else:
                                     res = calcularVencAtr(b.fecha_entrega, fecha_transito)
                                     if (not res):
                                         fecha_transito = b.fecha_entrega
-                                        destino_transito = b.destino.direccion
+                                        destino_transito = b.destino
                         else:
                             #Atrasado
                             atrasado = True
                             if (primero_atrasado):
                                     fecha_atrasado = b.fecha_entrega    
-                                    destino_atrasado = b.destino.direccion
+                                    destino_atrasado = b.destino
                                     primero_atrasado = False
                             else:
                                 fechaAtrasado = datetime.strptime(fecha_atrasado, "%d/%m/%Y")
                                 res = calcularVencAtr(b.fecha_entrega, fecha_atrasado)
                                 if (not res):
                                     fecha_atrasado = b.fecha_entrega
-                                    destino_atrasado = b.destino.direccion
+                                    destino_atrasado = b.destino
                 if (atrasado):
                     estado = "Atrasado"
                     destino = destino_atrasado
@@ -754,7 +764,7 @@ def detalleLogistica(request):
                     #Atrasado
                     b.estado = 'Atrasado'
                     b.estados = ('A Tiempo','En Tránsito', 'Entregado')
-        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'cliente':cliente,'proveedores':proveedores})
+        return render (request, 'modalLogistica.html', {'negocio':negocio,'lista_items':items,'clientes':cliente,'proveedores':proveedores})
     return render (request, 'modalLogistica.html')
 
 
@@ -1318,26 +1328,39 @@ class carga_excel(View):
         sheet_reader(request.FILES["myfile"])
         return self.get(request)
 
-def crear_negocio(request, comprador):
-    chunks = comprador.split(' ')
-    comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
-    comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
-    comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
-    vendedor_obj = Vendedor.objects.get(persona__user=request.user)
-    negocio = Negocio(
-        comprador = comprador_obj,
-        vendedor = vendedor_obj
-        )
-    negocio.save()
-    return negocio
+def crear_negocio(request, comprador, vendedor, isComprador):
+    if isComprador:
+        chunks = vendedor.split(' ')
+        vendedor_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
+        vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
+        comprador_obj = Comprador.objects.get(persona__user=request.user)
+        negocio = Negocio(
+            comprador = comprador_obj,
+            vendedor = vendedor_obj
+            )
+        negocio.save()
+        return negocio
+    else:
+        chunks = comprador.split(' ')
+        comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
+        comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
+        vendedor_obj = Vendedor.objects.get(persona__user=request.user)
+        negocio = Negocio(
+            comprador = comprador_obj,
+            vendedor = vendedor_obj
+            )
+        negocio.save()
+        return negocio
 
-def crear_propuesta(negocio,observacion):
+def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
         negocio=negocio,
         observaciones=observacion,
         timestamp=datetime.now(),
-        envio_comprador=False,
-        visto=False,
+        envio_comprador=isComprador,
+        visto=isComprador,
         )    
     propuesta.save()
     return propuesta
@@ -1356,6 +1379,20 @@ class APIComprador(View):
             }
             compradores.append(tmp)
         return JsonResponse(list(compradores), safe=False)
+
+class APIVendedor(View):
+    def get(self,request):
+        vendedores = []
+        for vend in Vendedor.objects.all().values("persona_id"):
+            try:
+                tmp_persona = Persona.objects.filter(id=vend['persona_id']).values("user")[0]['user']
+            except Exception:
+                context = Persona.objects.none()
+            tmp = {
+                'usuario':User.objects.get(id=tmp_persona).get_full_name()
+            }
+            vendedores.append(tmp)
+        return JsonResponse(list(vendedores), safe=False)
 
 
 class APIDistribuidor(View):
@@ -1545,6 +1582,10 @@ class PropuestaView(View):
 class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
+
+        if not negocio.vendedor.persona.user == request.user and not negocio.comprador.persona.user == request.user:
+            return redirect('home')
+
         data = negocio.propuestas.last()
         last = {
             'items': [],
@@ -1565,10 +1606,12 @@ class NegocioView(View):
             last['items'].append(art)
         context = {
             "negocio": negocio,
-            "propuestas": reversed(negocio.propuestas.all().reverse()[:2]),
-            "last": json.dumps(last),
+            "propuestas": reversed(negocio.propuestas.all().reverse()),
+            "last": json.dumps(last,cls=DjangoJSONEncoder),
             "divisas": DIVISA_CHOICES,
-            "distribuidores": Empresa.objects.all()
+            'tasas': TASA_CHOICES,
+            "distribuidores": Proveedor.objects.all(),
+            "tipo_pagos": TipoPago.objects.all()
         }
         return render(request, 'negocio.html', context)
 
@@ -1608,7 +1651,7 @@ class NegocioView(View):
             request.user.get_full_name(),
             "aceptada" if completed else "actualizada"
         )
-        catergoria = "Propuesta {}".format(
+        categoria = "Propuesta {}".format(
             "aceptada" if completed else "actualizada"
         )
         user = None
@@ -1616,13 +1659,31 @@ class NegocioView(View):
             user=negocio.comprador.persona.user
         else:
             user=negocio.vendedor.persona.user
-        notif = models.Notificacion(
+        notif = Notificacion(
             titulo=titulo,
             categoria=categoria,
             hyperlink=reverse('negocio', args=[negocio.id,]),
             user=user
         )
         notif.save()
+
+        propuesta = Propuesta.objects.filter(negocio=negocio).last()
+        itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
+        acc = []
+        
+        for i in itemsProp:
+            acc.append(i.aceptado)
+        
+        if all(acc) and not itemsProp.count() == 0:
+            negocio.aprobado = True
+            negocio.fecha_cierre = datetime.now()
+            negocio.save()
+
+        if len(data.get('items')) == 0:
+            negocio.cancelado = True
+            negocio.fecha_cierre = datetime.now()
+            negocio.save()
+
         return render(request, 'negocio.html')
 
 class ListEmpresaView(View):
@@ -1718,10 +1779,12 @@ class APIArticulos(View):
 
     def post(self,request):
         recieved = json.loads(request.body.decode("utf-8"))
-        comprador = recieved.get("comprador")
         observacion = recieved.get("observaciones")
-        negocio = crear_negocio(request, comprador)
-        propuesta = crear_propuesta(negocio,observacion)
+        isComprador = recieved.get("envio_comprador")
+        comprador = recieved.get("comprador")
+        vendedor = recieved.get("vendedor")
+        negocio = crear_negocio(request, comprador, vendedor, isComprador)
+        propuesta = crear_propuesta(negocio,observacion,isComprador)
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
@@ -1742,7 +1805,9 @@ class APIArticulos(View):
                 domicilio.save()
 
             #quilombo para traer al objecto empresa
-            if len(distribuidor.strip()) != 0:
+            if isComprador:
+                proveedor = None
+            elif len(distribuidor.strip()) != 0:
                 get_distribuidor = actual.get("Distribuidor").split(" ")
                 nombre = get_distribuidor[0].strip()
                 apellido = get_distribuidor[1].strip()
@@ -1766,7 +1831,9 @@ class APIArticulos(View):
             else:
                 precio_venta = 0.0
 
-            if len(actual.get("Precio compra").strip()) != 0:
+            if isComprador:
+                precio_compra = 0.0
+            elif len(actual.get("Precio compra").strip()) != 0:
                 precio_compra = actual.get("Precio compra")
             else:
                 precio_compra = 0.0

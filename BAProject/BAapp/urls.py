@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from BAapp.views import *
+from django.contrib.auth.decorators import login_required
 
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
     path('compradores/',APIComprador.as_view() , name="api_comprador"),
+    path('vendedores/',APIVendedor.as_view() , name="api_vendedor"),
     path('distribuidor/',APIDistribuidor.as_view() , name="api_distribuidor"),
     path('empresa/',APIEmpresa.as_view() , name="api_empresa"),
 ]
@@ -66,8 +68,8 @@ urlpatterns = [
     path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
 
     #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
-    path('negocio/<int:pk>', NegocioView.as_view(), name="negocio"),
-    path('negocio/', NegocioView.as_view(), name="crear_negocio"),
+    path('negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(NegocioView.as_view()), name="negocio"),
+    path('negocio/', login_required(login_url='/', redirect_field_name='router')(NegocioView.as_view()), name="crear_negocio"),
 
     path('empresas/', ListEmpresaView.as_view(), name = "mostrar_empresas"),
     path('empresa/<int:pk>', EmpresaView.as_view(), name="empresa"),
