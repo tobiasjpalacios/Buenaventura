@@ -81,7 +81,7 @@ class PasswordsChangingForm(PasswordChangeForm):
     
 class FacturaForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     fecha_vencimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker2'}))
     documento = forms.FileInput()
 
@@ -92,7 +92,7 @@ class FacturaForm(forms.ModelForm):
 
 class RemitoForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     fecha_vencimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
@@ -102,7 +102,7 @@ class RemitoForm(forms.ModelForm):
 
 class OrdenDeCompraForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -111,7 +111,7 @@ class OrdenDeCompraForm(forms.ModelForm):
 
 class OrdenDePagoForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -120,7 +120,7 @@ class OrdenDePagoForm(forms.ModelForm):
 
 class ContansiaRentencionForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -129,7 +129,7 @@ class ContansiaRentencionForm(forms.ModelForm):
 
 class ReciboForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -137,8 +137,8 @@ class ReciboForm(forms.ModelForm):
         fields = '__all__'
 
 class ChequesForm(forms.ModelForm):
-    
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':'HOLA'}))
+
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
 
     class Meta:
@@ -148,7 +148,7 @@ class ChequesForm(forms.ModelForm):
 
 class CuentaCorrientesForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -157,7 +157,7 @@ class CuentaCorrientesForm(forms.ModelForm):
 
 class FacturaComisionesForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
@@ -166,7 +166,7 @@ class FacturaComisionesForm(forms.ModelForm):
 
 class NotaForm(forms.ModelForm):
     
-    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker','label':''}))
+    fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:

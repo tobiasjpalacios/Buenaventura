@@ -499,7 +499,6 @@ class Cheque(models.Model):
         "Negocio", 
         null=False, 
         on_delete=models.DO_NOTHING)
-
     fecha_emision = models.DateField(null=False)
     documento = models.FileField(upload_to='media/cheques/%Y/%m/%d', null=False)
     class Meta():

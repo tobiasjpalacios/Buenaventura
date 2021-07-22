@@ -147,7 +147,7 @@
                           <option value="10">Nota</option>
                         </select>
                       </div>
-                      <a class="waves-effect waves-light btn col s5 " onclick="buscarComprobante()" style="border-radius: 2em; margin-top: 15px;">Buscar</a>
+                      <a class="waves-effect waves-light btn col s5 " onclick="buscarComprobante()" style="border-radius: 2em; margin-top: 15px;"><i class="material-icons right">search</i>Buscar</a>
                 </div>
                 <br>
 
@@ -155,7 +155,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>vencimiento</th>
                             <th>numero</th>
@@ -168,7 +167,6 @@
                     <tbody>
                         {% for factura in comprobantes.facturas %}
                         <tr>
-                            <td>{{ factura.negocio }}</td>
                             <td>{{ factura.fecha_emision }}</td>
                             <td>{{ factura.fecha_vencimiento }}</td>
                             <td>{{ factura.numero_factura }}</td>
@@ -176,7 +174,7 @@
                             <td>{{ factura.tipo_pago }}</td>
                             <td>{{ factura.monto }}</td>
                             <td>
-                                <a href="{{factura.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{factura.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -188,7 +186,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>vencimiento</th>
                             <th>proveedor</th>
@@ -200,14 +197,13 @@
                     <tbody>
                         {% for remito in comprobantes.remitos %}
                         <tr>
-                            <td>{{ remito.negocio }}</td>
                             <td>{{ remito.fecha_emision }}</td>
                             <td>{{ remito.fecha_vencimiento }}</td>
                             <td>{{ remito.proveedor }}</td>
                             <td>{{ remito.lote }}</td>
                             <td>{{ remito.observaciones }}</td>
                             <td>
-                                <a href="{{remito.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{remito.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -219,7 +215,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>proveedor</th>
                             <th></th>
@@ -228,11 +223,10 @@
                     <tbody>
                         {% for ordenDeCompra in comprobantes.ordenesDeCompra %}
                         <tr>
-                            <td>{{ ordenDeCompra.negocio }}</td>
                             <td>{{ ordenDeCompra.fecha_emision }}</td>
                             <td>{{ ordenDeCompra.recibe_proveedor }}</td>
                             <td>
-                                <a href="{{ordenDeCompra.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{ordenDeCompra.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -244,7 +238,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>factura</th>
                             <th>proveedor</th>
@@ -255,13 +248,12 @@
                     <tbody>
                         {% for ordenDePago in comprobantes.ordenesDePago %}
                         <tr>
-                            <td>{{ ordenDePago.negocio }}</td>
                             <td>{{ ordenDePago.fecha_emision }}</td>
                             <td>{{ ordenDePago.factura }}</td>
                             <td>{{ ordenDePago.recibe_proveedor }}</td>
                             <td>{{ ordenDePago.monto }}</td>
                             <td>
-                                <a href="{{ordenDePago.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{ordenDePago.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -273,7 +265,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>proveedor</th>
                             <th>importe</th>
@@ -283,12 +274,11 @@
                     <tbody>
                         {% for contansiaRentencion in comprobantes.contansiasRentencion %}
                         <tr>
-                            <td>{{ contansiaRentencion.negocio }}</td>
                             <td>{{ contansiaRentencion.fecha_emision }}</td>
                             <td>{{ contansiaRentencion.recibe_proveedor }}</td>
                             <td>{{ contansiaRentencion.importe }}</td>
                             <td>
-                                <a href="{{contansiaRentencion.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{contansiaRentencion.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -300,7 +290,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>proveedor</th>
                             <th>monto</th>
@@ -310,12 +299,11 @@
                     <tbody>
                         {% for recibo in comprobantes.recibos %}
                         <tr>
-                            <td>{{ recibo.negocio }}</td>
                             <td>{{ recibo.fecha_emision }}</td>
                             <td>{{ recibo.recibe_proveedor }}</td>
                             <td>{{ recibo.monto }}</td>
                             <td>
-                                <a href="{{recibo.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{recibo.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -327,20 +315,16 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
-                            <th>observaciones</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for cheque in comprobantes.cheques %}
                         <tr>
-                            <td>{{ cheque.negocio }}</td>
                             <td>{{ cheque.fecha_emision }}</td>
-                            <td>{{ cheque.observaciones }}</td>
                             <td>
-                                <a href="{{cheque.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{cheque.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -352,7 +336,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th></th>
                         </tr>
@@ -360,10 +343,9 @@
                     <tbody>
                         {% for cuentaCorriente in comprobantes.cuentasCorriente %}
                         <tr>
-                            <td>{{ cuentaCorriente.negocio }}</td>
                             <td>{{ cuentaCorriente.fecha_emision }}</td>
                             <td>
-                                <a href="{{cuentaCorriente.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{cuentaCorriente.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -375,7 +357,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>proveedor</th>
                             <th></th>
@@ -384,11 +365,10 @@
                     <tbody>
                         {% for facturaComision in comprobantes.facturasComision %}
                         <tr>
-                            <td>{{ facturaComision.negocio }}</td>
                             <td>{{ facturaComision.fecha_emision }}</td>
                             <td>{{ facturaComision.recibe_proveedor }}</td>
                             <td>
-                                <a href="{{facturaComision.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{facturaComision.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -400,7 +380,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>negocio</th>
                             <th>emision</th>
                             <th>tipo</th>
                             <th></th>
@@ -409,11 +388,10 @@
                     <tbody>
                         {% for nota in comprobantes.notas %}
                         <tr>
-                            <td>{{ nota.negocio }}</td>
                             <td>{{ nota.fecha_emision }}</td>
                             <td>{{ nota.tipo_nota }}</td>
                             <td>
-                                <a href="{{nota.documento.url}}" class="btn btn-primary btn-sm">descargar</a>
+                                <a href="{{nota.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -427,20 +405,24 @@
 
             </div>
 
-            <a class="waves-effect waves-light btn col s12  green" style="border-radius: 2em;" id="show"><i class="material-icons right">add</i>agregar</a>
-            <div class="row " style="border-color: rgba(128, 128, 128, 0.5); border: rgba(128, 128, 128, 0.5) 2px solid; border-radius: 2em;" id="esconder" >
+            <div class="row " style="border-color: rgba(128, 128, 128, 0.5); border: rgba(128, 128, 128, 0.5) 2px solid; border-radius: 2em;" >
                 <div class="conteiner">
                     <div class="input-field col s6">
-                        <select>
+                        <select id='selecAgregar'>
                           <option value="" disabled selected>Selecione</option>
                           <option value="1">Factura</option>
-                          <option value="2">Orden de pago</option>
-                          <option value="3">Remito</option>
+                          <option value="2">Remito</option>
+                          <option value="3">Orden De Compra</option>
+                          <option value="4">Orden De Pago</option>
+                          <option value="5">Contansia Rentencion</option>
+                          <option value="6">Recibo</option>
+                          <option value="7">Cheque</option>
+                          <option value="8">CuentaCorriente</option>
+                          <option value="9">FacturaComision</option>
+                          <option value="10">Nota</option>
                         </select>
-                        <label> tipo de factura a agregar</label>
                       </div>
-                      <a class="waves-effect waves-light btn col s5 " style="border-radius: 2em; margin-top: 15px;"><i class="material-icons right">add</i>agregar</a>
-                      <a id="cancelar" class="btn-floating btn-small waves-effect waves-light modal-trigger  red " style="margin-top: 15px; margin-left: 10px;"><i class=" small material-icons ">close</i></a>
+                      <a class="waves-effect waves-light btn col s5 " onclick="agregarComprobante('{{negocio.id}}')" style="border-radius: 2em; margin-top: 15px;"><i class="material-icons right">add</i>agregar</a>
                 </div>
             </div>
         </div>
@@ -456,10 +438,6 @@
         $('#esconder').hide();
         esconderComprobantes();
 
-        $('#show').click(function () {
-            $('#esconder').show();
-            $('#show').hide()
-        });
         $('#cancelar').click(function () {
             $('#esconder').hide();
             $('#show').show()
@@ -470,35 +448,75 @@
     function buscarComprobante(){
         esconderComprobantes();
         var valor = $('#selecBuscar').val();
-        if (valor == '1'){
-            $('#tablaFactura').show();
+        switch (valor) {
+            case '1':
+                $('#tablaFactura').show();
+                break;    
+            case '2':
+                $('#tablaRemito').show();
+                break;     
+            case '3':
+                $('#tablaOrdenDeCompra').show();
+                break;
+            case '4':
+                $('#tablaOrdenDePago').show();
+                break;
+            case '5':
+                $('#tablaContansiaRentencion').show();
+                break;
+            case '6':
+                $('#tablaRecibo').show();
+                break;
+            case '7':
+                $('#tablaCheque').show();
+                break;
+            case '8':
+                $('#tablaCuentaCorriente').show();
+                break;
+            case '9':
+                $('#tablaFacturaComision').show();
+                break;
+            case '10':
+                $('#tablaNota').show();
+                break;
         }
-        if (valor == '2'){
-            $('#tablaRemito').show();
-        }
-        if (valor == '3'){
-            $('#tablaOrdenDeCompra').show();
-        }
-        if (valor == '4'){
-            $('#tablaOrdenDePago').show();
-        }
-        if (valor == '5'){
-            $('#tablaContansiaRentencion').show();
-        }
-        if (valor == '6'){
-            $('#tablaRecibo').show();
-        }
-        if (valor == '7'){
-            $('#tablaCheque').show();
-        }
-        if (valor == '8'){
-            $('#tablaCuentaCorriente').show();
-        }
-        if (valor == '9'){
-            $('#tablaFacturaComision').show();
-        }
-        if (valor == '10'){
-            $('#tablaNota').show();
+    }
+
+
+    function agregarComprobante(idNeg){
+        esconderComprobantes();
+        var valor = $('#selecAgregar').val();
+        switch (valor) {
+            case '1':
+                openModalFormFactura(idNeg);
+                break;       
+            case '2':
+                openModalFormRemitos(idNeg);
+                break;      
+            case '3':
+                openModalFormRemitos(idNeg);
+                break;
+            case '4':
+                openModalFormOrdenDePago(idNeg);
+                break;
+            case '5':
+                openModalFormContansiaRentencion(idNeg);
+                break;
+            case '6':
+                openModalFormRemitos(idNeg);
+                break;
+            case '7':
+                openModalFormCheques(idNeg);
+                break;
+            case '8':
+                openModalformCuentaCorriente(idNeg);
+                break;
+            case '9':
+                openModalformFacturaComision(idNeg);
+                break;
+            case '10':
+                openModalFormNota(idNeg);
+                break;
         }
     }
 
@@ -516,9 +534,11 @@
     }
 
 
-    function openModalFormFactura() {
+    function openModalFormFactura(idNeg) {
+        var urlTemp = '{% url "formFactura" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formFactura' %}",
+            url: urlf,
             data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormFactura").html(data);
@@ -530,10 +550,13 @@
         })
     };
 
-    function openModalFormRemitos() {
+    function openModalFormRemitos(idNeg) {
+        var urlTemp = '{% url "formRemito" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formFactura' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormRemito").html(data);
                 $('#remito').modal('open');
@@ -543,10 +566,14 @@
             }
         })
     };
-    function openModalFormOrdenDeCompra() {
+
+    function openModalFormOrdenDeCompra(idNeg) {
+        var urlTemp = '{% url "formOrdenDeCompra" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formOrdenDeCompra' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormOrdenDeCompra").html(data);
                 $('#ordenDeCompra').modal('open');
@@ -556,10 +583,14 @@
             }
         })
     };
-    function openModalFormOrdenDePago() {
+
+    function openModalFormOrdenDePago(idNeg) {
+        var urlTemp = '{% url "formOrdenDePago" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formOrdenDePago' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormOrdenDePago").html(data);
                 $('#ordenDePago').modal('open');
@@ -569,10 +600,14 @@
             }
         })
     };
-    function openModalFormContansiaRentencion() {
+
+    function openModalFormContansiaRentencion(idNeg) {
+        var urlTemp = '{% url "formContansiaRentencion" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formContansiaRentencion' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { idNeg: idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormContansiaRentencion").html(data);
                 $('#contansiaRentencion').modal('open');
@@ -582,10 +617,14 @@
             }
         })
     };
-    function openModalFormRecibo() {
+
+    function openModalFormRecibo(idNeg) {
+        var urlTemp = '{% url "formRecibo" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formRecibo' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormRecibo").html(data);
                 $('#recibo').modal('open');
@@ -595,10 +634,14 @@
             }
         })
     };
-    function openModalFormCheques() {
+
+
+    function openModalFormCheques(idNeg) {
+        var urlTemp = '{% url "formChequeDef" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formCheque' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data : { csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormCheques").html(data);
                 $('#cheques').modal('open');
@@ -608,10 +651,14 @@
             }
         })
     };
-    function openModalformCuentaCorriente() {
+
+    function openModalformCuentaCorriente(idNeg) {
+        var urlTemp = '{% url "formCuentaCorriente" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formCuentaCorriente' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalformCuentaCorriente").html(data);
                 $('#cuentaCorrientes').modal('open');
@@ -621,10 +668,14 @@
             }
         })
     };
-    function openModalformFacturaComision() {
+
+    function openModalformFacturaComision(idNeg) {
+        var urlTemp = '{% url "formFacturaComision" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formFacturaComision' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalformFacturaComision").html(data);
                 $('#facturaComisiones').modal('open');
@@ -634,10 +685,14 @@
             }
         })
     };
-    function openModalFormNota() {
+    
+    function openModalFormNota(idNeg) {
+        var urlTemp = '{% url "formNota" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
-            url: "{% url 'formNota' %}",
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
                 $("#modalFormNota").html(data);
                 $('#nota').modal('open');
