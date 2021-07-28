@@ -486,8 +486,31 @@ def detalleNegocio(request):
             proveedorP = Proveedor.objects.get(persona__id=persona.id)
             items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
         else:
-            items = ItemPropuesta.objects.filter(propuesta__id = idProp)    
-        return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items)})
+            items = ItemPropuesta.objects.filter(propuesta__id = idProp) 
+            facturas = Factura.objects.filter(negocio=propuesta.negocio)
+            remitos = Remito.objects.filter(negocio=propuesta.negocio)
+            ordenesDeCompra = OrdenDeCompra.objects.filter(negocio=negocio)
+            ordenesDePago = OrdenDePago.objects.filter(negocio=negocio)
+            contansias = ContansiaRentencion.objects.filter(negocio=negocio)
+            recibos = Recibo.objects.filter(negocio=negocio)
+            cheques = Cheque.objects.filter(negocio=negocio)
+            cuentasCorriente = CuentaCorriente.objects.filter(negocio=negocio)
+            facturasComision = FacturaComision.objects.filter(negocio=negocio)
+            notas = Nota.objects.filter(negocio=negocio)
+
+            comprobantes = {
+                "facturas": facturas,
+                "remitos": remitos,
+                "ordenesDeCompra": ordenesDeCompra,
+                "ordenesDePago": ordenesDePago,
+                "contansias": contansias,
+                "recibos": recibos,
+                "cheques": cheques,
+                "cuentasCorriente": cuentasCorriente,
+                "facturasComision": facturasComision,
+                "notas": notas,          
+            }   
+        return render (request, 'modalDetalleNegocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
     return render (request, 'modalDetalleNegocio.html')
 
 
@@ -1865,7 +1888,11 @@ def formFactura(request, *args, **kwargs):
             print(form.errors)  
         return redirect("home")
     else:
-        form = FacturaForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = FacturaForm(initial = {'negocio': negocio})
+        else:
+            form = FacturaForm()
         tipo = "Factura"
         context = {
             'form':form,
@@ -1873,7 +1900,7 @@ def formFactura(request, *args, **kwargs):
         }
         return render(request, 'modalForm.html', context)
 
-def formRemito(request):
+def formRemito(request, *args, **kwargs):
     if request.method == 'POST':
         form = RemitoForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1886,7 +1913,11 @@ def formRemito(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = RemitoForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = RemitoForm(initial = {'negocio': negocio})
+        else:
+            form = RemitoForm()
         tipo = "Remito"
         context = {
             'form':form,
@@ -1894,7 +1925,7 @@ def formRemito(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formOrdenDeCompra(request):
+def formOrdenDeCompra(request, *args, **kwargs):
     if request.method == 'POST':
         form = OrdenDeCompraForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1907,7 +1938,11 @@ def formOrdenDeCompra(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = OrdenDeCompraForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = OrdenDeCompraForm(initial = {'negocio': negocio})
+        else:
+            form = OrdenDeCompraForm()
         tipo = "OrdenDeCompra"
         context = {
             'form':form,
@@ -1915,7 +1950,7 @@ def formOrdenDeCompra(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formOrdenDePago(request):
+def formOrdenDePago(request, *args, **kwargs):
     if request.method == 'POST':
         form = OrdenDePagoForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1928,7 +1963,11 @@ def formOrdenDePago(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = OrdenDePagoForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = OrdenDePagoForm(initial = {'negocio': negocio})
+        else:
+            form = OrdenDePagoForm()
         tipo = "OrdenDePago"
         context = {
             'form':form,
@@ -1936,7 +1975,7 @@ def formOrdenDePago(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formContansiaRentencion(request):
+def formContansiaRentencion(request, *args, **kwargs):
     if request.method == 'POST':
         form = ContansiaRentencionForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1949,7 +1988,11 @@ def formContansiaRentencion(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = ContansiaRentencionForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = ContansiaRentencionForm(initial = {'negocio': negocio})
+        else:
+            form = ContansiaRentencionForm()
         tipo = "ContansiaRentencion"
         context = {
             'form':form,
@@ -1957,7 +2000,7 @@ def formContansiaRentencion(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formRecibo(request):
+def formRecibo(request, *args, **kwargs):
     if request.method == 'POST':
         form = ReciboForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1970,7 +2013,11 @@ def formRecibo(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = ReciboForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = ReciboForm(initial = {'negocio': negocio})
+        else:
+            form = ReciboForm()
         tipo = "Recibo"
         context = {
             'form':form,
@@ -1978,7 +2025,7 @@ def formRecibo(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formCheque(request):
+def formCheque(request, *args, **kwargs):
     if request.method == 'POST':
         form = ChequesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -1990,15 +2037,20 @@ def formCheque(request):
         else:
             print(form.errors)  
     else:
-        form = ChequesForm()
-        tipo = "Cheques"
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = ChequesForm(initial = {'negocio': negocio})
+        else:
+            form = ChequesForm()
+        tipo = "Cheque"
         context = {
             'form':form,
             'tipo':tipo,
             }
         return render(request, 'modalForm.html', context)
 
-def formCuentaCorriente(request):
+
+def formCuentaCorriente(request, *args, **kwargs):
     if request.method == 'POST':
         form = CuentaCorrientesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -2011,7 +2063,11 @@ def formCuentaCorriente(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = CuentaCorrientesForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = CuentaCorrientesForm(initial = {'negocio': negocio})
+        else:
+            form = CuentaCorrientesForm()
         tipo = "CuentaCorrientes"
         context = {
         'form':form,
@@ -2019,7 +2075,7 @@ def formCuentaCorriente(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formFacturaComision(request):
+def formFacturaComision(request, *args, **kwargs):
     if request.method == 'POST':
         form = FacturaComisionesForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -2032,7 +2088,11 @@ def formFacturaComision(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = FacturaComisionesForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = FacturaComisionesForm(initial = {'negocio': negocio})
+        else:
+            form = FacturaComisionesForm()
         tipo = "FacturaComisiones"
         context = {
             'form':form,
@@ -2040,7 +2100,7 @@ def formFacturaComision(request):
         }
         return render(request, 'modalForm.html', context)
 
-def formNota(request):
+def formNota(request, *args, **kwargs):
     if request.method == 'POST':
         form = NotaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -2053,11 +2113,14 @@ def formNota(request):
             print(form.errors)  
         return redirect("home")
     else:
-        form = NotaForm()
+        if ("neg" in kwargs):
+            negocio = Negocio.objects.get(id=kwargs["neg"])
+            form = NotaForm(initial = {'negocio': negocio})
+        else:
+            form = NotaForm()
         tipo = "Nota"
         context = {
             'form':form,
             'tipo':tipo
         }
         return render(request, 'modalForm.html', context)
-

@@ -1135,7 +1135,7 @@ BuenaVentura Agronegocios
 
   function openModalFormRemitos(){
     $.ajax({
-      url: "{% url 'formFactura' %}",
+      url: "{% url 'formRemito' %}",
       data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
       success: function (data) { 
         $("#modalFormRemito").html(data);
