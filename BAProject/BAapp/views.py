@@ -1875,6 +1875,35 @@ class PasswordsChangeView(PasswordChangeView):
     def get_success_url(self):
         return reverse('successPassword')
 
+def comprobanteTipo(num):
+    options = {
+            '1': "FACTURA",
+            '2': "REMITO",
+            '3': "ORDEN DE COMPRA",
+            '4': "ORDEN DE PAGO",
+            '5': "CONTANSIA DE RETENCION",
+            '6': "RECIBO",
+            '7': "CHEQUE",
+            '8': "CUENTA CORRIENTE",
+            '9': "FACTURA COMISION",
+            '10': "NOTA",
+            'default': "casi",
+        }
+    return options.get(num)
+ 
+def selecNegComprobante(request, *args, **kwargs):
+    if request.method == 'POST':
+        negocios = Negocio.objects.all().order_by('-timestamp')
+        negocio = getNegociosToList(negocios)
+        tipoN = kwargs["tipo"]
+        tipo = comprobanteTipo(tipoN)        
+        context = {
+            'tipoN': tipoN,
+            'tipo': tipo,
+            'negocios':list(negocio),
+        }
+        return render(request, 'modalSelecNeg.html', context)
+
 def formFactura(request, *args, **kwargs):
     if request.method == 'POST':
         form = FacturaForm(request.POST or None, request.FILES or None)

@@ -83,6 +83,9 @@ urlpatterns = [
 
     #crear comprobantes
 
+    path('selecNegComprobante/(?P<tipo>[]+)', selecNegComprobante, name="selecNegComprobante"),
+
+
     path('formFactura/(?P<neg>[]+)', formFactura, name="formFactura"),
     path('formFactura/', formFactura, name="formFactura"),
     

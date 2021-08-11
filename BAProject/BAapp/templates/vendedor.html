@@ -237,6 +237,11 @@ BuenaVentura Agronegocios
     </div>
   </div>
 
+  <div id="selecNeg" class="modal">
+    <div id="modalSelecNegComprobante" class="modal-content">
+    </div>
+  </div>
+
   <div id="factura" class="modal">
     <div id="modalFormFactura" class="modal-content">
     </div>
@@ -864,61 +869,61 @@ BuenaVentura Agronegocios
       <li>
                       <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormFactura()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(1)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">book</i>Remitos</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormRemitos()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(2)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de Compra</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormOrdenDeCompra()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(3)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormOrdenDePago()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(4)"> Cargar </a>
                       </div>
                     </li>  
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>ContansiaRentencion</div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Contansia Rentencion</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormContansiaRentencion()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(5)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Recibo</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormRecibo()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(6)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Cheques</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormCheques()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(7)"> Cargar </a>
                       </div>
                     </li>
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>CuentaCorrientes</div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Cuenta Corrientes</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalformCuentaCorriente()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(8)"> Cargar </a>
                       </div>
                     </li>
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>FacturaComisiones</div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Factura Comisiones</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalformFacturaComision()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(9)"> Cargar </a>
                       </div>
                     </li>
                     <li>
                       <div class="collapsible-header"><i class="material-icons">local_mall</i>Nota</div>
                       <div class="collapsible-body">
-                        <a class="btn waves" onclick="openModalFormNota()"> Cargar </a>
+                        <a class="btn waves" onclick="openModalSelecNegComprobante(10)"> Cargar </a>
                       </div>
                     </li>
                   </ul>
@@ -1040,6 +1045,13 @@ BuenaVentura Agronegocios
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
       });
   };
+
+  function searchBuscador(){ 
+      var value = $("#inputBuscador").val().toLowerCase();
+      $("#tablita tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+  };
            
   function detalleSemaforo(idProp, ind){
     $.ajax({
@@ -1112,6 +1124,25 @@ BuenaVentura Agronegocios
       success: function (data) { 
         $("#modalAlerta").html(data);
         $('#alerta').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function openModalSelecNegComprobante(tipo){
+    var urlTemp = '{% url "selecNegComprobante" 0 %}';
+    var urlf = urlTemp.replace('0',tipo);
+    $.ajax({
+      type: 'POST',
+      url: urlf,
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function (data) { 
+        $("#modalSelecNegComprobante").html(data);
+        $('#selecNeg').modal('open'); 
       },
       error: function (response) {
           console.log("Error")
