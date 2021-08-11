@@ -98,8 +98,8 @@ urlpatterns = [
     path('formOrdenDePago/(?P<neg>[]+)', formOrdenDePago, name="formOrdenDePago"),
     path('formOrdenDePago/', formOrdenDePago, name="formOrdenDePago"),
     
-    path('formContansiaRentencion/(?P<neg>[]+)', formContansiaRentencion, name="formContansiaRentencion"),
-    path('formContansiaRentencion/', formContansiaRentencion, name="formContansiaRentencion"),
+    path('formContanciaRentencion/(?P<neg>[]+)', formContanciaRentencion, name="formContanciaRentencion"),
+    path('formContanciaRentencion/', formContanciaRentencion, name="formContanciaRentencion"),
 
     path('formRecibo/(?P<neg>[]+)', formRecibo, name="formRecibo"),
     path('formRecibo/', formRecibo, name="formRecibo"),

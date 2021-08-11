@@ -140,7 +140,7 @@
                           <option value="2">Remito</option>
                           <option value="3">Orden De Compra</option>
                           <option value="4">Orden De Pago</option>
-                          <option value="5">Contansia Rentencion</option>
+                          <option value="5">Contancia Rentencion</option>
                           <option value="6">Recibo</option>
                           <option value="7">Cheque</option>
                           <option value="8">CuentaCorriente</option>
@@ -262,7 +262,7 @@
                 </table>
                 </div>
 
-                <div class="row" id="tablaContansiaRentencion">
+                <div class="row" id="tablaContanciaRentencion">
                 <table>
                     <thead>
                         <tr>
@@ -273,13 +273,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for contansiaRentencion in comprobantes.contansiasRentencion %}
+                        {% for contanciaRentencion in comprobantes.contanciasRentencion %}
                         <tr>
-                            <td>{{ contansiaRentencion.fecha_emision }}</td>
-                            <td>{{ contansiaRentencion.recibe_proveedor }}</td>
-                            <td>{{ contansiaRentencion.importe }}</td>
+                            <td>{{ contanciaRentencion.fecha_emision }}</td>
+                            <td>{{ contanciaRentencion.recibe_proveedor }}</td>
+                            <td>{{ contanciaRentencion.importe }}</td>
                             <td>
-                                <a href="{{contansiaRentencion.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
+                                <a href="{{contanciaRentencion.documento.url}}" target="_blank" class="btn btn-primary btn-sm">Abrir</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -415,7 +415,7 @@
                           <option value="2">Remito</option>
                           <option value="3">Orden De Compra</option>
                           <option value="4">Orden De Pago</option>
-                          <option value="5">Contansia Rentencion</option>
+                          <option value="5">Contancia Rentencion</option>
                           <option value="6">Recibo</option>
                           <option value="7">Cheque</option>
                           <option value="8">CuentaCorriente</option>
@@ -463,7 +463,7 @@
                 $('#tablaOrdenDePago').show();
                 break;
             case '5':
-                $('#tablaContansiaRentencion').show();
+                $('#tablaContanciaRentencion').show();
                 break;
             case '6':
                 $('#tablaRecibo').show();
@@ -501,7 +501,7 @@
                 openModalFormOrdenDePago(idNeg);
                 break;
             case '5':
-                openModalFormContansiaRentencion(idNeg);
+                openModalFormContanciaRentencion(idNeg);
                 break;
             case '6':
                 openModalFormRemitos(idNeg);
@@ -526,7 +526,7 @@
         $('#tablaRemito').hide()
         $('#tablaOrdenDeCompra').hide()
         $('#tablaOrdenDePago').hide()
-        $('#tablaContansiaRentencion').hide()
+        $('#tablaContanciaRentencion').hide()
         $('#tablaRecibo').hide();
         $('#tablaCheque').hide()
         $('#tablaCuentaCorriente').hide()
@@ -602,16 +602,16 @@
         })
     };
 
-    function openModalFormContansiaRentencion(idNeg) {
-        var urlTemp = '{% url "formContansiaRentencion" 0 %}';
+    function openModalFormContanciaRentencion(idNeg) {
+        var urlTemp = '{% url "formContanciaRentencion" 0 %}';
         var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
             url: urlf,
             data: { idNeg: idNeg,
             csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
-                $("#modalFormContansiaRentencion").html(data);
-                $('#contansiaRentencion').modal('open');
+                $("#modalFormContanciaRentencion").html(data);
+                $('#contanciaRentencion').modal('open');
             },
             error: function (response) {
                 console.log("Error")

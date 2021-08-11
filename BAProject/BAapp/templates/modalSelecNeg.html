@@ -20,10 +20,7 @@
             {% for negocio in negocios%}
                 <tr data-id={{negocio.id}}>
                     <td class="auxSem">
-                    
-                        <button class="btn waves-effect waves-light" type="submit" onclick="agregarComprobante({{negocio.id}})" id="input_{{negocio.id}}">
-                            <i class="material-icons right">send</i>
-                        </button>
+                        <a class="waves-effect waves-light btn" onclick="agregarComprobante('{{negocio.id}}')" id="input_{{negocio.id}}"><i class="material-icons">send</i></a>
                     </td>
                     <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                     <td>{{negocio.comprador.empresa.razon_social}}</td>
@@ -63,7 +60,7 @@
                 openModalFormOrdenDePago(idNeg);
                 break;
             case '5':
-                openModalFormContansiaRentencion(idNeg);
+                openModalFormContanciaRentencion(idNeg);
                 break;
             case '6':
                 openModalFormRemitos(idNeg);
@@ -150,16 +147,16 @@
         })
     };
 
-    function openModalFormContansiaRentencion(idNeg) {
-        var urlTemp = '{% url "formContansiaRentencion" 0 %}';
+    function openModalFormContanciaRentencion(idNeg) {
+        var urlTemp = '{% url "formContanciaRentencion" 0 %}';
         var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
             url: urlf,
             data: { idNeg: idNeg,
             csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
-                $("#modalFormContansiaRentencion").html(data);
-                $('#contansiaRentencion').modal('open');
+                $("#modalFormContanciaRentencion").html(data);
+                $('#contanciaRentencion').modal('open');
             },
             error: function (response) {
                 console.log("Error")
