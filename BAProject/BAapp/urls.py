@@ -83,6 +83,9 @@ urlpatterns = [
 
     #crear comprobantes
 
+    path('selecNegComprobante/(?P<tipo>[]+)', selecNegComprobante, name="selecNegComprobante"),
+
+
     path('formFactura/(?P<neg>[]+)', formFactura, name="formFactura"),
     path('formFactura/', formFactura, name="formFactura"),
     
@@ -95,8 +98,8 @@ urlpatterns = [
     path('formOrdenDePago/(?P<neg>[]+)', formOrdenDePago, name="formOrdenDePago"),
     path('formOrdenDePago/', formOrdenDePago, name="formOrdenDePago"),
     
-    path('formContansiaRentencion/(?P<neg>[]+)', formContansiaRentencion, name="formContansiaRentencion"),
-    path('formContansiaRentencion/', formContansiaRentencion, name="formContansiaRentencion"),
+    path('formContanciaRentencion/(?P<neg>[]+)', formContanciaRentencion, name="formContanciaRentencion"),
+    path('formContanciaRentencion/', formContanciaRentencion, name="formContanciaRentencion"),
 
     path('formRecibo/(?P<neg>[]+)', formRecibo, name="formRecibo"),
     path('formRecibo/', formRecibo, name="formRecibo"),

@@ -491,7 +491,7 @@ def detalleNegocio(request):
             remitos = Remito.objects.filter(negocio=propuesta.negocio)
             ordenesDeCompra = OrdenDeCompra.objects.filter(negocio=negocio)
             ordenesDePago = OrdenDePago.objects.filter(negocio=negocio)
-            contansias = ContansiaRentencion.objects.filter(negocio=negocio)
+            contancias = ContanciaRentencion.objects.filter(negocio=negocio)
             recibos = Recibo.objects.filter(negocio=negocio)
             cheques = Cheque.objects.filter(negocio=negocio)
             cuentasCorriente = CuentaCorriente.objects.filter(negocio=negocio)
@@ -503,7 +503,7 @@ def detalleNegocio(request):
                 "remitos": remitos,
                 "ordenesDeCompra": ordenesDeCompra,
                 "ordenesDePago": ordenesDePago,
-                "contansias": contansias,
+                "contancias": contancias,
                 "recibos": recibos,
                 "cheques": cheques,
                 "cuentasCorriente": cuentasCorriente,
@@ -1875,6 +1875,35 @@ class PasswordsChangeView(PasswordChangeView):
     def get_success_url(self):
         return reverse('successPassword')
 
+def comprobanteTipo(num):
+    options = {
+            '1': "FACTURA",
+            '2': "REMITO",
+            '3': "ORDEN DE COMPRA",
+            '4': "ORDEN DE PAGO",
+            '5': "CONSTANCIA DE RETENCION",
+            '6': "RECIBO",
+            '7': "CHEQUE",
+            '8': "CUENTA CORRIENTE",
+            '9': "FACTURA COMISION",
+            '10': "NOTA",
+            'default': "casi",
+        }
+    return options.get(num)
+ 
+def selecNegComprobante(request, *args, **kwargs):
+    if request.method == 'POST':
+        negocios = Negocio.objects.all().order_by('-timestamp')
+        negocio = getNegociosToList(negocios)
+        tipoN = kwargs["tipo"]
+        tipo = comprobanteTipo(tipoN)        
+        context = {
+            'tipoN': tipoN,
+            'tipo': tipo,
+            'negocios':list(negocio),
+        }
+        return render(request, 'modalSelecNeg.html', context)
+
 def formFactura(request, *args, **kwargs):
     if request.method == 'POST':
         form = FacturaForm(request.POST or None, request.FILES or None)
@@ -1975,9 +2004,9 @@ def formOrdenDePago(request, *args, **kwargs):
         }
         return render(request, 'modalForm.html', context)
 
-def formContansiaRentencion(request, *args, **kwargs):
+def formContanciaRentencion(request, *args, **kwargs):
     if request.method == 'POST':
-        form = ContansiaRentencionForm(request.POST or None, request.FILES or None)
+        form = ContanciaRentencionForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
             form.documento = (documento.name,documento)
@@ -1990,10 +2019,10 @@ def formContansiaRentencion(request, *args, **kwargs):
     else:
         if ("neg" in kwargs):
             negocio = Negocio.objects.get(id=kwargs["neg"])
-            form = ContansiaRentencionForm(initial = {'negocio': negocio})
+            form = ContanciaRentencionForm(initial = {'negocio': negocio})
         else:
-            form = ContansiaRentencionForm()
-        tipo = "ContansiaRentencion"
+            form = ContanciaRentencionForm()
+        tipo = "ContanciaRentencion"
         context = {
             'form':form,
             'tipo':tipo

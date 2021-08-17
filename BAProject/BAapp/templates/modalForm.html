@@ -20,7 +20,7 @@
       {% elif tipo == "OrdenDePago" %}
       <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formOrdenDePago' %}">
       {% elif tipo == "ContansiaRentencion" %}
-      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formContansiaRentencion' %}">
+      <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formContanciaRentencion' %}">
       {% elif tipo == "Recibo" %}
       <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formRecibo' %}">
       {% elif tipo == "CuentaCorrientes" %}
@@ -51,8 +51,9 @@ $(document).ready(function(){
     format: 'dd/mm/yyyy',
     yearRange: [1920,3000] 
   });
-  $('.neg').formSelect({
-  });
+
+  $('.neg').hide();
+
 });
 
 </script>

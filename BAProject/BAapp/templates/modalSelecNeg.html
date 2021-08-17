@@ -1,0 +1,252 @@
+<div class="modal-content">
+    <h4 class="center">CARGAR {{tipo}}</h4>
+    <div class="row">
+      <div class="right">  
+        </div>
+        <input id="inputBuscador" placeholder="Buscar Negocio" onkeyup="searchBuscador()" type="text">
+        <br><br>
+        <table class="tablita" id="tablita">
+          <thead>
+            <tr>
+                <th class="auxSem"></th>
+                <th>Fecha</th>
+                <th>Empresa</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Ver Negociación</th>
+            </tr>
+          </thead>
+          <tbody id="table">
+            {% for negocio in negocios%}
+                <tr data-id={{negocio.id}}>
+                    <td class="auxSem">
+                        <a class="waves-effect waves-light btn" onclick="agregarComprobante('{{negocio.id}}')" id="input_{{negocio.id}}"><i class="material-icons">send</i></a>
+                    </td>
+                    <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+                    <td>{{negocio.comprador.empresa.razon_social}}</td>
+                    <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                    <td>{{negocio.estado}}</td>
+                    <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  <div class="modal-footer">
+    <input type="hidden" name="tipoN" id="tipoN" value={{tipoN}}>
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
+  </div>
+</div>
+
+<script>
+    
+    $(document).ready(function(){
+    $('select').formSelect();
+    });
+
+    function agregarComprobante(idNeg){
+        var valor = $('#tipoN').val();
+        switch (valor) {
+            case '1':
+                openModalFormFactura(idNeg);
+                break;       
+            case '2':
+                openModalFormRemitos(idNeg);
+                break;      
+            case '3':
+                openModalFormRemitos(idNeg);
+                break;
+            case '4':
+                openModalFormOrdenDePago(idNeg);
+                break;
+            case '5':
+                openModalFormContanciaRentencion(idNeg);
+                break;
+            case '6':
+                openModalFormRemitos(idNeg);
+                break;
+            case '7':
+                openModalFormCheques(idNeg);
+                break;
+            case '8':
+                openModalformCuentaCorriente(idNeg);
+                break;
+            case '9':
+                openModalformFacturaComision(idNeg);
+                break;
+            case '10':
+                openModalFormNota(idNeg);
+                break;
+        }
+    }
+
+    function openModalFormFactura(idNeg) {
+        var urlTemp = '{% url "formFactura" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormFactura").html(data);
+                $('#factura').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormRemitos(idNeg) {
+        var urlTemp = '{% url "formRemito" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRemito").html(data);
+                $('#remito').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormOrdenDeCompra(idNeg) {
+        var urlTemp = '{% url "formOrdenDeCompra" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDeCompra").html(data);
+                $('#ordenDeCompra').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormOrdenDePago(idNeg) {
+        var urlTemp = '{% url "formOrdenDePago" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDePago").html(data);
+                $('#ordenDePago').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormContanciaRentencion(idNeg) {
+        var urlTemp = '{% url "formContanciaRentencion" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { idNeg: idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormContanciaRentencion").html(data);
+                $('#contanciaRentencion').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormRecibo(idNeg) {
+        var urlTemp = '{% url "formRecibo" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRecibo").html(data);
+                $('#recibo').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+
+    function openModalFormCheques(idNeg) {
+        var urlTemp = '{% url "formChequeDef" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data : { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormCheques").html(data);
+                $('#cheques').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalformCuentaCorriente(idNeg) {
+        var urlTemp = '{% url "formCuentaCorriente" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformCuentaCorriente").html(data);
+                $('#cuentaCorrientes').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalformFacturaComision(idNeg) {
+        var urlTemp = '{% url "formFacturaComision" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformFacturaComision").html(data);
+                $('#facturaComisiones').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+    
+    function openModalFormNota(idNeg) {
+        var urlTemp = '{% url "formNota" 0 %}';
+        var urlf = urlTemp.replace('0',idNeg);
+        $.ajax({
+            url: urlf,
+            data: { 'idNeg':idNeg,
+            csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormNota").html(data);
+                $('#nota').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+</script>
