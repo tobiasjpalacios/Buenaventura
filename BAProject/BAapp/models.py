@@ -461,7 +461,7 @@ class OrdenDePago(models.Model):
     documento = models.FileField(upload_to='media/ordenesPagos/%Y/%m/%d', null=False)
    
 	
-class ContansiaRentencion(models.Model):
+class ConstanciaRentencion(models.Model):
     #emisor: comprador
     negocio = models.ForeignKey(
         "Negocio", 

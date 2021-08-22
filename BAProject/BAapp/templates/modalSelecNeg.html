@@ -60,7 +60,7 @@
                 openModalFormOrdenDePago(idNeg);
                 break;
             case '5':
-                openModalFormContanciaRentencion(idNeg);
+                openModalFormConstanciaRentencion(idNeg);
                 break;
             case '6':
                 openModalFormRemitos(idNeg);
@@ -147,16 +147,16 @@
         })
     };
 
-    function openModalFormContanciaRentencion(idNeg) {
-        var urlTemp = '{% url "formContanciaRentencion" 0 %}';
+    function openModalFormConstanciaRentencion(idNeg) {
+        var urlTemp = '{% url "formConstanciaRentencion" 0 %}';
         var urlf = urlTemp.replace('0',idNeg);
         $.ajax({
             url: urlf,
             data: { idNeg: idNeg,
             csrfmiddlewaretoken: '{{ csrf_token }}' },
             success: function (data) {
-                $("#modalFormContanciaRentencion").html(data);
-                $('#contanciaRentencion').modal('open');
+                $("#modalFormConstanciaRentencion").html(data);
+                $('#constanciaRentencion').modal('open');
             },
             error: function (response) {
                 console.log("Error")

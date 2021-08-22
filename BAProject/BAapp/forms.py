@@ -121,14 +121,14 @@ class OrdenDePagoForm(forms.ModelForm):
         model = OrdenDePago
         fields = '__all__'
 
-class ContansiaRentencionForm(forms.ModelForm):
+class ConstanciaRentencionForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     documento = forms.FileInput()
     
     class Meta:
-        model = ContansiaRentencion
+        model = ConstanciaRentencion
         fields = '__all__'
 
 class ReciboForm(forms.ModelForm):

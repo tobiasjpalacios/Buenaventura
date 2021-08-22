@@ -262,8 +262,8 @@ BuenaVentura Agronegocios
     </div>
   </div>
 
-  <div id="contansiaRentencion" class="modal">
-    <div id="modalFormContansiaRentencion" class="modal-content">
+  <div id="constanciaRentencion" class="modal">
+    <div id="modalFormConstanciaRentencion" class="modal-content">
     </div>
   </div>
 
@@ -927,7 +927,7 @@ BuenaVentura Agronegocios
                       </div>
                     </li>  
                     <li>
-                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Contancia Rentencion</div>
+                      <div class="collapsible-header"><i class="material-icons">local_mall</i>Constancia Rentencion</div>
                       <div class="collapsible-body">
                         <div class="card horizontal">
                           <div class="card-stacked">
@@ -1288,13 +1288,13 @@ BuenaVentura Agronegocios
     })
   };
 
-  function openModalFormContansiaRentencion(){
+  function openModalFormConstanciaRentencion(){
     $.ajax({
-      url: "{% url 'formContanciaRentencion' %}",
+      url: "{% url 'formConstanciaRentencion' %}",
       data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
       success: function (data) { 
-        $("#modalFormContansiaRentencion").html(data);
-        $('#contansiaRentencion').modal('open'); 
+        $("#modalFormConstanciaRentencion").html(data);
+        $('#constanciaRentencion').modal('open'); 
       },
       error: function (response) {
           console.log("Error")

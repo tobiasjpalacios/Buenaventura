@@ -491,7 +491,7 @@ def detalleNegocio(request):
             remitos = Remito.objects.filter(negocio=propuesta.negocio)
             ordenesDeCompra = OrdenDeCompra.objects.filter(negocio=negocio)
             ordenesDePago = OrdenDePago.objects.filter(negocio=negocio)
-            contancias = ContanciaRentencion.objects.filter(negocio=negocio)
+            constancias = ConstanciaRentencion.objects.filter(negocio=negocio)
             recibos = Recibo.objects.filter(negocio=negocio)
             cheques = Cheque.objects.filter(negocio=negocio)
             cuentasCorriente = CuentaCorriente.objects.filter(negocio=negocio)
@@ -503,7 +503,7 @@ def detalleNegocio(request):
                 "remitos": remitos,
                 "ordenesDeCompra": ordenesDeCompra,
                 "ordenesDePago": ordenesDePago,
-                "contancias": contancias,
+                "constancias": constancias,
                 "recibos": recibos,
                 "cheques": cheques,
                 "cuentasCorriente": cuentasCorriente,
@@ -2004,9 +2004,9 @@ def formOrdenDePago(request, *args, **kwargs):
         }
         return render(request, 'modalForm.html', context)
 
-def formContanciaRentencion(request, *args, **kwargs):
+def formConstanciaRentencion(request, *args, **kwargs):
     if request.method == 'POST':
-        form = ContanciaRentencionForm(request.POST or None, request.FILES or None)
+        form = ConstanciaRentencionForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             documento = request.FILES['documento']
             form.documento = (documento.name,documento)
@@ -2019,10 +2019,10 @@ def formContanciaRentencion(request, *args, **kwargs):
     else:
         if ("neg" in kwargs):
             negocio = Negocio.objects.get(id=kwargs["neg"])
-            form = ContanciaRentencionForm(initial = {'negocio': negocio})
+            form = ConstanciaRentencionForm(initial = {'negocio': negocio})
         else:
-            form = ContanciaRentencionForm()
-        tipo = "ContanciaRentencion"
+            form = ConstanciaRentencionForm()
+        tipo = "ConstanciaRentencion"
         context = {
             'form':form,
             'tipo':tipo
