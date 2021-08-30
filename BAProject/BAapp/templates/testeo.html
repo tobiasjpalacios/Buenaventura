@@ -6,7 +6,7 @@
 {% block style%}
  
 body {
-  background-color: #e0e0e0;
+  background-color: #00000000 ;
 }
 
 {% endblock style%}
@@ -17,126 +17,87 @@ BuenaVentura Agronegocios
 <script>
 $(document).ready(function() {
     M.updateTextFields();
+    $(".flip").click(function(){
+    $(".panel").slideToggle("slow");
+  });
   });
 
 </script>
-<div class="row "> 
-  <div class="col s12">
-      <br>
-    <div style="border-radius: 2em; height: 50px;" class="card white col s8 offset-s2"> 
-         <span class="col s3" style=" font-size: 30px; border-radius: 2em;">Enviado por Juan Perez</span>
-      <span class="col s4 offset-s2 " style="font-size: 20px; position: relative; top: 10px; border-radius: 2em; height: 30px;">Fecha 27/07/05</span>
-      </div>
-  </div>
-  <div class="row">
-    <div class="col s12 ">
-      <div class="card col s8 offset-s4">
-        <div class="card-content ">
-          <span class="left "> 27/05/30 16.00</span>
-        </div>
-        <div class="card-action">
-          <table>
-            <thead>
-              <tr>
-                  <th>Articulo</th>
-                  <th>tipo pago</th>
-                  <th>tasa</th>
-                  <th>fecha pago</th>
-                  <th>destino</th>
-                  <th>operaciones</th>
-                  <th>Ver mas</th>
-              </tr>
-            </thead>
+<style>
+  .vl {
+    border-right: 2px solid rgb(128, 128, 128, 0.5);
+    height: 6000px;
     
-            <tbody>
-              <tr>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="Glifosato" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> divisa</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="Alvin Jean" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> tipo pago</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="8.20" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> tasa</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="8.20" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2">fecha pago</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="8.20" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> destino</label>
-                  </div>
-                </td>
-                <td>
-                  <a  class="  btn-small btn-floating waves-effect waves-light green"><i class="material-icons">check</i></a>
-                  <a class=" btn-small btn-floating waves-effect waves-light red"><i class="material-icons">close</i></a>
-                  <a style="top: 38px; right:35px;"class=" btn-small btn-floating waves-effect waves-light blue"><i class="material-icons">save</i></a>
-                  <a style="top: 5px;"class=" btn-small btn-floating waves-effect waves-light orange"><i class="material-icons">undo</i></a>
-                </td>
-              <td>
-                <a class=" btn-large waves-effect waves-light red"><i class="material-icons">keyboard_arrow_left</i></a>
-              </td>
-              
-              
-              
-              </tr>
-              <tr>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> Ingrediente</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> Distribuidor</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> Precio venta</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> Precio compra</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="input-field" style="">
-                    <input value="" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2"> Cantidad</label>
-                  </div>
-                </td>
-                <td>
-                  <a class="waves-effect waves-light btn">añadir</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+  }
+  .panel{
+    display: none;
+  }
+
+  .menu{
+    background-color: red;
+    border-top-right-radius: 2em;
+    border-bottom-right-radius: 2em;
+    margin-top: 2%;
+    
+    color: white;
+  }
+  .circle {
+    background: lightblue;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+.cuadra{
+  border: grey 2px solid;
+}
+</style>
+<div class="row">
+
+  <div class="col hide-on-small-only l2 m3 vl ">
+    <ul class="section table-of-contents pinned ">
+      <li><a href="#">Notificaciones</a></li>
+      <li><a href="#id1">Presupuestos</a></li>
+      <li><a href="#id2">Negocios</a></li>
+      <li><a href="#id3">Vencimientos</a></li>
+      <li><a href="#id3">Logistica</a></li>
+      <li><a href="#id3">Comprobantes</a></li>
+      <li>
+        <a href="#id4" class="flip">Mas Opciones </a>
+        <ul class="panel section table-of-contents">
+          <li><a href="#id1">Agregar Cuentas</a></li>
+          <li><a href="#id1">Cargar Hoja de Calculo</a></li>
+        </ul>
+      </li>
+
+
+      <li><a href="#id4" class="green-text"> Enviar Alertas </a></li>
+      <li><a href="#id4" class="green-text"> Nuevo Negocios</a></li>
+      <li><a href="#id4" class="green-text">Negocios </a></li>
+  </ul>
+  </div>
+  <div class=" col l10 m9 vl " > 
+
+    <div class="row">
+      <div style="height: 80px;" class="menu col l4 m4 s4"> 
+        <div class="row">
+          <div class="col l3 s3 ">
+            <a style=" height: 95px; width: 95px; position: relative; bottom: 5px; "class="col-s2 btn-floating btn-large  white"><i   style="position: relative ; top: 20%; font-size: 60px;" class="material-icons black-text">notifications</i></a>
+          </div>
+          <h4 class="col l9 s9"> Notificaciones</h4>
+        </div>        
       </div>
 
     </div>
-  
+
+    <div class="row" style="margin-top: 3%;">
+      <div class="col s3 cuadra">
+        <h4 style="font-weight: bold;">Presupuestos</h4>
+      </div>
+      <div class="col s1 cuadra" ><h4 style="text-align: center;"> 00</h4></div>
+      <div class="col s4 cuadra" ><h4>Logistica</h4></div>
+      <div class="col s4 cuadra"><h4>vencimientos</h4></div>
+    </div>
   </div>
+
 </div>
-
-
 {%endblock body%} 
