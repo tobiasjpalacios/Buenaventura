@@ -55,16 +55,21 @@
       <ul class="right hide-on-med-and-down">
         {% if user.is_superuser %}  
         <li>
-          <a style="color: #ffffff; position:absolute; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin' %}">Administrar</a>
+          <div style="position:static; height: 68px; background-color: white;">
+            <img style="height: 64px" src="{% static 'images/roagro.jpeg' %}">
+          </div>
+        </li>
+        <li>
+          <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin' %}">Administrar</a>
         </li>
         {% endif %}
         <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
         {% if user.is_authenticated %}
-        <li><a style="color: #ffffff; position:absolute; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.username|title}}</a></li>
-        <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:absolute; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
+        <li><a style="color: #ffffff; position:static; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.username|title}}</a></li>
+        <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
   
         {% else %}
-        <li><a style="color: #ffffff; position:absolute; right :1%;font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+        <li><a style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
   
         {% endif %}
       </ul>
