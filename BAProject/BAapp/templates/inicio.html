@@ -285,15 +285,14 @@ function start_datepicker(){
 var rowCnt = 0;
 var headers = (userIsComprador) ? 
               ["Ingrediente", "Marca", "Cantidad", "Precio",
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"]
+              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"]
               : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
+              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 var savings_data;
 var compradores_data;
 var distribuidores_data;
 var tipo_pago;
-var divisas = ["Dolar", "Pesos"];
 var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
 
 // to validate if inputs are correct
@@ -386,7 +385,7 @@ var errors = [];
 
 function addRow() {
   var general = (userIsComprador) ? ["Ingrediente", "Marca", "Cantidad"] : ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
-  var pago = (userIsComprador) ? ["Precio", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Divisa", "Tipo de pago", "Tasa", "Fecha de pago"];
+  var pago = (userIsComprador) ? ["Precio", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Tipo de pago", "Tasa", "Fecha de pago"];
   var logistica = ["Fecha de entrega","Destino"];
 
   
@@ -445,6 +444,7 @@ function addRow() {
   nom1.innerHTML="Informacion General"
   nom1.style.border = "2px red solid"
   nom1.style.borderRadius="2em"
+  nom1.style.userSelect="none"
   innerGeneral.appendChild(nom1);
   
   var icon1 = document.createElement("i");
@@ -466,6 +466,7 @@ function addRow() {
   nom2.innerHTML=" Montos y Financiamiento"
   nom2.style.border = "2px red solid"
   nom2.style.borderRadius="2em"
+  nom2.style.userSelect="none"
   innerFinanciamiento.appendChild(nom2);
   var icon2 = document.createElement("i");
   icon2.setAttribute("value","expand_more")
@@ -484,6 +485,7 @@ function addRow() {
   nom3.setAttribute("class"," card titulito  col l6 m12 s12 ");
   nom3.style.border = "2px red solid"
   nom3.style.borderRadius="2em"
+  nom3.style.userSelect="none"
   nom3.innerHTML="configuracion de logistica"
   innerLogistica.appendChild(nom3);
   var icon = document.createElement("i");
@@ -519,10 +521,10 @@ function addRow() {
 
 var headers = (userIsComprador) ?
               ["Ingrediente", "Marca", "Cantidad", "Precio", 
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"] 
+              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"] 
               : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
-              "Divisa", "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
+              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
   console.log(headers);
 
@@ -538,21 +540,18 @@ var headers = (userIsComprador) ?
         var th = document.getElementById("th_Cantidad"+rowCnt);
         input_cantidad(c,th);
       }else if (c==4) {
-        var th = document.getElementById("th_Divisa"+rowCnt);
-        input_divisa(c, th);
-      }else if (c==5) {
         var th = document.getElementById("th_Tipo de pago"+rowCnt);
         input_tipoPago(c, th);
-      }else if (c==6) {
+      }else if (c==5) {
         var th = document.getElementById("th_Tasa"+rowCnt);
         input_tasa(c, th);
-      }else if(c==7){
+      }else if(c==6){
         var th = document.getElementById("th_Fecha de pago"+rowCnt);
         input_fechaPago(c, th);
-      }else if (c==8) {
+      }else if (c==7) {
         var th = document.getElementById("th_Fecha de entrega"+rowCnt);
         input_fechaEntrega(c, th);
-      }else if (c==9) {
+      }else if (c==8) {
         var th = document.getElementById("th_Destino"+rowCnt);
         input_destino(c,th);
       }else{
@@ -583,21 +582,18 @@ var headers = (userIsComprador) ?
         var th = document.getElementById("th_Cantidad"+rowCnt);
         input_cantidad(c,th);
       }else if (c==6) {
-        var th = document.getElementById("th_Divisa"+rowCnt);
-        input_divisa(c, th);
-      }else if (c==7) {
         var th = document.getElementById("th_Tipo de pago"+rowCnt);
         input_tipoPago(c, th);
-      }else if (c==8) {
+      }else if (c==7) {
         var th = document.getElementById("th_Tasa"+rowCnt);
         input_tasa(c, th);
-      }else if(c==9){
+      }else if(c==8){
         var th = document.getElementById("th_Fecha de pago"+rowCnt);
         input_fechaPago(c, th);
-      }else if (c==10) {
+      }else if (c==9) {
         var th = document.getElementById("th_Fecha de entrega"+rowCnt);
         input_fechaEntrega(c, th);
-      }else if (c==11) {
+      }else if (c==10) {
         var th = document.getElementById("th_Destino"+rowCnt);
         input_destino(c,th);
       }else{
@@ -794,18 +790,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029'; 
         }
-      }else if ((!userIsComprador && j == 6) || (userIsComprador && j == 4)) {
-        if (divisas.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "La divisa seleccionada no está dentro de las opciones permitidas";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-        }
-      }else if((!userIsComprador && j == 7) || (userIsComprador && j == 5)){
+      }else if((!userIsComprador && j == 6) || (userIsComprador && j == 5)){
         if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -816,7 +801,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if ((!userIsComprador && j == 8) || (userIsComprador && j == 6)){
+      }else if ((!userIsComprador && j == 7) || (userIsComprador && j == 6)){
          if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
           isValidated = true;
          }else{
@@ -860,7 +845,7 @@ function submit(){
         }
         else if (headers[j] == "Distribuidor" && userIsComprador) {
           // agregar distribuidor nulo cuando se pueda
-          input = 1;
+          input = null;
           tmp_dict[headers[j]] = input;
         }
         else {
@@ -868,6 +853,10 @@ function submit(){
           tmp_dict[headers[j]] = input.value;
         }
       }
+      // default para divisa
+      headers.push("Divisa");
+      tmp_dict[headers["Divisa"]] = "USD"
+      //
       dict.push(tmp_dict);
      }
      var aux_dict = {};
@@ -995,27 +984,27 @@ function input_cantidad(c,td){
     td.appendChild(ele);
 }
 
-function input_divisa(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('size', '9');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Divisa');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistDivisa = document.createElement('datalist');
-  datalistDivisa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
+// function input_divisa(c,td){
+//   var ele = document.createElement('input');
+//   ele.setAttribute('type', 'text');
+//   ele.setAttribute('size', '9');
+//   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+//   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+//   ele.setAttribute('onclick','this.select();');
+//   ele.setAttribute('placeholder', 'Divisa');
+//   ele.setAttribute('autocomplete', 'off');
+//   var datalistDivisa = document.createElement('datalist');
+//   datalistDivisa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
   
-  td.appendChild(ele);
-  td.appendChild(datalistDivisa);
-  for (var i = 0; i < divisas.length; i++) {
-    var optionDivisa = document.createElement('option');
-    optionDivisa.setAttribute('value',''+divisas[i]);
-    optionDivisa.setAttribute('id','option'+i);
-    datalistDivisa.appendChild(optionDivisa);        
-  }
-}
+//   td.appendChild(ele);
+//   td.appendChild(datalistDivisa);
+//   for (var i = 0; i < divisas.length; i++) {
+//     var optionDivisa = document.createElement('option');
+//     optionDivisa.setAttribute('value',''+divisas[i]);
+//     optionDivisa.setAttribute('id','option'+i);
+//     datalistDivisa.appendChild(optionDivisa);        
+//   }
+// }
 
 function input_tipoPago(c,td){
   var ele = document.createElement('input');

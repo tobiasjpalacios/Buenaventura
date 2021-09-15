@@ -9,7 +9,9 @@
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
-  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style type="text/css">
 /*    html {
     font-family: "Montseratt";
@@ -25,11 +27,37 @@
 
   <!-- style -->
   <style type="text/css">
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #4fad31;
-  opacity: 1; /* Firefox */
-  text-align: center;
-}
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #4fad31;
+    opacity: 1; /* Firefox */
+    text-align: center;
+  }
+
+  *, input, textarea {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .bv-green {
+    background-color: #4CB848;
+  }
+  .bv-dark-green {
+    background-color: #005321;
+  }
+  .bv-red {
+    background-color: #EE1D23;
+  }
+  .bv-yellow {
+    background-color: #FEC80B;
+  }
+  .bv-blue {
+    background-color: #00AEEF;
+  }
+  .bv-gray {
+    background-color: #717275;
+  }
+  .bv-dark-gray {
+    background-color: #4e4d4d;
+  }
 
   {% block style %}
   {% endblock style %}

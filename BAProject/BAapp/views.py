@@ -1583,6 +1583,10 @@ class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
 
+        if negocio.id_de_neg == "":
+            negocio.id_de_neg = f"BV-{negocio.pk}"
+            negocio.save()
+
         if not negocio.vendedor.persona.user == request.user and not negocio.comprador.persona.user == request.user:
             return redirect('home')
 
@@ -1629,19 +1633,24 @@ class NegocioView(View):
             for item in data["items"]:
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
-                    if (f.name=="propuesta" or f.name=="id"):
+                    key = f.name
+                    if key=="propuesta" or key=="id":
                         continue
-                    if (f.is_relation):
-                        obj = get_object_or_404(
-                            f.related_model,
-                            pk=item[f.name]
-                        )
-                        setattr(tmp, f.name, obj)
+                    value = item[key]
+                    if key == "proveedor" and value == None:
+                        setattr(tmp, key, None)
+                    if f.is_relation:
+                        if not (key == "proveedor" and value == None):
+                            obj = get_object_or_404(
+                                f.related_model,
+                                pk=value
+                            )
+                            setattr(tmp, key, obj)
                     else:
                         setattr(
                             tmp, 
-                            f.name, 
-                            item[f.name]
+                            key, 
+                            value
                         )
                 tmp.propuesta = prop
                 tmp.save()
