@@ -1615,7 +1615,8 @@ class NegocioView(View):
             "divisas": DIVISA_CHOICES,
             'tasas': TASA_CHOICES,
             "distribuidores": Proveedor.objects.all(),
-            "tipo_pagos": TipoPago.objects.all()
+            "tipo_pagos": TipoPago.objects.all(),
+            "arts": Articulo.objects.all()
         }
         return render(request, 'negocio.html', context)
 

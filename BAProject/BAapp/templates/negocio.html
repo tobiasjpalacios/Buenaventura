@@ -115,19 +115,7 @@ body {
     -moz-box-shadow: none !important;
     box-shadow: none !important;
   }
-  .bv-green:hover {
-    background-color: #005221;
-  }
-  .bv-red:hover {
-    background-color: #005221;
-  }
-  .bv-yellow:hover {
-    background-color: #005221;
-  }
-  .bv-blue:hover {
-    background-color: #005221;
-  }
-  .bv-gray:hover {
+  .bv-green:hover, .bv-red:hover, .bv-yellow:hover, .bv-blue:hover, .bv-gray:hover {
     background-color: #005221;
   }
   .prop-creator-name {
@@ -149,6 +137,8 @@ body {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;
+    min-width: 925px;
+    z-index: 1;
   }
   .card-action {
     border-bottom-left-radius: 2rem !important;
@@ -160,9 +150,10 @@ body {
   tr {
     border: none !important;
   }
-  th, td {
-    margin: 0;
-    padding: 5px;
+  td, th {
+    width: 1%;
+    white-space: nowrap;
+    padding: 3px;
   }
   div.row > table > thead > tr {
     color: #717275;
@@ -187,34 +178,23 @@ body {
     font-weight: 700;
   }
   .container__wrapper {
-    z-index: 1;
-    /* Center the content */
+    z-index: -1;
+
     align-items: center;
     display: flex;
     justify-content: center;
 
-    /* Absolute position */
     left: 0px;
     position: absolute;
     top: 0px;
 
-    /* Take full size */
     height: 100%;
     width: 100%;
   }
 
-  .container__watermark {
-    z-index: 1;
-    /* Text color */
-    color: rgba(0, 0, 0, 0.06);
-
-    /* Text styles */
-    font-size: 3rem;
-    font-weight: bold;
-    text-transform: uppercase;
+  .container__watermark > img {
     margin: 70px;
-
-    /* Disable the selection */
+    opacity: 0.8;
     user-select: none;
   }
   .white-text-input > td > input {
@@ -224,6 +204,11 @@ body {
   .white-text-input > td > div > input {
     color: white;
     border-bottom: 1px solid white !important;
+  }
+  @media only screen and (max-width: 1200px) {
+    .container__watermark > img {
+      margin: 10px;
+    }
   }
 {% endblock %}
 {% block title %}Negociación{% endblock title %}
@@ -270,19 +255,17 @@ body {
       <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y H:i" }} hs</p>
     </div>
     <div class="card">
-    <!-- Watermark container -->
-    <div class="container__wrapper">
-      <!-- The watermark -->
-      <div class="container__watermark">
-        BV
+      <div class="container__wrapper">
+        <div class="container__watermark">
+          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
       </div>
-      <div class="container__watermark">
-        BV
-      </div>
-      <div class="container__watermark">
-        BV
-      </div>
-    </div>
       <div class="card-content dark-text">
         <div class="row">
           <table>
@@ -339,11 +322,11 @@ body {
   </div>
 </div>
 <script>
-  var btn_sm_{{prop.id}} = document.getElementById('btn-sm-{{prop.id}}');
+  // var btn_sm_{{prop.id}} = document.getElementById('btn-sm-{{prop.id}}');
 
-  $(btn_sm_{{prop.id}}).each(function () {
-    $('[id="' + this.id + '"]:gt(0)').remove();
-  });
+  // $(btn_sm_{{prop.id}}).each(function () {
+  //   $('[id="' + this.id + '"]:gt(0)').remove();
+  // });
 </script>
 {% endif %}
 {% if forloop.last %}
@@ -355,6 +338,17 @@ body {
       <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y H:i" }} hs</p>
     </div>
     <div class="card">
+      <div class="container__wrapper">
+        <div class="container__watermark">
+          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+      </div>
       <div class="card-content dark-text">
         <div class="row">
           <table {% if forloop.last %}id="form"{%endif%}>
@@ -424,7 +418,7 @@ body {
                   <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons table-icons">done</i></a>
                   <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
                   <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
-                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})"><i class="material-icons table-icons">undo</i></a>
+                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }})"><i class="material-icons table-icons">undo</i></a>
                 </td>
               {% else %}
                 <td class="show1">{{ item.cantidad }}</td>
@@ -590,11 +584,11 @@ body {
       },
     });
 
-    var btn_sm_1 = document.getElementById('btn-sm-1');
+    // var btn_sm_1 = document.getElementById('btn-sm-1');
     
-    $(btn_sm_1).each(function () {
-      $('[id="' + this.id + '"]:gt(0)').remove();
-    });
+    // $(btn_sm_1).each(function () {
+    //   $('[id="' + this.id + '"]:gt(0)').remove();
+    // });
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
     var elId = ""
@@ -654,6 +648,8 @@ body {
 
   }
 
+  var lastForAccept = last;
+
   function accept(index){
     console.log("accept")
     if (!userIsComprador) {
@@ -663,7 +659,7 @@ body {
         return;
       }
     }
-    reset(index)
+    resetForAccept(index)
     edits.items[index].aceptado = true;
     $($("#form")[0].rows[index+1]).addClass("green white-text white-text-input")
   }
@@ -696,18 +692,18 @@ body {
           edits.items[index][element] = parseInt(input.value)
         }
         else if (input.name == "distribuidor"){
-          edits.items[index]["proveedor"] = input.value
+          var opt = $("#distResults [value='"+input.value+"']");
+          edits.items[index]["proveedor"] = opt.data('value');
         } else {
           edits.items[index][element] = input.value
         }
       }
     })
-    // la idea es que cuando se guarden los cambios, el last se actualice
-    // last.items[index] = edits.items[index]
+    lastForAccept.items[index] = edits.items[index]
   }
 
-  function reset(index){
-    console.log("reset");
+  function resetAll(index){
+    console.log("resetAll");
     $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
@@ -716,7 +712,25 @@ body {
         input.val(edits.items[index][element]).change()
       }
       else {
-        input.val(edits.items[index][element]) 
+        input.val(edits.items[index][element])
+      }
+    });
+  }
+
+  function resetForAccept(index) {
+    console.log("resetForAccept");
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    edits.items[index] = Object.assign({},lastForAccept.items[index]);
+    editable_fields.forEach(element => {
+      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
+      if (element == "tipo_pago" || element == "tasa") {
+        input.val(edits.items[index][element]).change()
+      }
+      else if (element == "distribuidor") {
+        // do nothing
+      }
+      else {
+        input.val(edits.items[index][element])
       }
     });
   }
@@ -892,16 +906,27 @@ body {
       }
     })
     var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
+    var artName = "";
     proc.items.forEach(element => {
       for (k in element) {
+        if (k == "articulo") {
+          "{% for art in arts %}"
+            var artId = parseInt("{{art.id}}");
+            if (artId == element[k]) {
+              artName = "{{art.marca}}";
+            }
+          "{% endfor %}"
+        }
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
+            var errorDesc = "El campo \""+k+"\" del artículo \""+artName+"\" contiene errores."
             if (v == null || v == "" || v == undefined) {
-              if (userIsComprador && !((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
-                errorFields.push("El campo \""+k+"\" contiene errores.");
-                errors = true;
+              if (userIsComprador && ((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
+                // do nothing
               }
+              errorFields.push(errorDesc);
+              errors = true;
             }
           }
         }
@@ -910,7 +935,7 @@ body {
     console.log(proc);
     var print_errors = "";
     for (var i = 0; i < errorFields.length; i++) {
-      print_errors = print_errors.concat('\n'+errorFields[i])
+      print_errors = print_errors.concat('\n'+errorFields[i]+'\n')
     }
     if (errors) {
       swal("Oops!", print_errors, "error");
