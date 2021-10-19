@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block imports %}
    {% load static %}
 {% endblock imports %}
+
 {% block style%}
 
 body {
@@ -21,10 +23,13 @@ input[type=number] {
 }
 
 {% endblock style%}
+
 {% block title %}
 BuenaVentura Agronegocios
-{% endblock title %}   
+{% endblock title %} 
+
 {% block body%}
+
 {% load auth_extras %}
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 <script>
@@ -95,15 +100,12 @@ BuenaVentura Agronegocios
     
     background-color: #757474;
     font-family: 'Montserrat' ;
-  }
-
-
-
-  body {
-  font-family: 'Montserrat';
-  
- 
 }
+
+body {
+  font-family: 'Montserrat';
+}
+
 .im {
  height: 50px;
  width: 50px;
@@ -127,17 +129,14 @@ BuenaVentura Agronegocios
 .barra{
   background-color: #757474;
   height: 40px;
-  
 }
 .barraa{
   background-color: #3cad41;
-  height: 40px;
-  
+  height: 40px; 
 }
 .barrac{
   background-color: #ed0023;
-  height: 40px;
-  
+  height: 40px; 
 }
 
 .bloque-centro{
@@ -148,11 +147,11 @@ BuenaVentura Agronegocios
   border-right: 2px solid rgb(128, 128, 128, 0.5);
   border-left: 2px solid rgb(128, 128, 128, 0.5);
 }
+
 .bloque-centro1{
   border-right: 2px solid rgb(128, 128, 128, 0.5);
   border-left: 2px solid rgb(128, 128, 128, 0.5);
 }
-
 
 .bloque-derecho{
   height: 60px;
@@ -161,16 +160,17 @@ BuenaVentura Agronegocios
   border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
 }
  
- .titulito{
+.titulito{
    font-size: 30px;
    font-family: 'Montserrat';
    text-align: center;
- }
+}
 
-  .tamaño{
+.tamaño{
     height: 600px;
     width: 600px;
-  }
+}
+
 .opcion{
   font-size: 20px;
   border-bottom: 0px;
@@ -189,7 +189,6 @@ BuenaVentura Agronegocios
   border-bottom-right-radius: 2em;  
   border-top-left-radius: 2em;
   border-top-right-radius: 2em;
-
 }
 
 .botonsote{
@@ -203,7 +202,11 @@ BuenaVentura Agronegocios
   margin-right: 5px;
 }
 
-.bordesito
+.gb_text{
+  color:#4fad31!important; 
+  font-weight: bold!important;
+}
+
   </style>
 
   <!------ botones flotantes ---------->
@@ -399,32 +402,8 @@ BuenaVentura Agronegocios
   </div>
   
 
-
-<!---------------->
-                        
-<div class="row " >
-  <!------- barra lateral de opciones --------->
-  <div class="col hide-on-small-only l2 m3 vl ">
-    <ul class="section table-of-contents pinned ">
-      <li><a href="#">Notificaciones</a></li>
-      <li><a href="#id1">Presupuestos</a></li>
-      <li><a href="#id2">Negocios</a></li>
-      <li><a href="#id3">Vencimientos</a></li>
-      <li><a href="#id3">Logistica</a></li>
-      <li><a href="#id3">Comprobantes</a></li>
-      <li><a href="#id4">Mas Opciones </a></li>
-      {% if request.user|has_group:"Vendedor" %} 
-        <li><a style=" width: 14%;" class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned " onclick="openModalAlerta()"> Enviar Alerta</a></li>
-      {% endif %}
-      <li><a style="position: relative; margin-top: 25px; width: 14%;" class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned "  href="{% url 'inicio'  %}" > Nuevo Negocio</a></li>
-      <li><a style="position: relative; margin-top: 50px; width: 14%;" class="waves-effect waves-light btn botonsito red white-text modal-trigger pinned "  href="{% url 'todos_negocios'  %}" >Negocios</a></li>
-  </ul>
-  </div>
-  <!----------------------------------->
-
-<a id=""></a>
   <!--------------area general --------------------->
-  <div class="col  l10 m9">
+  
     
     <!---------------titulo notificaciones -------------------->
     <div  class="row "> 
