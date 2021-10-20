@@ -1,33 +1,39 @@
 {% block body%}
 
 {% load auth_extras %}
-
-<div class="col hide-on-small-only sidebar">
-    <ul class="section table-of-contents pinned ">
-        <li><a href="#">Notificaciones</a></li>
-        <li><a href="#id1">Presupuestos</a></li>
-        <li><a href="#id2">Negocios</a></li>
-        <li><a href="#id3">Vencimientos</a></li>
-        <li><a href="#id3">Logistica</a></li>
-        <li><a href="#id3">Comprobantes</a></li>
-        <li><a href="#id4">Mas Opciones </a></li>
-        {% if request.user|has_group:"Vendedor" %}
-        <li><a class="gb_text" onclick="openModalAlerta()"> Enviar Alerta</a></li>
-        {% endif %}
-        <li><a class="gb_text" href="{% url 'inicio'  %}"> Nuevo Negocio </a></li>
-        <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
-    </ul>
-</div>
-
+<body>
+    <div class="col s12 l2 m3 mysidebar vl pinned">
+        <ul class="section table-of-contents ">
+            <li><a href="#">Notificaciones</a></li>
+            <li><a href="#id1">Presupuestos</a></li>
+            <li><a href="#id2">Negocios</a></li>
+            <li><a href="#id3">Vencimientos</a></li>
+            <li><a href="#id3">Logistica</a></li>
+            <li><a href="#id3">Comprobantes</a></li>
+            <li><a href="#id4">Mas Opciones </a></li>
+            {% if request.user|has_group:"Vendedor" %}
+            <li><a class="gb_text" onclick="openModalAlerta()"> Enviar Alerta</a></li>
+            {% endif %}
+            <li><a class="gb_text" href="{% url 'inicio'  %}"> Nuevo Negocio </a></li>
+            <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
+        </ul>
+    </div>
+</body>   
 <style>
     .gb_text{
         color: #4fad31 !important;
         font-weight: bold !important;
     }
-    .sidebar{
-        background-color: #dfdfdf81;
-        height:100% !important; 
-	    width:100% !important;
+    .mysidebar{
+        background-color: #dfdfdf6b !important;
+        display: fixed; 
+        justify-content: center; 
+        align-items: center;
+    }
+    .vl {
+    border-right: 2px solid rgb(128, 128, 128, 0.5);
+    min-height: calc(100vh - 64px) !important;
+    left: 0px !important;
     }
 </style>
 

@@ -4,18 +4,23 @@
   {% include 'header.html'%}
 
 <!--  barra lateral / sidebar -->
-<div class="row " >
+<div class="row">
   <!------- barra lateral de opciones --------->
-  <div class="col hide-on-small-only s12 l2 m3 vl" style="padding: 0%;">
+  <div class="col hide-on-small-only s12 l2 m3 vl" >
     {% include 'sideabar.html'%}
   </div>
 
-  <div class="col s12 l10 m9">
+  <div class="col s12 l10 m9 fondo">
     {% block body %}
     {% endblock body %}
   </div>
 </div>
 
-
-
 </html>
+
+<style>
+  .fondo{
+    min-height: calc(100vh - 64px) !important;
+  }
+</style>
+

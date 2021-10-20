@@ -1,10 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'header.html' %}
 {% load auth_extras %}
 {% block imports %}
    {% load static %}
    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
 {% endblock imports %}
 {% block style %}
+
+<style>
 
 body {
   background-color: #fff;
@@ -148,6 +150,7 @@ body {
     background-color: transparent !important;
   }
   tr {
+    border-bottom: 0px !important;
     border: none !important;
   }
   td, th {
@@ -209,7 +212,9 @@ body {
     .container__watermark > img {
       margin: 10px;
     }
-  }
+  }  
+</style>
+
 {% endblock %}
 {% block title %}Negociación{% endblock title %}
 {%block body%}

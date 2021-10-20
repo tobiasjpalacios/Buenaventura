@@ -9,6 +9,7 @@
 BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
+
 <script> $(document).ready(function(){
   $('.scrollspy').scrollSpy();
   $('.collapsible').collapsible();
@@ -38,26 +39,30 @@ BuenaVentura Agronegocios
 
 <style>
 
-.titulito{
+  .titulito{
    font-size: 30px;
    font-family: 'Montserrat';
    text-align: center;
- }
-    .titulo1 {
-      height: 60px;
-      border-bottom-left-radius: 1em;
-      border-bottom-right-radius: 1em;
-      
-      background-color: #757474;
-      font-family: 'Montserrat' ;
-    }
+  }
+  .titulo1 {
+    height: 60px;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;    
+    background-color: #757474;
+    font-family: 'Montserrat' ;
+  }
 
-    body {
+  body{
     font-family: 'Montserrat';
   }
+
+  input{
+    border-bottom: 0px !important;
+  }
+
   .im {
-   height: 50px;
-   width: 50px;
+    height: 50px;
+    width: 50px;
     margin-top: 5px;
   }
   
@@ -66,106 +71,180 @@ BuenaVentura Agronegocios
     height: 40px;
     
   }
+
+  .clv{
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .menu{
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+
+    background-color: #005221;
+    border-top-right-radius: 3em;
+    border-bottom-right-radius: 3em;
+    margin-top: 2%;
+    color: white;
+    min-width: 405px;
+  }
+
+  .circule{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 75px; 
+    width: 75px; 
+    bottom: 5px; 
+    background-color: white; 
+    border-radius: 50%; 
+    text-align: center;
+  }
+
+  .shear_circule{
+    background-color: white; 
+    text-align: center;
+    border-radius: 100%; 
+    text-align: center;
+    color:#4fad31;
+  }
+
+  .ctr {
+    border-bottom: 0px;
+  }
+
+  ::placeholder { /* Firefox, Chrome, Opera */
+    color: white;
+    font-weight: bold;
+  }
+  .shearS{
+    
+    border-radius: 3em;
+
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    align-items: center; 
+    background-color: #4fad31;
+    height:100%;
+  }
   
-    </style>
+</style>
+<body>
+
 
 <div id="modalDetalleNegocio" class="modal">
     <div id="modalNegocio" class="modal-content">
     </div>
-  </div>
-  
-
-<div class="row" >
-    <div class="col s12">
-        <div class=" card-panel green col s12 "> 
-            <h4 class="card-title center">Negocios</h4>   
-        </div>
-    </div>
 </div>
+  
+<div class="row">
 
+  <div style="height: 60px;" class="menu col l4 m4 s4 clv"> 
+      <div>
+        <div class="col-s2 h-bar circule">
+          <img src="{% static 'images/check.svg' %}" alt="Check icon" style="height: 40%;">
+        </div>
+      </div>
+      <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Negocios</h4>
+  </div>
 
-
+  <div style="height: 80px; margin-top: 2%; position: relative;" class="col l4 m4 s4">
+    <div style="margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">
+      <strong style="font-size: 30px; font-weight: 900;" class="grey-text text-darken-3">{{negocio.id_de_neg}}</strong>
+    </div>
+  </div>
+</div>
 
 <div class="row">
  <div class="container">
-  <div class="input-field col s12  " style="border-radius: 2em; background-color: white ;height:45px; border: 2px solid green;" >
-    <i class="material-icons prefix">search</i>
-    <input  id="inputBuscadorNegocio"  style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="buscar negocio" onkeyup="searchBuscadorNegocio()" type="text">
-   
+  <div class="input-field col s12 shearS" style="padding: 0rem;">
+    <input  id="inputBuscadorNegocio" style="margin: 0px; color: white !important;border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em;" placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text">
+    <i class="medium material-icons shear_circule" style="position: relative; left: 1px;" >search</i>
   </div>
-
- 
  </div>
 </div>
 
+ 
 
-<div class="row "> 
-    <div class=" card-panel  grey- lighten-5 pinned filtro " style="width: 18%;">
-        <h5 class="center">Filtros </h5>
-        
-        <div class="input-field col s12">
-            <select multiple id="selectVendedores">
-              <option value="todos" selected>Cualquiera</option>
-                {% for vendedor in todos_vendedores %}
-                    <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
-                {% endfor %}
-            </select>
-            <label>vendendor</label>
+<nav style="background-color: #dfdfdf6b!important;">
+  <div class="nav-wrapper clv" style="width: 100%; background-color:transparent;">
+    <ul id="nav-mobile" class="" style="display: flex; justify-content: space-between;">
+      <li>
+        <div class="input-field clv">
+          <select multiple id="selectVendedores">
+            <option value="todos" selected>Cualquiera</option>
+            {% for vendedor in todos_vendedores %}
+            <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
+            {% endfor %}
+          </select>
+          <label>vendendor</label>
+        </div>
+      </li>
+      <li>
+        <div class="input-field clv">
+          <select multiple id="selectEstados">
+            <option value="todos" selected>Cualquiera</option>
+            <option value="Confirmado">Confirmado</option>
+            <option value="Cancelado">Cancelado</option>
+            {% if request.user|has_no_group:"Proveedor"%}
+            <option value="Recibido">Recibido</option>
+            <option value="En Negociacion">En Negociacion</option>
+            {% endif %}
+          </select>
+          <label>Estado</label>
+        </div>
+      </li>
+      <li>
+        <div class="input-field clv">
+          <select id="selectTipo">
+            <option value="todos" selected> Cualquiera</option>
+            <option value="Venta">Venta</option>
+            <option value="Consignacion">Consignacion</option>
+          </select>
+          <label>Tipo de Negocio</label>
+        </div>
+      </li>
+      <li>
+        <div class="input-field clv">
+          <select id="selectTipoFecha" onchange="selTipoFecha()">
+            <option value="0" selected> Sin Fecha </option>
+            <option value="1">Fecha Inicio</option>
+            <option value="2">Fecha Cierre</option>
+          </select>
+          <label>Fecha</label>
+        </div>
+        <div style="display: none;" id="divFechasParam">
+          <div class="input-field ">
+            <input type="text" class="datepicker" id="fechaDesde">
+            <label>Fecha Desde</label>
           </div>
-          
 
-        <div class="input-field col s12">
-            <select multiple id="selectEstados">
-              <option value="todos" selected>Cualquiera</option>
-              <option value="Confirmado">Confirmado</option>
-              <option value="Cancelado">Cancelado</option>
-              {% if request.user|has_no_group:"Proveedor"%}
-                <option value="Recibido">Recibido</option>
-                <option value="En Negociacion">En Negociacion</option>
-              {% endif %}
-            </select>
-            <label>Estado</label>
+          <div class="input-field">
+            <input type="text" class="datepicker" id="fechaHasta">
+            <label>Fecha Hasta</label>
           </div>
-          
-          <div class="input-field col s12">
-            <select id="selectTipo">
-              <option value="todos" selected> Cualquiera</option>
-              <option value="Venta">Venta</option>
-              <option value="Consignacion">Consignacion</option>
-            </select>
-            <label>Tipo de Negocio</label>
-          </div>
+        </div>
+      </li>
+      <li>
+        <div class="clv">
+          <a class="waves-effect waves-light btn col s12" style="background-color: #4fad31;" onclick="filtrar()">filtrar</a>
+        </div>
+      </li>
+    </ul>
+  </div>  
+</nav>
 
-          <div class="input-field col s12">
-            <select id="selectTipoFecha" onchange="selTipoFecha()">
-              <option value="0" selected> Sin Fecha </option>
-              <option value="1">Fecha Inicio</option>
-              <option value="2">Fecha Cierre</option>
-            </select>
-            <label>Fecha</label>
-          </div>
-          <div style="display: none;" id="divFechasParam">
-            <div class="input-field col s12">
-              <input type="text" class="datepicker" id="fechaDesde">
-              <label>Fecha Desde</label>
-            </div>
 
-            <div class="input-field col s12">
-              <input type="text" class="datepicker" id="fechaHasta">
-              <label>Fecha Hasta</label>
-            </div>        
-          </div>
-          
-          
-          <a class="waves-effect waves-light btn col s12" onclick="filtrar()" ><i class="material-icons right">search</i>filtrar</a>
-    </div>
-
-    
-
-    <div class=" offset-s2  " style="width: 80%; position: relative; left: 20%;">
+    <div class=" offset-s2  " style="width: 100%; position: relative;">
       <table id="tableNegocios">
           <thead>
-            <tr>
+            <tr style="border-bottom: 1px solid grey;">
                 <th>Fecha apertura</th>
                 <th>Fecha cierre</th>
                 {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
@@ -183,7 +262,7 @@ BuenaVentura Agronegocios
   
           <tbody id="infoTabla">
               {% for negocio in todos_negocios %}
-              <tr>
+              <tr class="ctr">
                   <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                   <td>{% if negocio.fecha_cierre is null %} 
                           Sin Definir
@@ -221,14 +300,7 @@ BuenaVentura Agronegocios
         </table>
   </div>
 
-  </div>
-
-
-    
-    
-
-
-
+</body>
 <script>
   $(document).ready(function(){
     $('select').formSelect();
