@@ -1,0 +1,125 @@
+.titulo {
+    height: 60px;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    
+    background-color: #e30613;
+    font-family: 'Montserrat' ;
+  }
+  .titulo1 {
+    height: 60px;
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    
+    background-color: #757474;
+    font-family: 'Montserrat' ;
+}
+
+body {
+  font-family: 'Montserrat';
+}
+
+.im {
+ height: 50px;
+ width: 50px;
+  margin-top: 5px;
+}
+
+.imgchica{
+  height: 25px;
+  padding-left: 5%;
+}
+
+.barra{
+  background-color: #757474;
+  height: 40px;
+}
+.barraa{
+  background-color: #3cad41;
+  height: 40px; 
+}
+.barrac{
+  background-color: #ed0023;
+  height: 40px; 
+}
+
+.bloque-izquierdo{
+  padding-right: 0% !important;
+  position: relative;
+  height: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+}
+
+.bloque-centro{
+  padding-right: 0% !important;
+  position: relative;
+  height: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+  border-right: 2px solid rgb(128, 128, 128, 0.5);
+  border-left: 2px solid rgb(128, 128, 128, 0.5);
+}
+
+.bloque-centro1{
+  border-right: 2px solid rgb(128, 128, 128, 0.5);
+  border-left: 2px solid rgb(128, 128, 128, 0.5);
+}
+
+.bloque-derecho{
+  padding-right: 0% !important;
+  position: relative;
+  height: 60px;
+  border-top: 2px solid rgb(128, 128, 128, 0.5); 
+  border-bottom: 2px solid rgb(128, 128, 128, 0.5); 
+}
+ 
+.titulito{
+   font-size: 20px;
+   font-family: 'Montserrat';
+   font-weight: bold;
+   text-align: center;
+   color: black;
+}
+
+.tamaño{
+    height: 600px;
+    width: 600px;
+}
+
+.opcion{
+  font-size: 20px;
+  border-bottom: 0px;
+}
+
+.opcion:hover{
+  font-weight: bold;
+}
+
+.activado:hover{
+  font-weight: bold;
+}
+
+.botonsito{
+  border-bottom-left-radius: 2em;
+  border-bottom-right-radius: 2em;  
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
+}
+
+.botonsote{
+  border-bottom-left-radius: 2em;
+  border-bottom-right-radius: 2em;  
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.gb_text{
+  color:#4fad31!important; 
+  font-weight: bold!important;
+}
+

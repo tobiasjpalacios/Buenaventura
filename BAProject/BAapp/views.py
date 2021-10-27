@@ -100,6 +100,13 @@ def todos_negocios(request):
     vendedor = Vendedor.objects.all()    
     return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
+def notificaciones(request):    
+    grupo_activo = request.user.groups.all()[0].name
+    negocio = getNegociosForList(request,grupo_activo,1)
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+
 def todosFiltro(request, tipo):
     grupo_activo = request.user.groups.all()[0].name
     negocios_permitidos = getNegociosForList(request,grupo_activo,2)

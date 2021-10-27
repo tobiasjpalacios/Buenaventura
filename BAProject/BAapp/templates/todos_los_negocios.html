@@ -10,133 +10,12 @@ BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
 
-<script> $(document).ready(function(){
-  $('.scrollspy').scrollSpy();
-  $('.collapsible').collapsible();
-  $('.fixed-action-btn').floatingActionButton();
-  $('.modal').modal();
-  $('.logis').hide();
-  $('#ocultar').hide();
-  $('#campo').hide();
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+</head>
 
-  $('#mostrar').click(function(){
-    $('#ocultar').show();
-    $('.logistica').hide();
-    $('#mostrar').hide();
-    $('.logis').show();
 
- });
-
- $('#ocultar').click(function(){
-    $('.logis').hide();
-    $('.logistica').show();
-    $('#ocultar').hide();
-    $('#mostrar').show();
-
- });   
-});
-</script>
-
-<style>
-
-  .titulito{
-   font-size: 30px;
-   font-family: 'Montserrat';
-   text-align: center;
-  }
-  .titulo1 {
-    height: 60px;
-    border-bottom-left-radius: 1em;
-    border-bottom-right-radius: 1em;    
-    background-color: #757474;
-    font-family: 'Montserrat' ;
-  }
-
-  body{
-    font-family: 'Montserrat';
-  }
-
-  input{
-    border-bottom: 0px !important;
-  }
-
-  .im {
-    height: 50px;
-    width: 50px;
-    margin-top: 5px;
-  }
-  
-  .barra{
-    background-color: #757474;
-    height: 40px;
-    
-  }
-
-  .clv{
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    height: 100%;
-    width: 100%;
-  }
-
-  .menu{
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-
-    background-color: #005221;
-    border-top-right-radius: 3em;
-    border-bottom-right-radius: 3em;
-    margin-top: 2%;
-    color: white;
-    min-width: 405px;
-  }
-
-  .circule{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 75px; 
-    width: 75px; 
-    bottom: 5px; 
-    background-color: white; 
-    border-radius: 50%; 
-    text-align: center;
-  }
-
-  .shear_circule{
-    background-color: white; 
-    text-align: center;
-    border-radius: 100%; 
-    text-align: center;
-    color:#4fad31;
-  }
-
-  .ctr {
-    border-bottom: 0px;
-  }
-
-  ::placeholder { /* Firefox, Chrome, Opera */
-    color: white;
-    font-weight: bold;
-  }
-  .shearS{
-    
-    border-radius: 3em;
-
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    align-items: center; 
-    background-color: #4fad31;
-    height:100%;
-  }
-  
-</style>
 <body>
-
 
 <div id="modalDetalleNegocio" class="modal">
     <div id="modalNegocio" class="modal-content">
@@ -301,6 +180,7 @@ BuenaVentura Agronegocios
   </div>
 
 </body>
+
 <script>
   $(document).ready(function(){
     $('select').formSelect();
@@ -416,6 +296,30 @@ BuenaVentura Agronegocios
     };
   }
 
+  $(document).ready(function(){
+  $('.scrollspy').scrollSpy();
+  $('.collapsible').collapsible();
+  $('.fixed-action-btn').floatingActionButton();
+  $('.modal').modal();
+  $('.logis').hide();
+  $('#ocultar').hide();
+  $('#campo').hide();
 
+  $('#mostrar').click(function(){
+    $('#ocultar').show();
+    $('.logistica').hide();
+    $('#mostrar').hide();
+    $('.logis').show();
+
+ });
+
+ $('#ocultar').click(function(){
+    $('.logis').hide();
+    $('.logistica').show();
+    $('#ocultar').hide();
+    $('#mostrar').show();
+
+ });   
+});
 </script>
 {% endblock body %}

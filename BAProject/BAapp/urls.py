@@ -46,6 +46,8 @@ urlpatterns = [
     path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('todosFiltro/(?P<tipo>[0-9]+)', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),
+    path('notificaciones/', notificaciones, name ="notificaciones"),
+
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
     path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),
