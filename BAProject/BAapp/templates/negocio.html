@@ -216,7 +216,6 @@ body {
     width: 50%;
     left: 50%;
     margin-left: -400px;
-    transform: translateY(-100px);
     padding: 15px;
     margin-bottom: 20px;
     margin-top: 15px;
@@ -228,13 +227,26 @@ body {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
-    display: none;
     -webkit-box-align: center;
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
-    position: fixed;
-    z-index: 99;
+  }
+  .materialert .close-alert{
+    -webkit-appearance: none;
+    border: 0;
+    cursor: pointer;
+    color: inherit;
+    background: 0 0;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .7);
+    filter: alpha(opacity=40);
+    margin-bottom: -5px;
+    position: absolute;
+    top: 16px;
+    right: 5px;
   }
   .materialert .material-icons {
       margin-right: 10px;
@@ -242,6 +254,16 @@ body {
   .materialert.error {
     background-color: #c62828;
     color: #fff;
+  }
+  .materialert.warning {
+    background-color: #fec80b;
+    color: #000;
+  }
+  .materialert.fixed {
+    transform: translateY(-100px);
+    position: fixed;
+    z-index: 99;
+    display: none;
   }
   @keyframes alertAnimDown {
     0% {
@@ -291,7 +313,7 @@ body {
 
 {% if request.user|has_group:'Vendedor' %}
 
-<div class="materialert error">
+<div class="materialert error fixed">
   <div class="material-icons">error_outline</div>
   Vista Cliente Activado
 </div>
@@ -342,7 +364,7 @@ body {
   }
 </style>
 {% if not prop.items.count == 0 %}
-<div class="row">
+<div class="row" id="div-table-{{prop.id}}">
   <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
     <div class="prop-title">
       <p class="prop-creator-name grey-text text-darken-3"><strong>{% if prop.envio_comprador %} {{ negocio.comprador.persona.user.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.persona.user.get_full_name }} {% endif %}</strong></p>
@@ -367,19 +389,19 @@ body {
               <tr>
                 <th class="show{{prop.id}}">Articulo</th>
                 {% if not request.user|has_group:'Comprador' %}
-                <th class="show{{prop.id}} clientView">Distribuidor</th>
+                <th class="show{{prop.id}} clientViewSM">Distribuidor</th>
                 {% endif %}
                 <th class="show{{prop.id}}">Cantidad</th>
                 <th class="show{{prop.id}}">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
                 {% if not request.user|has_group:'Comprador' %}
-                <th class="show{{prop.id}} clientView">Precio compra</th>
+                <th class="show{{prop.id}} clientViewSM">Precio compra</th>
                 {% endif %}
-                <th class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%} clientViewTp">Tipo pago</th>
-                <th class="not-show{{prop.id}}">Tasa</th>
-                <th class="not-show{{prop.id}}">Fecha pago</th>
-                <th class="not-show{{prop.id}}">Fecha entrega</th>
-                <th class="not-show{{prop.id}}">Destino</th>
-                <th>Ver más</th>
+                <th class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%}">Tipo pago</th>
+                <th class="not-show{{prop.id}} clientView">Tasa</th>
+                <th class="not-show{{prop.id}} clientView">Fecha pago</th>
+                <th class="not-show{{prop.id}} clientView">Fecha entrega</th>
+                <th class="not-show{{prop.id}} clientView">Destino</th>
+                <th class="clientViewSM">Ver más</th>
               </tr>
             </thead>
             <tbody>
@@ -387,19 +409,19 @@ body {
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show{{prop.id}} clientView">{{ item.proveedor|default_if_none:'' }}</td>
+                <td class="show{{prop.id}} clientViewSM">{{ item.proveedor|default_if_none:'' }}</td>
                 {% endif %}
                 <td class="show{{prop.id}}">{{ item.cantidad }}</td>
                 <td class="show{{prop.id}}">{{ item.precio_venta }}</td>
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show{{prop.id}} clientView">{{ item.precio_compra|default_if_none:"0,0" }}</td>
+                <td class="show{{prop.id}} clientViewSM">{{ item.precio_compra|default_if_none:"0,0" }}</td>
                 {% endif %}
-                <td class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%} clientViewTp">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
-                <td class="not-show{{prop.id}}">{{ item.tasa }}%</td>
-                <td class="not-show{{prop.id}}">{{ item.fecha_pago|default:"Sin definir" }}</td>
-                <td class="not-show{{prop.id}}">{{ item.fecha_entrega|default:"Sin definir" }}</td>
-                <td class="not-show{{prop.id}}">{{ item.destino|default:"Sin definir" }}</td>
-                <td>
+                <td class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%} ">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.tasa }}%</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.fecha_pago|default:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.destino|default:"Sin definir" }}</td>
+                <td class="clientViewSM">
                   <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}}); sm{{prop.id}}=!sm{{prop.id}};"><i class="i{{prop.id}} material-icons table-icons">search</i></a>
                 </td>
               </tr>
@@ -422,7 +444,6 @@ body {
   //   $('[id="' + this.id + '"]:gt(0)').remove();
   // });
 
-  var clientViewTp = $(".clientViewTp");
   var sm{{prop.id}} = false;
   var propIdId = "{{prop.id}}";
 
@@ -454,11 +475,27 @@ body {
   });
   
 </script>
+
+{% if negocio.aprobado %}
+<script>
+  $(document).ready(function () {
+    var isBeforeFechaCierre = false;
+    var fechaProp = "{{prop.timestamp|date:'c'}}";
+    var fechaCierreNeg = "{{negocio.fecha_cierre|date:'c'}}";
+    
+    if (Date.parse(fechaProp) <= Date.parse(fechaCierreNeg)) {
+      isBeforeFechaCierre = true;
+    }
+
+    addTables("{{prop.id}}", isBeforeFechaCierre);
+
+  });
+</script>
+{% endif %}
+
 {% endif %}
 {% if forloop.last %}
-{% if not negocio.aprobado and not negocio.cancelado %}
-</div>
-<div class="row">
+<div class="row" id="form-table-div">
   <div class="col s12 m9 push-m3">
     <div class="prop-title">
       <p class="prop-creator-name grey-text text-darken-3"><strong>Nueva propuesta</strong></p>
@@ -481,11 +518,11 @@ body {
             <thead>  
               <tr>
                 <th class="show0">Articulo</th>
-                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView">Distribuidor</th>
+                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Distribuidor</th>
                 <th class="show0">Cantidad</th>
                 <th class="show0">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
-                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView">Precio compra</th>
-                <th class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%} clientViewTp">Tipo pago</th>
+                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Precio compra</th>
+                <th class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">Tipo pago</th>
                 <th class="not-show0">Tasa</th>
                 <th class="not-show0">Fecha pago</th>
                 <th class="not-show0">Fecha entrega</th>
@@ -503,7 +540,7 @@ body {
                   <td class="show0">{{ item.articulo.marca|default_if_none:'' }}</td>
                 {% endif %}
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show0 clientView">
+                <td class="show0">
                   {% if item.proveedor == None %}
                   <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off'>
                   <datalist id='distResults'>
@@ -519,8 +556,8 @@ body {
               {% if not item.aceptado %}
                 <td class="show0"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
                 <td class="show0"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%} clientViewTp">
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
@@ -549,8 +586,8 @@ body {
               {% else %}
                 <td class="show0">{{ item.cantidad }}</td>
                 <td class="show0">{{ item.precio_venta|stringformat:'.2f' }}</td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView">{{ item.precio_compra|stringformat:'.2f' }}</td>
-                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%} clientViewTp">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">{{ item.precio_compra|stringformat:'.2f' }}</td>
+                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
                 <td class="not-show0">{{ item.tasa }}%</td>
                 <td class="not-show0">{{ item.fecha_pago|default:"Sin definir" }}</td>
                 <td class="not-show0">{{ item.fecha_entrega|default:"Sin definir"}}</td>
@@ -567,12 +604,13 @@ body {
                 });
               </script>
             {% endfor %}
+            {% if not negocio.aprobado %}
               <tr id="extra">
                 <td class="show0">
                     <input type="hidden" id='artValue'>
                     <input type="text" name='articulo' id='artSearch' class="autocomplete">
                 </td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView">
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
                   <datalist id='distResults'>
                   {% for dist in distribuidores %}
@@ -584,10 +622,10 @@ body {
                 <td class="show0">
                   <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
                 </td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %} clientView">
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
                 </td>
-                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%} clientViewTp">
+                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
                     <option value="" selected disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
@@ -612,6 +650,7 @@ body {
                   <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
                 </td>
               </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>
@@ -644,13 +683,13 @@ body {
   });
 </script>
 {% endif %}
-{% endif %}
 {% endfor %}
 
 {% if negocio.aprobado %}
 <div class="approved" id="approved">
   <h2>Negocio confirmado ✓</h2>
   <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
 </div>
 {% endif %}
 {% if negocio.cancelado %}
@@ -660,7 +699,19 @@ body {
 </div>
 {% endif %}
 
-{% if not negocio.aprobado and not negocio.cancelado %}
+{% if negocio.aprobado %}
+<div id="table-destination">
+
+  <div class="materialert warning" id="infoAlert">
+    <div class="material-icons">warning</div>
+    Debajo aparecerán las modificaciones que se realizaron posterior a la confirmación del negocio.
+    <button type="button" class="close-alert" onclick="closeAlert('#infoAlert');">×</button>
+  </div>
+
+</div>
+{% endif %}
+
+{% if not negocio.cancelado %}
 <div id="modalSend" class="modal">
   <div class="modal-content">
     <h4>Enviar propuesta</h4>
@@ -674,6 +725,10 @@ body {
 {% endif %}
 
 <script type="text/javascript">
+
+  var isAccepted = false;
+  var isCanceled = false;
+  var modifyWasClicked = false;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -744,13 +799,28 @@ body {
     "{% elif not negocio.aprobado and negocio.cancelado %}"
     elId = "#canceled"
     "{% endif %}"
-    $([document.documentElement, document.body]).animate({
-      scrollTop: $(elId).offset().top
-    }, 500);
+    mScrollTo(elId);
 
     listProp.push('0');
 
+    "{% if negocio.aprobado %}"
+    isAccepted = true;
+    "{% endif %}"
+    "{% if negocio.cancelado %}"
+    isCanceled = true;
+    "{% endif %}"
+
+    if (isAccepted || isCanceled) {
+      $("#form-table-div").hide();
+    }
+
   });
+
+  function mScrollTo(id) {
+    $([document.documentElement, document.body]).animate({
+      scrollTop: $(id).offset().top
+    }, 500);
+  }
 
   var userIsComprador = false;
   "{% if request.user|has_group:'Comprador' %}"
@@ -803,21 +873,17 @@ body {
 
   // funcion vista cliente
   var vistaCliente = false;
-  var materialAlert = $(".materialert");
 
   function toggleClientView(n) {
   
-    var clientViewTp = $(".clientViewTp");
+    var clientView = $(".clientView");
+    var clientViewSM = $(".clientViewSM");
 
     if($("#client-view-sw").is(":checked")) {
 
-      if (clientViewTp.hasClass("not-show"+n)) {
-        clientViewTp = $(".clientViewTp.not-show"+n);
-        clientViewTp.toggleClass("not-show"+n+" show"+n);
-      }
-      
-      $(".clientView").hide();
-      $("#extra").hide();
+      clientView.show();
+      clientViewSM.hide();
+      $("#form-table-div").hide();
       $("#send-prop-btn").attr('disabled', true);
 
       vistaCliente = true;
@@ -825,13 +891,11 @@ body {
     }
     else {
 
-      if (clientViewTp.hasClass("show"+n)) {
-        clientViewTp = $(".clientViewTp.show"+n);
-        clientViewTp.toggleClass("show"+n+" not-show"+n);
+      clientView.css('display', '');
+      clientViewSM.show();
+      if (modifyWasClicked) {
+        $("#form-table-div").show();
       }
-      
-      $(".clientView").show();
-      $("#extra").show();
       $("#send-prop-btn").removeAttr('disabled');
 
       vistaCliente = false;
@@ -843,6 +907,8 @@ body {
   }
 
   function alertAnimation() {
+    var materialAlert = $(".materialert.error");
+
     if (vistaCliente) {
       materialAlert.css("display", "flex");
       materialAlert.css("animation", "alertAnimDown .5s ease 0s 1 normal forwards");
@@ -859,7 +925,26 @@ body {
 
   "{% endif %}"
 
+  function closeAlert(id) {
+    $(id).hide();
+  }
 
+  // funcion editar despues de negocio confirmado
+
+  function addTable() {
+    $("#modifyProp").hide();
+    $("#form-table-div").detach().appendTo("#table-destination");
+    $("#form-table-div").show();
+    modifyWasClicked = true;
+  }
+
+  function addTables(n, isBeforeFechaCierre) {
+    if (!isBeforeFechaCierre) {
+      $("#div-table-"+n).detach().appendTo("#table-destination");
+      $("#div-table-"+n).show();
+    }
+  }
+  
   var lastForAccept = last;
 
   function accept(index){
@@ -878,7 +963,7 @@ body {
 
   function reject(index){
     console.log("rejected")
-    reset(index)
+    resetAll(index)
     $($("#form")[0].rows[index+1]).addClass("red white-text white-text-input")
     edits.items[index]={};
   }
@@ -886,7 +971,7 @@ body {
   function update(index){
     console.log("update");
     if (!userIsComprador && edits.items[index].proveedor == null) {
-      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0]
+      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0];
       if (input.value == "") {
         $(input).addClass("invalid");
         return;
@@ -898,7 +983,7 @@ body {
     $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"])
     $($("#form")[0].rows[index+1]).addClass("yellow");
     editable_fields.forEach(element => {
-      if (element != "observaciones") {
+      if (element != "observaciones" && element != "distribuidor") {
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
         if (input.type == "number"){
           edits.items[index][element] = parseInt(input.value)
@@ -1029,14 +1114,14 @@ body {
     row.innerHTML = "\
     <td class=\"show0\">"+$("#artSearch")[0].value+"</td>\
     {% if not request.user|has_group:'Comprador' %}\
-    <td class=\"show0 clientView\">"+$("#distSearch")[0].value+"</td>\
+    <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
     <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
     <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
     {% if not request.user|has_group:'Comprador' %}\
-    <td class=\"show0 clientView\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
     {% endif %}\
-    <td class=\"{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%} clientViewTp\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
     <td class=\"not-show0\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
