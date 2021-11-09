@@ -214,8 +214,7 @@ body {
     position: relative;
     min-width: 150px;
     width: 50%;
-    left: 50%;
-    margin-left: -400px;
+    margin: 0 auto;
     padding: 15px;
     margin-bottom: 20px;
     margin-top: 15px;
@@ -258,9 +257,12 @@ body {
   .materialert.warning {
     background-color: #fec80b;
     color: #000;
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
   .materialert.fixed {
     transform: translateY(-100px);
+    left: 25%;
     position: fixed;
     z-index: 99;
     display: none;
@@ -533,7 +535,7 @@ body {
             </thead>
             <tbody>
             {% for item in prop.items.all %}
-              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
+              <tr {% if item.aceptado %}class="green white-text white-text-input"{% endif %}>
                 {% if item.articulo.marca == "NINGUNA" %}
                   <td class="show0">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
@@ -553,7 +555,6 @@ body {
                   {% endif %}
                 </td>
                 {% endif %}
-              {% if not item.aceptado %}
                 <td class="show0"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
                 <td class="show0"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
                 <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
@@ -578,25 +579,16 @@ body {
                   <input type="text" name="destino" value="{{item.destino}}"/>
                 </td>
                 <td>
+                  {% if not item.aceptado %}
                   <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons table-icons">done</i></a>
                   <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
+                  {% endif %}
                   <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
-                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }})"><i class="material-icons table-icons">undo</i></a>
+                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}')"><i class="material-icons table-icons">undo</i></a>
                 </td>
-              {% else %}
-                <td class="show0">{{ item.cantidad }}</td>
-                <td class="show0">{{ item.precio_venta|stringformat:'.2f' }}</td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">{{ item.precio_compra|stringformat:'.2f' }}</td>
-                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
-                <td class="not-show0">{{ item.tasa }}%</td>
-                <td class="not-show0">{{ item.fecha_pago|default:"Sin definir" }}</td>
-                <td class="not-show0">{{ item.fecha_entrega|default:"Sin definir"}}</td>
-                <td class="not-show0">{{ item.destino|default:"Sin definir" }}</td>
-                <td></td>
-              {% endif %}
-              <td>
-                <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
-              </td>
+                <td>
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                </td>
               </tr>
               <script>
                 $(document).ready(function() {
@@ -791,9 +783,9 @@ body {
     // });
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
-    var elId = ""
+    var elId;
     "{% if not negocio.aprobado and not negocio.cancelado %}"
-    elId = "#form"
+    elId = "#form-table-div"
     "{% elif negocio.aprobado and not negocio.cancelado %}"
     elId = "#approved"
     "{% elif not negocio.aprobado and negocio.cancelado %}"
@@ -817,9 +809,20 @@ body {
   });
 
   function mScrollTo(id) {
-    $([document.documentElement, document.body]).animate({
-      scrollTop: $(id).offset().top
-    }, 500);
+    var offset;
+    var elementPosition = $(id).offset().top;
+    var windowHeight = $(window).height();
+    
+    if ($(window).width() > 767) {
+      offset = elementPosition - windowHeight / 2;
+    }
+    else {
+      offset = elementPosition;
+    }
+
+    $('html, body').animate({
+      scrollTop: offset
+    }, 700);
   }
 
   var userIsComprador = false;
@@ -896,6 +899,9 @@ body {
       if (modifyWasClicked) {
         $("#form-table-div").show();
       }
+      else if (!isAccepted) {
+        $("#form-table-div").show();
+      }
       $("#send-prop-btn").removeAttr('disabled');
 
       vistaCliente = false;
@@ -963,7 +969,7 @@ body {
 
   function reject(index){
     console.log("rejected")
-    resetAll(index)
+    resetAll(index, "False")
     $($("#form")[0].rows[index+1]).addClass("red white-text white-text-input")
     edits.items[index]={};
   }
@@ -999,17 +1005,19 @@ body {
     lastForAccept.items[index] = edits.items[index]
   }
 
-  function resetAll(index){
+  function resetAll(index, aceptado){
     console.log("resetAll");
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    if (aceptado == "False") {
+      $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    }
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
-      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
+      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]');
       if (element == "tipo_pago" || element == "tasa") {
-        input.val(edits.items[index][element]).change()
+        input.val(edits.items[index][element]).change();
       }
       else {
-        input.val(edits.items[index][element])
+        input.val(edits.items[index][element]);
       }
     });
   }
