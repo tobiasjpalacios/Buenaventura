@@ -584,7 +584,7 @@ body {
                   <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
                   {% endif %}
                   <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
-                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}')"><i class="material-icons table-icons">undo</i></a>
+                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}');"><i class="material-icons table-icons">undo</i></a>
                 </td>
                 <td>
                   <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
@@ -791,7 +791,9 @@ body {
     "{% elif not negocio.aprobado and negocio.cancelado %}"
     elId = "#canceled"
     "{% endif %}"
-    mScrollTo(elId);
+    setTimeout(function() {
+        mScrollTo(elId);
+    }, 500);
 
     listProp.push('0');
 
@@ -809,19 +811,11 @@ body {
   });
 
   function mScrollTo(id) {
-    var offset;
     var elementPosition = $(id).offset().top;
-    var windowHeight = $(window).height();
-    
-    if ($(window).width() > 767) {
-      offset = elementPosition - windowHeight / 2;
-    }
-    else {
-      offset = elementPosition;
-    }
+    var navHeight = $("nav").height();
 
-    $('html, body').animate({
-      scrollTop: offset
+    $('html,body').animate({
+      scrollTop: elementPosition - navHeight - 100
     }, 700);
   }
 
@@ -899,7 +893,7 @@ body {
       if (modifyWasClicked) {
         $("#form-table-div").show();
       }
-      else if (!isAccepted) {
+      if (!isAccepted && !isCanceled) {
         $("#form-table-div").show();
       }
       $("#send-prop-btn").removeAttr('disabled');
