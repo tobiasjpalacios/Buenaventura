@@ -1532,6 +1532,10 @@ class ListPresupuestoView(View):
         all_presupuestos = Presupuesto.objects.all()
         return render(request, 'consultar_presupuestos.html', {'presupuestos':all_presupuestos})    
 
+class PresupuestosView(View):
+    def get(self, request, *args, **kwargs):
+        all_presupuestos = Presupuesto.objects.all()
+        return render(request, 'presupuestos.html', {'presupuestos':all_presupuestos})    
 
 class PresupuestoView(View):
 

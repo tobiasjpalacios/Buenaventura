@@ -2,6 +2,7 @@
 <html lang="en">
 
   {% include 'header.html'%}
+  {% load static %}
 
 <!--  barra lateral / sidebar -->
 <div class="row">
@@ -21,6 +22,8 @@
 <style>
   .fondo{
     min-height: calc(100vh - 64px) !important;
+    background-image: url(/static/images/fondo.svg);
+    background-size: 100%;
   }
 </style>
 

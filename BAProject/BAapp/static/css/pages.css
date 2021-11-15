@@ -1,5 +1,12 @@
 
-   
+.verTodos{
+  margin-top: 2%;
+  margin-left: 2%;
+  margin-bottom: 2%;
+  border-radius: 3em;
+  background-color: #4fad31 !important; 
+}
+
 .titulo1 {
      height: 60px;
      border-bottom-left-radius: 1em;
@@ -44,10 +51,16 @@ input{
      background-color: #005221;
      border-top-right-radius: 3em;
      border-bottom-right-radius: 3em;
-     margin-top: 2%;
      color: white;
+     height: 40%;
      min-width: 405px;
    }
+
+.menuZone{
+  height:20vh; 
+  justify-content: start !important;
+  overflow: hidden;
+}
  
 .circule{
      display: flex;

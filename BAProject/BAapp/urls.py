@@ -61,9 +61,11 @@ urlpatterns = [
     path('articulo/<int:pk>', ArticuloView.as_view(), name="articulo"),
     path('articulo/', ArticuloView.as_view(), name="crear_articulo"),
 
-    path('presupuestos/', ListPresupuestoView.as_view(), name = "mostrar_presupuestos"),
+    path('presupuestosO/', ListPresupuestoView.as_view(), name = "mostrar_presupuestos"),
     path('presupuesto/<int:pk>', PresupuestoView.as_view(), name="presupuesto"),
     path('presupuesto/', PresupuestoView.as_view(), name="crear_presupuesto"),
+
+    path('presupuestos/', PresupuestosView.as_view(), name="presupuestos"),
 
     #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
     path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),
