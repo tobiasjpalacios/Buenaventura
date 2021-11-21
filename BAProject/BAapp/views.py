@@ -1584,7 +1584,7 @@ class NegocioView(View):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
 
         if negocio.id_de_neg == "":
-            negocio.id_de_neg = f"BV-{negocio.pk}"
+            negocio.id_de_neg = f"BVi-{negocio.pk}"
             negocio.save()
 
         if not negocio.vendedor.persona.user == request.user and not negocio.comprador.persona.user == request.user:
@@ -1685,9 +1685,10 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            negocio.aprobado = True
-            negocio.fecha_cierre = datetime.now()
-            negocio.save()
+            if not negocio.aprobado:
+                negocio.aprobado = True
+                negocio.fecha_cierre = datetime.now()
+                negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.cancelado = True
