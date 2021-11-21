@@ -309,6 +309,14 @@ body {
   .switch label input[type=checkbox]:checked+.lever:after {
       background-color: #737373;
   }
+  .btn-floating.btn-large {
+    background-color: #005321;
+    opacity: .1;
+    transition: opacity .2s;
+  }
+  .btn-floating.btn-large:hover {
+    opacity: 1;
+  }
 {% endblock %}
 {% block title %}Negociación{% endblock title %}
 {%block body%}
@@ -716,6 +724,19 @@ body {
 </div>
 {% endif %}
 
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large">
+    <i class="large material-icons">menu</i>
+  </a>
+  <ul>
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
+    {% if negocio.aprobado %}
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
+    {% endif %}
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
+  </ul>
+</div>
+
 <script type="text/javascript">
 
   var isAccepted = false;
@@ -745,6 +766,9 @@ body {
     });
     $('.tooltipped').tooltip();
     $('select').formSelect();
+    $('.fixed-action-btn').floatingActionButton({
+      hoverEnabled: true
+    });
     $("#form thead tr th").each(function(index){
       if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
         headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
@@ -818,6 +842,18 @@ body {
       scrollTop: elementPosition - navHeight - 100
     }, 700);
   }
+
+  $("#btnScrollTop").on('click', function() {
+    $('html,body').animate({
+      scrollTop: 0
+    }, 700);
+  });
+
+  $("#btnScrollBottom").on('click', function() {
+    $('html,body').animate({
+      scrollTop: $(document).height()
+    }, 700);
+  });
 
   var userIsComprador = false;
   "{% if request.user|has_group:'Comprador' %}"
