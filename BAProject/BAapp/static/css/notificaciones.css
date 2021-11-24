@@ -1,0 +1,27 @@
+
+.clvP{
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.nuevos{
+  display: flex; 
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+  height: 100%;
+  width: 60px;
+  background-color: red;
+}
+
+.titulos{
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+a{
+  color: white;
+}

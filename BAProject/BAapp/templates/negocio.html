@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'header.html' %}
 {% load auth_extras %}
 {% block imports %}
    {% load static %}
@@ -148,6 +148,7 @@ body {
     background-color: transparent !important;
   }
   tr {
+    border-bottom: 0px !important;
     border: none !important;
   }
   td, th {
@@ -317,6 +318,7 @@ body {
   .btn-floating.btn-large:hover {
     opacity: 1;
   }
+
 {% endblock %}
 {% block title %}Negociación{% endblock title %}
 {%block body%}
