@@ -295,7 +295,22 @@ def check_user_group_after_login(request):
 def landing_page(request):
     if (request.user.is_authenticated):
         return (check_user_group_after_login(request))
-    return render(request, 'Principal.html')
+
+    loginSuccess = True
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('router')
+        else:
+            loginSuccess = False
+    
+    context = {'loginSuccess' : loginSuccess}
+    
+    return render(request, 'Principal.html', context)
 
 @group_required('Administracion')
 def vistaAdministrador(request):
