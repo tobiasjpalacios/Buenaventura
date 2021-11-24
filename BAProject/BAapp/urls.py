@@ -42,11 +42,18 @@ urlpatterns = [
     path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),
     path('reloadSem/', reloadSem, name="reloadSem"),   
     path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
-    path('todos_negocios/', todos_negocios, name ="todos_negocios"),
     path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('todosFiltro/(?P<tipo>[0-9]+)', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),
+
+
+    #nuevas urls
     path('notificaciones/', notificaciones, name ="notificaciones"),
+    path('presupuestos/', presupuestosView.as_view(), name="presupuestos"),
+    path('todos_negocios/', todos_negocios, name ="todos_negocios"),
+    path('vencimientos/', vencimientosView.as_view(), name ="vencimientos"),
+
+
 
 
     path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
@@ -64,8 +71,6 @@ urlpatterns = [
     path('presupuestosO/', ListPresupuestoView.as_view(), name = "mostrar_presupuestos"),
     path('presupuesto/<int:pk>', PresupuestoView.as_view(), name="presupuesto"),
     path('presupuesto/', PresupuestoView.as_view(), name="crear_presupuesto"),
-
-    path('presupuestos/', PresupuestosView.as_view(), name="presupuestos"),
 
     #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
     path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),

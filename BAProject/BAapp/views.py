@@ -38,6 +38,38 @@ def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
 
+
+# los nuevos views
+
+def todos_negocios(request):    
+    grupo_activo = request.user.groups.all()[0].name
+    negocio = getNegociosForList(request,grupo_activo,1)
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+def notificaciones(request):    
+    grupo_activo = request.user.groups.all()[0].name
+    negocio = getNegociosForList(request,grupo_activo,1)
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+class presupuestosView(View):
+    def get(self, request, *args, **kwargs):
+        all_presupuestos = Presupuesto.objects.all()
+        return render(request, 'presupuestos.html', {'presupuestos':all_presupuestos})    
+
+class vencimientosView(View):
+    def get(self, request, *args, **kwargs):
+        #les agrego lo que creo que hace falta pero idk fijense
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
+        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
+
+
+
+#lo viejo xd
+
 def getNegociosForList(request, grupo_activo, tipo):
     negocio = []
     if (grupo_activo == 'Vendedor'):
@@ -93,18 +125,6 @@ def getNegociosForList(request, grupo_activo, tipo):
     else:
         negocio = []
     return negocio
-
-def todos_negocios(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
-
-def notificaciones(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 
 def todosFiltro(request, tipo):
@@ -1532,10 +1552,6 @@ class ListPresupuestoView(View):
         all_presupuestos = Presupuesto.objects.all()
         return render(request, 'consultar_presupuestos.html', {'presupuestos':all_presupuestos})    
 
-class PresupuestosView(View):
-    def get(self, request, *args, **kwargs):
-        all_presupuestos = Presupuesto.objects.all()
-        return render(request, 'presupuestos.html', {'presupuestos':all_presupuestos})    
 
 class PresupuestoView(View):
 
