@@ -53,12 +53,19 @@ def notificaciones(request):
     vendedor = Vendedor.objects.all()    
     return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
-class presupuestosView(View):
+class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
-        all_presupuestos = Presupuesto.objects.all()
-        return render(request, 'presupuestos.html', {'presupuestos':all_presupuestos})    
+        #Negocios en Procesos
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+        lnr = listasNA(negociosAbiertos, True)
+        lnp = listasNA(negociosAbiertos, False)
+        context = {
+            'presupuestos_recibidos': list(lnr),
+            'presupuestos_negociando': list(lnp)
+        }
+        return render(request, 'presupuestos.html', context)
 
-class vencimientosView(View):
+class VencimientosView(View):
     def get(self, request, *args, **kwargs):
         #les agrego lo que creo que hace falta pero idk fijense
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
