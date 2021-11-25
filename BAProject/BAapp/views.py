@@ -47,11 +47,21 @@ def todos_negocios(request):
     vendedor = Vendedor.objects.all()    
     return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
-def notificaciones(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+class NotificacionesView(View):
+    def get(self, request, *args, **kwargs):
+        #lpn = Lista Presupuesto Notificaciones
+        # Cambie contains=Presupuesto por contains=Propuesta
+        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Propuesta').order_by('-timestamp')
+        #lln = Lista Logistica Notificaciones
+        lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
+        #lvn = Lista Vencimiento Notificaciones
+        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        context = {
+            'lista_vencimiento': lvn,
+            'lista_logistica_noti': lln,
+            'lista_presupuestos': lpn
+        }
+        return render(request, 'notificaciones.html', context)
 
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):

@@ -44,17 +44,23 @@ input{
    }
  
 .menu{
-     display: flex; 
-     justify-content: center; 
-     align-items: center;
- 
-     background-color: #005221;
-     border-top-right-radius: 3em;
-     border-bottom-right-radius: 3em;
-     color: white;
-     height: 40%;
-     min-width: 405px;
-   }
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+
+  background-color: #005221;
+  border-top-right-radius: 3em;
+  border-bottom-right-radius: 3em;
+  color: white;
+  height: 40%;
+  min-width: 405px;
+
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
 
 .menuZone{
   height:20vh; 

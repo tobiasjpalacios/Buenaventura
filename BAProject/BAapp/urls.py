@@ -48,7 +48,7 @@ urlpatterns = [
 
 
     #nuevas urls
-    path('notificaciones/', notificaciones, name ="notificaciones"),
+    path('notificaciones/', NotificacionesView.as_view(), name ="notificaciones"),
     path('presupuestos/', PresupuestosView.as_view(), name="presupuestos"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
     path('logistica/', logisticaView.as_view(), name ="logistica"),
