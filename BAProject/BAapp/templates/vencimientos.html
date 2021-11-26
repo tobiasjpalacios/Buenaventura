@@ -12,91 +12,129 @@ BuenaVentura Agronegocios
 
 
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/css/notificaciones.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/vencimientos.css' %}">
 </head>
 
 <body style="overflow: hidden;">
 
-    {% if request.user|has_no_group:"Logistica"%}
+  {% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
-  <div class="row">
+  <div class="row" style="height: 100%;">
 
     <div class="menuZone clv">
       <div class="menu">
         <div class="col-s2 h-bar circule">
-            <i class="medium material-icons"
-                style="position: relative; color:#005221;">access_alarm</i>
-        </div> 
+          <i class="medium material-icons" style="position: relative; color:#005221;">access_alarm</i>
+        </div>
         <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Vencimientos</h4>
       </div>
     </div>
-  <div class="row">
-    <div id="tablesSem">
-      <div class=" bloque-izquierdo col s4  l4 red"  >
-        <span style="margin-left: 60px ;  "class="text-align center titulito white-text "> Atrasados <span  style="margin-top:15px ;" class="new badge left-align">{{vencidos|length}}</span> </span>
-      </div>
-      <div class="col l4 bloque-centro yellow s4" >
-        <span style="margin-left: 20px; "class="text-align center titulito grey-text "> Próximos a Vencer <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_semanal|length}}</span> </span>
-      </div>
-      <div class="col l4 bloque-derecho green s4">
-        <span class="text-align center titulito ">  Vencimientos futuros <span  style="margin-top:15px ;" class="new badge left-align">{{vencimiento_futuro|length}}</span> </span>
-      </div>
-      <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
-        <div style="overflow-y: scroll; height: 550px;">
-          <table >
-            <tbody >
-              {% for vence in vencidos%}
-                <tr style="border-bottom: 0px;">
-                  <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
-                  <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
-                </tr>
-              {% endfor %}
-            
-            </tbody>
-          </table>
-        </div>
-        
-      </div>
-      <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
-        <div style="overflow-y: scroll; height: 550px;">
-          <table >
-            <tbody >
-              {% for semanal in vencimiento_semanal %}
-              <tr style="border-bottom: 0px; ">  
-                  <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
-                  <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-    
-      </div>
-      <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
-        <div style="overflow-y: scroll; height: 550px;">
-          <table >
-            <tbody >
-            {% for futuro in vencimiento_futuro %}
-              <tr style="border-bottom: 0px; ">
-                  <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}}  </td>
-                  <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)" class="btn-floating btn-small waves-effect waves-light"><i class=" small material-icons ">search</i></button></td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
 
-      </div>    
-    <div class="col s12 " style="height: 70px; border-top: 2px solid rgb(128, 128, 128, 0.5);" ></div>
+
+    <div class="clv">
+
+      <div style="width: 100%;">
+        <div id="tablesSem">
+
+          <div class="col s4 l4 bloque-izquierdo clvP" style="background-color: rgba(238,29,35,255);">
+            <div class="titulos">
+              <span class="text-align center titulito white-text ">
+                Atrasados
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencidos|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col l4 s4 bloque-centro clvP" style="background-color: rgba(254,206,8,255)">
+            <div class="titulos">
+              <span class=" titulito white-text">
+                Próximos a Vencer
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencimiento_semanal|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col l4 s4 bloque-derecho clvP" style="background-color: rgba(76,184,72,255)">
+            <div class="titulos">
+              <span class="text-align center titulito white-text">
+                Vencimientos futuros
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencimiento_futuro|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for vence in vencidos%}
+                  <tr style="border-bottom: 0px;">
+                    <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                    <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for semanal in vencimiento_semanal %}
+                  <tr style="border-bottom: 0px; ">
+                    <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                    <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for futuro in vencimiento_futuro %}
+                  <tr style="border-bottom: 0px; ">
+                    <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
+                    <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s12 " style="height: 70px; border-top: 2px solid rgb(128, 128, 128, 0.5);"></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
   {% endif %}
 </body>
 <script>
-  
+
 
 </script>
 {% endblock body %}
