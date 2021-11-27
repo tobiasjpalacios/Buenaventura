@@ -66,6 +66,12 @@ class vencimientosView(View):
         lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
         return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
 
+class logisticaView(View):
+    def get(self, request, *args, **kwargs):
+        lista_ids = []
+        lln = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Logistica').order_by('-timestamp')
+    
+        return render(request, 'logistica.html',{'lista_logistica_noti':lln})
 
 
 #lo viejo xd
