@@ -1,0 +1,13 @@
+.titulos{
+    font-size: 90%;
+    color: gray;
+    font-weight: 1000 !important;
+}
+
+.tabla_log{
+    width: 90%
+}
+
+th{
+    font-weight: 800 !important;
+}

@@ -7,7 +7,7 @@
             <li><a href="{% url 'notificaciones'  %}">Notificaciones</a></li>
             <li><a href="{% url 'presupuestos'  %}">Presupuestos</a></li>
             <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
-            <li><a href="#id3">Logistica</a></li>
+            <li><a href="{% url 'logistica'  %}">Logistica</a></li>
             <li><a href="#id3">Comprobantes</a></li>
             <li><a href="#id4">Mas Opciones </a></li>
             {% if request.user|has_group:"Vendedor" %}

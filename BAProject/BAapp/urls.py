@@ -52,6 +52,7 @@ urlpatterns = [
     path('presupuestos/', presupuestosView.as_view(), name="presupuestos"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
     path('vencimientos/', vencimientosView.as_view(), name ="vencimientos"),
+    path('logistica/', logisticaView.as_view(), name ="logistica"),
 
 
 
