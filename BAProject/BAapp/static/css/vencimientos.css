@@ -5,12 +5,12 @@
     align-items: center;
     height: 100%;
     width: 60px;
-    margin: 0%;
+    margin-right: 10px;
   }
 
   a{
     color: white;
-    margin-top: 2%;
+    margin-bottom: 4px;
   }
 
   b{
