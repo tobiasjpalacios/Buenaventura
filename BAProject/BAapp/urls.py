@@ -43,16 +43,16 @@ urlpatterns = [
     path('reloadSem/', reloadSem, name="reloadSem"),   
     path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
     path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
-    path('todosFiltro/(?P<tipo>[0-9]+)', todosFiltro, name='todosFiltro'),
+    path('todosFiltro/<tipo>', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),
 
 
     #nuevas urls
-    path('notificaciones/', notificaciones, name ="notificaciones"),
-    path('presupuestos/', presupuestosView.as_view(), name="presupuestos"),
+    path('notificaciones/', NotificacionesView.as_view(), name ="notificaciones"),
+    path('presupuestos/', PresupuestosView.as_view(), name="presupuestos"),
     path('todos_negocios/', todos_negocios, name ="todos_negocios"),
-    path('vencimientos/', vencimientosView.as_view(), name ="vencimientos"),
     path('logistica/', logisticaView.as_view(), name ="logistica"),
+    path('vencimientos/', VencimientosView.as_view(), name ="vencimientos"),
 
 
 

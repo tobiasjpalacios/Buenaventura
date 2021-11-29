@@ -47,18 +47,35 @@ def todos_negocios(request):
     vendedor = Vendedor.objects.all()    
     return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
-def notificaciones(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'notificaciones.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
-
-class presupuestosView(View):
+class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
-        all_presupuestos = Presupuesto.objects.all()
-        return render(request, 'presupuestos.html', {'presupuestos':all_presupuestos})    
+        #lpn = Lista Presupuesto Notificaciones
+        # Cambie contains=Presupuesto por contains=Propuesta
+        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Propuesta').order_by('-timestamp')
+        #lln = Lista Logistica Notificaciones
+        lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
+        #lvn = Lista Vencimiento Notificaciones
+        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        context = {
+            'lista_vencimiento': lvn,
+            'lista_logistica_noti': lln,
+            'lista_presupuestos': lpn
+        }
+        return render(request, 'notificaciones.html', context)
 
-class vencimientosView(View):
+class PresupuestosView(View):
+    def get(self, request, *args, **kwargs):
+        #Negocios en Procesos
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+        lnr = listasNA(negociosAbiertos, True)
+        lnp = listasNA(negociosAbiertos, False)
+        context = {
+            'presupuestos_recibidos': list(lnr),
+            'presupuestos_negociando': list(lnp)
+        }
+        return render(request, 'presupuestos.html', context)
+
+class VencimientosView(View):
     def get(self, request, *args, **kwargs):
         #les agrego lo que creo que hace falta pero idk fijense
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
