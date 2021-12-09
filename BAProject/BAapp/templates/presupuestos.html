@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
-{% block imports %}
+
 {% load static %}
+
 {% load auth_extras %}
-{% endblock imports %}
-{% block style%}
-{% endblock style%}
+
 {% block title %}
 BuenaVentura Agronegocios
 {% endblock title %}
 
-{%block body%}
+{% block imports %}
+{% endblock imports %}
+
+{% block body %}
 
 <head>
     <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
@@ -70,7 +72,7 @@ BuenaVentura Agronegocios
                             </div>
                         </td>
                         {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                        <td class="center">{{preprec.empresa}} </td>
+                        <td class="col1 center">{{preprec.empresa}}</td>
                         <td>{{preprec.comprador}}</td>
                         {% endif %}
                         {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
@@ -98,7 +100,7 @@ BuenaVentura Agronegocios
         </div>
 
         <div>
-            <table class="">
+            <table>
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -151,6 +153,8 @@ BuenaVentura Agronegocios
         <div id="modalNegocio" class="modal-content">
         </div>
     </div>
+
+    <script src="{% static 'js/presupuestos.js' %}"></script>
 
 </body>
 
