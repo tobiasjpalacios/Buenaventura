@@ -66,12 +66,14 @@ class NotificacionesView(View):
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
         #Negocios en Procesos
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
+        vendedor = Vendedor.objects.all()
         context = {
             'presupuestos_recibidos': list(lnr),
-            'presupuestos_negociando': list(lnp)
+            'presupuestos_negociando': list(lnp),
+            'todos_vendedores': vendedor
         }
         return render(request, 'presupuestos.html', context)
 
@@ -85,10 +87,9 @@ class VencimientosView(View):
 
 class logisticaView(View):
     def get(self, request, *args, **kwargs):
-        lista_ids = []
-        lln = Notificacion.objects.filter(id__in=lista_ids, categoria__contains='Logistica').order_by('-timestamp')
-    
-        return render(request, 'logistica.html',{'lista_logistica_noti':lln})
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lnl = listaNL(request,negociosCerrConf,'P')
+        return render(request, 'logistica.html',{'lista_logistica':lnl})
 
 
 #lo viejo xd
