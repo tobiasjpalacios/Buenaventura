@@ -177,7 +177,7 @@ BuenaVentura Agronegocios
           <td class="green-text center">{{negocio.estado}}</td>
           <td><a class="btn-floating btn-small waves-effect waves-light red "
               onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
-        </tr>
+            </tr>
         {% endfor %}
         <!-- esto es la lista de negocios-->
       </tbody>
@@ -186,6 +186,7 @@ BuenaVentura Agronegocios
 
   <script src="{% static 'js/todos_negocios.js' %}"></script>
 
+<<<<<<< HEAD
   <script>
     function detalleNegocio(idProp){
       $.ajax({
@@ -202,6 +203,43 @@ BuenaVentura Agronegocios
         }
       })
     };
+=======
+  function searchBuscadorNegocio() {
+    var value = $("#inputBuscadorNegocio").val().toLowerCase();
+    $("#tableNegocios tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  };
+
+  function detalleNegocio(idProp) {
+    var urlTemp = "{% url 'info_negocio' 0 %}";
+    var urlf = urlTemp.replace('0',idProp);
+    $.ajax({
+      url: urlf,
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+    })
+  };
+
+  function detalleArticuloNegocio(idItem, funOrig) {
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleItem' %}",
+      data: {
+        'idItem': idItem,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function (data) {
+        $("#modalNegocio").html(data);
+        $('#modalDetalleNegocio').modal('open');
+      },
+      error: function (response) {
+        console.log("Error")
+      }
+    })
+  };
+>>>>>>> todo info_negocio
 
     function detalleArticuloNegocio(idItem, funOrig){
       $.ajax({
