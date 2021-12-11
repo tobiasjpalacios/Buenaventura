@@ -91,11 +91,6 @@ input{
  
 .ctr {
      border-bottom: 0px;
-   }
- 
-::placeholder { /* Firefox, Chrome, Opera */
-  color: white;
-  font-weight: bold;
 }
 
 .shearS {   

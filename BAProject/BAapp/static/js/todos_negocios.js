@@ -17,38 +17,6 @@
       });
   };
 
-  function detalleNegocio(idProp){
-    $.ajax({
-      type: 'POST',
-      url: "{% url 'detalleNegocio' %}",
-      data: {'idProp':idProp,
-      csrfmiddlewaretoken: '{{ csrf_token }}'},
-      success: function (data) {
-        $("#modalNegocio").html(data);
-        $('#modalDetalleNegocio').modal('open'); 
-      },
-      error: function (response) {
-          console.log("Error")
-      }
-    })
-  };
-
-  function detalleArticuloNegocio(idItem, funOrig){
-    $.ajax({
-      type: 'POST',
-      url: "{% url 'detalleItem' %}",
-      data: {'idItem':idItem,
-      csrfmiddlewaretoken: '{{ csrf_token }}'},
-      success: function (data) {
-        $("#modalNegocio").html(data);
-        $('#modalDetalleNegocio').modal('open');
-      },
-      error: function (response) {
-          console.log("Error")
-      }
-    })
-  };
-
   function selTipoFecha(){
     var x = $('#selectTipoFecha').val();
     y = document.getElementById("divFechasParam");
@@ -57,59 +25,6 @@
     } else {
       y.style.display = "block";
     }
-  }
-
-  function filtrar(){
-    var errores = 0;
-    var vendedores = $('#selectVendedores').val();
-    var vendedor = JSON.stringify(vendedores);
-    if(vendedor.length <= 2){
-      M.toast({html: 'Error! El filtro Vendedor no puede estar en blanco.'});
-      errores = 1;    
-    };
-    var estaV = vendedores.includes("todos");
-    if (estaV){
-        vendedor = "todos";
-    };
-    var estados = $('#selectEstados').val();
-    var estado = JSON.stringify(estados);
-    if (estado.length <= 2){
-        M.toast({html: 'Error! El filtro Estado no puede estar en blanco.'});
-        errores = 1;
-    }
-    var estaE = estados.includes("todos");
-    if (estaE){
-        estado = "todos";
-    };
-    var tipo = $('#selectTipo').val();    
-    var tipoFecha = $('#selectTipoFecha').val();
-    var fechaDesde = $('#fechaDesde').val();
-    var fechaHasta = $('#fechaHasta').val();
-    if (tipoFecha != "0"){
-        if (fechaDesde === ""){
-          M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
-          errores = 1;
-        };
-        if (fechaHasta === ""){
-          M.toast({html: 'Error! "Fecha Hasta" no puede estar en blanco.'});
-          errores = 1;
-        };    
-    };
-    if (errores == 0){
-      $.ajax({
-          url: "{% url 'filtrarNegocios' %}",
-          type: 'POST',
-          data: {'vendedor':vendedor,'estado':estado,'tipo':tipo,
-              'tipoFecha':tipoFecha,'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
-              csrfmiddlewaretoken: '{{ csrf_token }}'},
-          success: function(data){ 
-            $('#infoTabla').html(data);
-          },
-          error: function (data) {
-              console.log(data)
-          }
-      });
-    };
   }
 
   $(document).ready(function(){
@@ -136,4 +51,69 @@
     $('#mostrar').show();
 
  });   
+});
+
+// estas "funciones" arreglan los problemas relacionos con los multiple options de los filtros.
+// todavia hay un "error", que cuando se actualiza un selected, se cierran las opciones.
+
+var i = 0
+$('#selectVendedores').on('change', function(e) {
+
+  var select = $(this);
+  var vendedores = select.val();
+  var todos = select.find('option:eq(0)');
+
+  if (vendedores.length > 1 && vendedores[0] == "todos") {
+    if (i < 1) {
+      todos.prop('selected', false);
+      select.formSelect();
+      i++
+    }
+    else {
+      $('#selectVendedores > option').each(function() {
+        if ($(this).val() != "todos") {
+          $(this).prop('selected', false);
+        }
+        select.formSelect();
+        i=0
+      })
+    }
+  }
+
+  if (vendedores.length == 0) {
+    todos.prop('selected', 'selected');
+    select.formSelect();
+  }
+
+});
+
+var o = 0
+$('#selectEstados').on('change', function(e) {
+
+  var select = $(this);
+  var estados = select.val();
+  var todos = select.find('option:eq(0)');
+
+  if (estados.length > 1 && estados[0] == "todos") {
+    if (o < 1) {
+      todos.prop('selected', false);
+      select.formSelect();
+      o++
+    }
+    else {
+      $('#selectEstados > option').each(function() {
+        if ($(this).val() != "todos") {
+          $(this).prop('selected', false);
+        }
+        select.formSelect();
+        o=0
+      })
+    }
+  }
+
+  if (estados.length == 0) {
+    todos.prop('selected', 'selected');
+    select.formSelect();
+  }
+
 });
