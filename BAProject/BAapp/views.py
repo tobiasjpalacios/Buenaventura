@@ -241,8 +241,9 @@ def filtrarNegocios(request):
         if (int(tipoFecha) == 0):
             listaFecha = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
-            fechaD = datetime.strptime(fechaD, "%B %d, %Y")
-            fechaH = datetime.strptime(fechaH, "%B %d, %Y")
+            fechaD = datetime.strptime(fechaD, "%d/%m/%Y")
+            fechaH = datetime.strptime(fechaH, "%d/%m/%Y")
+            # filtra las fechas correctamente pero no se cual es la diferencia entre tipoFecha 1 y 2
             if (int(tipoFecha) == 1):
                 listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
             else:

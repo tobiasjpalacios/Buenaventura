@@ -150,3 +150,13 @@ input{
   height: 100%;
   align-items: center;
 }
+
+.datepicker-day-button {
+  color: black;
+}
+.datepicker-row > .is-selected > .datepicker-day-button {
+  color: white !important;
+}
+.datepicker-row > .is-today > .datepicker-day-button {
+  color: #26a69a;
+}

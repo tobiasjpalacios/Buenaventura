@@ -100,23 +100,14 @@ BuenaVentura Agronegocios
         </li>
         <li>
           <div class="input-field clv">
-            <select id="selectTipoFecha" onchange="selTipoFecha()">
-              <option value="0" selected> Sin Fecha </option>
-              <option value="1">Fecha Inicio</option>
-              <option value="2">Fecha Cierre</option>
-            </select>
-            <label>Fecha</label>
+            <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde">
+            <label for="fechaDesde">Fecha Desde</label>
           </div>
-          <div style="display: none;" id="divFechasParam">
-            <div class="input-field ">
-              <input type="text" class="datepicker" id="fechaDesde">
-              <label>Fecha Desde</label>
-            </div>
-
-            <div class="input-field">
-              <input type="text" class="datepicker" id="fechaHasta">
-              <label>Fecha Hasta</label>
-            </div>
+        </li>
+        <li>
+          <div class="input-field clv">
+            <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta">
+            <label for="fechaHasta">Fecha Hasta</label>
           </div>
         </li>
         <li>
@@ -249,19 +240,20 @@ BuenaVentura Agronegocios
         estado = "todos";
     };
     var tipo = $('#selectTipo').val();    
-    var tipoFecha = $('#selectTipoFecha').val();
+    var tipoFecha = 1;
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
-    if (tipoFecha != "0"){
-        if (fechaDesde === ""){
-          M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
-          errores = 1;
-        };
-        if (fechaHasta === ""){
-          M.toast({html: 'Error! "Fecha Hasta" no puede estar en blanco.'});
-          errores = 1;
-        };    
-    };
+    if (fechaDesde == "" && fechaHasta == "") {
+      tipoFecha = 0;
+    }
+    else if (fechaDesde != "" && fechaHasta == "") {
+      M.toast({html: 'Error! "Fecha Hasta" no puede estar en blanco.'});
+      errores = 1;
+    }
+    else if (fechaDesde == "" && fechaHasta != "") {
+      M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
+      errores = 1;
+    }
     if (errores == 0){
       $.ajax({
           url: "{% url 'filtrarNegocios' %}",
