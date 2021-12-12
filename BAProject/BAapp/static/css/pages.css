@@ -91,11 +91,6 @@ input{
  
 .ctr {
      border-bottom: 0px;
-   }
- 
-::placeholder { /* Firefox, Chrome, Opera */
-  color: white;
-  font-weight: bold;
 }
 
 .shearS {   
@@ -154,4 +149,14 @@ input{
   background-color: #005221;
   height: 100%;
   align-items: center;
+}
+
+.datepicker-day-button {
+  color: black;
+}
+.datepicker-row > .is-selected > .datepicker-day-button {
+  color: white !important;
+}
+.datepicker-row > .is-today > .datepicker-day-button {
+  color: #26a69a;
 }
