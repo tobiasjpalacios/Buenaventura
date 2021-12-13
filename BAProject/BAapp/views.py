@@ -38,6 +38,62 @@ def inicio(request):
     #loadModels(request)
     return render(request,'inicio.html')
 
+
+# los nuevos views
+
+def todos_negocios(request):    
+    grupo_activo = request.user.groups.all()[0].name
+    negocio = getNegociosForList(request,grupo_activo,1)
+    vendedor = Vendedor.objects.all()    
+    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+
+class NotificacionesView(View):
+    def get(self, request, *args, **kwargs):
+        #lpn = Lista Presupuesto Notificaciones
+        # Cambie contains=Presupuesto por contains=Propuesta
+        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Propuesta').order_by('-timestamp')
+        #lln = Lista Logistica Notificaciones
+        lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
+        #lvn = Lista Vencimiento Notificaciones
+        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        context = {
+            'lista_vencimiento': lvn,
+            'lista_logistica_noti': lln,
+            'lista_presupuestos': lpn
+        }
+        return render(request, 'notificaciones.html', context)
+
+class PresupuestosView(View):
+    def get(self, request, *args, **kwargs):
+        #Negocios en Procesos
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lnr = listasNA(negociosAbiertos, True)
+        lnp = listasNA(negociosAbiertos, False)
+        vendedor = Vendedor.objects.all()
+        context = {
+            'presupuestos_recibidos': list(lnr),
+            'presupuestos_negociando': list(lnp),
+            'todos_vendedores': vendedor
+        }
+        return render(request, 'presupuestos.html', context)
+
+class VencimientosView(View):
+    def get(self, request, *args, **kwargs):
+        #les agrego lo que creo que hace falta pero idk fijense
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
+        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
+
+class logisticaView(View):
+    def get(self, request, *args, **kwargs):
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        lnl = listaNL(request,negociosCerrConf,'P')
+        return render(request, 'logistica.html',{'lista_logistica':lnl})
+
+
+#lo viejo xd
+
 def getNegociosForList(request, grupo_activo, tipo):
     negocio = []
     if (grupo_activo == 'Vendedor'):
@@ -94,11 +150,6 @@ def getNegociosForList(request, grupo_activo, tipo):
         negocio = []
     return negocio
 
-def todos_negocios(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 def todosFiltro(request, tipo):
     grupo_activo = request.user.groups.all()[0].name
@@ -190,8 +241,9 @@ def filtrarNegocios(request):
         if (int(tipoFecha) == 0):
             listaFecha = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
-            fechaD = datetime.strptime(fechaD, "%B %d, %Y")
-            fechaH = datetime.strptime(fechaH, "%B %d, %Y")
+            fechaD = datetime.strptime(fechaD, "%d/%m/%Y")
+            fechaH = datetime.strptime(fechaH, "%d/%m/%Y")
+            # filtra las fechas correctamente pero no se cual es la diferencia entre tipoFecha 1 y 2
             if (int(tipoFecha) == 1):
                 listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
             else:
@@ -268,7 +320,22 @@ def check_user_group_after_login(request):
 def landing_page(request):
     if (request.user.is_authenticated):
         return (check_user_group_after_login(request))
-    return render(request, 'Principal.html')
+
+    loginSuccess = True
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('router')
+        else:
+            loginSuccess = False
+    
+    context = {'loginSuccess' : loginSuccess}
+    
+    return render(request, 'Principal.html', context)
 
 @group_required('Administracion')
 def vistaAdministrador(request):
@@ -1583,6 +1650,10 @@ class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
 
+        if negocio.id_de_neg == "":
+            negocio.id_de_neg = f"BVi-{negocio.pk}"
+            negocio.save()
+
         if not negocio.vendedor.persona.user == request.user and not negocio.comprador.persona.user == request.user:
             return redirect('home')
 
@@ -1611,7 +1682,8 @@ class NegocioView(View):
             "divisas": DIVISA_CHOICES,
             'tasas': TASA_CHOICES,
             "distribuidores": Proveedor.objects.all(),
-            "tipo_pagos": TipoPago.objects.all()
+            "tipo_pagos": TipoPago.objects.all(),
+            "arts": Articulo.objects.all()
         }
         return render(request, 'negocio.html', context)
 
@@ -1629,19 +1701,24 @@ class NegocioView(View):
             for item in data["items"]:
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
-                    if (f.name=="propuesta" or f.name=="id"):
+                    key = f.name
+                    if key=="propuesta" or key=="id":
                         continue
-                    if (f.is_relation):
-                        obj = get_object_or_404(
-                            f.related_model,
-                            pk=item[f.name]
-                        )
-                        setattr(tmp, f.name, obj)
+                    value = item[key]
+                    if key == "proveedor" and value == None:
+                        setattr(tmp, key, None)
+                    if f.is_relation:
+                        if not (key == "proveedor" and value == None):
+                            obj = get_object_or_404(
+                                f.related_model,
+                                pk=value
+                            )
+                            setattr(tmp, key, obj)
                     else:
                         setattr(
                             tmp, 
-                            f.name, 
-                            item[f.name]
+                            key, 
+                            value
                         )
                 tmp.propuesta = prop
                 tmp.save()
@@ -1675,9 +1752,10 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            negocio.aprobado = True
-            negocio.fecha_cierre = datetime.now()
-            negocio.save()
+            if not negocio.aprobado:
+                negocio.aprobado = True
+                negocio.fecha_cierre = datetime.now()
+                negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.cancelado = True

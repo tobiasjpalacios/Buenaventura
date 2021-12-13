@@ -1,0 +1,42 @@
+.nuevos_semaforo{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    height: 100%;
+    width: 60px;
+    margin-right: 10px;
+  }
+
+  a{
+    color: white;
+    margin-bottom: 4px;
+  }
+
+  b{
+    color: white; 
+    font-size: 150%;
+  }
+
+  .clvP{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+  }
+  
+  .nuevos{
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    height: 100%;
+    width: 60px;
+    background-color: red;
+  }
+
+  .titulos{
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }

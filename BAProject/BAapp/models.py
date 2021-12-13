@@ -5,6 +5,8 @@ from django.contrib import admin
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Persona(models.Model):
     user = models.OneToOneField(
@@ -189,6 +191,14 @@ class Negocio(models.Model):
     )
     aprobado = models.BooleanField(default=False)
     cancelado = models.BooleanField(default=False)
+    id_de_neg = models.CharField(
+        "Identificador de negocio",
+        max_length=255,
+        null=True,
+        blank=True,
+        editable=False,
+        default=""
+    )
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
@@ -241,7 +251,8 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
         "Proveedor",
-        null=True, 
+        null=True,
+        blank=True,
         on_delete=models.DO_NOTHING)
     propuesta = models.ForeignKey(
         "Propuesta", 

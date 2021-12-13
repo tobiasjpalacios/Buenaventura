@@ -1,8 +1,27 @@
 <!------ Modal negocio  ---------->
 {% load auth_extras %}
+<style>
+  .titulito{
+     font-size: 30px;
+     font-family: 'Montserrat';
+     text-align: center;
+   }
+  
+  
+   .barra{
+    background-color: #757474;
+    height: 40px;
+    border-radius: 1em;
+    
+  }
+  
+  </style>
+
+
 <div class="modal-content">
       <div class="row" >
         <h4>{{negocio.comprador.empresa.razon_social}} {{propuesta.timestamp|date:"M d, Y"}}</h4>
+        <div class="col s12"  style="border-top: solid rgb(128, 128, 128, 0.5);"></div>
       </div>
       <div class="row">
         <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>

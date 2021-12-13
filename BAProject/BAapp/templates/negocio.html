@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'header.html' %}
 {% load auth_extras %}
 {% block imports %}
    {% load static %}
    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+   <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
 {% endblock imports %}
 {% block style %}
 
 body {
-  background-color: #e0e0e0;
+  background-color: #fff;
 }
 
 .autocomplete-suggestions {
@@ -39,9 +40,9 @@ body {
   &.autocomplete-selected {
     background-color: #888;
   }
-  .show1 {
+  .show0 {
   }
-  .not-show1 {
+  .not-show0 {
     display: none;
   }
   .datepicker-day-button {
@@ -71,7 +72,7 @@ body {
     background-color: #e0e0e0;
   }
   .action-btn {
-    margin: 3px !important;
+    margin: 1px !important;
   }
   .approved {
     text-align: center;
@@ -83,11 +84,275 @@ body {
     color: red;
     margin: 100px;
   }
+  .h-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn-small {
+    height: 24px;
+    line-height: 24px;
+    padding: 0 0.5rem;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  .table-icons {
+    display: table-cell !important;
+    vertical-align: middle;
+    line-height:32px !important;
+    height:100% !important;
+  }
+  .no-shadow {
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  .bv-green:hover, .bv-red:hover, .bv-yellow:hover, .bv-blue:hover, .bv-gray:hover {
+    background-color: #005221;
+  }
+  .prop-creator-name {
+    font-size: 26px;
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
+  .prop-date {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
+  .card {
+    position: relative;
+    background-color: #ececee !important;
+    border-radius: 2rem !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    min-width: 925px;
+    z-index: 1;
+  }
+  .card-action {
+    border-bottom-left-radius: 2rem !important;
+    border-bottom-right-radius: 2rem !important;
+    margin: 0;
+    padding: 0;
+    background-color: transparent !important;
+  }
+  tr {
+    border-bottom: 0px !important;
+    border: none !important;
+  }
+  td, th {
+    width: 1%;
+    white-space: nowrap;
+    padding: 3px;
+  }
+  div.row > table > thead > tr {
+    color: #717275;
+    font-weight: 700;
+  }
+  div.row > table > tbody > tr, input, textarea, div.card-action > p {
+    color: #717275;
+    font-weight: 500;
+  }
+  div.row > table > thead > tr > th {
+    border-radius: 0 !important;
+    
+  }
+  div.row > table > tbody > tr > td {
+    border-radius: 0 !important;
+  }
+  .send-btn {
+    border-radius: 2rem !important;
+  }
+  span.obser {
+    color: #717275;
+    font-weight: 700;
+  }
+  .container__wrapper {
+    z-index: -1;
+
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    left: 0px;
+    position: absolute;
+    top: 0px;
+
+    height: 100%;
+    width: 100%;
+  }
+
+  .container__watermark > img {
+    margin: 70px;
+    opacity: 0.8;
+    user-select: none;
+  }
+  .white-text-input > td > input {
+    color: white;
+    border-bottom: 1px solid white !important;
+  }
+  .white-text-input > td > div > input {
+    color: white;
+    border-bottom: 1px solid white !important;
+  }
+  @media only screen and (max-width: 1200px) {
+    .container__watermark > img {
+      margin: 10px;
+    }
+  }
+  .materialert {
+    position: relative;
+    min-width: 150px;
+    width: 50%;
+    margin: 0 auto;
+    padding: 15px;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: all 0.1s linear;
+    webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+  .materialert .close-alert{
+    -webkit-appearance: none;
+    border: 0;
+    cursor: pointer;
+    color: inherit;
+    background: 0 0;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .7);
+    filter: alpha(opacity=40);
+    margin-bottom: -5px;
+    position: absolute;
+    top: 16px;
+    right: 5px;
+  }
+  .materialert .material-icons {
+      margin-right: 10px;
+  }
+  .materialert.error {
+    background-color: #c62828;
+    color: #fff;
+  }
+  .materialert.warning {
+    background-color: #fec80b;
+    color: #000;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  .materialert.fixed {
+    transform: translateY(-100px);
+    left: 25%;
+    position: fixed;
+    z-index: 99;
+    display: none;
+  }
+  @keyframes alertAnimDown {
+    0% {
+      transform: translateY(-100px);
+    }
+    
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes alertAnimUp {
+    0% {
+      transform: translateY(0);
+    }
+    
+    100% {
+      transform: translateY(-100px);
+    }
+  }
+  .switch-container {
+    position: fixed;
+    z-index: 99;
+    left: 0;
+    bottom: 0;
+    background-color: #005321;
+    padding: 20px;
+    margin: 10px;
+    border-radius: .5rem;
+    opacity: .1;
+    transition: opacity .2s;
+  }
+  .switch-container:hover {
+    opacity: 1;
+  }
+  .switch > label {
+    color: white !important;
+  }
+  .switch label input[type=checkbox]:checked+.lever {
+      background-color: #a6a6a6;
+  }
+  .switch label input[type=checkbox]:checked+.lever:after {
+      background-color: #737373;
+  }
+  .btn-floating.btn-large {
+    background-color: #005321;
+    opacity: .1;
+    transition: opacity .2s;
+  }
+  .btn-floating.btn-large:hover {
+    opacity: 1;
+  }
+  input {
+    border-bottom: 1px solid #9e9e9e !important;
+  }
+
 {% endblock %}
-{% block title %}Negocios{% endblock title %}
+
+{% block title %}Negociación{% endblock title %}
+
 {%block body%}
-<h3>Comprador: {{ negocio.comprador }}</h3>
-<h3>Vendedor: {{ negocio.vendedor }}</h3>
+
+{% if request.user|has_group:'Vendedor' %}
+
+<div class="materialert error fixed">
+  <div class="material-icons">error_outline</div>
+  Vista Cliente Activado
+</div>
+
+<div class="switch-container">
+  <div class="switch">
+    <label>
+      Vista normal
+      <input id="client-view-sw" type="checkbox">
+      <span class="lever"></span>
+      Vista cliente
+    </label>
+  </div>
+</div>
+
+{% endif %}
+
+<div class="row">
+  <div class="menuZone clv">
+    <div class="menu">
+      <div class="col-s2 h-bar circule">
+        <img src="{% static 'images/check.svg' %}" alt="Check icon" style="height: 40%;">
+      </div>
+      <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Negociación</h4>
+    </div>
+    <strong style="font-size: 30px; font-weight: 900; margin-left: 20px;" class="grey-text text-darken-3">{{negocio.id_de_neg}}</strong>
+  </div>  
+</div>
+
 {% for prop in propuestas %}
 <style>
   .show{{prop.id}} {
@@ -104,37 +369,44 @@ body {
   }
 </style>
 {% if not prop.items.count == 0 %}
-<div class="row">
+<div class="row" id="div-table-{{prop.id}}">
   <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
-    <div class="card grey lighten-3">
+    <div class="prop-title">
+      <p class="prop-creator-name grey-text text-darken-3"><strong>{% if prop.envio_comprador %} {{ negocio.comprador.persona.user.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.persona.user.get_full_name }} {% endif %}</strong></p>
+      <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y H:i" }} hs</p>
+    </div>
+    <div class="card">
+      <div class="container__wrapper">
+        <div class="container__watermark">
+          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+      </div>
       <div class="card-content dark-text">
-        <span class="card-title">
-        {% if prop.envio_comprador %}
-          {{ negocio.comprador }}
-        {% else %}
-          {{ negocio.vendedor }}
-        {% endif %}
-        </span>
         <div class="row">
-          <table class="centered striped">
-            <thead>  
+          <table>
+            <thead>
               <tr>
                 <th class="show{{prop.id}}">Articulo</th>
                 {% if not request.user|has_group:'Comprador' %}
-                <th class="show{{prop.id}}">Distribuidor</th>
+                <th class="show{{prop.id}} clientViewSM">Distribuidor</th>
                 {% endif %}
                 <th class="show{{prop.id}}">Cantidad</th>
                 <th class="show{{prop.id}}">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
                 {% if not request.user|has_group:'Comprador' %}
-                <th class="show{{prop.id}}">Precio compra</th>
+                <th class="show{{prop.id}} clientViewSM">Precio compra</th>
                 {% endif %}
-                <th class="show{{prop.id}}">Divisa</th>
-                <th class="not-show{{prop.id}}">Tipo pago</th>
-                <th class="not-show{{prop.id}}">Tasa</th>
-                <th class="not-show{{prop.id}}">Fecha pago</th>
-                <th class="not-show{{prop.id}}">Fecha entrega</th>
-                <th class="not-show{{prop.id}}">Destino</th>
-                <th>Ver más</th>
+                <th class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%}">Tipo pago</th>
+                <th class="not-show{{prop.id}} clientView">Tasa</th>
+                <th class="not-show{{prop.id}} clientView">Fecha pago</th>
+                <th class="not-show{{prop.id}} clientView">Fecha entrega</th>
+                <th class="not-show{{prop.id}} clientView">Destino</th>
+                <th class="clientViewSM">Ver más</th>
               </tr>
             </thead>
             <tbody>
@@ -142,99 +414,154 @@ body {
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show{{prop.id}}">{{ item.proveedor|default_if_none:'' }}</td>
+                <td class="show{{prop.id}} clientViewSM">{{ item.proveedor|default_if_none:'' }}</td>
                 {% endif %}
                 <td class="show{{prop.id}}">{{ item.cantidad }}</td>
                 <td class="show{{prop.id}}">{{ item.precio_venta }}</td>
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show{{prop.id}}">{{ item.precio_compra }}</td>
+                <td class="show{{prop.id}} clientViewSM">{{ item.precio_compra|default_if_none:"0,0" }}</td>
                 {% endif %}
-                <td class="show{{prop.id}}">{{ item.divisa }}</td>
-                <td class="not-show{{prop.id}}">{{ item.tipo_pago }}</td>
-                <td class="not-show{{prop.id}}">{{ item.tasa }}%</td>
-                <td class="not-show{{prop.id}}">{{ item.fecha_pago }}</td>
-                <td class="not-show{{prop.id}}">{{ item.fecha_entrega }}</td>
-                <td class="not-show{{prop.id}}">{{ item.destino }}</td>
-                <td>
-                  <a class="red btn-large waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}});"><i class="i{{prop.id}} material-icons">keyboard_arrow_right</i></a>
+                <td class="{% if request.user|has_group:'Comprador' %}show{{prop.id}}{% elif request.user|has_group:'Vendedor' %}not-show{{prop.id}}{%endif%} ">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.tasa }}%</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.fecha_pago|default:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}} clientView">{{ item.destino|default:"Sin definir" }}</td>
+                <td class="clientViewSM">
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}}); sm{{prop.id}}=!sm{{prop.id}};"><i class="i{{prop.id}} material-icons table-icons">search</i></a>
                 </td>
               </tr>
             {% endfor %}
             </tbody>
           </table>
         </div>
-        <div class="card-action">
-          <span>Observaciones:</span>
-          <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
-        </div>
+      </div>
+      <div class="card-action">
+        <span class="obser">Observaciones:</span>
+        <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
       </div>
     </div>
   </div>
 </div>
 <script>
-  var btn_sm_{{prop.id}} = document.getElementById('btn-sm-{{prop.id}}');
+  // var btn_sm_{{prop.id}} = document.getElementById('btn-sm-{{prop.id}}');
 
-  $(btn_sm_{{prop.id}}).each(function () {
-    $('[id="' + this.id + '"]:gt(0)').remove();
+  // $(btn_sm_{{prop.id}}).each(function () {
+  //   $('[id="' + this.id + '"]:gt(0)').remove();
+  // });
+
+  var sm{{prop.id}} = false;
+  var propIdId = "{{prop.id}}";
+
+  $("#client-view-sw").change(function() {
+
+    if($(this).is(":checked")) {
+  
+      var propId = "{{prop.id}}";
+      if (sm{{prop.id}}) {
+        showMore(propId);
+        sm{{prop.id}} = !sm{{prop.id}};
+      }
+
+    }
+    else {
+
+      var propId = "{{prop.id}}";
+      if (sm{{prop.id}}) {
+        showMore(propId);
+        sm{{prop.id}} = !sm{{prop.id}};
+      }
+    }
+
+    
+  });
+  
+  $(document).ready(function() {
+    listProp.push("{{prop.id}}");
+  });
+  
+</script>
+
+{% if negocio.aprobado %}
+<script>
+  $(document).ready(function () {
+    var isBeforeFechaCierre = false;
+    var fechaProp = "{{prop.timestamp|date:'c'}}";
+    var fechaCierreNeg = "{{negocio.fecha_cierre|date:'c'}}";
+    
+    if (Date.parse(fechaProp) <= Date.parse(fechaCierreNeg)) {
+      isBeforeFechaCierre = true;
+    }
+
+    addTables("{{prop.id}}", isBeforeFechaCierre);
+
   });
 </script>
 {% endif %}
+
+{% endif %}
 {% if forloop.last %}
-{% if not negocio.aprobado and not negocio.cancelado %}
-<div class="row">
-  <div class="col s12 m9 {% if prop.envio_comprador and request.user|has_group:'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user|has_group:'Vendedor' %}push-m3{%endif%}">
-    <div class="card grey lighten-3">
+<div class="row" id="form-table-div">
+  <div class="col s12 m9 push-m3">
+    <div class="prop-title">
+      <p class="prop-creator-name grey-text text-darken-3"><strong>Nueva propuesta</strong></p>
+    </div>
+    <div class="card">
+      <div class="container__wrapper">
+        <div class="container__watermark">
+          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+      </div>
       <div class="card-content dark-text">
-        <span class="card-title">
-        {% if prop.envio_comprador %}
-          {{ negocio.comprador }}
-        {% else %}
-          {{ negocio.vendedor }}
-        {% endif %}
-        </span>
         <div class="row">
-          <table class="centered striped" {% if forloop.last %}id="form"{%endif%}>
+          <table {% if forloop.last %}id="form"{%endif%}>
             <thead>  
               <tr>
-                <th class="show1">Articulo</th>
-                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Distribuidor</th>
-                <th class="show1">Cantidad</th>
-                <th class="show1">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
-                <th class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Precio compra</th>
-                <th class="show1">Divisa</th>
-                <th class="not-show1">Tipo pago</th>
-                <th class="not-show1">Tasa</th>
-                <th class="not-show1">Fecha pago</th>
-                <th class="not-show1">Fecha entrega</th>
-                <th class="not-show1">Destino</th>
+                <th class="show0">Articulo</th>
+                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Distribuidor</th>
+                <th class="show0">Cantidad</th>
+                <th class="show0">{% if not request.user|has_group:'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                <th class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">Precio compra</th>
+                <th class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">Tipo pago</th>
+                <th class="not-show0">Tasa</th>
+                <th class="not-show0">Fecha pago</th>
+                <th class="not-show0">Fecha entrega</th>
+                <th class="not-show0">Destino</th>
                 <th>Operaciones</th>
                 <th>Ver más</th>
               </tr>
             </thead>
             <tbody>
             {% for item in prop.items.all %}
-              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
+              <tr {% if item.aceptado %}class="green white-text white-text-input"{% endif %}>
                 {% if item.articulo.marca == "NINGUNA" %}
-                  <td class="show1">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
+                  <td class="show0">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
-                  <td class="show1">{{ item.articulo.marca|default_if_none:'' }}</td>
+                  <td class="show0">{{ item.articulo.marca|default_if_none:'' }}</td>
                 {% endif %}
                 {% if not request.user|has_group:'Comprador' %}
-                <td class="show1">{{ item.proveedor|default_if_none:'' }}</td>
-                {% endif %}
-              {% if not item.aceptado %}
-                <td class="show1"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
-                <td class="show1"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show1">
-                  <select name="divisa">
-                    <option value="" {% if item.divisa == None or item.divisa == "" %}selected{% endif %} disabled>Elija una divisa</option>
-                  {% for v,t in divisas %}
-                    <option value="{{ v }}" {% if v == item.divisa and item.divisa != None %}selected{% endif %}>{{ t }}</option>
+                <td class="show0">
+                  {% if item.proveedor == None %}
+                  <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off'>
+                  <datalist id='distResults'>
+                  {% for dist in distribuidores %}
+                    <option data-value="{{ dist.id }}" value="{{ dist.persona }}"></option>
                   {% endfor %}
-                  </select>
+                  </datalist>
+                  {% else %}
+                  {{ item.proveedor }}
+                  {% endif %}
                 </td>
-                <td class="not-show1">
+                {% endif %}
+                <td class="show0"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
+                <td class="show0"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
@@ -242,39 +569,29 @@ body {
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show1">
+                <td class="not-show0">
                   <select name="tasa" id="tas{{item.id}}">
                     {% for v,t in tasas %}
                     <option value="{{ v }}" {% if v == item.tasa %}selected{% endif %}{% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
-                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
-                <td class="not-show1">
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0">
                   <input type="text" name="destino" value="{{item.destino}}"/>
                 </td>
                 <td>
-                  <a class="action-btn btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons">check</i></a>
-                  <a class="action-btn red btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons">delete</i></a>
-                  <a class="action-btn yellow btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons">save</i></a>
-                  <a class="action-btn blue btn-floating waves-effect tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="reset({{ forloop.counter0 }})"><i class="material-icons">undo</i></a>
+                  {% if not item.aceptado %}
+                  <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons table-icons">done</i></a>
+                  <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
+                  {% endif %}
+                  <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
+                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}');"><i class="material-icons table-icons">undo</i></a>
                 </td>
-              {% else %}
-                <td class="show1">{{ item.cantidad }}</td>
-                <td class="show1">{{ item.precio_venta|stringformat:'.2f' }}</td>
-                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">{{ item.precio_compra|stringformat:'.2f' }}</td>
-                <td class="show1">{{ item.divisa }}</td>
-                <td class="not-show1">{{ item.tipo_pago }}</td>
-                <td class="not-show1">{{ item.tasa }}%</td>
-                <td class="not-show1">{{ item.fecha_pago }}</td>
-                <td class="not-show1">{{ item.fecha_entrega }}</td>
-                <td class="not-show1">{{ item.destino }}</td>
-                <td></td>
-              {% endif %}
-              <td>
-                <a class="red btn-large waves-effect waves-light" id="btn-sm-1" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
-              </td>
+                <td>
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                </td>
               </tr>
               <script>
                 $(document).ready(function() {
@@ -282,12 +599,13 @@ body {
                 });
               </script>
             {% endfor %}
+            {% if not negocio.aprobado %}
               <tr id="extra">
-                <td class="show1">
+                <td class="show0">
                     <input type="hidden" id='artValue'>
                     <input type="text" name='articulo' id='artSearch' class="autocomplete">
                 </td>
-                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
                   <datalist id='distResults'>
                   {% for dist in distribuidores %}
@@ -295,22 +613,14 @@ body {
                   {% endfor %}
                   </datalist>
                 </td>
-                <td class="show1"><input type="number" name="cantidad"></td>
-                <td class="show1">
+                <td class="show0"><input type="number" name="cantidad"></td>
+                <td class="show0">
                   <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
                 </td>
-                <td class="show1 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
                   <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
                 </td>
-                <td class="show1">
-                  <select name="divisa">
-                    <option value="" disabled selected>Elija una divisa</option>
-                  {% for v,t in divisas %}
-                    <option value="{{ v }}">{{ t }}</option>
-                  {% endfor %}
-                  </select>
-                </td>
-                <td class="not-show1">
+                <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
                     <option value="" selected disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
@@ -318,37 +628,55 @@ body {
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show1">
+                <td class="not-show0">
                   <select name="tasa" id="tasAdd">
                   {% for v,t in tasas %}
                     <option value="{{ v }}" {% if v == None %}selected disabled{% endif %}>{{ t }}</option>
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default_if_none:'' }}"></td>
-                <td class="not-show1"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default_if_none:'' }}"></td>
-                <td class="not-show1">
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0">
                   <input type="text" name="destino" value=""/>
                 </td>
-                <td><a class="btn-floating waves-effect btn-large tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
+                <td><a class="action-btn no-shadow bv-dark-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
                 <td>
-                  <a class="red btn-large waves-effect" onclick="showMore(1);"><i class="i1 material-icons">keyboard_arrow_right</i></a>
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
                 </td>
               </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>
-        <div class="card-action">
-          <span>Observaciones</span>
-          <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
-          <br><br>
-            <a class="waves-effect waves-light btn modal-trigger" href="#modalSend" onclick="beforeSubmit();">Enviar</a>
-        </div>
       </div>
+      <div class="card-action">
+        <span class="obser">Observaciones</span>
+        <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
+        <br><br>
+          <a class="send-btn no-shadow bv-green waves-effect waves-light btn modal-trigger" id="send-prop-btn" href="#modalSend" onclick="beforeSubmit();"><i class="material-icons right">send</i>Enviar</a>
+        </div>
     </div>
   </div>
 </div>
-{% endif %}
+<script>
+  $("#client-view-sw").change(function() {
+    if($(this).is(":checked")) {
+      if (sm) {
+        showMore(0);
+      }
+      
+    }
+    else {
+      if (sm) {
+        showMore(0);
+      }
+    }
+    for (var i in listProp) {
+      toggleClientView(listProp[i]);
+    }
+  });
+</script>
 {% endif %}
 {% endfor %}
 
@@ -356,6 +684,7 @@ body {
 <div class="approved" id="approved">
   <h2>Negocio confirmado ✓</h2>
   <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
 </div>
 {% endif %}
 {% if negocio.cancelado %}
@@ -365,7 +694,19 @@ body {
 </div>
 {% endif %}
 
-{% if not negocio.aprobado and not negocio.cancelado %}
+{% if negocio.aprobado %}
+<div id="table-destination">
+
+  <div class="materialert warning" id="infoAlert">
+    <div class="material-icons">warning</div>
+    Debajo aparecerán las modificaciones que se realizaron posterior a la confirmación del negocio.
+    <button type="button" class="close-alert" onclick="closeAlert('#infoAlert');">×</button>
+  </div>
+
+</div>
+{% endif %}
+
+{% if not negocio.cancelado %}
 <div id="modalSend" class="modal">
   <div class="modal-content">
     <h4>Enviar propuesta</h4>
@@ -378,14 +719,31 @@ body {
 </div>
 {% endif %}
 
+<div class="fixed-action-btn">
+  <a class="btn-floating btn-large">
+    <i class="large material-icons">menu</i>
+  </a>
+  <ul>
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
+    {% if negocio.aprobado %}
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
+    {% endif %}
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
+  </ul>
+</div>
+
 <script type="text/javascript">
+
+  var isAccepted = false;
+  var isCanceled = false;
+  var modifyWasClicked = false;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
   var editable_fields = [
+    "distribuidor",
     "precio_venta",
     "precio_compra",
-    "divisa",
     "cantidad",
     "tipo_pago",
     "tasa",
@@ -395,6 +753,7 @@ body {
     "observaciones"
   ]
   var headers = []
+  var listProp = [];
 
   $(document).ready(function(){
     $('.datepicker').datepicker({
@@ -402,11 +761,14 @@ body {
     });
     $('.tooltipped').tooltip();
     $('select').formSelect();
+    $('.fixed-action-btn').floatingActionButton({
+      hoverEnabled: true
+    });
     $("#form thead tr th").each(function(index){
       if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
         headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
       }
-    })
+  })
     edits.new = {}
 
     $("#artSearch").devbridgeAutocomplete({
@@ -433,24 +795,59 @@ body {
       },
     });
 
-    var btn_sm_1 = document.getElementById('btn-sm-1');
+    // var btn_sm_1 = document.getElementById('btn-sm-1');
     
-    $(btn_sm_1).each(function () {
-      $('[id="' + this.id + '"]:gt(0)').remove();
-    });
+    // $(btn_sm_1).each(function () {
+    //   $('[id="' + this.id + '"]:gt(0)').remove();
+    // });
 
-    var elId = ""
+    // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
+    var elId;
     "{% if not negocio.aprobado and not negocio.cancelado %}"
-    elId = "#form"
+    elId = "#form-table-div"
     "{% elif negocio.aprobado and not negocio.cancelado %}"
     elId = "#approved"
     "{% elif not negocio.aprobado and negocio.cancelado %}"
     elId = "#canceled"
     "{% endif %}"
-    $([document.documentElement, document.body]).animate({
-      scrollTop: $(elId).offset().top
+    setTimeout(function() {
+        mScrollTo(elId);
     }, 500);
 
+    listProp.push('0');
+
+    "{% if negocio.aprobado %}"
+    isAccepted = true;
+    "{% endif %}"
+    "{% if negocio.cancelado %}"
+    isCanceled = true;
+    "{% endif %}"
+
+    if (isAccepted || isCanceled) {
+      $("#form-table-div").hide();
+    }
+
+  });
+
+  function mScrollTo(id) {
+    var elementPosition = $(id).offset().top;
+    var navHeight = $("nav").height();
+
+    $('html,body').animate({
+      scrollTop: elementPosition - navHeight - 100
+    }, 700);
+  }
+
+  $("#btnScrollTop").on('click', function() {
+    $('html,body').animate({
+      scrollTop: 0
+    }, 700);
+  });
+
+  $("#btnScrollBottom").on('click', function() {
+    $('html,body').animate({
+      scrollTop: $(document).height()
+    }, 700);
   });
 
   var userIsComprador = false;
@@ -465,72 +862,206 @@ body {
   function contadoTasa(aggId) {
     var tipo_pago = document.getElementById("tp"+aggId);
     var tasa = document.getElementById("tas"+aggId);
-    var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
-    if (selectedText.toLowerCase() === "contado") {
-      tasa.disabled = true;
-      tasa.value = '0';
+    if (tipo_pago != null) {
+      var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
+      if (selectedText.toLowerCase() === "contado") {
+        tasa.disabled = true;
+        tasa.value = '0';
+      }
+      else {
+        tasa.disabled = false;
+      }
+      $('select').formSelect();
     }
-    else {
-      tasa.disabled = false;
-    }
-    $('select').formSelect();
   }
 
   var sm = false
 
   function showMore(n) {
 
-    var tdShow = $("td.show"+n+"");
-    var thShow = $("th.show"+n+"");
-    var tdNotShow = $("td.not-show"+n+"");
-    var thNotShow = $("th.not-show"+n+"");
-    var iAnim = $("i.i"+n+"");
+    var tdShow = $("td.show"+n);
+    var thShow = $("th.show"+n);
+    var tdNotShow = $("td.not-show"+n);
+    var thNotShow = $("th.not-show"+n);
+    // var iAnim = $("i.i"+n+"");
 
-    thShow.toggleClass("show"+n+" not-show"+n+"");
-    tdShow.toggleClass("show"+n+" not-show"+n+"");
-    tdNotShow.toggleClass("not-show"+n+" show"+n+"");
-    thNotShow.toggleClass("not-show"+n+" show"+n+"");
-    iAnim.toggleClass("rotate");
+    thShow.toggleClass("show"+n+" not-show"+n);
+    tdShow.toggleClass("show"+n+" not-show"+n);
+    tdNotShow.toggleClass("not-show"+n+" show"+n);
+    thNotShow.toggleClass("not-show"+n+" show"+n);
+    // iAnim.toggleClass("rotate");
 
-    sm = !sm
+    if (n==0) {
+      sm = !sm
+    }
 
   }
 
+  "{% if request.user|has_group:'Vendedor' %}"
+
+  // funcion vista cliente
+  var vistaCliente = false;
+
+  function toggleClientView(n) {
+  
+    var clientView = $(".clientView");
+    var clientViewSM = $(".clientViewSM");
+
+    if($("#client-view-sw").is(":checked")) {
+
+      clientView.show();
+      clientViewSM.hide();
+      $("#form-table-div").hide();
+      $("#send-prop-btn").attr('disabled', true);
+
+      vistaCliente = true;
+
+    }
+    else {
+
+      clientView.css('display', '');
+      clientViewSM.show();
+      if (modifyWasClicked) {
+        $("#form-table-div").show();
+      }
+      if (!isAccepted && !isCanceled) {
+        $("#form-table-div").show();
+      }
+      $("#send-prop-btn").removeAttr('disabled');
+
+      vistaCliente = false;
+
+    }
+
+    alertAnimation();
+
+  }
+
+  function alertAnimation() {
+    var materialAlert = $(".materialert.error");
+
+    if (vistaCliente) {
+      materialAlert.css("display", "flex");
+      materialAlert.css("animation", "alertAnimDown .5s ease 0s 1 normal forwards");
+    }
+    else {
+      materialAlert.css("animation", "alertAnimUp .5s ease 0s 1 normal forwards");
+      setTimeout(
+        function() {
+          materialAlert.css("display", "none");
+        }
+      , 500);
+    }
+  }
+
+  "{% endif %}"
+
+  function closeAlert(id) {
+    $(id).hide();
+  }
+
+  // funcion editar despues de negocio confirmado
+
+  function addTable() {
+    $("#modifyProp").hide();
+    $("#form-table-div").detach().appendTo("#table-destination");
+    $("#form-table-div").show();
+    modifyWasClicked = true;
+  }
+
+  function addTables(n, isBeforeFechaCierre) {
+    if (!isBeforeFechaCierre) {
+      $("#div-table-"+n).detach().appendTo("#table-destination");
+      $("#div-table-"+n).show();
+    }
+  }
+  
+  var lastForAccept = last;
+
   function accept(index){
     console.log("accept")
-    reset(index)
+    if (!userIsComprador) {
+      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0]
+      if (edits.items[index].proveedor == null) {
+        $(input).addClass("invalid");
+        return;
+      }
+    }
+    resetForAccept(index)
     edits.items[index].aceptado = true;
-    $($("#form")[0].rows[index+1]).addClass("green")
+    $($("#form")[0].rows[index+1]).addClass("green white-text white-text-input")
   }
 
   function reject(index){
     console.log("rejected")
-    reset(index)
-    $($("#form")[0].rows[index+1]).addClass("red")
+    resetAll(index, "False")
+    $($("#form")[0].rows[index+1]).addClass("red white-text white-text-input")
     edits.items[index]={};
   }
 
   function update(index){
     console.log("update");
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"])
+    if (!userIsComprador && edits.items[index].proveedor == null) {
+      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0];
+      if (input.value == "") {
+        $(input).addClass("invalid");
+        return;
+      }
+      else {
+        $(input).removeClass("invalid");
+      }
+    }
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"])
     $($("#form")[0].rows[index+1]).addClass("yellow");
     editable_fields.forEach(element => {
-      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
-      if (input.type == "number"){
-        edits.items[index][element] = parseInt(input.value)
-      } else {
-        edits.items[index][element] = input.value
+      if (element != "observaciones" && element != "distribuidor") {
+        var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
+        if (input.type == "number"){
+          edits.items[index][element] = parseInt(input.value)
+        }
+        else if (input.name == "distribuidor"){
+          var opt = $("#distResults [value='"+input.value+"']");
+          edits.items[index]["proveedor"] = opt.data('value');
+        } else {
+          edits.items[index][element] = input.value
+        }
       }
     })
+    lastForAccept.items[index] = edits.items[index]
   }
 
-  function reset(index){
-    console.log("reset");
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow"]);
+  function resetAll(index, aceptado){
+    console.log("resetAll");
+    if (aceptado == "False") {
+      $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    }
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
+      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]');
+      if (element == "tipo_pago" || element == "tasa") {
+        input.val(edits.items[index][element]).change();
+      }
+      else {
+        input.val(edits.items[index][element]);
+      }
+    });
+  }
+
+  function resetForAccept(index) {
+    console.log("resetForAccept");
+    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    edits.items[index] = Object.assign({},lastForAccept.items[index]);
+    editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
-      input.val(edits.items[index][element]) 
+      if (element == "tipo_pago" || element == "tasa") {
+        input.val(edits.items[index][element]).change()
+      }
+      else if (element == "distribuidor") {
+        // do nothing
+      }
+      else {
+        input.val(edits.items[index][element])
+      }
     });
   }
 
@@ -540,43 +1071,50 @@ body {
     var n = {}, errors=false;
     var rowId = "NewRow"+counter
     console.log("addArt");
+    headers.push("divisa");
     headers.forEach(element => {
       if (userIsComprador) {
         if (element == "precio") {
           element = "precio_venta";
         }
       }
-      var input = $($("#extra").find('[name="'+element+'"]'))[0];
+      var input = null;
+      if (element != "divisa") {
+        input = $($("#extra").find('[name="'+element+'"]'))[0];
+      }
       var artId = parseInt($("#artValue")[0].value);
-      if (!input.value){
-        if (userIsComprador) {
-          if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+      if (input != null) {
+        if (!input.value){
+          if (userIsComprador) {
+            if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+              errors = true;
+              $(input).addClass("invalid");
+            }
+          }
+          else {
             errors = true;
             $(input).addClass("invalid");
           }
         }
-        else {
-          errors = true;
-          $(input).addClass("invalid");
-        }
-      }
-      if (element === "distribuidor"){
-        element = "proveedor";
-        var opt = $("#distResults [value='"+input.value+"']");
-        n[element] = opt.data('value');
-      } else {
-        if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
-          n[element] = parseInt(input.value);
-        }else {
-          n[element] = input.value;
-          n["articulo"] = artId;
-          n["pagado"] = false;
-          n["fecha_real_entrega"] = null;
-          n["fecha_real_pago"] = null;
-          n["fecha_salida_entrega"] = null;
-          if (userIsComprador) {
-            // cambiar proveedor a nulo cuando se pueda
-            n["proveedor"] = 1;
+        if (element === "distribuidor"){
+          element = "proveedor";
+          var opt = $("#distResults [value='"+input.value+"']");
+          n[element] = opt.data('value');
+        } else {
+          if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
+            n[element] = parseInt(input.value);
+          }else {
+            n[element] = input.value;
+            n["articulo"] = artId;
+            n["pagado"] = false;
+            n["fecha_real_entrega"] = null;
+            n["fecha_real_pago"] = null;
+            n["fecha_salida_entrega"] = null;
+            n["divisa"] = "USD";
+            if (userIsComprador) {
+              n["proveedor"] = null;
+              n["precio_compra"] = 0;
+            }
           }
         }
       }
@@ -588,14 +1126,7 @@ body {
 
     edits.items.push(n);
 
-    var divisa = "";
     var tipo_pago = "";
-
-    "{% for v,t in divisas %}"
-    if ("{{v}}" == n.divisa) {
-      divisa = "{{t}}";
-    }
-    "{% endfor %}"
 
     "{% for tipo_pago in tipo_pagos %}"
     if (parseInt("{{tipo_pago.id}}") == n.tipo_pago) {
@@ -604,7 +1135,7 @@ body {
     "{% endfor %}"
 
     if (sm) {
-      showMore(1);
+      showMore(0);
     }
 
     if (tipo_pago.toLowerCase() == "contado") {
@@ -614,24 +1145,23 @@ body {
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td class=\"show1\">"+$("#artSearch")[0].value+"</td>\
+    <td class=\"show0\">"+$("#artSearch")[0].value+"</td>\
     {% if not request.user|has_group:'Comprador' %}\
-    <td class=\"show1\">"+$("#distSearch")[0].value+"</td>\
+    <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show1\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
-    <td class=\"show1\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
     {% if not request.user|has_group:'Comprador' %}\
-    <td class=\"show1\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
     {% endif %}\
-    <td class=\"show1\"><select name=\"divisa\"><option value=\""+n.divisa+"\" selected disabled>"+divisa+"</option>{% for v,t in divisas %}<option value={{v}}>{{t}}</option>{%endfor%}</select></td>\
-    <td class=\"not-show1\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show1\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show1\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
-    <td class=\"not-show1\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
-    <td class=\"not-show1\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
+    <td class=\"{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show0\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
     <td>\
-      <a class=\"red btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons\">delete</i></a>\
-      <a class=\"yellow btn-floating waves-effect tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons\">save</i></a>\
+      <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
+      <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">save</i></a>\
     </td>\
     <td></td>\
     ";
@@ -705,21 +1235,28 @@ body {
         proc.items.push(element)
       }
     })
-    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega"];
+    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
+    var artName = "";
     proc.items.forEach(element => {
       for (k in element) {
+        if (k == "articulo") {
+          "{% for art in arts %}"
+            var artId = parseInt("{{art.id}}");
+            if (artId == element[k]) {
+              artName = "{{art.marca}}";
+            }
+          "{% endfor %}"
+        }
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
-            if (v == null || (v == 0 && k != "tasa") || v == "" || v == undefined) {
-              if (userIsComprador && !((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
-                errorFields.push("El campo \""+k+"\" contiene errores.");
-                errors = true;
+            var errorDesc = "El campo \""+k+"\" del artículo \""+artName+"\" contiene errores."
+            if (v == null || v == "" || v == undefined) {
+              if (userIsComprador && ((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
+                // do nothing
               }
-            }
-            if (userIsComprador && k == "proveedor" && v == null) {
-              // cambiar proveedor a nulo cuando se pueda
-              element[k] = 1;
+              errorFields.push(errorDesc);
+              errors = true;
             }
           }
         }
@@ -728,7 +1265,7 @@ body {
     console.log(proc);
     var print_errors = "";
     for (var i = 0; i < errorFields.length; i++) {
-      print_errors = print_errors.concat('\n'+errorFields[i])
+      print_errors = print_errors.concat('\n'+errorFields[i]+'\n')
     }
     if (errors) {
       swal("Oops!", print_errors, "error");

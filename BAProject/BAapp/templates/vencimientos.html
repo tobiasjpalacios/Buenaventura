@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}
+{%block body%}
+
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/vencimientos.css' %}">
+  <script src="{% static '/js/pages.js' %}"></script>
+</head>
+
+
+<body style="overflow: hidden;">
+  
+  <!--------Modal Semaforo Vencimiento -------->
+  <div id="modalSemaforoNegocio" class="modal">
+    <div id="modalSemaforo" class="modal-content">
+    </div>
+  </div>
+  <!--------Modal alerta -------->
+  <div id="alerta" class="modal">
+    <div id="modalAlerta" class="modal-content">
+    </div>
+  </div>
+  
+
+  {% if request.user|has_no_group:"Logistica"%}
+  <!-- Esto es el semaforo de vencimientos -->
+  <div class="row" style="height: 100%;">
+
+    <div class="menuZone clv">
+      <div class="menu">
+        <div class="col-s2 h-bar circule">
+          <i class="medium material-icons" style="position: relative; color:#005221;">access_alarm</i>
+        </div>
+        <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Vencimientos</h4>
+      </div>
+    </div>
+
+
+    <div class="clv">
+
+      <div style="width: 100%;">
+        <div id="tablesSem">
+
+          <div class="col s4 l4 bloque-izquierdo clvP" style="background-color: rgba(238,29,35,255);">
+            <div class="titulos">
+              <span class="text-align center titulito white-text ">
+                Atrasados
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencidos|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col l4 s4 bloque-centro clvP" style="background-color: rgba(254,206,8,255)">
+            <div class="titulos">
+              <span class=" titulito white-text">
+                Próximos a Vencer
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencimiento_semanal|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col l4 s4 bloque-derecho clvP" style="background-color: rgba(76,184,72,255)">
+            <div class="titulos">
+              <span class="text-align center titulito white-text">
+                Vencimientos futuros
+              </span>
+            </div>
+            <div class="nuevos_semaforo">
+              <b>{{vencimiento_futuro|length}}</b>
+              <a>Nuevos</a>
+            </div>
+          </div>
+
+          <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for vence in vencidos%}
+                  <tr style="border-bottom: 0px;">
+                    <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                    <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for semanal in vencimiento_semanal %}
+                  <tr style="border-bottom: 0px; ">
+                    <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                    <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
+            <div style="overflow-y: scroll; height: 550px;">
+              <table>
+                <tbody>
+                  {% for futuro in vencimiento_futuro %}
+                  <tr style="border-bottom: 0px; ">
+                    <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
+                    <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)"
+                        class="btn-floating btn-small waves-effect waves-light"><i
+                          class=" small material-icons ">search</i></button></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col s12 " style="height: 70px; border-top: 2px solid rgb(128, 128, 128, 0.5);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</body>
+<script>
+function detalleSemaforo(idProp, ind){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleSemaforo' %}",
+      data: {'idProp':idProp,'ind':ind,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalSemaforo").html(data);
+        $('#modalSemaforoNegocio').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function showChangeEstados(){
+    $('.auxSem').show();
+    $("#nego").hide();
+    $("#mostrarChgEstSem").hide();
+    $("#confirmarChgEstSem").show();
+  };
+
+  function sendFechaPagoSemaforo(){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;
+    var tocadoAlerta = document.getElementById("idPideAlertaSem").value;
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    if (tocadoAlerta == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var ids = [];
+      var grid = document.getElementById("tableFechaPagoS");
+      var checkBoxes = grid.getElementsByTagName("INPUT");
+      for (var i = 0; i < checkBoxes.length; i++) {
+          if (checkBoxes[i].checked) {
+              var row = checkBoxes[i];
+              var id = $(row).data("id");
+              ids.push(id);
+          };
+      };
+      var jsonText = JSON.stringify(ids);
+      var vacio = 0
+      if (ids.length == 0){
+        vacio = 1
+      };
+      $.ajax({
+          url: "{% url 'setFechaPagoReal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,
+            'descri':descri,'vacio':vacio,'tocadoAlerta':tocadoAlerta,
+              csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){
+            if (data.estado){
+              console.log(data.estado);
+              $('#modalSemaforoNegocio').modal('close');     
+            } 
+            M.toast({html: data.result});
+            $.ajax({
+              url: "{% url 'reloadSem' %}",
+              type: 'GET',
+              data: {
+                  csrfmiddlewaretoken: '{{ csrf_token }}'},
+                  success: function(data){
+                      $('#tablesSem').html(data);
+                  },
+                  error: function (data) {
+                    console.log(data.result)
+                }
+            });
+            
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      })      
+    };
+  };
+
+  function openModalAlerta(){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleAlerta' %}",
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) { 
+        $("#modalAlerta").html(data);
+        $('#alerta').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
+
+  function sendAlertaModal(){
+    var selected = new Array();
+    $('#tableAlertas input[type="checkbox"]:checked').each(function() {
+        selected.push($(this).attr('data-id'));
+    });    
+    var jsonText = JSON.stringify(selected);
+    var titulo = document.getElementById("tituloAlerta").value;
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlerta").value;
+      var categoria = document.getElementById("selectModalAlert").value;
+      $.ajax({
+          url: "{% url 'sendAlertaModal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){             
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#alerta').modal('close');
+              };   
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    };
+  };
+</script>
+{% endblock body %}
