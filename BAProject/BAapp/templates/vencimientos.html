@@ -17,7 +17,20 @@ BuenaVentura Agronegocios
   <link rel="stylesheet" type="text/css" href="{% static '/css/vencimientos.css' %}">
 </head>
 
+
 <body style="overflow: hidden;">
+  
+  <!--------Modal Semaforo Vencimiento -------->
+  <div id="modalSemaforoNegocio" class="modal">
+    <div id="modalSemaforo" class="modal-content">
+    </div>
+  </div>
+  <!--------Modal alerta -------->
+  <div id="alerta" class="modal">
+    <div id="modalAlerta" class="modal-content">
+    </div>
+  </div>
+  
 
   {% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
@@ -134,7 +147,84 @@ BuenaVentura Agronegocios
   {% endif %}
 </body>
 <script>
+function detalleSemaforo(idProp, ind){
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'detalleSemaforo' %}",
+      data: {'idProp':idProp,'ind':ind,
+      csrfmiddlewaretoken: '{{ csrf_token }}'},
+      success: function (data) {
+        $("#modalSemaforo").html(data);
+        $('#modalSemaforoNegocio').modal('open'); 
+      },
+      error: function (response) {
+          console.log("Error")
+      }
+    })
+  };
 
+  function showChangeEstados(){
+    $('.auxSem').show();
+    $("#nego").hide();
+    $("#mostrarChgEstSem").hide();
+    $("#confirmarChgEstSem").show();
+  };
+
+  function sendFechaPagoSemaforo(){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;
+    var tocadoAlerta = document.getElementById("idPideAlertaSem").value;
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    if (tocadoAlerta == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var ids = [];
+      var grid = document.getElementById("tableFechaPagoS");
+      var checkBoxes = grid.getElementsByTagName("INPUT");
+      for (var i = 0; i < checkBoxes.length; i++) {
+          if (checkBoxes[i].checked) {
+              var row = checkBoxes[i];
+              var id = $(row).data("id");
+              ids.push(id);
+          };
+      };
+      var jsonText = JSON.stringify(ids);
+      var vacio = 0
+      if (ids.length == 0){
+        vacio = 1
+      };
+      $.ajax({
+          url: "{% url 'setFechaPagoReal' %}",
+          type: 'POST',
+          data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,
+            'descri':descri,'vacio':vacio,'tocadoAlerta':tocadoAlerta,
+              csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){
+            if (data.estado){
+              console.log(data.estado);
+              $('#modalSemaforoNegocio').modal('close');     
+            } 
+            M.toast({html: data.result});
+            $.ajax({
+              url: "{% url 'reloadSem' %}",
+              type: 'GET',
+              data: {
+                  csrfmiddlewaretoken: '{{ csrf_token }}'},
+                  success: function(data){
+                      $('#tablesSem').html(data);
+                  },
+                  error: function (data) {
+                    console.log(data.result)
+                }
+            });
+            
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      })      
+    };
+  };
 
 </script>
 {% endblock body %}
