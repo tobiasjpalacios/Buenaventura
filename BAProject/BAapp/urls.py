@@ -53,7 +53,7 @@ urlpatterns = [
     path('todos_negocios/', login_required(login_url='/', redirect_field_name='router')(TodoseNegociosView.as_view()), name ="todos_negocios"),
     path('logistica/', login_required(login_url='/', redirect_field_name='router')(LogisticaView.as_view()), name ="logistica"),
     path('vencimientos/', login_required(login_url='/', redirect_field_name='router')(VencimientosView.as_view()), name ="vencimientos"),
-
+    path('info_negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(Info_negocioView.as_view()), name ="info_negocio"),    
 
 
 

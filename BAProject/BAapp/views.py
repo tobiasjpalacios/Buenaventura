@@ -48,6 +48,55 @@ class TodoseNegociosView(View):
         vendedor = Vendedor.objects.all()
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
+class Info_negocioView(View): 
+    def get(self, request, *args, **kwargs):
+        if ("pk" in kwargs):
+            idProp = kwargs["pk"]
+            propuesta = Propuesta.objects.get(pk=kwargs["pk"])
+            negocio = Negocio.objects.get(id=propuesta.negocio.id)
+            grupo_activo = request.user.groups.all()[0].name
+            envio = propuesta.envio_comprador
+            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+                envio = not envio
+            resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
+            items = None
+            persona = Persona.objects.get(user=request.user)
+            if (grupo_activo == 'Logistica'):
+                empleadoL = Logistica.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=empleadoL.empresa.id)
+            elif (grupo_activo == 'Administracion'):
+                administradorL = Administrador.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=administradorL.empresa.id)
+            elif (grupo_activo == 'Proveedor'):
+                proveedorP = Proveedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
+            else:
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp) 
+                facturas = Factura.objects.filter(negocio=propuesta.negocio)
+                remitos = Remito.objects.filter(negocio=propuesta.negocio)
+                ordenesDeCompra = OrdenDeCompra.objects.filter(negocio=negocio)
+                ordenesDePago = OrdenDePago.objects.filter(negocio=negocio)
+                constancias = ConstanciaRentencion.objects.filter(negocio=negocio)
+                recibos = Recibo.objects.filter(negocio=negocio)
+                cheques = Cheque.objects.filter(negocio=negocio)
+                cuentasCorriente = CuentaCorriente.objects.filter(negocio=negocio)
+                facturasComision = FacturaComision.objects.filter(negocio=negocio)
+                notas = Nota.objects.filter(negocio=negocio)
+                comprobantes = {
+                    "facturas": facturas,
+                    "remitos": remitos,
+                    "ordenesDeCompra": ordenesDeCompra,
+                    "ordenesDePago": ordenesDePago,
+                    "constancias": constancias,
+                    "recibos": recibos,
+                    "cheques": cheques,
+                    "cuentasCorriente": cuentasCorriente,
+                    "facturasComision": facturasComision,
+                    "notas": notas,          
+                }   
+            return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
+ 
+
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
@@ -92,6 +141,7 @@ class LogisticaView(View):
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())    
         lnl = listaNL(request, negociosCerrConf, grupo_activo)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
+
 
 
 #lo viejo xd
