@@ -41,11 +41,12 @@ def inicio(request):
 
 # los nuevos views
 
-def todos_negocios(request):    
-    grupo_activo = request.user.groups.all()[0].name
-    negocio = getNegociosForList(request,grupo_activo,1)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+class TodoseNegociosView(View):
+    def get(self, request, *args, **kwargs):
+        grupo_activo = request.user.groups.all()[0].name
+        negocio = getNegociosForList(request,grupo_activo,1)
+        vendedor = Vendedor.objects.all()
+        return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
@@ -85,10 +86,11 @@ class VencimientosView(View):
         lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
         return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
 
-class logisticaView(View):
+class LogisticaView(View):
     def get(self, request, *args, **kwargs):
-        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
-        lnl = listaNL(request,negociosCerrConf,'P')
+        grupo_activo = request.user.groups.all()[0].name[0]
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())    
+        lnl = listaNL(request, negociosCerrConf, grupo_activo)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
 
 

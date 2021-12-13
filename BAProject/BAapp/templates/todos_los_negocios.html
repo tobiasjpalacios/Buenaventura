@@ -9,7 +9,7 @@ BuenaVentura Agronegocios
 {%block body%}
 
 <style>
-::placeholder { /* Firefox, Chrome, Opera */
+#inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
   color: white !important;
   font-weight: bold !important;
 }
@@ -21,6 +21,10 @@ BuenaVentura Agronegocios
   border: #000; 
   border-radius: 2em;
   text-align: center;
+}
+#fechaDesde::placeholder, #fechaHasta::placeholder { /* Firefox, Chrome, Opera */
+  color: #999;
+  text-align: start;
 }
 </style>
 
@@ -71,7 +75,7 @@ BuenaVentura Agronegocios
               <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
               {% endfor %}
             </select>
-            <label>vendendor</label>
+            <label>Vendendor</label>
           </div>
         </li>
         <li>
@@ -100,14 +104,12 @@ BuenaVentura Agronegocios
         </li>
         <li>
           <div class="input-field clv">
-            <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde">
-            <label for="fechaDesde">Fecha Desde</label>
+            <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde">
           </div>
         </li>
         <li>
           <div class="input-field clv">
-            <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta">
-            <label for="fechaHasta">Fecha Hasta</label>
+            <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta">
           </div>
         </li>
         <li>

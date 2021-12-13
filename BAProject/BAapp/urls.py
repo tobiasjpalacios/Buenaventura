@@ -48,11 +48,11 @@ urlpatterns = [
 
 
     #nuevas urls
-    path('notificaciones/', NotificacionesView.as_view(), name ="notificaciones"),
-    path('presupuestos/', PresupuestosView.as_view(), name="presupuestos"),
-    path('todos_negocios/', todos_negocios, name ="todos_negocios"),
-    path('logistica/', logisticaView.as_view(), name ="logistica"),
-    path('vencimientos/', VencimientosView.as_view(), name ="vencimientos"),
+    path('notificaciones/', login_required(login_url='/', redirect_field_name='router')(NotificacionesView.as_view()), name ="notificaciones"),
+    path('presupuestos/', login_required(login_url='/', redirect_field_name='router')(PresupuestosView.as_view()), name="presupuestos"),
+    path('todos_negocios/', login_required(login_url='/', redirect_field_name='router')(TodoseNegociosView.as_view()), name ="todos_negocios"),
+    path('logistica/', login_required(login_url='/', redirect_field_name='router')(LogisticaView.as_view()), name ="logistica"),
+    path('vencimientos/', login_required(login_url='/', redirect_field_name='router')(VencimientosView.as_view()), name ="vencimientos"),
 
 
 
