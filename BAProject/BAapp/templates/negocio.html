@@ -1040,6 +1040,7 @@ body {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]');
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change();
+        input.formSelect()
       }
       else {
         input.val(edits.items[index][element]);
@@ -1055,6 +1056,7 @@ body {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change()
+        input.formSelect()
       }
       else if (element == "distribuidor") {
         // do nothing
