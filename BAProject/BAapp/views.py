@@ -246,6 +246,7 @@ def filtrarNegocios(request):
         tipoFecha = request.POST['tipoFecha']
         fechaD = request.POST['fechaDesde']
         fechaH = request.POST['fechaHasta']
+        idDeNeg = request.POST['idDeNeg']
         error = False
         listaVendedor = []
         grupo_activo = request.user.groups.all()[0].name
@@ -300,14 +301,23 @@ def filtrarNegocios(request):
                 listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
             else:
                 listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
+        listaIdDeNeg = []
+        if idDeNeg is not None:
+            if idDeNeg == "" or int(idDeNeg) <= 0:
+                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
+            else:
+                idDeNeg = f"BVi-{idDeNeg}"
+                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id_de_neg=idDeNeg).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
         listaTipo = getIdsQuery(listaTipo)         
         listaFecha = getIdsQuery(listaFecha)
+        listaIdDeNeg = getIdsQuery(listaIdDeNeg)
         listaNeg = set(listaVendedor).intersection(listaEstado)
         listaNeg2 = set(listaNeg).intersection(listaTipo)
-        listaNegF = set(listaNeg2).intersection(listaFecha)    
-        todos_los_negocios = Negocio.objects.filter(id__in=list(listaNegF)).order_by('-timestamp')
+        listaNeg3 = set(listaNeg2).intersection(listaFecha)
+        listaNeg4 = set(listaNeg3).intersection(listaIdDeNeg)
+        todos_los_negocios = Negocio.objects.filter(id__in=list(listaNeg4)).order_by('-timestamp')
         for a in todos_los_negocios:
             propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
             if (not propuesta):

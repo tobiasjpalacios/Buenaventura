@@ -9,6 +9,9 @@ BuenaVentura Agronegocios
 {%block body%}
 
 <style>
+html, body {
+  overflow-x: hidden;
+}
 #inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
   color: white !important;
   font-weight: bold !important;
@@ -22,9 +25,37 @@ BuenaVentura Agronegocios
   border-radius: 2em;
   text-align: center;
 }
-#fechaDesde::placeholder, #fechaHasta::placeholder { /* Firefox, Chrome, Opera */
+#idDeNeg {
+  width: 80px;
+  border-bottom: 1px solid #9e9e9e !important;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#fechaDesde, #fechaHasta {
+  width: 150px;
+  border-bottom: 1px solid #9e9e9e !important;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+#fechaDesde::placeholder, #fechaHasta::placeholder, #idDeNeg::placeholder { /* Firefox, Chrome, Opera */
   color: #999;
   text-align: start;
+}
+#headerFixed {
+  background-color: white;
+  z-index: 998;
+}
+#filtroFixed {
+  z-index: 999;
+  background-color: #ebebeb !important;
+}
+#navFiltro {
+  background-color: #dfdfdf6b !important;
+}
+#fixedForScroll {
+  position: fixed;
+  display: none;
+  z-index: 997;
 }
 </style>
 
@@ -52,207 +83,209 @@ BuenaVentura Agronegocios
       </div>
     </div>
 
-  <div class="row">
-    <div class="container">
-      <div class="input-field col s12 shearS" style="padding: 0rem;">
-        <input id="inputBuscadorNegocio"
-          placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text">
-        <i class="medium material-icons shear_circule" style="position: relative; left: 1px;">search</i>
+    <div class="row">
+      <div class="container">
+        <div class="input-field col s12 shearS" style="padding: 0rem;">
+          <input id="inputBuscadorNegocio"
+            placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text" autocomplete="off">
+          <i class="medium material-icons shear_circule" style="position: relative; left: 1px;">search</i>
+        </div>
       </div>
     </div>
-  </div>
 
 
 
-  <nav style="background-color: #dfdfdf6b!important;">
-    <div class="nav-wrapper clv" style="width: 100%; background-color:transparent;">
-      <ul id="nav-mobile" class="" style="display: flex; justify-content: space-between;">
-        <li>
-          <div class="input-field clv">
-            <select multiple id="selectVendedores">
-              <option value="todos" selected>Cualquiera</option>
-              {% for vendedor in todos_vendedores %}
-              <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
-              {% endfor %}
-            </select>
-            <label>Vendendor</label>
-          </div>
-        </li>
-        <li>
-          <div class="input-field clv">
-            <select multiple id="selectEstados">
-              <option value="todos" selected> Todos </option>
-              <option value="Confirmado">Confirmado</option>
-              <option value="Cancelado">Cancelado</option>
-              {% if request.user|has_no_group:"Proveedor"%}
-              <option value="Recibido">Recibido</option>
-              <option value="En Negociación">En Negociación</option>
-              {% endif %}
-            </select>
-            <label>Estado</label>
-          </div>
-        </li>
-        <li>
-          <div class="input-field clv">
-            <select id="selectTipo">
-              <option value="todos" selected> Todos </option>
-              <option value="Venta">Venta</option>
-              <option value="Consignacion">Consignacion</option>
-            </select>
-            <label>Tipo de Negocio</label>
-          </div>
-        </li>
-        <li>
-          <div class="input-field clv">
-            <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde">
-          </div>
-        </li>
-        <li>
-          <div class="input-field clv">
-            <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta">
-          </div>
-        </li>
-        <li>
-          <div class="clv">
-            <a class="waves-effect waves-light btn col s12" style="background-color: #4fad31;"
-              onclick="filtrar()">filtrar</a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>
-
-
-  <div class=" offset-s2 " style="width: 100%; position: relative;">
-    <table id="tableNegocios">
-      <thead>
-        <tr style="border-bottom: 1px solid grey;">
-          <th>Fecha apertura</th>
-          <th>Fecha cierre</th>
-          {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
-          <th>Cliente </th>
-          {% endif %}
-          <th>Tipo Negocio</th>
-          <th>Vendedor</th>
-          {% if request.user|has_group:"Vendedor"%}
-          <th>Proveedores</th>
-          {% endif %}
-          <th class="center">Estado</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
-        {% for negocio in todos_negocios %}
-        <tr class="ctr">
-          <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-          <td>{% if negocio.fecha_cierre is null %}
-            Sin Definir
-            {% else %}
-            {{negocio.fecha_cierre|date:"M d, Y"}}
-            {% endif %}
-          </td>
-          {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
-          <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
-          </td>
-          {% endif %}
-          <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
-          <td>{{negocio.vendedor.persona.user.get_full_name}}
-          </td>
-          {% if request.user|has_group:"Vendedor"%}
-          {% if negocio.fecha_cierre is not None %}
-          <td>
-            <div style="overflow-y: scroll; height: 150px;">
-              <ol class="collection" start="1">
-                {% for prov in negocio.proveedores %}
-                <li class="collection-item">{{prov}}</li>
+    <nav id="navFiltro">
+      <div class="nav-wrapper clv" style="width: 100%;">
+        <ul id="nav-mobile" class="" style="display: flex; justify-content: space-between;">
+          <li>
+            <div class="input-field clv">
+              <select multiple id="selectVendedores">
+                <option value="todos" selected>Cualquiera</option>
+                {% for vendedor in todos_vendedores %}
+                <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
                 {% endfor %}
-              </ol>
+              </select>
+              <label>Vendendor</label>
             </div>
-          </td>
-          {% else %}
-          <td>Por Definir</td>
-          {% endif %}
-          {% endif %}
-          <td class="green-text center">{{negocio.estado}}</td>
-          <td><a class="btn-floating btn-small waves-effect waves-light red "
-              onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
-            </tr>
-        {% endfor %}
-        <!-- esto es la lista de negocios-->
-      </tbody>
-    </table>
+          </li>
+          <li>
+            <div class="input-field clv">
+              <select multiple id="selectEstados">
+                <option value="todos" selected> Todos </option>
+                <option value="Confirmado">Confirmado</option>
+                <option value="Cancelado">Cancelado</option>
+                {% if request.user|has_no_group:"Proveedor"%}
+                <option value="Recibido">Recibido</option>
+                <option value="En Negociación">En Negociación</option>
+                {% endif %}
+              </select>
+              <label>Estado</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-field clv">
+              <select id="selectTipo">
+                <option value="todos" selected> Todos </option>
+                <option value="Venta">Venta</option>
+                <option value="Consignacion">Consignacion</option>
+              </select>
+              <label>Tipo de Negocio</label>
+            </div>
+          </li>
+          <li>
+            <div class="input-field clv">
+              <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde" autocomplete="off">
+            </div>
+          </li>
+          <li>
+            <div class="input-field clv">
+              <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta" autocomplete="off">
+            </div>
+          </li>
+          <li>
+            <div class="input-field clv">
+              <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
+            </div>
+          </li>
+          <li>
+            <div class="clv">
+              <a class="waves-effect waves-light btn col s12 no-shadows" style="background-color: #4fad31;"
+                onclick="filtrar()">filtrar</a>
+            </div>
+          </li>
+          <li>
+            <div class="clv">
+              <a class="btn-floating waves-effect waves-dark no-shadows tooltipped" style="background-color: #00000007;"
+                data-tooltip="Limpiar filtros" data-position="top" onclick="limpiarFiltros()">
+                <i class="material-icons" style="color: red;">clear</i>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="fixedForScroll">
+      <nav id="filtroFixed"></nav>
+      <table id="headerFixed"></table>
+    </div>
+
+    <div class="offset-s2" style="width: 100%; position: relative;">
+      <table id="tableNegocios">
+        <thead>
+          <tr style="border-bottom: 1px solid grey;">
+            <th>Fecha apertura</th>
+            <th>Fecha cierre</th>
+            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+            <th>Cliente </th>
+            {% endif %}
+            <th>Tipo Negocio</th>
+            <th>Vendedor</th>
+            {% if request.user|has_group:"Vendedor"%}
+            <th>Proveedores</th>
+            {% endif %}
+            <th>Código de Negocio</th>
+            <th class="center">Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
+          {% for negocio in todos_negocios %}
+          <tr class="ctr">
+            <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+            <td>{% if negocio.fecha_cierre is null %} 
+                    Sin Definir
+                {% else %}
+                    {{negocio.fecha_cierre|date:"M d, Y"}}
+                {% endif %}
+            </td>
+            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+            <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
+            </td>
+            {% endif %}
+            <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
+            <td>{{negocio.vendedor.persona.user.get_full_name}}
+            </td>
+            {% if request.user|has_group:"Vendedor"%}
+              {% if negocio.fecha_cierre is not None %}
+              <td>
+                <div style="overflow-y: scroll; height: 150px;">
+                  <ol class="collection" start="1">
+                    {% for prov in negocio.proveedores %}
+                    <li class="collection-item">{{prov}}</li>
+                    {% endfor %}
+                  </ol>
+                </div>
+              </td>
+              {% else %}
+              <td>Por Definir</td>
+              {% endif %}
+            {% endif %}
+            <td><strong>{{negocio.id_de_neg}}</strong></td>
+            <td class="green-text center">{{negocio.estado}}</td>
+            <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+          </tr>
+          {% endfor %}
+          <!-- esto es la lista de negocios-->
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script src="{% static 'js/todos_negocios.js' %}"></script>
 
-<<<<<<< HEAD
   <script>
-    function detalleNegocio(idProp){
+    // function detalleNegocio(idProp){
+    //   $.ajax({
+    //     type: 'POST',
+    //     url: "{% url 'detalleNegocio' %}",
+    //     data: {'idProp':idProp,
+    //     csrfmiddlewaretoken: '{{ csrf_token }}'},
+    //     success: function (data) {
+    //       $("#modalNegocio").html(data);
+    //       $('#modalDetalleNegocio').modal('open'); 
+    //     },
+    //     error: function (response) {
+    //         console.log("Error")
+    //     }
+    //   })
+    // };
+
+    function searchBuscadorNegocio() {
+      var value = $("#inputBuscadorNegocio").val().toLowerCase();
+      $("#tableNegocios tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    };
+
+    function detalleNegocio(idProp) {
+      var urlTemp = "{% url 'info_negocio' 0 %}";
+      var urlf = urlTemp.replace('0',idProp);
       $.ajax({
-        type: 'POST',
-        url: "{% url 'detalleNegocio' %}",
-        data: {'idProp':idProp,
-        csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: function (data) {
-          $("#modalNegocio").html(data);
-          $('#modalDetalleNegocio').modal('open'); 
+        url: urlf,
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}'
         },
-        error: function (response) {
-            console.log("Error")
-        }
       })
     };
-=======
-  function searchBuscadorNegocio() {
-    var value = $("#inputBuscadorNegocio").val().toLowerCase();
-    $("#tableNegocios tr").filter(function () {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  };
 
-  function detalleNegocio(idProp) {
-    var urlTemp = "{% url 'info_negocio' 0 %}";
-    var urlf = urlTemp.replace('0',idProp);
-    $.ajax({
-      url: urlf,
-      data: {
-        csrfmiddlewaretoken: '{{ csrf_token }}'
-      },
-    })
-  };
-
-  function detalleArticuloNegocio(idItem, funOrig) {
-    $.ajax({
-      type: 'POST',
-      url: "{% url 'detalleItem' %}",
-      data: {
-        'idItem': idItem,
-        csrfmiddlewaretoken: '{{ csrf_token }}'
-      },
-      success: function (data) {
-        $("#modalNegocio").html(data);
-        $('#modalDetalleNegocio').modal('open');
-      },
-      error: function (response) {
-        console.log("Error")
-      }
-    })
-  };
->>>>>>> todo info_negocio
-
-    function detalleArticuloNegocio(idItem, funOrig){
+    function detalleArticuloNegocio(idItem, funOrig) {
       $.ajax({
         type: 'POST',
         url: "{% url 'detalleItem' %}",
-        data: {'idItem':idItem,
-        csrfmiddlewaretoken: '{{ csrf_token }}'},
+        data: {
+          'idItem': idItem,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
         success: function (data) {
           $("#modalNegocio").html(data);
           $('#modalDetalleNegocio').modal('open');
         },
         error: function (response) {
-            console.log("Error")
+          console.log("Error")
         }
       })
     };
@@ -294,11 +327,12 @@ BuenaVentura Agronegocios
       M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
       errores = 1;
     }
+    var idDeNeg = $('#idDeNeg').val();
     if (errores == 0){
       $.ajax({
           url: "{% url 'filtrarNegocios' %}",
           type: 'POST',
-          data: {'vendedor':vendedor,'estado':estado,'tipo':tipo,
+          data: {'vendedor':vendedor,'estado':estado,'tipo':tipo,'idDeNeg':idDeNeg,
               'tipoFecha':tipoFecha,'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
               csrfmiddlewaretoken: '{{ csrf_token }}'},
           success: function(data){ 
