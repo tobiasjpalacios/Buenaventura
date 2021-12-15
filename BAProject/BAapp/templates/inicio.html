@@ -850,7 +850,7 @@ function submit(){
         }
         else {
           input = document.getElementById('input'+j+'.'+i+'');
-          tmp_dict[headers[j]] = input.value;
+          tmp_dict[headers[j]] = (input != null) ? input.value : null;
         }
       }
       // default para divisa
