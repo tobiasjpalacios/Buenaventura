@@ -28,7 +28,8 @@
                 <td>Por Definir</td>
             {% endif %}
         {% endif %}
+        <td><strong>{{negocio.id_de_neg}}</strong></td>
         <td class="green-text center">{{negocio.estado}}</td>
-        <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+        <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
     </tr>
 {% endfor %}
