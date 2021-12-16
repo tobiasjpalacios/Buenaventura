@@ -8,69 +8,14 @@ BuenaVentura Agronegocios
 {% endblock title %}
 {%block body%}
 
-<style>
-html, body {
-  overflow-x: hidden;
-}
-#inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
-  color: white !important;
-  font-weight: bold !important;
-}
-#inputBuscadorNegocio {
-  margin: 0px; 
-  color: white !important;
-  border-bottom: 0px solid #000; 
-  box-shadow: 0 0px 0 0 #000; 
-  border: #000; 
-  border-radius: 2em;
-  text-align: center;
-}
-#idDeNeg {
-  width: 80px;
-  border-bottom: 1px solid #9e9e9e !important;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-#fechaDesde, #fechaHasta {
-  width: 150px;
-  border-bottom: 1px solid #9e9e9e !important;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-#fechaDesde::placeholder, #fechaHasta::placeholder, #idDeNeg::placeholder { /* Firefox, Chrome, Opera */
-  color: #999;
-  text-align: start;
-}
-#headerFixed {
-  background-color: white;
-  z-index: 998;
-}
-#filtroFixed {
-  z-index: 999;
-  background-color: #ebebeb !important;
-}
-#navFiltro {
-  background-color: #dfdfdf6b !important;
-}
-#fixedForScroll {
-  position: fixed;
-  display: none;
-  z-index: 997;
-}
-</style>
-
 <head>
   <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/todos_negocios.css' %}">
 </head>
 
 
 <body>
-
-  <div id="modalDetalleNegocio" class="modal">
-    <div id="modalNegocio" class="modal-content">
-    </div>
-  </div>
 
   <div class="row">
 
@@ -106,7 +51,7 @@ html, body {
                 <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
                 {% endfor %}
               </select>
-              <label>Vendendor</label>
+              <label class="for-input">Vendendor</label>
             </div>
           </li>
           <li>
@@ -120,17 +65,17 @@ html, body {
                 <option value="En Negociación">En Negociación</option>
                 {% endif %}
               </select>
-              <label>Estado</label>
+              <label class="for-input">Estado</label>
             </div>
           </li>
           <li>
             <div class="input-field clv">
               <select id="selectTipo">
-                <option value="todos" selected> Todos </option>
+                <option value="todos" selected value> Todos </option>
                 <option value="Venta">Venta</option>
                 <option value="Consignacion">Consignacion</option>
               </select>
-              <label>Tipo de Negocio</label>
+              <label class="for-input">Tipo de Negocio</label>
             </div>
           </li>
           <li>
@@ -226,7 +171,7 @@ html, body {
             <td><strong>{{negocio.id_de_neg}}</strong></td>
             <td class="green-text center">{{negocio.estado}}</td>
             <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
           </tr>
           {% endfor %}
           <!-- esto es la lista de negocios-->
@@ -263,30 +208,13 @@ html, body {
 
     function detalleNegocio(idProp) {
       var urlTemp = "{% url 'info_negocio' 0 %}";
-      var urlf = urlTemp.replace('0',idProp);
+      var urlf = urlTemp.replace('0', idProp);
+      console.log(urlf)
       $.ajax({
         url: urlf,
         data: {
           csrfmiddlewaretoken: '{{ csrf_token }}'
         },
-      })
-    };
-
-    function detalleArticuloNegocio(idItem, funOrig) {
-      $.ajax({
-        type: 'POST',
-        url: "{% url 'detalleItem' %}",
-        data: {
-          'idItem': idItem,
-          csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function (data) {
-          $("#modalNegocio").html(data);
-          $('#modalDetalleNegocio').modal('open');
-        },
-        error: function (response) {
-          console.log("Error")
-        }
       })
     };
 

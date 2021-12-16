@@ -495,6 +495,11 @@ BuenaVentura Agronegocios
         </div>
     </div>
 
+    <div id="modalDetalleNegocio" class="modal">
+        <div id="modalNegocio" class="modal-content">
+        </div>
+    </div>
+
     {% endif %}
 
 </body>
@@ -767,6 +772,24 @@ BuenaVentura Agronegocios
                 console.log("Error")
             }
         })
+    };
+
+    function detalleArticuloNegocio(idItem, funOrig) {
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'detalleItem' %}",
+        data: {
+          'idItem': idItem,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function (data) {
+          $("#modalNegocio").html(data);
+          $('#modalDetalleNegocio').modal('open');
+        },
+        error: function (response) {
+          console.log("Error")
+        }
+      })
     };
 </script>
 {% endblock body %}

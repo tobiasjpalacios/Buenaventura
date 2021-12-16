@@ -158,5 +158,13 @@ input{
   color: white !important;
 }
 .datepicker-row > .is-today > .datepicker-day-button {
-  color: #26a69a;
+  color: #4CB848;
+}
+.datepicker-row > .is-selected > .datepicker-day-button, 
+.datepicker-date-display 
+{
+  background-color: #005221;
+}
+.btn-flat.datepicker-cancel, .btn-flat.datepicker-done {
+  color: #005221;
 }

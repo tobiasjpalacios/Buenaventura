@@ -1,0 +1,56 @@
+html, body {
+    overflow-x: hidden;
+}
+#inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
+    color: white !important;
+    font-weight: bold !important;
+}
+#inputBuscadorNegocio {
+    margin: 0px; 
+    color: white !important;
+    border-bottom: 0px solid #000; 
+    box-shadow: 0 0px 0 0 #000; 
+    border: #000; 
+    border-radius: 2em;
+    text-align: center;
+}
+#idDeNeg {
+    width: 80px;
+    border-bottom: 1px solid #9e9e9e !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#fechaDesde, #fechaHasta {
+    width: 150px;
+    border-bottom: 1px solid #9e9e9e !important;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#fechaDesde::placeholder, #fechaHasta::placeholder, #idDeNeg::placeholder { /* Firefox, Chrome, Opera */
+    color: #999;
+    text-align: start;
+}
+#headerFixed {
+    background-color: white;
+    z-index: 998;
+}
+#filtroFixed {
+    z-index: 999;
+    background-color: #ebebeb !important;
+}
+#navFiltro {
+    background-color: #dfdfdf6b !important;
+}
+#fixedForScroll {
+    position: fixed;
+    display: none;
+    z-index: 997;
+}
+label.for-input {
+    color: rgb(110, 110, 110) !important;
+    font-weight: 600;
+}
+
+label, span {
+    color: #000 !important;
+}
