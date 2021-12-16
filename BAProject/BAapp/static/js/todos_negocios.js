@@ -28,86 +28,84 @@ $(document).ready(function(){
 
 });
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.datepicker');
-    var options = {
-      format: 'dd/mm/yyyy',
-      showClearBtn: true,
-      i18n: {
-        weekdaysAbbrev: ['D','L','M','X','J','V','S'],
-        months:	
-        [
-          'Enero',
-          'Febrero',
-          'Marzo',
-          'Abril',
-          'Mayo',
-          'Junio',
-          'Julio',
-          'Agosto',
-          'Septiembre',
-          'Octubre',
-          'Noviembre',
-          'Diciembre'
-        ],
-        monthsShort:
-        [
-          'En',
-          'Feb',
-          'Mar',
-          'Abr',
-          'May',
-          'Jun',
-          'Jul',
-          'Ago',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dic'
-        ],
-        weekdays:
-        [
-          'Domingo',
-          'Lunes',
-          'Martes',
-          'Miercoles',
-          'Jueves',
-          'Viernes',
-          'Sábado'
-        ],
-        weekdaysShort:
-        [
-          'Dom',
-          'Lun',
-          'Mar',
-          'Mié',
-          'Jue',
-          'Vie',
-          'Sáb'
-        ],
-        cancel: 'Cancelar',
-        clear: 'Limpiar'
-      }
+document.addEventListener('DOMContentLoaded', function() {
+  $('.datepicker').datepicker({
+    format: 'dd/mm/yyyy',
+    showClearBtn: true,
+    i18n: {
+      weekdaysAbbrev: ['D','L','M','X','J','V','S'],
+      months:	
+      [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+      ],
+      monthsShort:
+      [
+        'En',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dic'
+      ],
+      weekdays:
+      [
+        'Domingo',
+        'Lunes',
+        'Martes',
+        'Miercoles',
+        'Jueves',
+        'Viernes',
+        'Sábado'
+      ],
+      weekdaysShort:
+      [
+        'Dom',
+        'Lun',
+        'Mar',
+        'Mié',
+        'Jue',
+        'Vie',
+        'Sáb'
+      ],
+      cancel: 'Cancelar',
+      clear: 'Limpiar'
     }
-    var instances = M.Datepicker.init(elems, options);
   });
+});
       
-  function searchBuscadorNegocio(){ 
-      var value = $("#inputBuscadorNegocio").val().toLowerCase();
-      $("#tableNegocios tr").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-      });
-  };
+function searchBuscadorNegocio(){ 
+    var value = $("#inputBuscadorNegocio").val().toLowerCase();
+    $("#tableNegocios tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+};
 
-  // function selTipoFecha(){
-  //   var x = $('#selectTipoFecha').val();
-  //   y = document.getElementById("divFechasParam");
-  //   if (x == "0"){
-  //     y.style.display = "none";
-  //   } else {
-  //     y.style.display = "block";
-  //   }
-  // }
+// function selTipoFecha(){
+//   var x = $('#selectTipoFecha').val();
+//   y = document.getElementById("divFechasParam");
+//   if (x == "0"){
+//     y.style.display = "none";
+//   } else {
+//     y.style.display = "block";
+//   }
+// }
 
 // esta funcion arregla los problemas relacionos con los multiple options de los filtros.
 // todavia hay un "error", que cuando se actualiza un selected, se cierran las opciones.
