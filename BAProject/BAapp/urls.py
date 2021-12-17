@@ -54,6 +54,7 @@ urlpatterns = [
     path('logistica/', login_required(login_url='/', redirect_field_name='router')(LogisticaView.as_view()), name ="logistica"),
     path('vencimientos/', login_required(login_url='/', redirect_field_name='router')(VencimientosView.as_view()), name ="vencimientos"),
     path('info_negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(Info_negocioView.as_view()), name ="info_negocio"),    
+    path('comprobantes/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="comprobantes"),
 
 
 

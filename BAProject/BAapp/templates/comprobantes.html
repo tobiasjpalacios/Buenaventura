@@ -1,0 +1,659 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}
+{%block body%}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/comprobantes.css' %}">
+</head>
+
+<body>
+
+    <div class="row" style="height: 100%;">
+
+        <div class="menuZone clv">
+            <div class="menu">
+                <div class="col-s2 h-bar circule">
+                    <i class="medium material-icons" style="position: relative; color:#005221;">folder</i>
+                </div>
+                <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Comprobantes</h4>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <ul class="collapsible black-text">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">assignment</i>Facturas</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="card-content">
+                                <div class="" id="tablaFactura">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>emision</th>
+                                                <th>vencimiento</th>
+                                                <th>numero</th>
+                                                <th>proveedor</th>
+                                                <th>tipo pago</th>
+                                                <th>monto</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for factura in comprobantes.facturas %}
+                                            <tr>
+                                                <td>{{ factura.fecha_emision }}</td>
+                                                <td>{{ factura.fecha_vencimiento }}</td>
+                                                <td>{{ factura.numero_factura }}</td>
+                                                <td>{{ factura.proveedor }}</td>
+                                                <td>{{ factura.tipo_pago }}</td>
+                                                <td>{{ factura.monto }}</td>
+                                                <td>
+                                                    <a href="{{factura.documento.url}}" target="_blank"
+                                                        class="btn btn-primary btn-sm">Abrir</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(1)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">book</i>Remitos</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaRemito">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>vencimiento</th>
+                                            <th>proveedor</th>
+                                            <th>lote</th>
+                                            <th>observaciones</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for remito in comprobantes.remitos %}
+                                        <tr>
+                                            <td>{{ remito.fecha_emision }}</td>
+                                            <td>{{ remito.fecha_vencimiento }}</td>
+                                            <td>{{ remito.proveedor }}</td>
+                                            <td>{{ remito.lote }}</td>
+                                            <td>{{ remito.observaciones }}</td>
+                                            <td>
+                                                <a href="{{remito.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(2)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de Compra</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaOrdenDeCompra">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>proveedor</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ordenDeCompra in comprobantes.ordenesDeCompra %}
+                                        <tr>
+                                            <td>{{ ordenDeCompra.fecha_emision }}</td>
+                                            <td>{{ ordenDeCompra.recibe_proveedor }}</td>
+                                            <td>
+                                                <a href="{{ordenDeCompra.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(3)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Orden de pago</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaOrdenDePago">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>factura</th>
+                                            <th>proveedor</th>
+                                            <th>monto</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for ordenDePago in comprobantes.ordenesDePago %}
+                                        <tr>
+                                            <td>{{ ordenDePago.fecha_emision }}</td>
+                                            <td>{{ ordenDePago.factura }}</td>
+                                            <td>{{ ordenDePago.recibe_proveedor }}</td>
+                                            <td>{{ ordenDePago.monto }}</td>
+                                            <td>
+                                                <a href="{{ordenDePago.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(4)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Constancia Rentencion</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaConstanciaRentencion">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>proveedor</th>
+                                            <th>importe</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for constanciaRentencion in comprobantes.constanciasRentencion %}
+                                        <tr>
+                                            <td>{{ constanciaRentencion.fecha_emision }}</td>
+                                            <td>{{ constanciaRentencion.recibe_proveedor }}</td>
+                                            <td>{{ constanciaRentencion.importe }}</td>
+                                            <td>
+                                                <a href="{{constanciaRentencion.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="" id="tablaRecibo">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>proveedor</th>
+                                            <th>monto</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for recibo in comprobantes.recibos %}
+                                        <tr>
+                                            <td>{{ recibo.fecha_emision }}</td>
+                                            <td>{{ recibo.recibe_proveedor }}</td>
+                                            <td>{{ recibo.monto }}</td>
+                                            <td>
+                                                <a href="{{recibo.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(5)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Recibo</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaRecibo">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>proveedor</th>
+                                            <th>monto</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for recibo in comprobantes.recibos %}
+                                        <tr>
+                                            <td>{{ recibo.fecha_emision }}</td>
+                                            <td>{{ recibo.recibe_proveedor }}</td>
+                                            <td>{{ recibo.monto }}</td>
+                                            <td>
+                                                <a href="{{recibo.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(6)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Cheques</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div id="tablaCheque">
+                                <table>
+                                    <thead style="overflow: hidden;">
+                                        <tr>
+                                            <th>emision</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cheque in comprobantes.cheques %}
+                                        <tr>
+                                            <td>{{ cheque.fecha_emision }}</td>
+                                            <td>
+                                                <a href="{{cheque.documento.url}}" target="_blank"
+                                                    class="mybtn btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(7)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Cuentas Corrientes</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaCuentaCorriente">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cuentaCorriente in comprobantes.cuentasCorriente %}
+                                        <tr>
+                                            <td>{{ cuentaCorriente.fecha_emision }}</td>
+                                            <td>
+                                                <a href="{{cuentaCorriente.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(8)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Factura Comisiones</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaFacturaComision">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>proveedor</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for facturaComision in comprobantes.facturasComision %}
+                                        <tr>
+                                            <td>{{ facturaComision.fecha_emision }}</td>
+                                            <td>{{ facturaComision.recibe_proveedor }}</td>
+                                            <td>
+                                                <a href="{{facturaComision.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(9)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">local_mall</i>Nota</div>
+                <div class="collapsible-body">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="" id="tablaNota">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>emision</th>
+                                            <th>tipo</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for nota in comprobantes.notas %}
+                                        <tr>
+                                            <td>{{ nota.fecha_emision }}</td>
+                                            <td>{{ nota.tipo_nota }}</td>
+                                            <td>
+                                                <a href="{{nota.documento.url}}" target="_blank"
+                                                    class="btn btn-primary btn-sm">Abrir</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn waves green" onclick="openModalSelecNegComprobante(10)"> Cargar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+
+<!---modal selec neg-->
+
+<div id="selecNeg" class="modal">
+    <div id="modalSelecNegComprobante" class="modal-content">
+    </div>
+</div>
+
+<div id="factura" class="modal">
+    <div id="modalFormFactura" class="modal-content">
+    </div>
+</div>
+
+<div id="remito" class="modal">
+    <div id="modalFormRemito" class="modal-content">
+    </div>
+</div>
+
+<div id="ordenDeCompra" class="modal">
+    <div id="modalFormOrdenDeCompra" class="modal-content">
+    </div>
+</div>
+
+<div id="ordenDePago" class="modal">
+    <div id="modalFormOrdenDePago" class="modal-content">
+    </div>
+</div>
+
+<div id="constanciaRentencion" class="modal">
+    <div id="modalFormConstanciaRentencion" class="modal-content">
+    </div>
+</div>
+
+<div id="recibo" class="modal">
+    <div id="modalFormRecibo" class="modal-content">
+    </div>
+</div>
+
+<div id="cheques" class="modal">
+    <div id="modalFormCheques" class="modal-content">
+    </div>
+</div>
+
+<div id="cuentaCorrientes" class="modal">
+    <div id="modalformCuentaCorriente" class="modal-content">
+    </div>
+</div>
+
+<div id="facturaComisiones" class="modal">
+    <div id="modalformFacturaComision" class="modal-content">
+    </div>
+</div>
+
+<div id="nota" class="modal">
+    <div id="modalFormNota" class="modal-content">
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('.collapsible').collapsible();
+    });
+
+    function openModalSelecNegComprobante(tipo) {
+        var urlTemp = '{% url "selecNegComprobante" 0 %}';
+        var urlf = urlTemp.replace('0', tipo);
+        $.ajax({
+            type: 'POST',
+            url: urlf,
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+                $("#modalSelecNegComprobante").html(data);
+                $('#selecNeg').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormFactura() {
+        $.ajax({
+            url: "{% url 'formFactura' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormFactura").html(data);
+                $('#factura').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormRemitos() {
+        $.ajax({
+            url: "{% url 'formRemito' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRemito").html(data);
+                $('#remito').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormOrdenDeCompra() {
+        $.ajax({
+            url: "{% url 'formOrdenDeCompra' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDeCompra").html(data);
+                $('#ordenDeCompra').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormOrdenDePago() {
+        $.ajax({
+            url: "{% url 'formOrdenDePago' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormOrdenDePago").html(data);
+                $('#ordenDePago').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormConstanciaRentencion() {
+        $.ajax({
+            url: "{% url 'formConstanciaRentencion' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormConstanciaRentencion").html(data);
+                $('#constanciaRentencion').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormRecibo() {
+        $.ajax({
+            url: "{% url 'formRecibo' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormRecibo").html(data);
+                $('#recibo').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormCheques() {
+        $.ajax({
+            url: "{% url 'formCheque' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormCheques").html(data);
+                $('#cheques').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalformCuentaCorriente() {
+        $.ajax({
+            url: "{% url 'formCuentaCorriente' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformCuentaCorriente").html(data);
+                $('#cuentaCorrientes').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalformFacturaComision() {
+        $.ajax({
+            url: "{% url 'formFacturaComision' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalformFacturaComision").html(data);
+                $('#facturaComisiones').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+    function openModalFormNota() {
+        $.ajax({
+            url: "{% url 'formNota' %}",
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function (data) {
+                $("#modalFormNota").html(data);
+                $('#nota').modal('open');
+            },
+            error: function (response) {
+                console.log("Error")
+            }
+        })
+    };
+
+</script>
+{% endblock body %}

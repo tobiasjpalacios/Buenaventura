@@ -95,7 +95,36 @@ class Info_negocioView(View):
                     "notas": notas,          
                 }   
             return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
- 
+
+class ComprobantesView(View):
+    def get(self, request, *args, **kwargs):
+
+        facturas = Factura.objects.all()
+        remitos = Remito.objects.all()
+        ordenesDeCompra = OrdenDeCompra.objects.all()
+        ordenesDePago = OrdenDePago.objects.all()
+        constancias = ConstanciaRentencion.objects.all()
+        recibos = Recibo.objects.all()
+        cheques = Cheque.objects.all()
+        cuentasCorriente = CuentaCorriente.objects.all()
+        facturasComision = FacturaComision.objects.all()
+        notas = Nota.objects.all()
+
+        comprobantes = {
+                    "facturas": facturas,
+                    "remitos": remitos,
+                    "ordenesDeCompra": ordenesDeCompra,
+                    "ordenesDePago": ordenesDePago,
+                    "constancias": constancias,
+                    "recibos": recibos,
+                    "cheques": cheques,
+                    "cuentasCorriente": cuentasCorriente,
+                    "facturasComision": facturasComision,
+                    "notas": notas,          
+                }
+        
+        return render(request, 'comprobantes.html',{"comprobantes":comprobantes})
+
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
@@ -139,6 +168,7 @@ class LogisticaView(View):
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())    
         lnl = listaNL(request, negociosCerrConf, grupo_activo)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
+
 
 
 
