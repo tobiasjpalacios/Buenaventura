@@ -28,12 +28,16 @@ BuenaVentura Agronegocios
 {% endblock title %}   
 {%block body%}
 
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/vencimientos.css' %}">
+  
 <style>
    
   .titulo1 {
    height: 60px;
-   border-bottom-left-radius: 1em;
-   border-bottom-right-radius: 1em;
+  
    
    background-color: #757474;
    font-family: 'Montserrat' ;
@@ -41,8 +45,9 @@ BuenaVentura Agronegocios
  }
 
  .barra{
- background-color: #757474;
- height: 40px;
+  border-radius: 2em;
+  background-color: #757474;
+  height: 40px;
  
 }
 
@@ -81,13 +86,7 @@ BuenaVentura Agronegocios
   top: 5px;
 }
 
-.entrada{
-  border-radius: 2em; 
-  background-color: white ;
-  height:45px; 
-  border: 2px solid green;
 
-}
 
 .cancelar{
   border-bottom: 0px solid #000; 
@@ -106,18 +105,18 @@ BuenaVentura Agronegocios
    }
    /* label underline focus color */
    .input-field input[type=text]:focus {
-     border-bottom: 0px solid #000;
-     box-shadow: 0 0px 0 0 #000;
+     border-bottom: 1px solid #000;
+     box-shadow: 1 1px 1 1 #000;
    }
    /* valid color */
    .input-field input[type=text].valid {
      border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
+     box-shadow: 1 1px 1 1 #000;
    }
    /* invalid color */
    .input-field input[type=text].invalid {
      border-bottom: 1px solid #000;
-     box-shadow: 0 1px 0 0 #000;
+     box-shadow: 1 1px 1 1 #000;
    }
    /* icon prefix focus color */
    .input-field .prefix.active {
@@ -125,21 +124,24 @@ BuenaVentura Agronegocios
    }
 </style>
 
- <div class="float: right; row">
-   <div class=" titulo1 col l6 m10 s8 offset-l3 offset-m1 offset-s1 " id="titulo"> 
-     
-     <div  class="">
-       <span  style="font-size: 45px ; padding-bottom: 5px; margin-left: 20%;" class=" white-text "> <img class="im text-align left" > Nuevo Presupuesto </span>
-     </div>
 
-   </div>
-   <div style="height: 150px;" > </div>
+ <div class="float: right; row">
+  <div class="menuZone clv">
+    <div class="menu">
+        <div class="col-s2 h-bar circule">
+            <i class="medium material-icons" style="position: relative; color:#005221;">local_shipping</i>
+        </div>
+        <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Nuevo Negocio</h4>
+    </div>
+</div>
+
+
+  
 
    
-   <div class=" card center offset-m2 col  m8 white">
-    <div class=" card " style=" width: 100%; height: 50px; background-color: rgba(25, 141, 45 );;" ></div>
-    
-    <div style="border: 2px solid rgba(128, 128, 128, 0.555)  " class=" ">
+   
+    <h4 style="margin-left: 5%;">Seleccione al comprador</h4>
+    <div >
        <div class="card-content ">
         
          
@@ -148,14 +150,14 @@ BuenaVentura Agronegocios
          <div class="row">
            
           <div class="row"> 
-            <div class="col s6"> 
+            <div class="col s3"> 
               <span class="col s4 right-align" > de </span>
               <h4 class="col s6 ">{{ user.get_username }}</h4>
             </div>
-            <div class="col s6"> 
+            <div class="col s3"> 
               <span class="col s4 left-align"> Para</span>
               <div class="row entrada col s7 left-align">
-                <input style="border-bottom: 0px solid #000; box-shadow: 0 0px 0 0 #000; border: #000; border-radius: 2em; font-size: 120%;" class ="cancelar error center-align" type="text" id="inputComp" list="datalistComp">
+                <input style="border-bottom: 2px solid #000; box-shadow: 1 1px 0 0 #000; border: #000; font-size: 120%;" class =" error center-align" type="text" id="inputComp" list="datalistComp">
                 <datalist id="datalistComp"></datalist>
               </div>
             </div>
@@ -182,8 +184,7 @@ BuenaVentura Agronegocios
          
          
          
-         <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  Agregue los Articulos</span> </div>
-         <br>
+         
           <table id="empTable">
 
           </table>
@@ -195,7 +196,7 @@ BuenaVentura Agronegocios
          </div>
          <div class="row"> 
              <div class="col s12">
-               <div  class="col s12 barra center-align " ><span class="titulito center-align white-text" id="observaciones"> Observaciones</span> </div>
+               <div  class="col s10  offset-s1 barra center-align " ><span class="titulito center-align white-text" id="observaciones"> Observaciones</span> </div>
                 
                <div class="row left-align col s12">
                 <label for="inputObser"> Escriba aqui</label>
@@ -206,8 +207,8 @@ BuenaVentura Agronegocios
          </div>
 
 
-         <div class="row" id="divProp" style="display:none">
-           <a class="green waves-effect waves-light col s12 btn" onclick="showModal()">Realizar Propuesta</a>
+         <div class="row " id="divProp" style="display:none" >
+           <a style="margin-left: 10%;" class="green waves-effect waves-light col s10  btn" onclick="showModal()">Realizar Propuesta</a>
          
          </div>
        </div>
@@ -395,10 +396,21 @@ function addRow() {
   thread.setAttribute("id","thread"+rowCnt);
   empTab.appendChild(thread);
 
-  var input = document.createElement("input");
-  input.setAttribute("value","Articulo n°"+(rowCnt+1));
-  input.setAttribute("disabled",true);
+  var input = document.createElement("div");
+  var articulo = document.createElement("a");
+  
+  articulo.setAttribute("content"," Articulo n°"+(rowCnt+1));
+  articulo.setAttribute("class","  titulito col l12 m12 s12");
   thread.appendChild(input);
+  input.appendChild(articulo);
+  var barra = document.createElement("div")
+  barra.style.borderBottom="2px solid grey"
+  barra.style.marginLeft="1%"
+  barra.setAttribute("class","   col l9 m9 s9");
+  input.appendChild(barra);
+  
+  var art_count = " Articulo n°"+(rowCnt+1)
+  articulo.innerHTML= art_count
 
   var tr1 = document.createElement("tr");
   tr1.style.display = "none";
@@ -440,10 +452,10 @@ function addRow() {
   
   var nom1 = document.createElement("a");
   nom1.setAttribute("value"," Informacion general");
-  nom1.setAttribute("class"," card titulito col l6 m12 s12");
+  nom1.setAttribute("class","  titulito col l5 m12 s12");
   nom1.innerHTML="Informacion General"
-  nom1.style.border = "2px red solid"
-  nom1.style.borderRadius="2em"
+  
+  
   nom1.style.userSelect="none"
   innerGeneral.appendChild(nom1);
   
@@ -452,7 +464,8 @@ function addRow() {
   icon1.setAttribute("class","material-icons iconito")
   icon1.innerHTML="expand_more"
   nom1.appendChild(icon1);
-
+  var br = document.createElement("br");
+  nom1.appendChild(br);
 
   innerFinanciamiento.setAttribute("class","col s12");
   innerFinanciamiento.classList.add('barra1');
@@ -462,10 +475,10 @@ function addRow() {
   innerFinanciamiento.setAttribute("onclick",`closeDiv(${id})`);
   var nom2 = document.createElement("a");
   nom2.setAttribute("value","  Montos y financiamiento");
-  nom2.setAttribute("class","  card titulito  col l6 m12 s12 ");
+  nom2.setAttribute("class","  titulito  col l5 m12 s12 ");
   nom2.innerHTML=" Montos y Financiamiento"
-  nom2.style.border = "2px red solid"
-  nom2.style.borderRadius="2em"
+ 
+  
   nom2.style.userSelect="none"
   innerFinanciamiento.appendChild(nom2);
   var icon2 = document.createElement("i");
@@ -482,11 +495,11 @@ function addRow() {
   innerLogistica.setAttribute("onclick",`closeDiv(${id})`);
   var nom3 = document.createElement("a");
   nom3.setAttribute("content"," Configuracion de logistica");
-  nom3.setAttribute("class"," card titulito  col l6 m12 s12 ");
-  nom3.style.border = "2px red solid"
-  nom3.style.borderRadius="2em"
+  nom3.setAttribute("class"," titulito  col l5 m12 s12 ");
+  
+  
   nom3.style.userSelect="none"
-  nom3.innerHTML="configuracion de logistica"
+  nom3.innerHTML="Logistica"
   innerLogistica.appendChild(nom3);
   var icon = document.createElement("i");
   icon.setAttribute("value","expand_more")
