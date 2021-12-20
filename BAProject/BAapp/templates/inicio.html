@@ -408,6 +408,15 @@ function addRow() {
   barra.style.marginLeft="1%"
   barra.setAttribute("class","   col l9 m9 s9");
   input.appendChild(barra);
+  var delbutton = document.createElement("a");
+  delbutton.setAttribute("class","btn-floating btn-large waves-effect waves-light red");
+  delbutton.style.top= "-3%"
+  input.appendChild(delbutton);
+  var logo =document.createElement("i")
+  logo.setAttribute("class","material-icons")
+  logo.setAttribute("content","add");
+  logo.innerHTML="add"
+  delbutton.appendChild(logo);
   
   var art_count = " Articulo n°"+(rowCnt+1)
   articulo.innerHTML= art_count
