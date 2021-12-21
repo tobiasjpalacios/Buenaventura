@@ -86,42 +86,14 @@ BuenaVentura Agronegocios
   top: 5px;
 }
 
-
-
-.cancelar{
-  border-bottom: 0px solid #000; 
-  box-shadow: 0 0px 0 0 #000; 
-  border: #000; 
-  border-radius: 2em;
+.entrada{
+  border-bottom: 1px solid rgba(128, 128, 128, 0.801);
 }
 
-/* label color */
-.input-field label {
-     color: #000;
-   }
-   /* label focus color */
-   .input-field input[type=text]:focus + label {
-     color: #000;
-   }
-   /* label underline focus color */
-   .input-field input[type=text]:focus {
-     border-bottom: 1px solid #000;
-     box-shadow: 1 1px 1 1 #000;
-   }
-   /* valid color */
-   .input-field input[type=text].valid {
-     border-bottom: 1px solid #000;
-     box-shadow: 1 1px 1 1 #000;
-   }
-   /* invalid color */
-   .input-field input[type=text].invalid {
-     border-bottom: 1px solid #000;
-     box-shadow: 1 1px 1 1 #000;
-   }
-   /* icon prefix focus color */
-   .input-field .prefix.active {
-     color: #000;
-   }
+
+
+
+
 </style>
 
 
@@ -152,12 +124,12 @@ BuenaVentura Agronegocios
           <div class="row"> 
             <div class="col s3"> 
               <span class="col s4 right-align" > de </span>
-              <h4 class="col s6 ">{{ user.get_username }}</h4>
+              <h5 class="col s6 ">{{ user.get_username }}</h5>
             </div>
             <div class="col s3"> 
               <span class="col s4 left-align"> Para</span>
-              <div class="row entrada col s7 left-align">
-                <input style="border-bottom: 2px solid #000; box-shadow: 1 1px 0 0 #000; border: #000; font-size: 120%;" class =" error center-align" type="text" id="inputComp" list="datalistComp">
+              <div class="row entrada col s8 left-align">
+                <input placeholder="Cliente " style="border-bottom: 2px solid rgb(65, 5, 5); box-shadow: 1 1px 1 1 rgb(160, 37, 37); font-size: 120%;" class =" center-align" type="text" id="inputComp" list="datalistComp">
                 <datalist id="datalistComp"></datalist>
               </div>
             </div>
@@ -404,7 +376,7 @@ function addRow() {
   thread.appendChild(input);
   input.appendChild(articulo);
   var barra = document.createElement("div")
-  barra.style.borderBottom="2px solid grey"
+  barra.style.borderBottom="2px solid rgba(128, 128, 128, 0.555) "
   barra.style.marginLeft="1%"
   barra.setAttribute("class","   col l9 m9 s9");
   input.appendChild(barra);
@@ -463,6 +435,7 @@ function addRow() {
   nom1.setAttribute("value"," Informacion general");
   nom1.setAttribute("class","  titulito col l5 m12 s12");
   nom1.innerHTML="Informacion General"
+  nom1.style.color="#4fad31"
   
   
   nom1.style.userSelect="none"
@@ -486,6 +459,7 @@ function addRow() {
   nom2.setAttribute("value","  Montos y financiamiento");
   nom2.setAttribute("class","  titulito  col l5 m12 s12 ");
   nom2.innerHTML=" Montos y Financiamiento"
+  nom2.style.color="#4fad31"
  
   
   nom2.style.userSelect="none"
@@ -505,7 +479,8 @@ function addRow() {
   var nom3 = document.createElement("a");
   nom3.setAttribute("content"," Configuracion de logistica");
   nom3.setAttribute("class"," titulito  col l5 m12 s12 ");
-  
+  nom3.style.color="#4fad31"
+
   
   nom3.style.userSelect="none"
   nom3.innerHTML="Logistica"
@@ -687,6 +662,10 @@ function removeRow(){
   thread.remove();
   rowCnt--;
   hideSend();
+}
+
+function removeNextRow(){
+
 }
 
 function showModal(){
