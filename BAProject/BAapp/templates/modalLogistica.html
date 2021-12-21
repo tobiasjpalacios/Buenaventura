@@ -1,4 +1,13 @@
 {% load auth_extras %}
+
+<style>
+       .barra{
+    background-color: #757474;
+    height: 40px;
+    border-radius: 2em;
+    
+  }
+</style>
 <div class="modal-content">
     <h4>{{negocio.comprador.empresa.razon_social}} {{negocio.fechaaux|date:"M d, Y"}}</h4>
     <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>

@@ -96,7 +96,6 @@ class Info_negocioView(View):
                 }   
             return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
  
-
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
