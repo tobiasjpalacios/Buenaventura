@@ -100,8 +100,7 @@ class Info_negocioView(View):
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
-        # Cambie contains=Presupuesto por contains=Propuesta
-        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Propuesta').order_by('-timestamp')
+        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Presupuesto').order_by('-timestamp')
         #lln = Lista Logistica Notificaciones
         lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
         #lvn = Lista Vencimiento Notificaciones
@@ -307,7 +306,7 @@ def filtrarNegocios(request):
                 listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
             else:
                 idDeNeg = f"BVi-{idDeNeg}"
-                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id_de_neg=idDeNeg).values_list('id', flat=True)
+                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id_de_neg__contains=idDeNeg).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
         listaTipo = getIdsQuery(listaTipo)         
