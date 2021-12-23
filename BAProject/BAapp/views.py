@@ -140,7 +140,17 @@ class LogisticaView(View):
         lnl = listaNL(request, negociosCerrConf, grupo_activo)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
 
-
+def detalleNotis(request):
+    if request.method == 'POST':
+        idNoti = request.POST['idNoti']        
+        notificacion = Notificacion.objects.get(id=int(idNoti))        
+        first = notificacion.hyperlink.split("/",1)[1]
+        idNegocio = first.split("/",1)[1]
+        negocio = Negocio.objects.get(id=int(idNegocio))
+        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
+        id_prop = propuesta[0][0]
+        response = {'id_prop': id_prop}
+        return HttpResponse(json.dumps(response), content_type="aplication/json")
 
 #lo viejo xd
 
@@ -568,27 +578,6 @@ def detalleAlerta(request):
         negocios = Negocio.objects.all().order_by('-timestamp')
         negocio = getNegociosToList(negocios)
         return render(request, 'modalAlerta.html', {'negocios':list(negocio)})    
-
-def detalleNotis(request):
-    if request.method == 'POST':
-        idNoti = request.POST['idNoti']        
-        notificacion = Notificacion.objects.get(id=int(idNoti))        
-        first = notificacion.hyperlink.split("/",1)[1]
-        idNegocio = first.split("/",1)[1]
-        negocio = Negocio.objects.get(id=int(idNegocio))
-        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-        if (not propuesta):
-            return render (request, 'modalnotis.html')
-        else:
-            id_prop = propuesta[0][0]
-            envio = propuesta[0][1]
-            negocio.id_prop = id_prop
-            grupo_activo = request.user.groups.all()[0].name
-            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
-                envio = not envio
-            negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
-            return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
-    return render (request, 'modalnotis.html')
 
 
 def detalleNegocio(request):

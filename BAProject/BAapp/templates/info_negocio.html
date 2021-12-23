@@ -31,7 +31,7 @@ BuenaVentura Agronegocios
                 <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Info Negocio</h4>
             </div>
             <div style="padding-right: 2%; margin-inline-start: auto;">
-                <a class="verTodos waves-effect waves-light btn" href="{% url 'negocio' pk=negocio.id %}"> Negociación </a>
+                <a class="verTodos waves-effect waves-light btn no-shadows" href="{% url 'negocio' pk=negocio.id %}"> Negociación </a>
             </div>
         </div>
 
@@ -135,7 +135,7 @@ BuenaVentura Agronegocios
                             <td>{{item.tipo_pago.nombre}}</td>
                             {% endif %}
                             <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)"
-                                    class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red "><i
+                                    class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red no-shadows"><i
                                         class=" small material-icons ">search</i></a></td>
                         </tr>
                         {% endfor %}
@@ -167,11 +167,11 @@ BuenaVentura Agronegocios
                                 <option value="10">Nota</option>
                             </select>
                         </div>
-                        <a class="verTodos btn" onclick="buscarComprobante()" style="border-radius: 2em; margin-top: 15px;">
+                        <a class="verTodos btn no-shadows" onclick="buscarComprobante()" style="border-radius: 2em; margin-top: 15px;">
                             <i class="material-icons right">search</i>Buscar
                         </a>
 
-                        <a class="verTodos btn " onclick="agregarComprobante('{{negocio.id}}')" style="border-radius: 2em; margin-top: 15px;">
+                        <a class="verTodos btn no-shadows" onclick="agregarComprobante('{{negocio.id}}')" style="border-radius: 2em; margin-top: 15px;">
                             <i class="material-icons right">add</i>agregar
                         </a>
 
