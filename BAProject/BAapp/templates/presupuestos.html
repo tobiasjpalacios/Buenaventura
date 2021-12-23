@@ -78,14 +78,14 @@ BuenaVentura Agronegocios
                         {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
                         <td>{{preprec.vendedor}}</td>
                         {% endif %}
-                        <td><a class="btn-floating btn-small waves-effect waves-light red "
-                                onclick="detalleNegocio('{{preprec.id_prop}}')"><i
-                                    class=" small material-icons ">search</i></a></td>
+                        <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                href="{% url 'info_negocio' preprec.id_prop %}"><i
+                                class=" small material-icons ">search</i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a class="verTodos btn white-text" href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
+            <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
             
 
         </div>
@@ -136,21 +136,14 @@ BuenaVentura Agronegocios
                         {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
                         <td>{{prepneg.vendedor}}</td>
                         {% endif %}
-                        <td><a class="btn-floating btn-small waves-effect waves-light red "
-                                onclick="detalleNegocio('{{prepneg.id_prop}}')"><i
-                                    class=" small material-icons ">search</i></a></td>
+                        <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                href="{% url 'info_negocio' prepneg.id_prop %}"><i
+                                class=" small material-icons ">search</i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a class="verTodos btn white-text" href="{% url 'todosFiltro' 2 %}"> Ver todos </a>
-        </div>
-    </div>
-
-      <!------ Modal Negociios ---------->
-
-    <div id="modalDetalleNegocio" class="modal">
-        <div id="modalNegocio" class="modal-content">
+            <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 2 %}"> Ver todos </a>
         </div>
     </div>
 
@@ -160,41 +153,41 @@ BuenaVentura Agronegocios
 
 <script>
 
-function detalleNegocio(idProp) {
-    $.ajax({
-        type: 'POST',
-        url: "{% url 'detalleNegocio' %}",
-        data: {
-            'idProp': idProp,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function (data) {
-            $("#modalNegocio").html(data);
-            $('#modalDetalleNegocio').modal('open');
-        },
-        error: function (response) {
-            console.log("Error")
-        }
-    })
-};
+// function detalleNegocio(idProp) {
+//     $.ajax({
+//         type: 'POST',
+//         url: "{% url 'detalleNegocio' %}",
+//         data: {
+//             'idProp': idProp,
+//             csrfmiddlewaretoken: '{{ csrf_token }}'
+//         },
+//         success: function (data) {
+//             $("#modalNegocio").html(data);
+//             $('#modalDetalleNegocio').modal('open');
+//         },
+//         error: function (response) {
+//             console.log("Error")
+//         }
+//     })
+// };
 
-function detalleArticuloNegocio(idItem, funOrig) {
-    $.ajax({
-        type: 'POST',
-        url: "{% url 'detalleItem' %}",
-        data: {
-            'idItem': idItem,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function (data) {
-            $("#modalNegocio").html(data);
-            $('#modalDetalleNegocio').modal('open');
-        },
-        error: function (response) {
-            console.log("Error")
-        }
-    })
-};
+// function detalleArticuloNegocio(idItem, funOrig) {
+//     $.ajax({
+//         type: 'POST',
+//         url: "{% url 'detalleItem' %}",
+//         data: {
+//             'idItem': idItem,
+//             csrfmiddlewaretoken: '{{ csrf_token }}'
+//         },
+//         success: function (data) {
+//             $("#modalNegocio").html(data);
+//             $('#modalDetalleNegocio').modal('open');
+//         },
+//         error: function (response) {
+//             console.log("Error")
+//         }
+//     })
+// };
 
 function selTipoFecha() {
     var x = $('#selectTipoFecha').val();

@@ -95,9 +95,9 @@ BuenaVentura Agronegocios
                   {% for vence in vencidos%}
                   <tr style="border-bottom: 0px;">
                     <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
-                    <td><button onclick="detalleSemaforo('{{vence.id_propuesta}}', 1)"
-                        class="btn-floating btn-small waves-effect waves-light"><i
-                          class=" small material-icons ">search</i></button></td>
+                    <td><a href="{% url 'info_negocio' vence.id_propuesta %}"
+                        class="btn-floating btn-small waves-effect waves-light red no-shadows"><i
+                          class=" small material-icons ">search</i></a></td>
                   </tr>
                   {% endfor %}
 
@@ -113,9 +113,9 @@ BuenaVentura Agronegocios
                   {% for semanal in vencimiento_semanal %}
                   <tr style="border-bottom: 0px; ">
                     <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
-                    <td><button onclick="detalleSemaforo('{{semanal.id_propuesta}}', 2)"
-                        class="btn-floating btn-small waves-effect waves-light"><i
-                          class=" small material-icons ">search</i></button></td>
+                    <td><a href="{% url 'info_negocio' semanal.id_propuesta %}"
+                        class="btn-floating btn-small waves-effect waves-light yellow no-shadows"><i
+                          class=" small material-icons ">search</i></a></td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -130,9 +130,9 @@ BuenaVentura Agronegocios
                   {% for futuro in vencimiento_futuro %}
                   <tr style="border-bottom: 0px; ">
                     <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
-                    <td><button onclick="detalleSemaforo('{{futuro.id_propuesta}}', 2)"
-                        class="btn-floating btn-small waves-effect waves-light"><i
-                          class=" small material-icons ">search</i></button></td>
+                    <td><a href="{% url 'info_negocio' futuro.id_propuesta %}"
+                        class="btn-floating btn-small waves-effect waves-light green no-shadows"><i
+                          class=" small material-icons ">search</i></a></td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -148,21 +148,6 @@ BuenaVentura Agronegocios
   {% endif %}
 </body>
 <script>
-function detalleSemaforo(idProp, ind){
-    $.ajax({
-      type: 'POST',
-      url: "{% url 'detalleSemaforo' %}",
-      data: {'idProp':idProp,'ind':ind,
-      csrfmiddlewaretoken: '{{ csrf_token }}'},
-      success: function (data) {
-        $("#modalSemaforo").html(data);
-        $('#modalSemaforoNegocio').modal('open'); 
-      },
-      error: function (response) {
-          console.log("Error")
-      }
-    })
-  };
 
   function showChangeEstados(){
     $('.auxSem').show();

@@ -91,7 +91,7 @@ BuenaVentura Agronegocios
                                 {% for noti in lista_presupuestos%}
                                 <tr style="border-bottom: 0px; ">
                                     <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red "
+                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
                                             onclick="detalleNotis('{{noti.id}}')"><i
                                                 class=" small material-icons ">search</i></a></td>
                                 </tr>
@@ -99,7 +99,7 @@ BuenaVentura Agronegocios
                                 
                             </tbody>
                         </table>
-                        <a class="verTodos btn white-text" href="{% url 'presupuestos' %}"> Ver todos </a>
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
                     </div>
                 </div>
                 <!----------------------------------->
@@ -111,7 +111,7 @@ BuenaVentura Agronegocios
                                 {% for noti in lista_logistica_noti %}
                                 <tr style="border-bottom: 0px; ">
                                     <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red "
+                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
                                             onclick="detalleNotis('{{noti.id}}')"><i
                                                 class=" small material-icons ">search</i></a></td>
                                 </tr>
@@ -119,7 +119,7 @@ BuenaVentura Agronegocios
                                 
                             </tbody>
                         </table>
-                        <a class="verTodos btn white-text" href="{% url 'presupuestos' %}"> Ver todos </a>
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
                     </div>
                 </div>
                 <!----------------------------------->
@@ -133,7 +133,7 @@ BuenaVentura Agronegocios
                                 {% for noti in lista_vencimiento%}
                                 <tr style="border-bottom: 0px; ">
                                     <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red"
+                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
                                             onclick="detalleNotis('{{noti.id}}')"><i
                                                 class=" small material-icons ">search</i></a></td>
                                 </tr>
@@ -141,7 +141,7 @@ BuenaVentura Agronegocios
                                 
                             </tbody>
                         </table>
-                        <a class="verTodos btn white-text" href="{% url 'presupuestos' %}"> Ver todos </a>
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
                     </div>
                     
                 </div>
@@ -151,86 +151,42 @@ BuenaVentura Agronegocios
 
         </div>
 
-         <!------ Modals Notis ---------->
+    <script>
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
 
-        <div id="alertaNotis" class="modal">
-            <div id="modalNotis" class="modal-content">
-            </div>
-        </div>
+        $(document).ready(function () {
+            $('.datepicker').datepicker();
+        });
 
-        <!---------------->
+        $(document).ready(function () {
+            $('input#input_text, textarea#textarea2').characterCounter();
+        });
+
+        function searchBuscadorNegocio() {
+            var value = $("#inputBuscadorNegocio").val().toLowerCase();
+            $("#tableNegocios tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        };
+
+        function detalleNotis(idNoti){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'detalleNotis' %}",
+                data: {'idNoti':idNoti,
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function (data) {
+                    url = "{% url 'info_negocio' 0 %}";
+                    window.location.href = url.replace("0", data.id_prop);
+                },
+                error: function (response) {
+                    console.log("Error")
+                }
+            });
+        };
+    </script>
+
 </body>
-<script>
-    $(document).ready(function () {
-        $('select').formSelect();
-    });
-
-    $(document).ready(function () {
-        $('.datepicker').datepicker();
-    });
-
-    $(document).ready(function () {
-        $('input#input_text, textarea#textarea2').characterCounter();
-    });
-
-    function searchBuscadorNegocio() {
-        var value = $("#inputBuscadorNegocio").val().toLowerCase();
-        $("#tableNegocios tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    };
-
-    function detalleNotis(idNoti){
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'detalleNotis' %}",
-            data: {'idNoti':idNoti,
-            csrfmiddlewaretoken: '{{ csrf_token }}'},
-            success: function (data) {
-                $("#modalNotis").html(data);
-                $('#alertaNotis').modal('open'); 
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        });
-    };
-
-    function detalleNegocio(idProp) {
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'detalleNegocio' %}",
-            data: {
-                'idProp': idProp,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function (data) {
-                $("#modalNegocio").html(data);
-                $('#modalDetalleNegocio').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function detalleArticuloNegocio(idItem, funOrig) {
-        $.ajax({
-            type: 'POST',
-            url: "{% url 'detalleItem' %}",
-            data: {
-                'idItem': idItem,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            },
-            success: function (data) {
-                $("#modalNegocio").html(data);
-                $('#modalDetalleNegocio').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-</script>
 {% endblock body %}
