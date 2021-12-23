@@ -163,8 +163,9 @@ BuenaVentura Agronegocios
           <br>
          
          <div class="row">
-           <a class="boton blue waves-effect waves-light btn  tooltipped" data-tooltip="Añadir una fila" onclick="addRow()" style="margin-left: 10%;">Agregar Artículo</a> 
-           <a  class="boton red waves-effect waves-light btn  tooltipped"  data-tooltip="Eliminar ultima fila" onclick="removeRow()" style="margin-left: 10%;">Eliminar Articulo</a> 
+          <div class="col s10 center-align " >
+            <a class="boton blue waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila" onclick="addRow()" style="margin-left: 10%;">Agregar Artículo</a> 
+          </div>
          </div>
          <div class="row"> 
              <div class="col s12">
@@ -382,16 +383,19 @@ function addRow() {
   input.appendChild(barra);
   var delbutton = document.createElement("a");
   delbutton.setAttribute("class","btn-floating btn-large waves-effect waves-light red");
-  delbutton.style.top= "-25px"
+  delbutton.style.top = "-25px"
   input.appendChild(delbutton);
-  var logo =document.createElement("i")
+  var logo = document.createElement("i")
   logo.setAttribute("class","material-icons")
   logo.setAttribute("content","add");
-  logo.innerHTML="close"
+  logo.innerHTML = "close"
   delbutton.appendChild(logo);
   
   var art_count = " Articulo n°"+(rowCnt+1)
-  articulo.innerHTML= art_count
+  articulo.innerHTML = art_count
+
+  delbutton.setAttribute("data-row", rowCnt+1)
+  delbutton.onclick = function(){removeRow(delbutton.dataset.row)}
 
   var tr1 = document.createElement("tr");
   tr1.style.display = "none";
@@ -523,7 +527,7 @@ var headers = (userIsComprador) ?
               "Precio venta", "Precio compra", 
               "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
-  console.log(headers);
+  //console.log(headers);
 
   if (userIsComprador) {
     for (var c = 0; c < headers.length; c++){    
@@ -657,11 +661,81 @@ function refreshMarca(inputId){
   });
 }
 
-function removeRow(){
-  var thread = document.getElementById('thread'+(rowCnt-1));
+function removeRow(artRow){
+  var thread = document.getElementById('thread'+(artRow-1));
   thread.remove();
   rowCnt--;
   hideSend();
+  reduceCounter(artRow);
+  M.toast({html: 'Articulo eliminado.'});
+}
+
+function reduceCounter(artRow) {
+  var elements = [].slice.call(document.querySelectorAll('a'))
+    .filter(function (el) {
+      return el.textContent.includes("Articulo n°");
+    });
+  var delButtons = [].slice.call(document.querySelectorAll('a'))
+  .filter(function (el) {
+    return el.dataset.row > 0;
+  });
+  for (var i = 0; i < elements.length; i++) {
+    var el = elements[i];
+    var elText = elements[i].innerHTML;
+    var number = elText.split('°')[1];
+    var delButton = delButtons[i];
+    if (number > artRow) {
+      el.innerHTML = "Articulo n°"+(number-1);
+      delButton.dataset.row = number-1;
+      idChanger(number);
+    }
+  }
+}
+
+function idChanger(newRowCnt) {
+  var thread = document.getElementById('thread'+(newRowCnt-1));
+  thread.id = "thread"+(newRowCnt-2);
+  
+  var innerGeneral = document.getElementById('innerGeneral'+(newRowCnt-1));
+  innerGeneral.id = "innerGeneral"+(newRowCnt-2);
+  innerGeneral.setAttribute('onclick', 'closeDiv(innerGeneral'+(newRowCnt-2)+')')
+  
+  var innerFinanciamiento = document.getElementById('innerFinanciamiento'+(newRowCnt-1));
+  innerFinanciamiento.id = "innerFinanciamiento"+(newRowCnt-2);
+  innerFinanciamiento.setAttribute('onclick', 'closeDiv(innerFinanciamiento'+(newRowCnt-2)+')')
+  
+  var innerLogistica = document.getElementById('innerLogistica'+(newRowCnt-1));
+  innerLogistica.id = "innerLogistica"+(newRowCnt-2);
+  innerLogistica.setAttribute('onclick', 'closeDiv(innerLogistica'+(newRowCnt-2)+')')
+
+  for (var c = 0; c < headers.length; c++) {
+    var th = document.getElementById("th_"+headers[c]+(newRowCnt-1));
+    th.id = "th_"+headers[c]+(newRowCnt-2);
+    
+    var input = document.getElementById("input"+c+'.'+(newRowCnt-1));
+    input.id = "input"+c+'.'+(newRowCnt-2);
+    if (input.hasAttribute("list")) {
+      input.setAttribute("list", "datalist"+c+'.'+(newRowCnt-2));
+    }
+    if (c==0) {
+      input.setAttribute("onchange", "refreshMarca("+(newRowCnt-2)+")");
+    }
+    if (userIsComprador) {
+      if (c==4) {
+        input.setAttribute("onchange", "desactivarTasa("+(newRowCnt-2)+")");
+      }
+    }
+    else {
+      if (c==6) {
+        input.setAttribute("onchange", "desactivarTasa("+(newRowCnt-2)+")");
+      }
+    }
+
+    var datalist = document.getElementById("datalist"+c+'.'+(newRowCnt-1));
+    if (datalist != null) {
+      datalist.id = "datalist"+c+'.'+(newRowCnt-2);
+    }
+  }
 }
 
 function removeNextRow(){
