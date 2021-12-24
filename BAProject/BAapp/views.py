@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.dateparse import parse_date
 from .forms import *
@@ -99,16 +100,16 @@ class Info_negocioView(View):
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
 
-        facturas = Factura.objects.all()
-        remitos = Remito.objects.all()
-        ordenesDeCompra = OrdenDeCompra.objects.all()
-        ordenesDePago = OrdenDePago.objects.all()
-        constancias = ConstanciaRentencion.objects.all()
-        recibos = Recibo.objects.all()
-        cheques = Cheque.objects.all()
-        cuentasCorriente = CuentaCorriente.objects.all()
-        facturasComision = FacturaComision.objects.all()
-        notas = Nota.objects.all()
+        facturas = Factura.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
+        remitos = Remito.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
+        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        recibos = Recibo.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        cheques = Cheque.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        notas = Nota.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
 
         comprobantes = {
                     "facturas": facturas,

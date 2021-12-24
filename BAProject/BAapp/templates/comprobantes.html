@@ -63,7 +63,7 @@ BuenaVentura Agronegocios
                                                 <td>{{ factura.monto }}</td>
                                                 <td>
                                                     <a href="{{factura.documento.url}}" target="_blank"
-                                                        class="btn btn-primary btn-sm">Abrir</a>
+                                                        class="btn btn-primary btn-sm no-shadows">Abrir</a>
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -72,7 +72,7 @@ BuenaVentura Agronegocios
                                 </div>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(1)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(1)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(2)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(2)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(3)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(3)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -187,7 +187,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(4)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(4)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -223,34 +223,8 @@ BuenaVentura Agronegocios
                                     </tbody>
                                 </table>
                             </div>
-
-                            <div class="" id="tablaRecibo">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>emision</th>
-                                            <th>proveedor</th>
-                                            <th>monto</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for recibo in comprobantes.recibos %}
-                                        <tr>
-                                            <td>{{ recibo.fecha_emision }}</td>
-                                            <td>{{ recibo.recibe_proveedor }}</td>
-                                            <td>{{ recibo.monto }}</td>
-                                            <td>
-                                                <a href="{{recibo.documento.url}}" target="_blank"
-                                                    class="btn btn-primary btn-sm">Abrir</a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(5)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(5)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -287,7 +261,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(6)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(6)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -320,7 +294,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(7)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(7)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -353,7 +327,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(8)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(8)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -388,7 +362,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(9)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(9)"> Cargar </a>
                             </div>
                         </div>
                     </div>
@@ -423,7 +397,7 @@ BuenaVentura Agronegocios
                                 </table>
                             </div>
                             <div class="card-action">
-                                <a class="btn waves green" onclick="openModalSelecNegComprobante(10)"> Cargar </a>
+                                <a class="btn waves green no-shadows" onclick="openModalSelecNegComprobante(10)"> Cargar </a>
                             </div>
                         </div>
                     </div>
