@@ -19,10 +19,6 @@ body{
      font-family: 'Montserrat';
    }
  
-input{
-     border-bottom: 2px !important;
-   }
- 
 .im {
      height: 50px;
      width: 50px;
