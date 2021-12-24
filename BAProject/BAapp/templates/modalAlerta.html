@@ -7,14 +7,12 @@
         <div class="row">
           <div class="container">
             <div class="input-field col s12 shearS" style="padding: 0rem;">
-              <input id="inputBuscadorNegocio"
-                placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text" style="margin: 10px; color:white">
+              <input id="inputBuscadorNegocioAlerta"
+                placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text">
               <i class="medium material-icons shear_circule" style="position: relative; left: 1px;">search</i>
             </div>
           </div>
         </div>
-        <input id="inputBuscadorAlerta" placeholder="Buscar Negocio" onkeyup="searchBuscadorAlerta()" type="text">
-        <br><br>
         <table class="tablita" id="tablitaAlerta">
           <thead>
             <tr>
@@ -39,13 +37,13 @@
                     <td> {{negocio.comprador.empresa.razon_social}}</td>
                     <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
                     <td>{{negocio.estado}}</td>
-                    <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
                 </tr>
             {% endfor %}
           </tbody>
         </table>
         <div class="row">
-          <a class="waves-effect waves-light btn botonsote green col s12 nego " id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
+          <a class="waves-effect waves-light btn botonsote green col s12 nego no-shadows" id="nego" onclick="showChangeEstados()"> Seleccionar un negocio </a>
           <br>
           <form class="col s12" id="formSendAlerta" action ="#">
             <div style="display:none" id="divFormSendAlerta">
@@ -84,7 +82,16 @@
 </div>
 
 <script>
-   $(document).ready(function(){
+  
+  $(document).ready(function(){
     $('select').formSelect();
   });
+  
+  function searchBuscadorAlerta() {
+    var value = $("#inputBuscadorNegocioAlerta").val().toLowerCase();
+    $("#tablitaAlerta tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  }
+
 </script>
