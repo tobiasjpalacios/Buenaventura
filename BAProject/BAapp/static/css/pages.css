@@ -164,3 +164,16 @@ body{
 .btn-flat.datepicker-cancel, .btn-flat.datepicker-done {
   color: #005221;
 }
+#inputBuscadorNegocioAlerta {
+  margin: 0px; 
+  color: white !important;
+  border-bottom: 0px solid #000; 
+  box-shadow: 0 0px 0 0 #000; 
+  border: #000; 
+  border-radius: 2em;
+  text-align: center;
+}
+#inputBuscadorNegocioAlerta::placeholder { /* Firefox, Chrome, Opera */
+  color: white !important;
+  font-weight: bold !important;
+}

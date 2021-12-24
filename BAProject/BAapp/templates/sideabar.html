@@ -9,9 +9,9 @@
             <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
             <li><a href="{% url 'logistica'  %}">Logistica</a></li>
             <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
-            <li><a href="#id4">Mas Opciones </a></li>
+            <li><a href="#">Mas Opciones </a></li>
             {% if request.user|has_group:"Vendedor" %}
-            <li><a class="gb_text" onclick="openModalAlerta()"> Enviar Alerta</a></li>
+            <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta</a></li>
             {% endif %}
             <li><a class="gb_text" href="{% url 'inicio'  %}"> Nuevo Negocio </a></li>
             <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
@@ -35,5 +35,191 @@
     left: 0px !important;
     }
 </style>
+
+<script>
+function openModalAlerta(){
+    $.ajax({
+        type: 'POST',
+        url: "{% url 'detalleAlerta' %}",
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function (data) { 
+        $("#modalAlerta").html(data);
+        $('#alerta').modal('open'); 
+        },
+        error: function (response) {
+            console.log("Error")
+        }
+    })
+};
+
+function selNegocioModalAlerta(){ 
+    $("#divFormSendAlerta").show();
+    $("#inputBuscadorAlerta").hide();
+    $("#btnSendAlerta").show();
+  };
+
+function sendAlertaModal(){
+    var selected = new Array();
+    $('#tableAlertas input[type="checkbox"]:checked').each(function() {
+        selected.push($(this).attr('data-id'));
+    });    
+    var jsonText = JSON.stringify(selected);
+    var titulo = document.getElementById("tituloAlerta").value;
+    if (titulo === ""){
+        M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+        var descri = document.getElementById("descriAlerta").value;
+        var categoria = document.getElementById("selectModalAlert").value;
+        $.ajax({
+            url: "{% url 'sendAlertaModal' %}",
+            type: 'POST',
+            data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'categoria':categoria,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function(data){             
+                M.toast({html: data.result});
+                if (data.estado){
+                $('#alerta').modal('close');
+                };   
+            },
+            error: function (data) {
+                console.log(data.result)
+            }
+        });
+    };
+};
+
+function formAlertaLog(){
+    $("#btnAlertaLog").hide();
+    $("#divFormSendAlertaLog").show();
+    $("#btnsendAlertaLog").show();
+    document.getElementById("idPideAlertaLog").value = 1;
+  };
+
+  function sendAlertaLog(){
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    if (titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var descri = document.getElementById("descriAlertaLog").value;
+      var categoria = "Logistica";
+      var idNegocio = document.getElementById("idNegocioLog").value;
+      $.ajax({
+          url: "{% url 'sendAlertaLog' %}",
+          type: 'POST',
+          data: {'titulo':titulo,'descri':descri,'categoria':categoria,'idNegocio':idNegocio,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+          success: function(data){ 
+              M.toast({html: data.result});
+              if (data.estado){
+                $('#modalDetalleLogistica').modal('close');
+              };  
+          },
+          error: function (data) {
+              console.log(data.result)
+          }
+      });
+    }
+    
+  };
+
+  function formAlertaSem(){
+    $("#btnAlertaSem").hide();
+    $("#divFormSendAlertaSemaforo").show();
+    document.getElementById("idPideAlertaSem").value = 1;
+  };
+  
+  function formAlertaSemCA(origen){
+    var titulo = document.getElementById("tituloAlertaSem").value;
+    var descri = document.getElementById("descriAlertaSem").value;    
+    var idNegocio = document.getElementById("idNegocioSem").value;
+    $.ajax({
+        url: "{% url 'createAlertaNV' %}",
+        type: 'POST',
+        data: {'titulo':titulo,'descri':descri,
+            'idNegocio':idNegocio,csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          console.log(data.result);
+          if (data.estado){
+            if (origen=='Sem'){
+              $('#modalSemaforoNegocio').modal('close');
+            }else{
+              $('#modalDetalleLogistica').modal('close'); 
+            }
+                 
+          } 
+          M.toast({html: data.result});
+        },
+        error: function (data) {
+            console.log(data.result)
+        }
+    })      
+  }
+
+  function ocultarEstadoLog(){
+    $(".textEstado").hide();
+    $(".selecEstado").show();
+    $("#mostrarEstadoLog").hide();
+    $("#confirmarEstadoLog").show();
+  };
+
+  function cambiarEstadoLog(){
+    var titulo = document.getElementById("tituloAlertaLog").value;
+    var descri = document.getElementById("descriAlertaLog").value;
+    var idPideAlertaLog = document.getElementById("idPideAlertaLog").value;
+    var receptor = document.getElementById("selectModalAlertLog").value;
+    if (idPideAlertaLog == "1" && titulo === ""){
+      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
+    } else {
+      var estadosId = [];
+      var grid = document.getElementById("tablaLogEstados");
+      var selectInput = grid.getElementsByTagName("SELECT");
+      for (var i = 0; i < selectInput.length; i++) {
+          var estado=1;
+          var row = selectInput[i];
+          var id = $(row).data("id");
+          console.log(row.value);
+          if (row.value == 'Entregado') {
+            estado = 3
+          } else if (row.value == 'Atrasado') {
+            estado = 1
+          } else if (row.value == 'En'){
+            estado = 2
+          } else {
+            estado = 4
+          };          
+          console.log(estado);
+          var value_log = estado +"-"+ id
+          estadosId.push(value_log);
+      };
+      var jsonText = JSON.stringify(estadosId);      
+      $.ajax({
+        url: "{% url 'setLogistica' %}",
+        type: 'POST',
+        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'receptor':receptor,'envio':idPideAlertaLog,
+          csrfmiddlewaretoken: '{{ csrf_token }}'},
+        success: function(data){
+          $('#modalDetalleLogistica').modal('close'); 
+          M.toast({html: data.result})
+          $.ajax({
+            url: "{% url 'reloadLog' %}",
+            type: 'GET',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function(data){
+                    $('#tableLogisticaR').html(data);
+                },
+                error: function (data) {
+                  console.log(data.result)
+              }
+            });
+        },
+        error: function (data) {
+            M.toast({html: data.result})
+        }
+      });
+    }
+         
+  };
+</script>
 
 {% endblock body %}

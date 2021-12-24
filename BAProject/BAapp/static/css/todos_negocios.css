@@ -55,7 +55,11 @@ label, span {
     color: #000 !important;
 }
 
-span.year-text, span.date-text {
+span.year-text {
+    color: rgb(255, 255, 255, 0.7) !important;
+}
+
+span.date-text {
     color: #fff !important;
 }
 
