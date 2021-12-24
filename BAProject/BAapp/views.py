@@ -415,8 +415,7 @@ def check_user_group_after_login(request):
         'Logistica': redirect('vistaLogistica')
     }
 
-    red = redirects.get(request.user.groups.first().name, redirect('login'))
-    return red
+    return redirect('notificaciones')
 
 def landing_page(request):
     if (request.user.is_authenticated):
