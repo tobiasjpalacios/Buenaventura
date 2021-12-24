@@ -54,6 +54,7 @@ urlpatterns = [
     path('logistica/', login_required(login_url='/', redirect_field_name='router')(LogisticaView.as_view()), name ="logistica"),
     path('vencimientos/', login_required(login_url='/', redirect_field_name='router')(VencimientosView.as_view()), name ="vencimientos"),
     path('info_negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(Info_negocioView.as_view()), name ="info_negocio"),    
+    path('comprobantes/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="comprobantes"),
 
 
 
@@ -93,38 +94,38 @@ urlpatterns = [
 
     #crear comprobantes
 
-    path('selecNegComprobante/(?P<tipo>[]+)', selecNegComprobante, name="selecNegComprobante"),
+    path('selecNegComprobante/<tipo>', selecNegComprobante, name="selecNegComprobante"),
 
 
-    path('formFactura/(?P<neg>[]+)', formFactura, name="formFactura"),
+    path('formFactura/<neg>', formFactura, name="formFactura"),
     path('formFactura/', formFactura, name="formFactura"),
     
-    path('formRemito/(?P<neg>[]+)', formRemito, name="formRemito"),
+    path('formRemito/<neg>', formRemito, name="formRemito"),
     path('formRemito/', formRemito, name="formRemito"),
     
-    path('formOrdenDeCompra/(?P<neg>[]+)', formOrdenDeCompra, name="formOrdenDeCompra"),
+    path('formOrdenDeCompra/<neg>', formOrdenDeCompra, name="formOrdenDeCompra"),
     path('formOrdenDeCompra/', formOrdenDeCompra, name="formOrdenDeCompra"),
     
-    path('formOrdenDePago/(?P<neg>[]+)', formOrdenDePago, name="formOrdenDePago"),
+    path('formOrdenDePago/<neg>', formOrdenDePago, name="formOrdenDePago"),
     path('formOrdenDePago/', formOrdenDePago, name="formOrdenDePago"),
     
-    path('formConstanciaRentencion/(?P<neg>[]+)', formConstanciaRentencion, name="formConstanciaRentencion"),
+    path('formConstanciaRentencion/<neg>', formConstanciaRentencion, name="formConstanciaRentencion"),
     path('formConstanciaRentencion/', formConstanciaRentencion, name="formConstanciaRentencion"),
 
-    path('formRecibo/(?P<neg>[]+)', formRecibo, name="formRecibo"),
+    path('formRecibo/<neg>', formRecibo, name="formRecibo"),
     path('formRecibo/', formRecibo, name="formRecibo"),
     
-    path('formCheque/(?P<neg>[]+)', formCheque, name="formChequeDef"),
+    path('formCheque/<neg>', formCheque, name="formChequeDef"),
     path('formCheque/', formCheque, name="formCheque"),
     
 
-    path('formCuentaCorriente/(?P<neg>[]+)', formCuentaCorriente, name="formCuentaCorriente"),
+    path('formCuentaCorriente/<neg>', formCuentaCorriente, name="formCuentaCorriente"),
     path('formCuentaCorriente/', formCuentaCorriente, name="formCuentaCorriente"),
     
-    path('formFacturaComision/(?P<neg>[]+)', formFacturaComision, name="formFacturaComision"),
+    path('formFacturaComision/<neg>', formFacturaComision, name="formFacturaComision"),
     path('formFacturaComision/', formFacturaComision, name="formFacturaComision"),
     
-    path('formNota/(?P<neg>[]+)', formNota, name="formNota"),
+    path('formNota/<neg>', formNota, name="formNota"),
     path('formNota/', formNota, name="formNota"),
 
 

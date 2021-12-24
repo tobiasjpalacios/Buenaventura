@@ -1,0 +1,9 @@
+.btn-sm{
+    background-color: #005f26 !important;
+}
+
+table{
+    overflow-y:scroll;
+    height:50%;
+    width: 100%;
+}

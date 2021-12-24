@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.dateparse import parse_date
 from .forms import *
@@ -95,7 +96,36 @@ class Info_negocioView(View):
                     "notas": notas,          
                 }   
             return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
- 
+
+class ComprobantesView(View):
+    def get(self, request, *args, **kwargs):
+
+        facturas = Factura.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
+        remitos = Remito.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
+        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        recibos = Recibo.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        cheques = Cheque.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
+        notas = Nota.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+
+        comprobantes = {
+                    "facturas": facturas,
+                    "remitos": remitos,
+                    "ordenesDeCompra": ordenesDeCompra,
+                    "ordenesDePago": ordenesDePago,
+                    "constancias": constancias,
+                    "recibos": recibos,
+                    "cheques": cheques,
+                    "cuentasCorriente": cuentasCorriente,
+                    "facturasComision": facturasComision,
+                    "notas": notas,          
+                }
+        
+        return render(request, 'comprobantes.html',{"comprobantes":comprobantes})
+
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
@@ -151,6 +181,7 @@ def detalleNotis(request):
         id_prop = propuesta[0][0]
         response = {'id_prop': id_prop}
         return HttpResponse(json.dumps(response), content_type="aplication/json")
+
 
 #lo viejo xd
 

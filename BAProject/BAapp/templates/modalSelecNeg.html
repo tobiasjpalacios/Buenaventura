@@ -12,6 +12,7 @@
                 <th>Fecha</th>
                 <th>Empresa</th>
                 <th>Cliente</th>
+                <th class="center">Código de Negocio</th>
                 <th>Estado</th>
                 <th>Ver Negociación</th>
             </tr>
@@ -20,13 +21,27 @@
             {% for negocio in negocios%}
                 <tr data-id={{negocio.id}}>
                     <td class="auxSem">
-                        <a class="waves-effect waves-light btn" onclick="agregarComprobante('{{negocio.id}}')" id="input_{{negocio.id}}"><i class="material-icons">send</i></a>
+                        <a class="waves-effect waves-light btn bv-green no-shadows" onclick="agregarComprobante('{{negocio.id}}')" id="input_{{negocio.id}}"><i class="material-icons">send</i></a>
                     </td>
                     <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                     <td>{{negocio.comprador.empresa.razon_social}}</td>
                     <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
-                    <td>{{negocio.estado}}</td>
-                    <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                    <td class="center"><strong>{{negocio.id_de_neg}}</strong></td>
+                    {% if negocio.estado == 'Confirmado' %}
+                    <td class="green-text">
+                        <strong>{{negocio.estado}}</strong>
+                    {% elif negocio.estado == 'Cancelado' %}
+                    <td class="red-text">
+                        <strong>{{negocio.estado}}</strong>
+                    {% elif negocio.estado == 'En Negociación' %}
+                    <td class="light-blue-text">
+                        <strong>{{negocio.estado}}</strong>
+                    {% else %}
+                    <td>
+                        {{negocio.estado}}
+                    {% endif %}
+                    </td>
+                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
                 </tr>
             {% endfor %}
           </tbody>
@@ -248,5 +263,12 @@
             }
         })
     };
+
+    function searchBuscador() {
+        var value = $("#inputBuscador").val().toLowerCase();
+        $("#tablita tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    }
 
 </script>

@@ -54,3 +54,11 @@ label.for-input {
 label, span {
     color: #000 !important;
 }
+
+span.year-text, span.date-text {
+    color: #fff !important;
+}
+
+input {
+    border-bottom: 0px !important;
+}
