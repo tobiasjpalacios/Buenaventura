@@ -126,11 +126,11 @@ BuenaVentura Agronegocios
            
           <div class="row"> 
             <div class="col s3"> 
-              <span class="col s4 right-align" > de </span>
-              <h5 class="col s6 ">{{ user.get_username }}</h5>
+              <span class="col s4 right-align"  style="margin-top: 5%;" > de </span>
+              <h5   style=" margin-left: 10%; border-bottom: 1px solid black; padding-bottom: 6px;" class="col s6 ">{{ user.get_username }}</h5>
             </div>
             <div class="col s3"> 
-              <span class="col s4 left-align"> Para</span>
+              <span class="col s4 left-align" style="margin-top: 5%;"> Para</span>
               <div class="row entrada col s8 left-align">
                 <input placeholder="Cliente " class =" center-align" type="text" id="inputComp" list="datalistComp">
                 <datalist id="datalistComp"></datalist>
@@ -170,17 +170,17 @@ BuenaVentura Agronegocios
             <a class="boton blue waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila" onclick="addRow()" style="margin-left: 10%;">Agregar Artículo</a> 
           </div>
          </div>
-         <div class="row"> 
+         
              <div class="col s12">
-               <div  class="col s10  offset-s1 barra center-align " ><span class="titulito center-align white-text" id="observaciones"> Observaciones</span> </div>
+               <div  class="col s12   left-align "  style="border-bottom: 2px rgba(128, 128, 128, 0.801) solid;"><span class="titulito center-align " id="observaciones"> Observaciones</span> </div>
                 
-               <div class="row left-align col s12">
+               <div style="margin-top: 4%;" class="row left-align col s10 offset-1 ">
                 <label for="inputObser"> Escriba aqui</label>
                 <input class ="error" type="text" id="inputObser">
                </div>
              </div>
 
-         </div>
+         
 
 
          <div class="row " id="divProp" style="display:none" >
