@@ -1803,12 +1803,12 @@ class NegocioView(View):
                 tmp.save()
                 completed &= tmp.aceptado
 
-        titulo = "Propuesta de {} {}".format(
+        titulo = "Presupuesto de {} {}".format(
             request.user.get_full_name(),
-            "aceptada" if completed else "actualizada"
+            "aceptado" if completed else "actualizado"
         )
-        categoria = "Propuesta {}".format(
-            "aceptada" if completed else "actualizada"
+        categoria = "Presupuesto {}".format(
+            "aceptado" if completed else "actualizado"
         )
         user = None
         if (prop.envio_comprador):

@@ -793,8 +793,10 @@
               if (userIsComprador && ((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
                 // do nothing
               }
-              errorFields.push(errorDesc);
-              errors = true;
+              else {
+                errorFields.push(errorDesc);
+                errors = true;
+              }
             }
           }
         }
