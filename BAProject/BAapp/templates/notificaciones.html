@@ -119,7 +119,7 @@ BuenaVentura Agronegocios
                                 
                             </tbody>
                         </table>
-                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'logistica' %}"> Ver todos </a>
                     </div>
                 </div>
                 <!----------------------------------->
@@ -141,7 +141,7 @@ BuenaVentura Agronegocios
                                 
                             </tbody>
                         </table>
-                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'vencimientos' %}"> Ver todos </a>
                     </div>
                     
                 </div>
@@ -150,6 +150,15 @@ BuenaVentura Agronegocios
             </div>
 
         </div>
+
+        <!------ Modals Notis ---------->
+
+        <div id="alertaNotis" class="modal">
+            <div id="modalNotis" class="modal-content">
+            </div>
+        </div>
+
+        <!---------------->
 
     <script>
         $(document).ready(function () {
@@ -173,17 +182,17 @@ BuenaVentura Agronegocios
 
         function detalleNotis(idNoti){
             $.ajax({
-                type: 'POST',
-                url: "{% url 'detalleNotis' %}",
-                data: {'idNoti':idNoti,
-                csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success: function (data) {
-                    url = "{% url 'info_negocio' 0 %}";
-                    window.location.href = url.replace("0", data.id_prop);
-                },
-                error: function (response) {
-                    console.log("Error")
-                }
+            type: 'POST',
+            url: "{% url 'detalleNotis' %}",
+            data: {'idNoti':idNoti,
+            csrfmiddlewaretoken: '{{ csrf_token }}'},
+            success: function (data) {
+                $("#modalNotis").html(data);
+                $('#alertaNotis').modal('open'); 
+            },
+            error: function (response) {
+                console.log("Error")
+            }
             });
         };
     </script>

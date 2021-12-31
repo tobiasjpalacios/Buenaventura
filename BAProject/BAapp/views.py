@@ -178,9 +178,18 @@ def detalleNotis(request):
         idNegocio = first.split("/",1)[1]
         negocio = Negocio.objects.get(id=int(idNegocio))
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-        id_prop = propuesta[0][0]
-        response = {'id_prop': id_prop}
-        return HttpResponse(json.dumps(response), content_type="aplication/json")
+        if (not propuesta):
+            return render (request, 'modalnotis.html')
+        else:
+            id_prop = propuesta[0][0]
+            envio = propuesta[0][1]
+            negocio.id_prop = id_prop
+            grupo_activo = request.user.groups.all()[0].name
+            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
+                envio = not envio
+            negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
+            return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
+    return render (request, 'modalnotis.html')
 
 
 #lo viejo xd

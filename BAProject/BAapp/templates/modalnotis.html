@@ -38,7 +38,7 @@
    
       <div class="col s12">
          
-         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> negocio relacionado</span> </div>
+         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> Negocio Relacionado</span> </div>
          <div class="espacio" style="height: 30px;"> </div>
          <table class="tablita" id="tablitaAlerta">
             <thead>
@@ -47,6 +47,7 @@
                   <th>Fecha</th>
                   <th>Empresa</th>
                   <th>Cliente</th>
+                  <th>Código de negocio</th>
                   <th>Estado</th>
                   <th>Ver Negocio</th>
               </tr>
@@ -57,8 +58,9 @@
                       <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                       <td>{{negocio.comprador.empresa.razon_social}}</td>
                       <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                      <td><strong>{{negocio.id_de_neg}}</strong></td>
                       <td>{{negocio.estado}}</td>
-                      <td><a class="btn-floating btn-small waves-effect waves-light red " onclick="detalleNegocio('{{negocio.id_prop}}')"><i class=" small material-icons ">search</i></a></td>
+                      <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
                   </tr>
             </tbody>
           </table>
