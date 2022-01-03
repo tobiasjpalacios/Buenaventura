@@ -1778,6 +1778,7 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
+        print(data)
         completed = True
         with transaction.atomic():
             prop = Propuesta(

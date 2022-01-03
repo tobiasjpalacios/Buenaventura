@@ -104,7 +104,7 @@
             <tbody>
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
-                <td class="show{{prop.id}}">{{ item.articulo.marca }}</td>
+                <td class="show{{prop.id}}">{{ item.articulo }}</td>
                 {% if not request.user|has_group:'Comprador' %}
                 <td class="show{{prop.id}} clientViewSM">{{ item.proveedor|default_if_none:'' }}</td>
                 {% endif %}
@@ -234,7 +234,7 @@
                 {% if item.articulo.marca == "NINGUNA" %}
                   <td class="show0">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
-                  <td class="show0">{{ item.articulo.marca|default_if_none:'' }}</td>
+                  <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
                 {% endif %}
                 {% if not request.user|has_group:'Comprador' %}
                 <td class="show0">
@@ -553,7 +553,12 @@
       if (element != "observaciones" && element != "distribuidor") {
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
         if (input.type == "number"){
-          edits.items[index][element] = parseInt(input.value)
+          if (input.name == "precio_venta" || input.name == "precio_compra") {
+            edits.items[index][element] = parseFloat(input.value)
+          }
+          else {
+            edits.items[index][element] = parseInt(input.value)
+          }
         }
         else if (input.name == "distribuidor"){
           var opt = $("#distResults [value='"+input.value+"']");
@@ -640,7 +645,12 @@
           n[element] = opt.data('value');
         } else {
           if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
-            n[element] = parseInt(input.value);
+            if (input.name == "precio_venta" || input.name == "precio_compra") {
+              n[element] = parseFloat(input.value);
+            }
+            else {
+              n[element] = parseInt(input.value);
+            }
           }else {
             n[element] = input.value;
             n["articulo"] = artId;
