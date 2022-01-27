@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+  db:
+    image: mysql:5
+    restart: always
+    volumes:
+      - ./database:/var/lib/mysql/
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: BA
+  app:
+    image: ba-backend
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - db
+    environment:
+      DOCKER: 1
+      PRODUCTION: 1
+      DB_PASSWORD: example
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+      - static:/app/static
+      - media:/app/media
+
+  nginx:
+    image: nginx:1.19.4-alpine
+    restart: always
+    volumes:
+      - static:/usr/share/nginx/html/static
+      - media:/usr/share/nginx/html/media
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    ports:
+      - "8026:80"
+
+volumes:
+  static:
+  media:

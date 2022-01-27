@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 import django.db.models.options as options
 
@@ -25,7 +26,10 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('search_fields',)
 SECRET_KEY = '2tv)*bw5y+z(hyd8oyamv*v=uz2f-f$1ucr)nnc#w_z*u))-#l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+prod = os.environ.get("PRODUCTION")
 DEBUG = True
+if prod:
+    DEBUG=False
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'BAapp.apps.BaappConfig',
+    'BAapp',
 ]
 
 MIDDLEWARE = [
@@ -77,11 +81,17 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# Choose db config depending on the environment
+db_conf = str(BASE_DIR.joinpath('config/mariadb.conf'))
+if(os.environ["DOCKER"]):
+    db_conf = str(BASE_DIR.joinpath('config/mariadb-docker.conf'))
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS':{
-            'read_default_file': str(BASE_DIR.joinpath('config/mariadb.conf'))
+            'read_default_file': db_conf
         },
     }
 }
@@ -124,7 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Login
 
