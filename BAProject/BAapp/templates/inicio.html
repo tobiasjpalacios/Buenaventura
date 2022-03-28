@@ -868,7 +868,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029'; 
         }
-      }else if((!userIsComprador && j == 6) || (userIsComprador && j == 5)){
+      }else if((!userIsComprador && j == 6) || (userIsComprador && j == 4)){
         if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
           isValidated = true;
         }else{
@@ -879,7 +879,7 @@ function validateData(rowCnt){
           }
           input.style.borderColor = '#CF0029';
         }
-      }else if ((!userIsComprador && j == 7) || (userIsComprador && j == 6)){
+      }else if ((!userIsComprador && j == 7) || (userIsComprador && j == 5)){
          if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
           isValidated = true;
          }else{
