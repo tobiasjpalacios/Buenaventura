@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
@@ -23,6 +23,8 @@ from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from .utils.email_send import email_send
+
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -1777,8 +1779,8 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
-        print(data)
         completed = True
+        res = None
         with transaction.atomic():
             prop = Propuesta(
                 negocio=negocio,
@@ -1814,10 +1816,10 @@ class NegocioView(View):
 
         titulo = "Presupuesto de {} {}".format(
             request.user.get_full_name(),
-            "aceptado" if completed else "actualizado"
+            "finalizado" if completed else "actualizado"
         )
         categoria = "Presupuesto {}".format(
-            "aceptado" if completed else "actualizado"
+            "finalizado" if completed else "actualizado"
         )
         user = None
         if (prop.envio_comprador):
@@ -1850,7 +1852,49 @@ class NegocioView(View):
             negocio.fecha_cierre = datetime.now()
             negocio.save()
 
-        return render(request, 'negocio.html')
+        # send email
+
+        #TODO: formatear hora para que sea agradable a la vista.
+
+        pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
+        pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
+        pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
+        pos_cierre_text = f"El negocio cerró en la fecha: {negocio.fecha_cierre}."
+        color = ""
+        texto = ""
+
+        if negocio.aprobado:
+            titulo = f"{pre_titulo} aprobado"
+            color = "green"
+            texto = f"""
+                    {pre_text} aprobado. {pos_cierre_text}
+
+                    {pos_text}
+                    """
+        elif negocio.cancelado:
+            titulo = f"{pre_titulo} cancelado"
+            color = "red"
+            texto = f"""
+                    {pre_text} cancelado. {pos_cierre_text}
+
+                    {pos_text}
+                    """
+        else:
+            titulo = f"{pre_titulo} actualizado"
+            texto = f"{pre_text} actualizado. {pos_text}"
+
+        full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+        recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
+        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'url' : full_negociacion_url}
+
+        email = email_send(categoria, ['juanzakka@gmail.com'], 'email/propuesta.txt', 'email/propuesta.html', context)
+        
+        if email == 1:
+            res = render(request, 'negocio.html')
+        else:
+            res = render(request, 'negocio.html', {'error' : True, 'error_response' : email})
+
+        return res
 
 class ListEmpresaView(View):
     def get(self, request, *args, **kwargs):
