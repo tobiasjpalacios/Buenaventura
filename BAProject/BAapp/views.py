@@ -1485,31 +1485,46 @@ class carga_excel(View):
         sheet_reader(request.FILES["myfile"])
         return self.get(request)
 
-def crear_negocio(request, comprador, vendedor, isComprador):
+def crear_negocio(request, comprador, vendedor, isComprador, observacion):
+    created_by = None
     if isComprador:
         chunks = vendedor.split(' ')
         vendedor_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
         vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
         comprador_obj = Comprador.objects.get(persona__user=request.user)
+        created_by = f"{comprador_obj.persona.user.first_name} {comprador_obj.persona.user.last_name}"
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
             )
         negocio.save()
-        return negocio
     else:
         chunks = comprador.split(' ')
         comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
         comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
         vendedor_obj = Vendedor.objects.get(persona__user=request.user)
+        created_by = f"{vendedor_obj.persona.user.first_name} {vendedor_obj.persona.user.last_name}"
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
             )
         negocio.save()
-        return negocio
+
+    subject = "Se creó un nuevo negocio"
+    texto = f"""
+    El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
+    Hacé click en el botón de abajo para ver el nuevo negocio.
+    """
+    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+    recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
+    context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
+
+    email_response = email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+
+    return negocio
+    
 
 def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
@@ -1781,6 +1796,7 @@ class NegocioView(View):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
         completed = True
+        observaciones = "No hay observaciones" if not data["observaciones"] else data["observaciones"]
         res = None
         with transaction.atomic():
             prop = Propuesta(
@@ -1872,25 +1888,25 @@ class NegocioView(View):
             titulo = f"{pre_titulo} aprobado"
             color = "green"
             texto = f"""
-                    {pre_text} aprobado. {pos_cierre_text}
+            {pre_text} aprobado. {pos_cierre_text}
 
-                    {pos_text}
-                    """
+            {pos_text}
+            """
         elif negocio.cancelado:
             titulo = f"{pre_titulo} cancelado"
             color = "red"
             texto = f"""
-                    {pre_text} cancelado. {pos_cierre_text}
+            {pre_text} cancelado. {pos_cierre_text}
 
-                    {pos_text}
-                    """
+            {pos_text}
+            """
         else:
             titulo = f"{pre_titulo} actualizado"
             texto = f"{pre_text} actualizado. {pos_text}"
 
         full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
         recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
-        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'url' : full_negociacion_url}
+        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
 
         email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
         
@@ -1999,7 +2015,7 @@ class APIArticulos(View):
         isComprador = recieved.get("envio_comprador")
         comprador = recieved.get("comprador")
         vendedor = recieved.get("vendedor")
-        negocio = crear_negocio(request, comprador, vendedor, isComprador)
+        negocio = crear_negocio(request, comprador, vendedor, isComprador, observacion)
         propuesta = crear_propuesta(negocio,observacion,isComprador)
         data = recieved.get("data")
         for i in range(len(data)):
