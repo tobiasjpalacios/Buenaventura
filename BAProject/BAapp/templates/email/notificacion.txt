@@ -1,0 +1,5 @@
+{{ titulo }}
+
+{{ texto }}
+
+Ir a notificaciones: {{ url }}
