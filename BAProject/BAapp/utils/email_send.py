@@ -9,7 +9,7 @@ def email_send(
         path_to_html : str, 
         context : dict
     ):
-    res = None
+    res = 1
     try:
         subject = subject_email
         from_email = f'"Buenaventura Agronegocios" <{settings.DEFAULT_FROM_EMAIL}>'
@@ -21,7 +21,5 @@ def email_send(
         msg.send()
     except Exception as e:
         res = e
-
-    res = 1
 
     return res

@@ -5,8 +5,11 @@ from django.contrib import admin
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
+from .utils.email_send import email_send
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
+from django.utils import formats
 
 class Persona(models.Model):
     user = models.OneToOneField(
@@ -564,3 +567,26 @@ class Nota(models.Model):
     documento = models.FileField(upload_to='media/notas/%Y/%m/%d', null=False)
     class Meta():
         default_related_name = "notas"
+
+
+# mandar email cada vez que se crea una notificacion (a excepcion de nuevos presupuestos y nuevos negocios)
+@receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
+def send_email_notification(sender, instance, **kwargs):
+    if instance.titulo is not None and "Presupuesto" not in instance.titulo:
+        if instance.descripcion is not None:
+            pre_text = instance.descripcion
+        else:
+            pre_text = instance.titulo
+
+        subject = instance.titulo
+        formatted_timestamp = formats.date_format(instance.timestamp, "SHORT_DATETIME_FORMAT")
+        text = f"{pre_text}. Recibido en la fecha: {formatted_timestamp}"
+        #TODO: encontrar la forma de no hardcodear el protocolo y el dominio
+        domain = "http://127.0.0.1:8000"
+        url =  domain + reverse('notificaciones')
+        to = [instance.user.email]
+        context = {'titulo' : subject, 'texto' : text, 'url' : url}
+
+        email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
+
+post_save.connect(send_email_notification, sender=Notificacion)
