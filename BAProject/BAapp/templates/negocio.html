@@ -550,21 +550,23 @@
     $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"])
     $($("#form")[0].rows[index+1]).addClass("yellow");
     editable_fields.forEach(element => {
-      if (element != "observaciones" && element != "distribuidor") {
+      if (element != "observaciones") {
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
-        if (input.type == "number"){
-          if (input.name == "precio_venta" || input.name == "precio_compra") {
-            edits.items[index][element] = parseFloat(input.value)
+        if (input != null) {
+          if (input.type == "number"){
+            if (input.name == "precio_venta" || input.name == "precio_compra") {
+              edits.items[index][element] = parseFloat(input.value)
+            }
+            else {
+              edits.items[index][element] = parseInt(input.value)
+            }
           }
-          else {
-            edits.items[index][element] = parseInt(input.value)
+          else if (input.name == "distribuidor"){
+            var opt = $("#distResults [value='"+input.value+"']");
+            edits.items[index]["proveedor"] = opt.data('value');
+          } else {
+            edits.items[index][element] = input.value
           }
-        }
-        else if (input.name == "distribuidor"){
-          var opt = $("#distResults [value='"+input.value+"']");
-          edits.items[index]["proveedor"] = opt.data('value');
-        } else {
-          edits.items[index][element] = input.value
         }
       }
     })
