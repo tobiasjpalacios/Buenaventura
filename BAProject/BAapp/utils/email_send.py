@@ -2,7 +2,13 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
-def email_send(subject_email, to_email, path_to_text, path_to_html, context):
+def email_send(
+        subject_email : str, 
+        to_email : list, 
+        path_to_text : str, 
+        path_to_html : str, 
+        context : dict
+    ):
     res = None
     try:
         subject = subject_email
