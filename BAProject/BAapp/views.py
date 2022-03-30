@@ -19,6 +19,7 @@ from .choices import DIVISA_CHOICES, TASA_CHOICES, TIPO_DE_NEGOCIO_CHOICES
 from .scriptModels import *
 from .decorators import *
 from datetime import date, datetime, timedelta
+from django.utils import formats
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
@@ -1854,14 +1855,18 @@ class NegocioView(View):
 
         # send email
 
-        #TODO: formatear hora para que sea agradable a la vista.
+        formatted_fecha_cierre = ""
+        color = ""
+        texto = ""
+
+        fecha_cierre = negocio.fecha_cierre
+        if fecha_cierre is not None:
+            formatted_fecha_cierre = formats.date_format(fecha_cierre, "SHORT_DATETIME_FORMAT")
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
         pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
         pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
-        pos_cierre_text = f"El negocio cerró en la fecha: {negocio.fecha_cierre}."
-        color = ""
-        texto = ""
+        pos_cierre_text = f"El negocio cerró en la fecha: {formatted_fecha_cierre}."
 
         if negocio.aprobado:
             titulo = f"{pre_titulo} aprobado"
@@ -1887,12 +1892,13 @@ class NegocioView(View):
         recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
         context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'url' : full_negociacion_url}
 
-        email = email_send(categoria, ['juanzakka@gmail.com'], 'email/propuesta.txt', 'email/propuesta.html', context)
+        email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
         
-        if email == 1:
+        #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dio error
+        if email_response == 1:
             res = render(request, 'negocio.html')
         else:
-            res = render(request, 'negocio.html', {'error' : True, 'error_response' : email})
+            res = render(request, 'negocio.html', {'email_error' : True, 'email_error_response' : email_response})
 
         return res
 
