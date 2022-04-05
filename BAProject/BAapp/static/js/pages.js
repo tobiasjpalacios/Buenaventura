@@ -66,3 +66,7 @@ function showChangeEstados(){
   $("#mostrarChgEstSem").hide();
   $("#confirmarChgEstSem").show();
 };
+
+$(window).on('load', function () {
+  $(".valign-wrapper").remove();
+});
