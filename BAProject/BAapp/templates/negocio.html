@@ -13,6 +13,8 @@
 
 {%block body%}
 
+{% include "tempAux/loader.html" %}
+
 {% if request.user|has_group:'Vendedor' %}
 
 <div class="materialert error fixed">
@@ -104,21 +106,7 @@
             <tbody>
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
-                <td class="show{{prop.id}}" id="art-{{ item.articulo.id }}">{{ item.articulo }}</td>
-                <script>
-                  var artId = $("#art-{{ item.articulo.id }}");
-                  var artName = artId.text();
-                  var arr = artName.split(' ');
-                  var length = arr.length;
-                  if (length > 4) {
-                    var new_artName = arr[0] + " " + arr[1]+ " " + arr[2] + " " + arr [3] + "\n";
-                    for (var i = 4; i < length; i++) {
-                      new_artName = new_artName + " " + arr[i];
-                    }
-                    var obj = artId.text(new_artName);
-                    obj.html(obj.html().replace(/\n/g, '<br/>'));
-                  }
-                </script>
+                <td class="show{{prop.id}}">{{ item.articulo }}</td>
                 {% if not request.user|has_group:'Comprador' %}
                 <td class="show{{prop.id}} clientViewSM">{{ item.proveedor|default_if_none:'' }}</td>
                 {% endif %}
@@ -246,24 +234,10 @@
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text white-text-input"{% endif %}>
                 {% if item.articulo.marca == "NINGUNA" %}
-                  <td class="show0" id="art1-{{ item.articulo.id }}">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
+                  <td class="show0">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
                 {% else %}
-                  <td class="show0" id="art1-{{ item.articulo.id }}">{{ item.articulo|default_if_none:'' }}</td>
+                  <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
                 {% endif %}
-                <script>
-                  var artId = $("#art1-{{ item.articulo.id }}");
-                  var artName = artId.text();
-                  var arr = artName.split(' ');
-                  var length = arr.length;
-                  if (length > 4) {
-                    var new_artName = arr[0] + " " + arr[1]+ " " + arr[2] + " " + arr [3] + "\n";
-                    for (var i = 4; i < length; i++) {
-                      new_artName = new_artName + " " + arr[i];
-                    }
-                    var obj = artId.text(new_artName);
-                    obj.html(obj.html().replace(/\n/g, '<br/>'));
-                  }
-                </script>
                 {% if not request.user|has_group:'Comprador' %}
                 <td class="show0">
                   {% if item.proveedor == None %}
@@ -491,13 +465,13 @@
         var data = {"suggestions":[]};
         $.map(res, (a) => {
           data.suggestions.push({
-            'value': a.ingrediente + " " + a.marca + " " + a.empresa__nombre_comercial,
+            'value': a.marca,
             'data': ""+a.id,
           })
         })
         return data;
       },
-      minChars: 2,
+      minChars: 4,
       onSelect: function (suggestion) {
         $("#artValue").val(suggestion.data)
       },
