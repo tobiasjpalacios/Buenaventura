@@ -211,3 +211,11 @@ function addTable() {
       $("#div-table-"+n).show();
     }
 }
+
+//
+
+$(window).on('load', function () {
+  $(".valign-wrapper").fadeOut("fast", function() {
+    $(this).remove();
+  });
+});

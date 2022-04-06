@@ -68,5 +68,7 @@ function showChangeEstados(){
 };
 
 $(window).on('load', function () {
-  $(".valign-wrapper").remove();
+  $(".valign-wrapper").fadeOut("fast", function() {
+    $(this).remove();
+  });
 });

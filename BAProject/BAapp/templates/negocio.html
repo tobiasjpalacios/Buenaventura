@@ -13,6 +13,8 @@
 
 {%block body%}
 
+{% include "loader.html" %}
+
 {% if request.user|has_group:'Vendedor' %}
 
 <div class="materialert error fixed">
