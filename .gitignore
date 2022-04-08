@@ -133,7 +133,7 @@ dmypy.json
 *.sublime-workspace
 
 #Django
-*/**/migrations/
+#*/**/migrations/
 *.sqlite3
 mariadb.conf
 mariadb-docker.conf
