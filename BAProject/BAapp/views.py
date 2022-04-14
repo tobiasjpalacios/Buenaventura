@@ -99,7 +99,6 @@ class Info_negocioView(View):
 
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
-
         facturas = Factura.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
         remitos = Remito.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
         ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
