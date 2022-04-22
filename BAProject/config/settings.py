@@ -1,5 +1,6 @@
 from pathlib import Path
 import django.db.models.options as options
+# NOTE: Environ es provisorio porque todavía no está dockerizada esta rama
 import environ
 import os
 
@@ -25,9 +26,6 @@ DEBUG = env('DEBUG')
 ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django_ses.SESBackend'
-# AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 # Application definition
@@ -141,12 +139,13 @@ LOGOUT_REDIRECT_URL = 'home'
 
 MEDIA_URL = '/media/'
 
+# When DEBUG is set to False
+
 if DEBUG is False:
     SECURE_SSL_REDIRECT = True
 
-    ALLOWED_HOSTS = ["https://bvagro.com.ar", "http://www.clientes.bvagro.com.ar"]
+    ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
-
     AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
