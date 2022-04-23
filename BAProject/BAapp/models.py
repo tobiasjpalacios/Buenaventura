@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import formats
+from django.contrib.sites.models import Site
 
 class Persona(models.Model):
     user = models.OneToOneField(
@@ -581,9 +582,9 @@ def send_email_notification(sender, instance, **kwargs):
         subject = instance.titulo
         formatted_timestamp = formats.date_format(instance.timestamp, "SHORT_DATETIME_FORMAT")
         text = f"{pre_text}. Recibido en la fecha: {formatted_timestamp}"
-        #TODO: encontrar la forma de no hardcodear el protocolo y el dominio
-        domain = "http://127.0.0.1:8000"
-        url =  domain + reverse('notificaciones')
+        protocol = "http://"
+        domain = Site.objects.get_current().domain
+        url =  protocol + domain + reverse('notificaciones')
         to = [instance.user.email]
         context = {'titulo' : subject, 'texto' : text, 'url' : url}
 

@@ -1909,8 +1909,9 @@ class NegocioView(View):
         context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
 
         email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        print(email_response)
         
-        #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dio error
+        #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dió error
         if email_response == 1:
             res = render(request, 'negocio.html')
         else:
