@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'crispy_forms',
     'BAapp',
 ]
@@ -139,10 +140,14 @@ LOGOUT_REDIRECT_URL = 'home'
 
 MEDIA_URL = '/media/'
 
+# SITE_ID (this is for getting full url in models)
+
+SITE_ID = 1
+
 # When DEBUG is set to False
 
 if DEBUG is False:
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True
 
     ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
 
