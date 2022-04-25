@@ -11,70 +11,89 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import Group
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.contrib.auth.models import Permission
 
-class Persona(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.DO_NOTHING, null=True)
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, nivel, password = None):
+        if not email:
+            raise ValueError('Los usuarios deben tener una un mail')
+        user_obj = self.model(
+            email = self.normalize_email(email)
+            )
+        user_obj.set_password(password)
+        user_obj.is_staff = True
+        user_obj.is_active = True
+        user_obj.save(using=self.db)
+        return user_obj
+    def create_superuser(self, email, password = None):
+        user_obj = self.model(
+            email = self.normalize_email(email))
+        user_obj.set_password(password)
+        user_obj.is_superuser = True
+        user_obj.save(using=self.db)
+        return user_obj
+
+
+class MyUser(AbstractBaseUser, PermissionsMixin):
+    
+    objects = MyUserManager()
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
+
+    nombre = models.CharField(max_length=50, blank=False)
+    apellido = models.CharField(max_length=50, blank=False)
+    email = models.EmailField(_('email address'), blank=False, unique = True)
     fecha_nacimiento = models.DateField(null=False)
     sexo = models.CharField(max_length=6, choices=GENERO_CHOICES)
     dni = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
-    telefono = models.ForeignKey(
-        "Telefono", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
+    telefono = models.CharField(max_length=6)
+    domiciolio = models.ManyToManyField("Domicilio")
 
-    def __str__(self):
-        return '{} {}'.format(self.user.first_name, self.user.last_name)
-
-class Vendedor(models.Model):
-    persona = models.ForeignKey(
-        "Persona",
-        on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return 'Vendedor {}'.format(str(self.persona))
-
-
-class Empleado(models.Model):
-    persona = models.ForeignKey(
-        "Persona",
-        on_delete=models.DO_NOTHING)
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING)
 
-    def __str__(self):
-        return "{} {} - {}".format(
-            self.__class__.__name__, 
-            self.persona, self.empresa)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=True,
+        help_text=_('Puede loggearse en esta página.'),
+    )
 
-    class Meta():
-        abstract = True
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Quitar este parámetro en lugar de borrar cuentas'
+        ),
+    )
 
-class Comprador(Empleado):
-    class Meta():
-        default_related_name = "compradores"
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-class Gerente(Empleado):
-    class Meta():
-        default_related_name = "gerentes"
+    objects = MyUserManager()
 
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-class Proveedor(models.Model):
-    persona = models.ForeignKey("Persona",on_delete=models.DO_NOTHING)
-    empresa = models.ManyToManyField("Empresa")
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
 
-    def __str__(self):
-        return "{} {} ".format(self.persona.user.last_name, self.persona.user.first_name)
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        return '{} {}'.format(self.user.nombre, self.user.apellido)
 
-class Logistica(Empleado):
-    class Meta():
-        default_related_name = "logisticas"
-    
-class Administrador(Empleado):
-    class Meta():
-        default_related_name = "administradores"
+    def get_short_name(self):
+        """Return the short name for the user."""
+        return self.email
 
 
 class Empresa(models.Model):
@@ -130,18 +149,6 @@ class DomicilioPostal(models.Model):
         on_delete=models.DO_NOTHING)
 
 
-class DomicilioPersona(models.Model):
-    Persona = models.ForeignKey(
-        "Persona",
-        null=False,
-        on_delete=models.CASCADE,
-        related_name="domicilio")
-    Domicilio = models.OneToOneField(
-        "Domicilio", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
-
-
 class Telefono(models.Model):
     numero = models.IntegerField()
 
@@ -174,11 +181,16 @@ class Articulo(models.Model):
 
 class Negocio(models.Model):
     comprador = models.ForeignKey(
-        "Comprador", 
+        "MyUser",
+        related_name='comprador',
+        limit_choices_to={'groups__name': "Compradores"},
         on_delete=models.DO_NOTHING
     )
+
     vendedor = models.ForeignKey(
-        "Vendedor",
+        "MyUser",
+        related_name='vendedor',
+        limit_choices_to={'groups__name': "Vendedores"},
         on_delete=models.DO_NOTHING,
         null=True
     )
@@ -254,7 +266,8 @@ class ItemPropuesta(models.Model):
         null=False, 
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING)
@@ -375,7 +388,7 @@ class Notificacion(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     hyperlink = models.CharField(max_length=255)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "MyUser",
         on_delete=models.DO_NOTHING)
     visto = models.BooleanField(default=False)
 
@@ -397,7 +410,8 @@ class Factura(models.Model):
     numero_factura = models.IntegerField(null=False)
     
     proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
     tipo_pago = models.ForeignKey(
@@ -426,7 +440,8 @@ class Remito(models.Model):
     fecha_vencimiento = models.DateField(null=False)
     
     proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
 	#desc_productos 
@@ -448,7 +463,8 @@ class OrdenDeCompra(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -468,7 +484,8 @@ class OrdenDePago(models.Model):
         null=False, 
         on_delete=models.DO_NOTHING) 
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -485,7 +502,8 @@ class ConstanciaRentencion(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING) 
     importe = models.FloatField()
@@ -500,7 +518,8 @@ class Recibo(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
     monto = models.PositiveIntegerField(null=False ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
@@ -543,7 +562,8 @@ class FacturaComision(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'groups__name': "Proveedores"},
         null=False, 
         on_delete=models.DO_NOTHING)
     documento = models.FileField(upload_to='media/facturasComision/%Y/%m/%d', null=False)
