@@ -740,20 +740,33 @@ def listaNL(request,negocioFilter,modulo):
             #P = Proveedor
             if (modulo == 'P'):    
                 persona = Persona.objects.get(user=request.user)
-                empleadoP = Proveedor.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
+                proveedorP = Proveedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=proveedorP.id)
             #L = Logistica   
             elif (modulo == 'L'):
                 persona = Persona.objects.get(user=request.user)
-                empleadoL = Logistica.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id)
+                logisticaL = Logistica.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=logisticaL.empresa.id)
             #A = Administrador 
             elif (modulo == 'A'):
                 persona = Persona.objects.get(user=request.user)
                 administradorL = Administrador.objects.get(persona__id=persona.id)
                 items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=administradorL.empresa.id)
+            #C = Comprador
+            elif (modulo == 'C'):
+                persona = Persona.objects.get(user=request.user)
+                compradorL = Comprador.objects.get(persona__id=persona.id)
+                propuesta.negocio.comprador
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, propuesta__negocio__comprador__id=compradorL.id)
+            #V = Vendedor
+            elif (modulo == 'V'):
+                persona = Persona.objects.get(user=request.user)
+                vendedorL = Vendedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=vendedorL.empresa.id)
             else:
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
+                items = []
+            
+            
             if (items.count() < 1):
                 pass
             else:
