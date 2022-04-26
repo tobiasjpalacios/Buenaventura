@@ -143,7 +143,8 @@ class NotificacionesView(View):
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
         #Negocios en Procesos
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        grupo_activo = request.user.groups.all()[0].name[0]
+        negociosAbiertos = get_negocios_condicion(grupo_activo, request)
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
         vendedor = Vendedor.objects.all()
@@ -153,6 +154,20 @@ class PresupuestosView(View):
             'todos_vendedores': vendedor
         }
         return render(request, 'presupuestos.html', context)
+
+def get_negocios_condicion(grupo_activo, request):
+    #A = Administrador 
+    if (grupo_activo == 'A'):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #C = Comprador
+    elif (grupo_activo == 'C'):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #V = Vendedor
+    elif (grupo_activo == 'V'):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    else:
+        negociosAbiertos = null
+    return negociosAbiertos
 
 class VencimientosView(View):
     def get(self, request, *args, **kwargs):
@@ -756,7 +771,6 @@ def listaNL(request,negocioFilter,modulo):
             elif (modulo == 'C'):
                 persona = Persona.objects.get(user=request.user)
                 compradorL = Comprador.objects.get(persona__id=persona.id)
-                propuesta.negocio.comprador
                 items = ItemPropuesta.objects.filter(propuesta__id = id_prop, propuesta__negocio__comprador__id=compradorL.id)
             #V = Vendedor
             elif (modulo == 'V'):
@@ -1421,6 +1435,8 @@ def listaItemsPorVencer(listaNegociosC):
             for b in items:
                 lista_Items.append(b)
     return lista_Items
+
+
 
 def listasNA(negocioFilter, tipo):
     lista_negocios = []
