@@ -1,0 +1,7 @@
+{{ titulo }}
+
+{{ texto }}
+
+{{ url }}
+
+Observaciones: {{ obs }}
