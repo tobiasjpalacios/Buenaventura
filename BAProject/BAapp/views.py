@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
@@ -19,10 +19,13 @@ from .choices import DIVISA_CHOICES, TASA_CHOICES, TIPO_DE_NEGOCIO_CHOICES
 from .scriptModels import *
 from .decorators import *
 from datetime import date, datetime, timedelta
+from django.utils import formats
 from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from .utils.email_send import email_send
+
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -1482,31 +1485,46 @@ class carga_excel(View):
         sheet_reader(request.FILES["myfile"])
         return self.get(request)
 
-def crear_negocio(request, comprador, vendedor, isComprador):
+def crear_negocio(request, comprador, vendedor, isComprador, observacion):
+    created_by = None
     if isComprador:
         chunks = vendedor.split(' ')
         vendedor_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
         vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
         comprador_obj = Comprador.objects.get(persona__user=request.user)
+        created_by = f"{comprador_obj.persona.user.first_name} {comprador_obj.persona.user.last_name}"
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
             )
         negocio.save()
-        return negocio
     else:
         chunks = comprador.split(' ')
         comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
         comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
         vendedor_obj = Vendedor.objects.get(persona__user=request.user)
+        created_by = f"{vendedor_obj.persona.user.first_name} {vendedor_obj.persona.user.last_name}"
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
             )
         negocio.save()
-        return negocio
+
+    subject = "Se creó un nuevo negocio"
+    texto = f"""
+    El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
+    Hacé click en el botón de abajo para ver el nuevo negocio.
+    """
+    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+    recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
+    context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
+
+    email_response = email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+
+    return negocio
+    
 
 def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
@@ -1777,8 +1795,9 @@ class NegocioView(View):
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
-        print(data)
         completed = True
+        observaciones = "No hay observaciones" if not data["observaciones"] else data["observaciones"]
+        res = None
         with transaction.atomic():
             prop = Propuesta(
                 negocio=negocio,
@@ -1814,10 +1833,10 @@ class NegocioView(View):
 
         titulo = "Presupuesto de {} {}".format(
             request.user.get_full_name(),
-            "aceptado" if completed else "actualizado"
+            "finalizado" if completed else "actualizado"
         )
         categoria = "Presupuesto {}".format(
-            "aceptado" if completed else "actualizado"
+            "finalizado" if completed else "actualizado"
         )
         user = None
         if (prop.envio_comprador):
@@ -1850,7 +1869,55 @@ class NegocioView(View):
             negocio.fecha_cierre = datetime.now()
             negocio.save()
 
-        return render(request, 'negocio.html')
+        # send email
+
+        formatted_fecha_cierre = ""
+        color = ""
+        texto = ""
+
+        fecha_cierre = negocio.fecha_cierre
+        if fecha_cierre is not None:
+            formatted_fecha_cierre = formats.date_format(fecha_cierre, "SHORT_DATETIME_FORMAT")
+
+        pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
+        pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
+        pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
+        pos_cierre_text = f"El negocio cerró en la fecha: {formatted_fecha_cierre}."
+
+        if negocio.aprobado:
+            titulo = f"{pre_titulo} aprobado"
+            color = "green"
+            texto = f"""
+            {pre_text} aprobado. {pos_cierre_text}
+
+            {pos_text}
+            """
+        elif negocio.cancelado:
+            titulo = f"{pre_titulo} cancelado"
+            color = "red"
+            texto = f"""
+            {pre_text} cancelado. {pos_cierre_text}
+
+            {pos_text}
+            """
+        else:
+            titulo = f"{pre_titulo} actualizado"
+            texto = f"{pre_text} actualizado. {pos_text}"
+
+        full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+        recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
+        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
+
+        email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        print(email_response)
+        
+        #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dió error
+        if email_response == 1:
+            res = render(request, 'negocio.html')
+        else:
+            res = render(request, 'negocio.html', {'email_error' : True, 'email_error_response' : email_response})
+
+        return res
 
 class ListEmpresaView(View):
     def get(self, request, *args, **kwargs):
@@ -1949,7 +2016,7 @@ class APIArticulos(View):
         isComprador = recieved.get("envio_comprador")
         comprador = recieved.get("comprador")
         vendedor = recieved.get("vendedor")
-        negocio = crear_negocio(request, comprador, vendedor, isComprador)
+        negocio = crear_negocio(request, comprador, vendedor, isComprador, observacion)
         propuesta = crear_propuesta(negocio,observacion,isComprador)
         data = recieved.get("data")
         for i in range(len(data)):
