@@ -1,13 +1,6 @@
 from pathlib import Path
 import django.db.models.options as options
-# NOTE: Environ es provisorio porque todavía no está dockerizada esta rama
-import environ
 import os
-
-env = environ.Env()
-
-# Leer el archivo .env
-environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,15 +11,15 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('search_fields',)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
 # Application definition
 
@@ -152,5 +145,5 @@ if DEBUG is False:
     ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
-    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
