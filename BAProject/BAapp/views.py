@@ -142,9 +142,9 @@ class NotificacionesView(View):
 
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
-        #Negocios en Procesos
-        grupo_activo = request.user.groups.all()[0].name[0]
-        negociosAbiertos = get_negocios_condicion(grupo_activo, request)
+        #Negocios en Procesos    
+        print("ap")
+        negociosAbiertos = get_negocios_bygroup(request, True)
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
         vendedor = Vendedor.objects.all()
@@ -155,24 +155,28 @@ class PresupuestosView(View):
         }
         return render(request, 'presupuestos.html', context)
 
-def get_negocios_condicion(grupo_activo, request):
+def get_negocios_bygroup(request, fcn):
+    print("a")
+    grupo_activo = request.user.groups.all()[0].name[0]
+    print("aa")
     #A = Administrador 
     if (grupo_activo == 'A'):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
     #C = Comprador
     elif (grupo_activo == 'C'):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     #V = Vendedor
     elif (grupo_activo == 'V'):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+        print("aav")
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
         negociosAbiertos = null
     return negociosAbiertos
 
 class VencimientosView(View):
     def get(self, request, *args, **kwargs):
-        #les agrego lo que creo que hace falta pero idk fijense
-        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        #negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())                    
+        negociosCerrConf = get_negocios_bygroup(request, False)
         lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
         lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
         return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
