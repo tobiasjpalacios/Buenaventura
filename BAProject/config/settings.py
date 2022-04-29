@@ -20,6 +20,9 @@ ALLOWED_HOSTS = ['*']
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
+EMAIL_BACKEND = 'django_ses.SESBackend'
+
+
 # Application definition
 
 INSTALLED_APPS = [
