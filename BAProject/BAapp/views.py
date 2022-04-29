@@ -173,7 +173,7 @@ def get_negocios_bygroup(request, fcn):
         print("aav")
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
-        negociosAbiertos = null
+        negociosAbiertos = None
     return negociosAbiertos
 
 class VencimientosView(View):
@@ -1629,8 +1629,8 @@ class APIEmpresa(View):
         return JsonResponse(list(empresas), safe=False)        
 
 def filterArticulo(request, ingrediente):
-    marcas = Articulo.objects.filter(ingrediente=ingrediente).values("marca")
-    return JsonResponse(list(marcas), safe=False)
+    empresas = Articulo.objects.filter(ingrediente=ingrediente).values("empresa__nombre_comercial")
+    return JsonResponse(list(empresas), safe=False)
 
 class ListArticuloView(View):
     def get(self, request, *args, **kwargs):
@@ -2039,7 +2039,7 @@ class APIArticulos(View):
             articulos = Articulo.objects.search(searchStr)
         else:
             articulos = Articulo.objects.all()
-        return JsonResponse(list(articulos.values("marca", "ingrediente","id")), safe=False)
+        return JsonResponse(list(articulos.values("empresa__nombre_comercial", "ingrediente", "id", "marca")), safe=False)
 
     def post(self,request):
         recieved = json.loads(request.body.decode("utf-8"))
@@ -2052,7 +2052,7 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            marca = actual.get("Marca")
+            empresa = actual.get("Empresa")
             ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
             domicilio_str = actual.get("Destino")
@@ -2061,7 +2061,9 @@ class APIArticulos(View):
             divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
-            articulo = Articulo.objects.get(marca=marca, ingrediente=ingrediente)
+            # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),
+            # por lo que la query arroja resultados que pueden ser no deseados.
+            articulo = Articulo.objects.filter(empresa__nombre_comercial=empresa, ingrediente=ingrediente).first()
             try:
                 domicilio = Domicilio.objects.get(direccion=domicilio_str)
             except ObjectDoesNotExist:

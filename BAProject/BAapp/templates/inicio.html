@@ -91,9 +91,8 @@ BuenaVentura Agronegocios
 }
 
 #inputComp {
-  border-bottom: 0px solid #000; 
-  box-shadow: 0 0px 0 0 #000; 
-  border: #000; 
+  border-bottom: none !important; 
+  box-shadow: none !important; 
   font-size: 120%;
 }
 
@@ -127,12 +126,12 @@ BuenaVentura Agronegocios
           <div class="row"> 
             <div class="col s3"> 
               <span class="col s4 right-align"  style="margin-top: 5%;" > de </span>
-              <h5   style=" margin-left: 10%; border-bottom: 1px solid black; padding-bottom: 6px;" class="col s6 ">{{ user.get_username }}</h5>
+              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_username }}</h5>
             </div>
             <div class="col s3"> 
               <span class="col s4 left-align" style="margin-top: 5%;"> Para</span>
-              <div class="row entrada col s8 left-align">
-                <input placeholder="Cliente " class =" center-align" type="text" id="inputComp" list="datalistComp">
+              <div class="row entrada col s8 left-align" style="border-bottom: none; box-shadow: none;">
+                <input placeholder="{% if request.user|has_group:'Comprador' %}Vendedor{% elif request.user|has_group:'Vendedor' %}Comprador{% endif %}" class =" center-align" type="text" id="inputComp" list="datalistComp">
                 <datalist id="datalistComp"></datalist>
               </div>
             </div>
@@ -261,9 +260,9 @@ function start_datepicker(){
 }
 var rowCnt = 0;
 var headers = (userIsComprador) ? 
-              ["Ingrediente", "Marca", "Cantidad", "Precio",
+              ["Ingrediente", "Empresa", "Cantidad", "Precio",
               "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"]
-              : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+              : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
               "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 var savings_data;
@@ -275,7 +274,7 @@ var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2
 // to validate if inputs are correct
 var isValidated = false;
 var all_ingredientes = [];
-var all_marcas = [];
+var all_empresas = [];
 var all_distribuidores = [];
 var all_tipoPago = [];
 var all_compradores = []
@@ -361,7 +360,7 @@ var errors = [];
 
 
 function addRow() {
-  var general = (userIsComprador) ? ["Ingrediente", "Marca", "Cantidad"] : ["Ingrediente", "Marca", "Distribuidor", "Cantidad"];
+  var general = (userIsComprador) ? ["Ingrediente", "Empresa", "Cantidad"] : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad"];
   var pago = (userIsComprador) ? ["Precio", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Tipo de pago", "Tasa", "Fecha de pago"];
   var logistica = ["Fecha de entrega","Destino"];
 
@@ -524,9 +523,9 @@ function addRow() {
   thread.appendChild(br2); 
 
 var headers = (userIsComprador) ?
-              ["Ingrediente", "Marca", "Cantidad", "Precio", 
+              ["Ingrediente", "Empresa", "Cantidad", "Precio", 
               "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"] 
-              : ["Ingrediente", "Marca", "Distribuidor", "Cantidad", 
+              : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad", 
               "Precio venta", "Precio compra", 
               "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
@@ -538,8 +537,8 @@ var headers = (userIsComprador) ?
         var th = document.getElementById("th_Ingrediente"+rowCnt);
         input_ingrediente(c, th)
       }else if(c==1){   
-        var th = document.getElementById("th_Marca"+rowCnt);
-        input_marca(c, th);
+        var th = document.getElementById("th_Empresa"+rowCnt);
+        input_empresa(c, th);
       }else if (c==2) {
         var th = document.getElementById("th_Cantidad"+rowCnt);
         input_cantidad(c,th);
@@ -577,8 +576,8 @@ var headers = (userIsComprador) ?
         var th = document.getElementById("th_Ingrediente"+rowCnt);
         input_ingrediente(c, th)  
       }else if(c==1){   
-        var th = document.getElementById("th_Marca"+rowCnt);
-        input_marca(c, th);
+        var th = document.getElementById("th_Empresa"+rowCnt);
+        input_empresa(c, th);
       }else if (c==2) {
         var th = document.getElementById("th_Distribuidor"+rowCnt);
         input_distribuidor(c, th);
@@ -642,7 +641,7 @@ function closeDiv(divName){
   
 }
 
-function refreshMarca(inputId){
+function refreshEmpresa(inputId){
   var input = document.getElementById('input0.'+inputId).value;
   var datalist = document.getElementById('datalist1.'+inputId);
 
@@ -656,7 +655,7 @@ function refreshMarca(inputId){
       datalist.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].marca+'');
+        option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
         option.setAttribute('id','option'+i);
         datalist.appendChild(option);
       }
@@ -721,7 +720,7 @@ function idChanger(newRowCnt) {
       input.setAttribute("list", "datalist"+c+'.'+(newRowCnt-2));
     }
     if (c==0) {
-      input.setAttribute("onchange", "refreshMarca("+(newRowCnt-2)+")");
+      input.setAttribute("onchange", "refreshEmpresa("+(newRowCnt-2)+")");
     }
     if (userIsComprador) {
       if (c==4) {
@@ -801,17 +800,17 @@ function validateData(rowCnt){
       }else if (j == 1) {
           if (input.value === null || input.value.match(/^ *$/) !== null) {
             boolMar = false;
-            var error = "La marca no puede estar vacia, si no requiere una en específico seleccione NINGUNA";
+            var error = "La empresa no puede estar vacia, si no requiere una en específico seleccione NINGUNA";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
             }
             input.style.borderColor = '#CF0029';
           }else{
-            if (all_marcas.indexOf(input.value) > -1) {
+            if (all_empresas.indexOf(input.value) > -1) {
               boolMar = true;
             }else{
               boolMar = false;
-              var error = "La marca no está dentro de las opciones permitidas";
+              var error = "La empresa no está dentro de las opciones permitidas";
               if (errors.indexOf(error) < 0) {
                 errors.push(error);
               }
@@ -956,7 +955,6 @@ function submit(){
           'envio_comprador': true,
        }
      }
-     console.log(aux_dict);
      fetch("{% url 'api_articulos' %}",{
       method:'POST',
       headers: {
@@ -988,7 +986,7 @@ function input_ingrediente(c,td){
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-  ele.setAttribute('onchange','refreshMarca("'+rowCnt+'")');
+  ele.setAttribute('onchange','refreshEmpresa("'+rowCnt+'")');
   ele.setAttribute('onclick','this.select();');
   ele.setAttribute('placeholder', 'Ingrediente');
   ele.setAttribute('autocomplete', 'off');
@@ -1007,13 +1005,13 @@ function input_ingrediente(c,td){
 }
 
 
-function input_marca(c,td){
+function input_empresa(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'text');
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Marca');
+  ele.setAttribute('placeholder', 'Empresa');
   ele.setAttribute('autocomplete', 'off');
   var datalistMar = document.createElement('datalist');
   datalistMar.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
@@ -1022,9 +1020,9 @@ function input_marca(c,td){
   td.appendChild(datalistMar);
   for (var i = 0; i < savings_data.length; i++) {
     var optionMar = document.createElement('option');
-    optionMar.setAttribute('value',''+savings_data[i].marca+'');
+    optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
     optionMar.setAttribute('id','option'+i);
-    all_marcas.push(savings_data[i].marca);
+    all_empresas.push(savings_data[i].empresa__nombre_comercial);
     datalistMar.appendChild(optionMar);        
   }
 }
