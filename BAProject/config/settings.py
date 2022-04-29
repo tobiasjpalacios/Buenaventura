@@ -146,5 +146,3 @@ if DEBUG is False:
     EMAIL_BACKEND = 'django_ses.SESBackend'
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
