@@ -25,6 +25,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
 from .utils.email_send import email_send
+from django.contrib.sites.models import Site
 
 
 def cuentas(request):
@@ -1517,7 +1518,9 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
     Hacé click en el botón de abajo para ver el nuevo negocio.
     """
-    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+    protocol = "http://"
+    domain = Site.objects.get_current().domain
+    full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id,])
     recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
     context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
 
