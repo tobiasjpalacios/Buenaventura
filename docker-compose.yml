@@ -19,10 +19,8 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - db
-    environment:
-      DOCKER: 1
-      PRODUCTION: 1
-      DB_PASSWORD: example
+    env_file:
+      - .env
     expose:
       - "8000"
     ports:
