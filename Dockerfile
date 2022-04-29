@@ -1,3 +1,6 @@
+
+
+
 FROM python:3.8-alpine
 EXPOSE 8000
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -8,12 +11,7 @@ ENV LIBRARY_PATH=/lib:/usr/lib
 RUN python -m pip install -r req.txt
 WORKDIR /app
 COPY ./BAProject ./
-
-COPY ./docker-entrypoint.sh ./
-# COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker-entrypoint.sh ./ 
 RUN ["chmod", "+x", "/app/docker-entrypoint.sh"] 
-# RUN ["chmod", "+x", "/docker-entrypoint.sh"] 
 ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
-# ENTRYPOINT [ "/docker-entrypoint.sh" ]
-
 
