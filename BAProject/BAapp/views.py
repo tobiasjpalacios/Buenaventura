@@ -145,8 +145,9 @@ class NotificacionesView(View):
 
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
-        #Negocios en Procesos
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        #Negocios en Procesos    
+        print("ap")
+        negociosAbiertos = get_negocios_bygroup(request, True)
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
         vendedor = Vendedor.objects.all()
@@ -157,10 +158,28 @@ class PresupuestosView(View):
         }
         return render(request, 'presupuestos.html', context)
 
+def get_negocios_bygroup(request, fcn):
+    print("a")
+    grupo_activo = request.user.groups.all()[0].name[0]
+    print("aa")
+    #A = Administrador 
+    if (grupo_activo == 'A'):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #C = Comprador
+    elif (grupo_activo == 'C'):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #V = Vendedor
+    elif (grupo_activo == 'V'):
+        print("aav")
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    else:
+        negociosAbiertos = null
+    return negociosAbiertos
+
 class VencimientosView(View):
     def get(self, request, *args, **kwargs):
-        #les agrego lo que creo que hace falta pero idk fijense
-        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())
+        #negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())                    
+        negociosCerrConf = get_negocios_bygroup(request, False)
         lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
         lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
         return render(request, 'vencimientos.html', {'lista_vencimiento':lvn,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos})
@@ -743,20 +762,32 @@ def listaNL(request,negocioFilter,modulo):
             #P = Proveedor
             if (modulo == 'P'):    
                 persona = Persona.objects.get(user=request.user)
-                empleadoP = Proveedor.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
+                proveedorP = Proveedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=proveedorP.id)
             #L = Logistica   
             elif (modulo == 'L'):
                 persona = Persona.objects.get(user=request.user)
-                empleadoL = Logistica.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoL.empresa.id)
+                logisticaL = Logistica.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=logisticaL.empresa.id)
             #A = Administrador 
             elif (modulo == 'A'):
                 persona = Persona.objects.get(user=request.user)
                 administradorL = Administrador.objects.get(persona__id=persona.id)
                 items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=administradorL.empresa.id)
+            #C = Comprador
+            elif (modulo == 'C'):
+                persona = Persona.objects.get(user=request.user)
+                compradorL = Comprador.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, propuesta__negocio__comprador__id=compradorL.id)
+            #V = Vendedor
+            elif (modulo == 'V'):
+                persona = Persona.objects.get(user=request.user)
+                vendedorL = Vendedor.objects.get(persona__id=persona.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=vendedorL.empresa.id)
             else:
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
+                items = []
+            
+            
             if (items.count() < 1):
                 pass
             else:
@@ -1411,6 +1442,8 @@ def listaItemsPorVencer(listaNegociosC):
             for b in items:
                 lista_Items.append(b)
     return lista_Items
+
+
 
 def listasNA(negocioFilter, tipo):
     lista_negocios = []
