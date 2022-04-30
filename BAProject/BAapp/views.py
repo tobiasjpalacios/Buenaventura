@@ -781,9 +781,7 @@ def listaNL(request,negocioFilter,modulo):
                 items = ItemPropuesta.objects.filter(propuesta__id = id_prop, propuesta__negocio__comprador__id=compradorL.id)
             #V = Vendedor
             elif (modulo == 'V'):
-                persona = Persona.objects.get(user=request.user)
-                vendedorL = Vendedor.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=vendedorL.empresa.id)
+                items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
             else:
                 items = []
             
