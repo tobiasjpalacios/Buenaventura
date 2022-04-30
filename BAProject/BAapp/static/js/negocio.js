@@ -214,8 +214,12 @@ function addTable() {
 
 //
 
+setTimeout(function() {
+  $(".blink_text").fadeIn();
+}, 10000);
+
 $(window).on('load', function () {
-  $(".valign-wrapper").fadeOut("fast", function() {
+  $(".contain").fadeOut("fast", function() {
     $(this).remove();
   });
 });
