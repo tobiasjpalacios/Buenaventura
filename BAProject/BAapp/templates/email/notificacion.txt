@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 {{ titulo }}
 
 {{ texto }}
 
-=======
-{{ titulo }}
-
-{{ texto }}
-
->>>>>>> 74636774df64e36e90ccb04c855f70044f4152d7
 Ir a notificaciones: {{ url }}

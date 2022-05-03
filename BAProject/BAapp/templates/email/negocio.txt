@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 {{ titulo }}
 
 {{ texto }}
 
 {{ url }}
 
-=======
-{{ titulo }}
-
-{{ texto }}
-
-{{ url }}
-
->>>>>>> 74636774df64e36e90ccb04c855f70044f4152d7
 Observaciones: {{ obs }}
