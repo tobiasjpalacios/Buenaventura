@@ -233,11 +233,7 @@
             <tbody>
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text white-text-input"{% endif %}>
-                {% if item.articulo.marca == "NINGUNA" %}
-                  <td class="show0">{{ item.articulo.ingrediente|default_if_none:'' }}</td>
-                {% else %}
-                  <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
-                {% endif %}
+                <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
                 {% if not request.user|has_group:'Comprador' %}
                 <td class="show0">
                   {% if item.proveedor == None %}
@@ -465,13 +461,13 @@
         var data = {"suggestions":[]};
         $.map(res, (a) => {
           data.suggestions.push({
-            'value': a.marca,
+            'value': a.ingrediente + " " + a.empresa__nombre_comercial,
             'data': ""+a.id,
           })
         })
         return data;
       },
-      minChars: 4,
+      minChars: 2,
       onSelect: function (suggestion) {
         $("#artValue").val(suggestion.data)
       },

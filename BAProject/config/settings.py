@@ -145,7 +145,8 @@ SITE_ID = 1
 if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
-    ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
+    # Allowed hosts genera bad request 400
+    # ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
