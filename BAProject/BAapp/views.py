@@ -1557,6 +1557,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     email_response = email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
 
     return negocio
+    
 
 def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
