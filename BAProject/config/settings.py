@@ -1,3 +1,4 @@
+from distutils.util import strtobool
 from pathlib import Path
 import django.db.models.options as options
 import os
@@ -14,13 +15,13 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('search_fields',)
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = strtobool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Application definition
@@ -73,7 +74,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Choose db config depending on the environment
 db_conf = str(BASE_DIR.joinpath('config/mariadb.conf'))
-if(os.environ["DOCKER"]):
+if strtobool(os.environ.get("DOCKER")):
     db_conf = str(BASE_DIR.joinpath('config/mariadb-docker.conf'))
 
 
