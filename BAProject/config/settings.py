@@ -142,7 +142,7 @@ SITE_ID = 1
 
 # When DEBUG is set to False
 
-if DEBUG is False:
+if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
     ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
