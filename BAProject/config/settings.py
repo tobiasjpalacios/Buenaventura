@@ -145,7 +145,7 @@ SITE_ID = 1
 if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
-    ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
+    ALLOWED_HOSTS = ["https://bvagro.com.ar", "http://www.clientes.bvagro.com.ar"]
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
