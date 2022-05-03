@@ -169,7 +169,7 @@ class Articulo(models.Model):
         search_fields = ('marca','ingrediente','concentracion')
 
     def __str__(self):
-        return '{} {} {}'.format(self.ingrediente, self.marca, self.empresa.nombre_comercial)
+        return '{} {}'.format(self.ingrediente, self.empresa.nombre_comercial)
 
 
 class Negocio(models.Model):

@@ -26,6 +26,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
 from .utils.email_send import email_send
 from django.contrib.sites.models import Site
+import operator
+from functools import reduce
 
 def cuentas(request):
     return render(request, 'cuentas.html')
@@ -2035,10 +2037,8 @@ class APIArticulos(View):
         articulos = None
         if (request.GET.get('search', None)):
             words = request.GET['search'].split(" ")
-            for i in range(len(words)):
-                words[i] = "+{}*".format(words[i])
-            searchStr = " ".join(words)
-            articulos = Articulo.objects.search(searchStr)
+            query = reduce(operator.and_, (Q(ingrediente__icontains=word) | Q(empresa__nombre_comercial__icontains=word) for word in words))
+            articulos = Articulo.objects.filter(query)
         else:
             articulos = Articulo.objects.all()
         return JsonResponse(list(articulos.values("empresa__nombre_comercial", "ingrediente", "id", "marca")), safe=False)
