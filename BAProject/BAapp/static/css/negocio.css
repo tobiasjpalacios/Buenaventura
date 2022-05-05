@@ -154,6 +154,11 @@ th {
     width: 1%;
     white-space: nowrap;
     padding: 3px;
+    text-align: center;
+}
+
+td > input, td > div > input.select-dropdown.dropdown-trigger {
+    text-align: center !important;
 }
 
 div.row>table>thead>tr {

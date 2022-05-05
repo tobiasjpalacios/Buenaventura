@@ -248,9 +248,9 @@
                   {% endif %}
                 </td>
                 {% endif %}
-                <td class="show0"><input type="number" name="cantidad" value="{{ item.cantidad|default_if_none:'' }}"></td>
-                <td class="show0"><input type="number" name="precio_venta" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show0"><input type="number" name="cantidad" min="0" value="{{ item.cantidad|default_if_none:'' }}"></td>
+                <td class="show0"><input type="number" name="precio_venta" min="0" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min="0" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
                 <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
@@ -303,12 +303,12 @@
                   {% endfor %}
                   </datalist>
                 </td>
-                <td class="show0"><input type="number" name="cantidad"></td>
+                <td class="show0"><input type="number" name="cantidad" min="0"></td>
                 <td class="show0">
-                  <input type="number" name="precio_venta" step=".01" placeholder="{{ item.precio_venta }}">
+                  <input type="number" name="precio_venta" step=".01" min="0" placeholder="{{ item.precio_venta }}">
                 </td>
                 <td class="show0 {% if request.user|has_group:'Comprador' %}customerHide{% endif %}">
-                  <input type="number" name="precio_compra" step=".01" placeholder="{{ item.precio_compra }}">
+                  <input type="number" name="precio_compra" min="0" step=".01" placeholder="{{ item.precio_compra }}">
                 </td>
                 <td class="{% if request.user|has_group:'Comprador' %}show0{% elif request.user|has_group:'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
