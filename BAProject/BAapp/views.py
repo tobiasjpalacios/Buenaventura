@@ -1909,15 +1909,18 @@ class NegocioView(View):
         formatted_fecha_cierre = ""
         color = ""
         texto = ""
+        negocio_update = False
 
         fecha_cierre = negocio.fecha_cierre
         if fecha_cierre is not None:
-            formatted_fecha_cierre = formats.date_format(fecha_cierre, "SHORT_DATETIME_FORMAT")
+            fecha = formats.date_format(fecha_cierre, "SHORT_DATE_FORMAT")
+            hora = formats.time_format(fecha_cierre, "TIME_FORMAT")
+            formatted_fecha_cierre = f"{fecha} a las {hora} hs"
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
         pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
         pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
-        pos_cierre_text = f"El negocio cerró en la fecha: {formatted_fecha_cierre}."
+        pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
         if negocio.aprobado:
             titulo = f"{pre_titulo} aprobado"
@@ -1936,21 +1939,23 @@ class NegocioView(View):
             {pos_text}
             """
         else:
-            titulo = f"{pre_titulo} actualizado"
-            texto = f"{pre_text} actualizado. {pos_text}"
+            negocio_update = True
 
         full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
         recipient_list = [negocio.vendedor.persona.user.email, negocio.comprador.persona.user.email]
         context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
 
-        email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-        print(email_response)
+        if not negocio_update:
+            email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+            print(email_response)
+        
+        res = render(request, 'negocio.html')
         
         #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dió error
-        if email_response == 1:
-            res = render(request, 'negocio.html')
-        else:
-            res = render(request, 'negocio.html', {'email_error' : True, 'email_error_response' : email_response})
+        # if email_response == 1:
+        #     res = render(request, 'negocio.html')
+        # else:
+        #     res = render(request, 'negocio.html', {'email_error' : True, 'email_error_response' : email_response})
 
         return res
 

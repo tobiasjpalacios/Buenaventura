@@ -580,8 +580,10 @@ def send_email_notification(sender, instance, **kwargs):
             pre_text = instance.titulo
 
         subject = instance.titulo
-        formatted_timestamp = formats.date_format(instance.timestamp, "SHORT_DATETIME_FORMAT")
-        text = f"{pre_text}. Recibido en la fecha: {formatted_timestamp}"
+        fecha = formats.date_format(instance.timestamp, "SHORT_DATE_FORMAT")
+        hora = formats.time_format(instance.timestamp, "TIME_FORMAT")
+        formatted_timestamp = f"{fecha} a las {hora} hs"
+        text = f"{pre_text}. Recibido el día {formatted_timestamp}."
         protocol = "http://"
         domain = Site.objects.get_current().domain
         url =  protocol + domain + reverse('notificaciones')

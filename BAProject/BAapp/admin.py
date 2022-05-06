@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import *
-# Register your models here.
+
 
 class ItemPropuestaInline(admin.TabularInline):
     model = ItemPropuesta
@@ -14,6 +14,9 @@ class ArticuloAdmin(admin.ModelAdmin):
 
 class FacturaAdmin(admin.ModelAdmin):
     list_display  = ('fecha_emision','documento')
+
+class NegocioAdmin(admin.ModelAdmin):
+    list_display = ('id_de_neg', 'fecha_cierre')
 
 admin.site.register(Comprador)
 admin.site.register(Logistica)
@@ -31,7 +34,7 @@ admin.site.register(Telefono)
 admin.site.register(Gerente)
 admin.site.register(ItemPropuesta)
 admin.site.register(Financiacion)
-admin.site.register(Negocio)
+admin.site.register(Negocio, NegocioAdmin)
 admin.site.register(Persona)
 admin.site.register(TipoPago)
 admin.site.register(Notificacion)
