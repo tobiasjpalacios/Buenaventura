@@ -51,9 +51,9 @@ def inicio(request):
 
 class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
-        grupo_activo = request.user.groups.all()[0].name
-        negocio = getNegociosForList(request,grupo_activo,1)
-        vendedor = Vendedor.objects.all()
+        grupo_activo = request.user.clase
+        negocio = getNegociosByClase(request,grupo_activo,1)
+        vendedor = User.objects.filter(clase='vendedor')
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 class Info_negocioView(View): 
@@ -62,7 +62,7 @@ class Info_negocioView(View):
             idProp = kwargs["pk"]
             propuesta = Propuesta.objects.get(pk=kwargs["pk"])
             negocio = Negocio.objects.get(id=propuesta.negocio.id)
-            grupo_activo = request.user.groups.all()[0].name
+            grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
             if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
                 envio = not envio
@@ -164,7 +164,7 @@ class PresupuestosView(View):
 
 def get_negocios_bygroup(request, fcn):
     print("a")
-    grupo_activo = request.user.groups.all()[0].name[0]
+    grupo_activo = request.user.clase[0]
     print("aa")
     #A = Administrador 
     if (grupo_activo == 'A'):
@@ -190,7 +190,7 @@ class VencimientosView(View):
 
 class LogisticaView(View):
     def get(self, request, *args, **kwargs):
-        grupo_activo = request.user.groups.all()[0].name[0]
+        grupo_activo = request.user.clase
         negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())    
         lnl = listaNL(request, negociosCerrConf, grupo_activo)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
@@ -209,7 +209,7 @@ def detalleNotis(request):
             id_prop = propuesta[0][0]
             envio = propuesta[0][1]
             negocio.id_prop = id_prop
-            grupo_activo = request.user.groups.all()[0].name
+            grupo_activo = request.user.clase
             if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
                 envio = not envio
             negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
@@ -219,9 +219,9 @@ def detalleNotis(request):
 
 #lo viejo xd
 
-def getNegociosForList(request, grupo_activo, tipo):
+def getNegociosByClase(request, user_clase, tipo):
     negocio = []
-    if (grupo_activo == 'Vendedores'):
+    if (user_clase == 'Vendedor'):
         if (tipo == 2):
             negocio = Negocio.objects.all().values_list('id', flat=True)
         else:
@@ -230,20 +230,20 @@ def getNegociosForList(request, grupo_activo, tipo):
             for a in negocio:
                 a.proveedores = getProveedoresNegocio(a)
 
-    elif (grupo_activo == 'Compradores'):
+    elif (user_clase == 'Comprador'):
         if (tipo == 2):
             negocio = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp').values_list('id', flat=True)
         else:
             negocios = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (grupo_activo == 'Gerentes'):
+    elif (user_clase == 'Gerente'):
         mi_gerente = Gerente.objects.get(persona__user=request.user)
         if (tipo == 2):
             negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp').values_list('id', flat=True)
         else:
             negocios = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (grupo_activo == 'Proveedores'):
+    elif (user_clase == 'Proveedor'):
         negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-timestamp')
         lista_ids = []
         for a in negocios:
@@ -257,7 +257,7 @@ def getNegociosForList(request, grupo_activo, tipo):
         else:
             negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (grupo_activo == 'Administradores'):
+    elif (user_clase == 'Administrador'):
         negocios = Negocio.objects.all().order_by('-timestamp')
         lista_ids = []
         for a in negocios:
@@ -277,8 +277,7 @@ def getNegociosForList(request, grupo_activo, tipo):
 
 
 def todosFiltro(request, tipo):
-    grupo_activo = request.user.groups.all()[0].name
-    negocios_permitidos = getNegociosForList(request,grupo_activo,2)
+    negocios_permitidos = getNegociosByClase(request,request.user.clase,2)
     negocio = []
     negocioAux = []
     estado = ""
@@ -322,8 +321,8 @@ def filtrarNegocios(request):
         idDeNeg = request.POST['idDeNeg']
         error = False
         listaVendedor = []
-        grupo_activo = request.user.groups.all()[0].name
-        negocios_permitidos = getNegociosForList(request,grupo_activo,2)
+        grupo_activo = request.user.clase
+        negocios_permitidos = getNegociosByClase(request,grupo_activo,2)
         if (vendedor == "todos"):
             listaVendedor = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
         else:
@@ -400,7 +399,7 @@ def filtrarNegocios(request):
                 envio = propuesta[0][1]
                 a.id_prop = id_prop
                 a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
-        grupo_activo = request.user.groups.all()[0].name
+        grupo_activo = request.user.clase
         if (grupo_activo == 'Vendedores'):
             for a in todos_los_negocios:
                 a.proveedores = getProveedoresNegocio(a)
@@ -649,7 +648,7 @@ def detalleNegocio(request):
         idProp = request.POST['idProp']        
         propuesta = Propuesta.objects.get(id=idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
-        grupo_activo = request.user.groups.all()[0].name
+        grupo_activo = request.user.clase
         envio = propuesta.envio_comprador
         if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
             envio = not envio
@@ -905,7 +904,7 @@ def detalleLogistica(request):
         negocio.fecha_aux = propuesta.timestamp
         cliente = None
         proveedores = None
-        grupo_activo = request.user.groups.all()[0].name
+        grupo_activo = request.user.clase
         items = None
         if (grupo_activo == 'Logisticas'):
             persona = Persona.objects.get(user=request.user)
@@ -1120,7 +1119,7 @@ def sendAlertaLog(request):
     return JsonResponse(data)
 
 def reloadLog(request):
-    grupo_activo = request.user.groups.all()[0].name
+    grupo_activo = request.user.clase
     negociosCerrConf = None
     lnl = None
     if (grupo_activo == "Vendedores"):
@@ -1272,7 +1271,7 @@ def semaforoVencimiento(negocioFilter):
     return lista_vencidos,lista_semanas,lista_futuros
 
 def reloadSem(request):
-    grupo_activo = request.user.groups.all()[0].name
+    grupo_activo = request.user.clase
     negociosCerrConf = None
     lnl = None
     if (grupo_activo == "Vendedores"):
@@ -1293,7 +1292,7 @@ def createAlertaNV(request):
     idN = int(idNegocio)
     negocio = Negocio.objects.get(id=idN)
     user = None
-    grupo_activo = request.user.groups.all()[0].name
+    grupo_activo = request.user.clase
     text_categoria = "Presupuesto"
     if (categoria == "2"):
         text_categoria = "Logistica"
@@ -1352,7 +1351,7 @@ def setFechaPagoReal(request):
             negocio = Negocio.objects.get(id=idN)
             user = None
             user = negocio.comprador.persona.user
-            grupo_activo = request.user.groups.all()[0].name
+            grupo_activo = request.user.clase
             if (grupo_activo == "Vendedores"):
                 user = negocio.comprador.persona.user
             else:
@@ -1400,7 +1399,7 @@ def detalleSemaforo(request):
         ind = request.POST['ind']
         propuesta = Propuesta.objects.get(id = idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
-        grupo_activo = request.user.groups.all()[0].name
+        grupo_activo = request.user.clase
         items = None
         if (grupo_activo == 'Administradores'):
             persona = Persona.objects.get(user=request.user)
