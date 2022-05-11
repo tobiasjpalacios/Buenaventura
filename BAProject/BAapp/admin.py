@@ -10,7 +10,11 @@ class PropuestaAdmin(admin.ModelAdmin):
     inlines = (ItemPropuestaInline,)
 
 class ArticuloAdmin(admin.ModelAdmin):
-    inlines = (ItemPropuestaInline,)
+    # inlines = (ItemPropuestaInline,)
+    list_filter = ('banda_toxicologica', 'marca', 'empresa')
+    list_display = ('ingrediente', 'marca','empresa',)
+    search_fields = ['marca','empresa', ]
+    ordering = ["ingrediente"]
 
 class FacturaAdmin(admin.ModelAdmin):
     list_display  = ('fecha_emision','documento')
