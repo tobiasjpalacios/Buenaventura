@@ -22,6 +22,12 @@ class FacturaAdmin(admin.ModelAdmin):
 class NegocioAdmin(admin.ModelAdmin):
     list_display = ('id_de_neg', 'fecha_cierre')
 
+class EmpresaAdmin(admin.ModelAdmin):
+    list_display = ('razon_social', 'nombre_comercial', 'cuit','categoria_iva')
+    list_filter = ('categoria_iva',)
+    search_fields = ['razon_social','nombre_comercial','cuit', ]
+    ordering = ["nombre_comercial"]
+
 admin.site.register(Comprador)
 admin.site.register(Logistica)
 admin.site.register(Administrador)
@@ -30,7 +36,7 @@ admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Presupuesto)
 admin.site.register(Propuesta, PropuestaAdmin)
 admin.site.register(Vendedor)
-admin.site.register(Empresa)
+admin.site.register(Empresa, EmpresaAdmin)
 admin.site.register(Retencion)
 admin.site.register(Domicilio)
 admin.site.register(DomicilioPostal)
