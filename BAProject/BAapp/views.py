@@ -308,8 +308,8 @@ def todosFiltro(request, tipo):
         if (b.estado == estado):
             b.proveedores = getProveedoresNegocio(b)
             negocioAux.append(b)
-    vendedor = Vendedor.objects.all()    
-    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocioAux), 'todos_vendedores':vendedor})
+    vendedores = MyUser.objects.filter(clase='3')   
+    return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocioAux), 'todos_vendedores':vendedores})
 
 def filtrarNegocios(request):
     data = []
