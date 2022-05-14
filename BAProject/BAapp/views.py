@@ -53,7 +53,7 @@ class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
         grupo_activo = request.user.clase
         negocio = getNegociosByClase(request,grupo_activo,1)
-        vendedor = User.objects.filter(clase='vendedor')
+        vendedor = MyUser.objects.filter(clase='vendedor')
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 class Info_negocioView(View): 
@@ -68,7 +68,7 @@ class Info_negocioView(View):
                 envio = not envio
             resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
             items = None
-            persona = Persona.objects.get(user=request.user)
+            persona = request.user
             if (grupo_activo == 'Logisticas'):
                 empleadoL = Logistica.objects.get(persona__id=persona.id)
                 items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=empleadoL.empresa.id)
@@ -106,16 +106,16 @@ class Info_negocioView(View):
 
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
-        facturas = Factura.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
-        remitos = Remito.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(proveedor__persona__user=request.user))
-        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
-        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
-        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
-        recibos = Recibo.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
-        cheques = Cheque.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
-        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
-        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user) | Q(recibe_proveedor__persona__user=request.user))
-        notas = Nota.objects.filter(Q(negocio__comprador__persona__user=request.user) | Q(negocio__vendedor__persona__user=request.user))
+        facturas = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+        remitos = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        recibos = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        cheques = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        notas = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
 
         comprobantes = {
                     "facturas": facturas,
@@ -150,34 +150,36 @@ class NotificacionesView(View):
 class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
         #Negocios en Procesos    
-        print("ap")
         negociosAbiertos = get_negocios_bygroup(request, True)
+        print(negociosAbiertos)
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
-        vendedor = Vendedor.objects.all()
+        vendedores = MyUser.objects.filter(clase='3')
         context = {
             'presupuestos_recibidos': list(lnr),
             'presupuestos_negociando': list(lnp),
-            'todos_vendedores': vendedor
+            'todos_vendedores': vendedores
         }
         return render(request, 'presupuestos.html', context)
 
 def get_negocios_bygroup(request, fcn):
-    print("a")
-    grupo_activo = request.user.clase[0]
-    print("aa")
+    grupo_activo = request.user.clase
+    print(grupo_activo)
     #A = Administrador 
-    if (grupo_activo == 'A'):
+    if (grupo_activo == "1"):
+        print("aaa")
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
     #C = Comprador
-    elif (grupo_activo == 'C'):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    elif (grupo_activo == "2"):
+        print("aac")
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     #V = Vendedor
-    elif (grupo_activo == 'V'):
+    elif (grupo_activo == "3"):
         print("aav")
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__persona__user__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
-        negociosAbiertos = None
+        print("nd")
+        negociosAbiertos = []
     return negociosAbiertos
 
 class VencimientosView(View):
@@ -232,12 +234,12 @@ def getNegociosByClase(request, user_clase, tipo):
 
     elif (user_clase == 'Comprador'):
         if (tipo == 2):
-            negocio = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp').values_list('id', flat=True)
+            negocio = Negocio.objects.filter(comprador=request.user).order_by('-timestamp').values_list('id', flat=True)
         else:
-            negocios = Negocio.objects.filter(comprador__persona__user=request.user).order_by('-timestamp')
+            negocios = Negocio.objects.filter(comprador=request.user).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
     elif (user_clase == 'Gerente'):
-        mi_gerente = Gerente.objects.get(persona__user=request.user)
+        mi_gerente = Gerente.objects.get(persona=request.user)
         if (tipo == 2):
             negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp').values_list('id', flat=True)
         else:
@@ -247,7 +249,7 @@ def getNegociosByClase(request, user_clase, tipo):
         negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-timestamp')
         lista_ids = []
         for a in negocios:
-            empleadoP = Proveedor.objects.get(persona__user=request.user)
+            empleadoP = Proveedor.objects.get(persona=request.user)
             id_prop = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id', flat=True)[:1]
             items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=empleadoP.id)
             if (len(items) > 0):                
@@ -261,7 +263,7 @@ def getNegociosByClase(request, user_clase, tipo):
         negocios = Negocio.objects.all().order_by('-timestamp')
         lista_ids = []
         for a in negocios:
-            empleadoA = Administrador.objects.get(persona__user=request.user)
+            empleadoA = request.user
             id_prop = Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id', flat=True)[:1]
             items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=empleadoA.empresa.id)
             if (len(items) > 0):
@@ -564,14 +566,14 @@ def vistaGerente(request):
 
 @group_required('Compradores')
 def vistaCliente(request):
-    negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=True, comprador__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnp = listasNA(negociosAbiertos, True)
     lnr = listasNA(negociosAbiertos, False)
     #lnc = Lista Negocios Confirmados
-    negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True, comprador__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnc = listaNC(negociosCerrConf)
     #lnnc = Linta de Negocios Rechazados
-    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__persona__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
+    negociosCerrRech = list(Negocio.objects.filter(fecha_cierre__isnull=False, cancelado=True, comprador__user=request.user).values_list('id', flat=True).order_by('-timestamp').distinct()[:3])
     lnnc = listaNC(negociosCerrRech)
     #Semaforo
     lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
@@ -654,16 +656,13 @@ def detalleNegocio(request):
             envio = not envio
         resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
         items = None
-        persona = Persona.objects.get(user=request.user)
+        persona = request.user
         if (grupo_activo == 'Logisticas'):
-            empleadoL = Logistica.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=empleadoL.empresa.id)
+            items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
         elif (grupo_activo == 'Administradores'):
-            administradorL = Administrador.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=administradorL.empresa.id)
+            items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
         elif (grupo_activo == 'Proveedores'):
-            proveedorP = Proveedor.objects.get(persona__id=persona.id)
-            items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
+            items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=persona.id) 
         else:
             items = ItemPropuesta.objects.filter(propuesta__id = idProp) 
             facturas = Factura.objects.filter(negocio=propuesta.negocio)
@@ -1523,7 +1522,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
     if isComprador:
         chunks = vendedor.split(' ')
-        vendedor_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        vendedor_usr = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
         vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
         comprador_obj = Comprador.objects.get(persona__user=request.user)
@@ -1535,7 +1534,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         negocio.save()
     else:
         chunks = comprador.split(' ')
-        comprador_usr = User.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        comprador_usr = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
         comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
         comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
         vendedor_obj = Vendedor.objects.get(persona__user=request.user)
@@ -1582,7 +1581,7 @@ class APIComprador(View):
             except Exception:
                 context = Persona.objects.none()
             tmp = {
-                'usuario':User.objects.get(id=tmp_persona).get_full_name(),
+                'usuario':MyUser.objects.get(id=tmp_persona).get_full_name(),
                 'empresa':Empresa.objects.filter(id=comp['empresa_id']).values("razon_social")[0]['razon_social'],
             }
             compradores.append(tmp)
@@ -1597,7 +1596,7 @@ class APIVendedor(View):
             except Exception:
                 context = Persona.objects.none()
             tmp = {
-                'usuario':User.objects.get(id=tmp_persona).get_full_name()
+                'usuario':MyUser.objects.get(id=tmp_persona).get_full_name()
             }
             vendedores.append(tmp)
         return JsonResponse(list(vendedores), safe=False)
@@ -1612,7 +1611,7 @@ class APIDistribuidor(View):
             except Exception:
                 context = Persona.objects.none()
             tmp = {
-                'nombre':User.objects.get(id=tmp_persona).get_full_name()
+                'nombre':MyUser.objects.get(id=tmp_persona).get_full_name()
 
             }
             proveedores.append(tmp)
@@ -2087,7 +2086,7 @@ class APIArticulos(View):
                 apellido = get_distribuidor[1].strip()
                 #distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
                 #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                prov_usr = User.objects.filter(first_name=nombre,last_name=apellido).values("id")
+                prov_usr = MyUser.objects.filter(first_name=nombre,last_name=apellido).values("id")
                 prov_per = Persona.objects.filter(user_id__in=prov_usr)
                 proveedor = Proveedor.objects.get(persona_id__in=prov_per)
                 #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
