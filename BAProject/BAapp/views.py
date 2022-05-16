@@ -40,14 +40,12 @@ def admin(request):
 def chat(request):
     return render(request,'chat.html')
 
-@login_required(login_url='/', redirect_field_name='router')
-@group_required('Vendedor', 'Comprador')
-def inicio(request):
-    #loadModels(request)
-    return render(request,'inicio.html')
-
 
 # los nuevos views
+
+class NuevoNegocioView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request,'nuevo_negocio.html')
 
 class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
@@ -151,7 +149,6 @@ class PresupuestosView(View):
     def get(self, request, *args, **kwargs):
         #Negocios en Procesos    
         negociosAbiertos = get_negocios_bygroup(request, True)
-        print(negociosAbiertos)
         lnr = listasNA(negociosAbiertos, True)
         lnp = listasNA(negociosAbiertos, False)
         vendedores = MyUser.objects.filter(clase='3')
@@ -164,21 +161,16 @@ class PresupuestosView(View):
 
 def get_negocios_bygroup(request, fcn):
     grupo_activo = request.user.clase
-    print(grupo_activo)
     #A = Administrador 
     if (grupo_activo == "1"):
-        print("aaa")
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
     #C = Comprador
     elif (grupo_activo == "2"):
-        print("aac")
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     #V = Vendedor
     elif (grupo_activo == "3"):
-        print("aav")
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
-        print("nd")
         negociosAbiertos = []
     return negociosAbiertos
 

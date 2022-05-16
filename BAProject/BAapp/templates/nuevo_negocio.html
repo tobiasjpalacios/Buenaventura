@@ -124,11 +124,11 @@ BuenaVentura Agronegocios
          <div class="row">
            
           <div class="row"> 
-            <div class="col s3"> 
+            <div class="col s4"> 
               <span class="col s4 right-align"  style="margin-top: 5%;" > de </span>
-              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_username }}</h5>
+              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_full_name|title }}</h5>
             </div>
-            <div class="col s3"> 
+            <div class="col s4"> 
               <span class="col s4 left-align" style="margin-top: 5%;"> Para</span>
               <div class="row entrada col s8 left-align" style="border-bottom: none; box-shadow: none;">
                 <input placeholder="{% if request.user|has_group:'Comprador' %}Vendedor{% elif request.user|has_group:'Vendedor' %}Comprador{% endif %}" class =" center-align" type="text" id="inputComp" list="datalistComp">

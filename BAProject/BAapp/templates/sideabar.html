@@ -13,7 +13,7 @@
             {% if request.user|has_group:"Vendedor" %}
             <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta</a></li>
             {% endif %}
-            <li><a class="gb_text" href="{% url 'inicio'  %}"> Nuevo Negocio </a></li>
+            <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
             <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
         </ul>
     </div>
