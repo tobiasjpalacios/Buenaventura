@@ -20,81 +20,106 @@ def _read_header(ws):
 
 def reed_empresas(emp_sheet):
     emp_header = _read_header(emp_sheet)
-    with transaction.atomic():
-        for c in emp_sheet.iter_rows(2, values_only=True):
-            instance = Empresa()
-            if (c[emp_header["id"]]):
-                instance = Empresa.objects.get(id=c[emp_header["id"]])
-            if (not c[emp_header["razon_social"]]):
-                break
-            for v in emp_header.keys():
-                if (v=="retenciones"):
-                    if (c[emp_header[v]]):    
-                        rets = c[emp_header[v]].split("+")
-                        for ret in rets:
-                            obj = Retencion.objects.get(name=ret)
-                            instance.retenciones.add(obj)
-                    continue
-                setattr(instance, v, c[emp_header[v]])
+    emp_creadas = 0
+    emp_actualizadas = 0
+    for c in emp_sheet.iter_rows(2, values_only=True):
+        instance = Empresa()
+        if c[emp_header["id"]]:
+            instance = Empresa.objects.get(id=c[emp_header["id"]])
+            emp_actualizadas += 1
+        if not c[emp_header["razon_social"]]:
+            break
+        for v in emp_header.keys():
+            if v == "retenciones":
+                if c[emp_header[v]]:    
+                    rets = c[emp_header[v]].split("+")
+                    for ret in rets:
+                        obj = Retencion.objects.get(name=ret)
+                        instance.retenciones.add(obj)
+                continue
+            setattr(instance, v, c[emp_header[v]])
+        try:
             instance.save()
+            emp_creadas += 1
+        except IntegrityError:
+            instance = Empresa.objects.get(razon_social=c[emp_header["razon_social"]])
+            instance.nombre_comercial = c[emp_header["nombre_comercial"]]
+            instance.cuit             = c[emp_header["cuit"]]
+            instance.ingresos_brutos  = c[emp_header["ingresos_brutos"]]
+            instance.fecha_exclusion  = c[emp_header["fecha_exclusion"]]
+            instance.categoria_iva    = c[emp_header["categoria_iva"]]
+            instance.domicilio_fiscal = c[emp_header["domicilio_fiscal"]]
+            if c[emp_header["retenciones"]]:
+                rets = c[emp_header["retenciones"]].split("+")
+                for ret in rets:
+                    obj = Retencion.objects.get(name=ret)
+                    instance.retenciones.add(obj)
+            instance.save()
+            emp_actualizadas += 1
+    
+    return f"Creadas: {emp_creadas} empresa(s)<br>Actualizadas: {emp_actualizadas} empresa(s)"
+
 
 def reed_articulos(art_sheet):
     art_header = _read_header(art_sheet)
-    with transaction.atomic():
-        for c in art_sheet.iter_rows(2, values_only=True):
-            instance = Articulo()
-            if (c[art_header["id"]]):
-                instance = Articulo.objects.get(id=c[art_header["id"]])
-            if (not c[art_header["marca"]]):
-                break
-            for v in art_header.keys():
-                if (v=="empresa"):
-                    instance.empresa = Empresa.objects.get(
-                        razon_social=c[art_header["empresa"]])
-                    continue
-                setattr(instance, v, c[art_header[v]])
-            instance.save()
+    for c in art_sheet.iter_rows(2, values_only=True):
+        instance = Articulo()
+        if c[art_header["id"]]:
+            instance = Articulo.objects.get(id=c[art_header["id"]])
+        if not c[art_header["marca"]]:
+            break
+        for v in art_header.keys():
+            if v=="empresa":
+                instance.empresa = Empresa.objects.get(
+                    razon_social=c[art_header["empresa"]])
+                continue
+            setattr(instance, v, c[art_header[v]])
+        instance.save()
 
 def reed_usuarios(usr_sheet):
     created_users_count = 0
     updated_users_count = 0
-    for i, row in enumerate(usr_sheet.iter_rows(2)):
+    usr_reader = _read_header(usr_sheet)
+    print(usr_reader)
+    for i, row in enumerate(usr_sheet.iter_rows(2, values_only=True)):
         row_data = list()
-        if row[0].value is not None:
+        if row[usr_reader["email"]]:
             for cell in row:
-                row_data.append(str(cell.value))
+                row_data.append(str(cell))
         else:
             break
         conv = lambda el : "" if el == "None" or el == None else el
         user_data = [conv(d) for d in row_data]
-        user_data[5] = None if user_data[5] == "None" or user_data[5] == "" else user_data[5]
-        user_data[7] = None if user_data[7] == "None" or user_data[7] == "" else user_data[7]
+        fech_nac = user_data[usr_reader["fecha_de_nacimiento"]]
+        fech_nac = None if fech_nac == "None" or fech_nac == "" else fech_nac
+        dni = user_data[usr_reader["dni"]]
+        dni = None if dni == "None" or dni == "" else dni
         try:
             user = MyUser.objs.get(email=user_data[0])             
-            user.email            = user_data[0]
-            user.nombre           = user_data[1]
-            user.apellido         = user_data[2]
-            user.clase            = user_data[4]
-            user.fecha_nacimiento = user_data[5]
-            user.sexo             = user_data[6]
-            user.dni              = user_data[7]
-            user.telefono         = user_data[8]
-            user.domicilio        = user_data[9]
+            user.email            = user_data[usr_reader["email"]]
+            user.nombre           = user_data[usr_reader["nombre"]]
+            user.apellido         = user_data[usr_reader["apellido"]]
+            user.clase            = user_data[usr_reader["clase"]]
+            user.fecha_nacimiento = fech_nac
+            user.sexo             = user_data[usr_reader["sexo"]]
+            user.dni              = dni
+            user.telefono         = user_data[usr_reader["telefono"]]
+            user.domicilio        = user_data[usr_reader["domicilio"]]
             user.save()
             updated_users_count += 1
         except MyUser.DoesNotExist:
             try:
                 MyUser.objs.create_user(
-                    email            = user_data[0],
-                    nombre           = user_data[1],
-                    apellido         = user_data[2],
-                    password         = user_data[3],
-                    clase            = user_data[4],
-                    fecha_nacimiento = user_data[5],
-                    sexo             = user_data[6],
-                    dni              = user_data[7],
-                    telefono         = user_data[8],
-                    domicilio        = user_data[9],
+                    email            = user_data[usr_reader["email"]],
+                    nombre           = user_data[usr_reader["nombre"]],
+                    apellido         = user_data[usr_reader["apellido"]],
+                    password         = user_data[usr_reader["password"]],
+                    clase            = user_data[usr_reader["clase"]],
+                    fecha_nacimiento = fech_nac,
+                    sexo             = user_data[usr_reader["sexo"]],
+                    dni              = dni,
+                    telefono         = user_data[usr_reader["telefono"]],
+                    domicilio        = user_data[usr_reader["domicilio"]],
                 )
                 created_users_count += 1
             except Exception as e:

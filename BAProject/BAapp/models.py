@@ -20,7 +20,7 @@ from django.contrib.auth.models import Permission
 
 class Empresa(models.Model):
     objects = SearchManager()
-    razon_social = models.CharField(max_length=50)
+    razon_social = models.CharField(max_length=50, unique=True)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
     ingresos_brutos = models.CharField(max_length=9, blank=True, null=True)
