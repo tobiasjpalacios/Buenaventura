@@ -4,8 +4,10 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import PatternFill
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.utils import quote_sheetname, get_column_letter
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models.fields.reverse_related import ManyToOneRel
+from django.utils.safestring import mark_safe
+from BAapp.models import MyUser
 
 from BAapp.models import Articulo, Empresa, Retencion
 
@@ -16,12 +18,8 @@ def _read_header(ws):
         header[key] = i
     return header
 
-def sheet_reader(sheet):
-    wb = load_workbook(filename=sheet)
-
-    emp_sheet = wb["empresas"]
+def reed_empresas(emp_sheet):
     emp_header = _read_header(emp_sheet)
-
     with transaction.atomic():
         for c in emp_sheet.iter_rows(2, values_only=True):
             instance = Empresa()
@@ -40,9 +38,8 @@ def sheet_reader(sheet):
                 setattr(instance, v, c[emp_header[v]])
             instance.save()
 
-    art_sheet = wb["articulos"]
+def reed_articulos(art_sheet):
     art_header = _read_header(art_sheet)
-
     with transaction.atomic():
         for c in art_sheet.iter_rows(2, values_only=True):
             instance = Articulo()
@@ -57,6 +54,78 @@ def sheet_reader(sheet):
                     continue
                 setattr(instance, v, c[art_header[v]])
             instance.save()
+
+def reed_usuarios(usr_sheet):
+    created_users_count = 0
+    updated_users_count = 0
+    for i, row in enumerate(usr_sheet.iter_rows(2)):
+        row_data = list()
+        if row[0].value is not None:
+            for cell in row:
+                row_data.append(str(cell.value))
+        else:
+            break
+        conv = lambda el : "" if el == "None" or el == None else el
+        user_data = [conv(d) for d in row_data]
+        user_data[5] = None if user_data[5] == "None" or user_data[5] == "" else user_data[5]
+        user_data[7] = None if user_data[7] == "None" or user_data[7] == "" else user_data[7]
+        try:
+            user = MyUser.objs.get(email=user_data[0])             
+            user.email            = user_data[0]
+            user.nombre           = user_data[1]
+            user.apellido         = user_data[2]
+            user.clase            = user_data[4]
+            user.fecha_nacimiento = user_data[5]
+            user.sexo             = user_data[6]
+            user.dni              = user_data[7]
+            user.telefono         = user_data[8]
+            user.domicilio        = user_data[9]
+            user.save()
+            updated_users_count += 1
+        except MyUser.DoesNotExist:
+            try:
+                MyUser.objs.create_user(
+                    email            = user_data[0],
+                    nombre           = user_data[1],
+                    apellido         = user_data[2],
+                    password         = user_data[3],
+                    clase            = user_data[4],
+                    fecha_nacimiento = user_data[5],
+                    sexo             = user_data[6],
+                    dni              = user_data[7],
+                    telefono         = user_data[8],
+                    domicilio        = user_data[9],
+                )
+                created_users_count += 1
+            except Exception as e:
+                return f"<b>{e} (fila N°{i+2})</b><br>Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)"
+    # end for
+    return f"Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)"
+
+def sheet_reader(sheet):
+    wb = load_workbook(sheet)
+    excel_data = list()
+
+    try:
+        emp_sheet = wb["empresas"]
+        emp_res = reed_empresas(emp_sheet)
+        excel_data.append(emp_res)
+    except:
+        try:
+            art_sheet = wb["articulos"]
+            art_res = reed_articulos(art_sheet)
+            excel_data.append(art_res)
+        except:
+            try:
+                usr_sheet = wb["usuarios"]
+                usr_res = reed_usuarios(usr_sheet)
+                excel_data.append(usr_res)
+            except Exception as e:
+                excel_data.append(e)
+                pass
+    
+    return excel_data
+    
 
 def _get_actual_fields(model):
     fields = []

@@ -1506,9 +1506,12 @@ class carga_excel(View):
     def get(self,request):    
         return render(request, 'carga_excel.html')
     
-    def post(self,request):
-        sheet_reader(request.FILES["myfile"])
-        return self.get(request)
+    def post(self, request):
+        try:
+            excel_data = sheet_reader(request.FILES["myfile"])
+        except Exception as e:
+            excel_data = [e]
+        return render(request, 'carga_excel.html', {'excel_data':excel_data})
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None

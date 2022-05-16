@@ -46,6 +46,11 @@ BuenaVentura Agronegocios
                             </div>
                             <input class="red btn col s10 offset-s1" type="submit" >
                           </form>
+                          <p>
+                            {% for data in excel_data %}
+                              {{ data|safe }}
+                            {% endfor %}
+                          </p>
                     </div>
                     <div class="col s6 " ><form action="#">
                         <div class="card-panel blue">
