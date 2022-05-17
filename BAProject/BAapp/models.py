@@ -79,14 +79,14 @@ class Negocio(models.Model):
     comprador = models.ForeignKey(
         "MyUser",
         related_name='comprador',
-        limit_choices_to={'groups__name': "Compradores"},
+        limit_choices_to={'clase': "2"},
         on_delete=models.DO_NOTHING
     )
 
     vendedor = models.ForeignKey(
         "MyUser",
         related_name='vendedor',
-        limit_choices_to={'groups__name': "Vendedores"},
+        limit_choices_to={'clase': "3"},
         on_delete=models.DO_NOTHING,
         null=True
     )
@@ -604,6 +604,10 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """Return the short name for the user."""
         return self.email
+
+    def get_razon_social(self):
+        """Return the short name for the user."""
+        return '{}'.format(self.empresa.razon_social)
 
 # dejo plasmado el sistema de permisos para luego implementarlo
 

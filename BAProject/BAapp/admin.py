@@ -259,7 +259,7 @@ class MoUserAdmin(admin.ModelAdmin):
 
 
 
-# admin.site.unregister(Group)
+admin.site.unregister(Group)
 admin.site.register(MyUser, MoUserAdmin)
 
 

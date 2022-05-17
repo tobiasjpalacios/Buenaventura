@@ -62,20 +62,17 @@ class Info_negocioView(View):
             negocio = Negocio.objects.get(id=propuesta.negocio.id)
             grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
-            if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
+            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
                 envio = not envio
             resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
             items = None
             persona = request.user
-            if (grupo_activo == 'Logisticas'):
-                empleadoL = Logistica.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=empleadoL.empresa.id)
-            elif (grupo_activo == 'Administradores'):
-                administradorL = Administrador.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=administradorL.empresa.id)
-            elif (grupo_activo == 'Proveedores'):
-                proveedorP = Proveedor.objects.get(persona__id=persona.id)
-                items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=proveedorP.id) 
+            if (grupo_activo == 'Logistica'):
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
+            elif (grupo_activo == 'Administrador'):
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
+            elif (grupo_activo == 'Proveedor'):
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=persona.id) 
             else:
                 items = ItemPropuesta.objects.filter(propuesta__id = idProp) 
                 facturas = Factura.objects.filter(negocio=propuesta.negocio)
@@ -215,7 +212,8 @@ def detalleNotis(request):
 
 def getNegociosByClase(request, user_clase, tipo):
     negocio = []
-    if (user_clase == 'Vendedor'):
+    # vendedor
+    if (user_clase == '3'):
         if (tipo == 2):
             negocio = Negocio.objects.all().values_list('id', flat=True)
         else:
@@ -224,20 +222,25 @@ def getNegociosByClase(request, user_clase, tipo):
             for a in negocio:
                 a.proveedores = getProveedoresNegocio(a)
 
-    elif (user_clase == 'Comprador'):
+    # comprador
+    elif (user_clase == '2'):
         if (tipo == 2):
             negocio = Negocio.objects.filter(comprador=request.user).order_by('-timestamp').values_list('id', flat=True)
         else:
             negocios = Negocio.objects.filter(comprador=request.user).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (user_clase == 'Gerente'):
+    
+    # gerente
+    elif (user_clase == '5'):
         mi_gerente = Gerente.objects.get(persona=request.user)
         if (tipo == 2):
             negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp').values_list('id', flat=True)
         else:
             negocios = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (user_clase == 'Proveedor'):
+
+    # proveedor
+    elif (user_clase == '4'):
         negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-timestamp')
         lista_ids = []
         for a in negocios:
@@ -251,7 +254,9 @@ def getNegociosByClase(request, user_clase, tipo):
         else:
             negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-timestamp')
             negocio = getNegociosToList(negocios)
-    elif (user_clase == 'Administrador'):
+
+    # administrador
+    elif (user_clase == '1'):
         negocios = Negocio.objects.all().order_by('-timestamp')
         lista_ids = []
         for a in negocios:
@@ -1514,11 +1519,11 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
     if isComprador:
         chunks = vendedor.split(' ')
-        vendedor_usr = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
-        vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
-        vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
-        comprador_obj = Comprador.objects.get(persona__user=request.user)
-        created_by = f"{comprador_obj.persona.user.first_name} {comprador_obj.persona.user.last_name}"
+        vendedor_obj = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        # vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
+        # vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
+        comprador_obj = request.user
+        created_by = request.user.get_full_name
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
@@ -1526,11 +1531,11 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         negocio.save()
     else:
         chunks = comprador.split(' ')
-        comprador_usr = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
-        comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
-        comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
-        vendedor_obj = Vendedor.objects.get(persona__user=request.user)
-        created_by = f"{vendedor_obj.persona.user.first_name} {vendedor_obj.persona.user.last_name}"
+        comprador_obj = MyUser.objects.filter(first_name=chunks[0], last_name=chunks[1]).values("id")
+        # comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
+        # comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
+        vendedor_obj = request.user
+        created_by = request.user.get_full_name
         negocio = Negocio(
             comprador = comprador_obj,
             vendedor = vendedor_obj
@@ -1567,14 +1572,10 @@ def crear_propuesta(negocio,observacion,isComprador):
 class APIComprador(View):
     def get(self,request):
         compradores = []
-        for comp in Comprador.objects.all().values("persona_id","empresa_id"):
-            try:
-                tmp_persona = Persona.objects.filter(id=comp['persona_id']).values("user")[0]['user']
-            except Exception:
-                context = Persona.objects.none()
+        for comp in MyUser.objects.filter(clase='2'):
             tmp = {
-                'usuario':MyUser.objects.get(id=tmp_persona).get_full_name(),
-                'empresa':Empresa.objects.filter(id=comp['empresa_id']).values("razon_social")[0]['razon_social'],
+                'usuario':comp.get_full_name,
+                'empresa':comp.get_razon_social
             }
             compradores.append(tmp)
         return JsonResponse(list(compradores), safe=False)
@@ -1582,13 +1583,9 @@ class APIComprador(View):
 class APIVendedor(View):
     def get(self,request):
         vendedores = []
-        for vend in Vendedor.objects.all().values("persona_id"):
-            try:
-                tmp_persona = Persona.objects.filter(id=vend['persona_id']).values("user")[0]['user']
-            except Exception:
-                context = Persona.objects.none()
+        for vend in MyUser.objects.filter(clase='3'): 
             tmp = {
-                'usuario':MyUser.objects.get(id=tmp_persona).get_full_name()
+                'usuario':vend.get_full_name
             }
             vendedores.append(tmp)
         return JsonResponse(list(vendedores), safe=False)
@@ -1597,14 +1594,9 @@ class APIVendedor(View):
 class APIDistribuidor(View):
     def get(self,request):
         proveedores = []
-        for pro in Proveedor.objects.all().values("persona_id"):
-            try:
-                tmp_persona = Persona.objects.filter(id=pro['persona_id']).values("user")[0]['user']
-            except Exception:
-                context = Persona.objects.none()
+        for pro in MyUser.objects.filter(clase='4').values("id"):
             tmp = {
-                'nombre':MyUser.objects.get(id=tmp_persona).get_full_name()
-
+                'nombre':pro['persona__id']
             }
             proveedores.append(tmp)
         return JsonResponse(list(proveedores), safe=False)
@@ -2078,9 +2070,9 @@ class APIArticulos(View):
                 apellido = get_distribuidor[1].strip()
                 #distribuidor_usr = User.objects.filter(first_name=get_distribuidor[0],last_name=get_distribuidor[1]).values("id")
                 #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                prov_usr = MyUser.objects.filter(first_name=nombre,last_name=apellido).values("id")
-                prov_per = Persona.objects.filter(user_id__in=prov_usr)
-                proveedor = Proveedor.objects.get(persona_id__in=prov_per)
+                proveedor = MyUser.objects.filter(first_name=nombre,last_name=apellido).values("id")
+                # prov_per = Persona.objects.filter(user_id__in=prov_usr)
+                # proveedor = Proveedor.objects.get(persona_id__in=prov_per)
                 #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
             else:
                 proveedor = None
