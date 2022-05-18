@@ -2068,7 +2068,7 @@ class APIArticulos(View):
                 apellido = get_distribuidor[1].strip()
                 #distribuidor_usr = User.objects.filter(nombre=get_distribuidor[0],apellido=get_distribuidor[1]).values("id")
                 #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                proveedor = MyUser.objects.filter(nombre=nombre,apellido=apellido).values("id")
+                proveedor = MyUser.objects.get(nombre=nombre,apellido=apellido)
                 # prov_per = Persona.objects.filter(user_id__in=prov_usr)
                 # proveedor = Proveedor.objects.get(persona_id__in=prov_per)
                 #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)

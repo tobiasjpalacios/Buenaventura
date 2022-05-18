@@ -57,11 +57,12 @@ def reed_empresas(emp_sheet):
             instance.save()
             emp_actualizadas += 1
     
-    return f"Creadas: {emp_creadas} empresa(s)<br>Actualizadas: {emp_actualizadas} empresa(s)"
+    return f"<h5>Empresas:</h5>Creadas: {emp_creadas} empresa(s)<br>Actualizadas: {emp_actualizadas} empresa(s)<br>"
 
 
 def reed_articulos(art_sheet):
     art_header = _read_header(art_sheet)
+    created_arts = 0
     for c in art_sheet.iter_rows(2, values_only=True):
         instance = Articulo()
         if c[art_header["id"]]:
@@ -74,7 +75,14 @@ def reed_articulos(art_sheet):
                     razon_social=c[art_header["empresa"]])
                 continue
             setattr(instance, v, c[art_header[v]])
-        instance.save()
+        # solucion temporal, mala y lenta (no se puede actualizar ningun objeto)
+        emp_nombre_comercial = Empresa.objects.get(razon_social=c[art_header["empresa"]]).nombre_comercial
+        art = Articulo.objects.filter(ingrediente=c[art_header["ingrediente"]], empresa__nombre_comercial=emp_nombre_comercial).exists()
+        if not art:
+            instance.save()
+            created_arts += 1
+    
+    return f"<h5>Articulos:</h5>Creados: {created_arts} articulo(s)<br>"
 
 def reed_usuarios(usr_sheet):
     created_users_count = 0
@@ -125,9 +133,9 @@ def reed_usuarios(usr_sheet):
                 )
                 created_users_count += 1
             except Exception as e:
-                return f"<b>{e} (fila N°{i+2})</b><br>Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)"
+                return f"<h5>Usuarios:</h5><b>{e} (fila N°{i+2})</b><br>Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)<br>"
     # end for
-    return f"Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)"
+    return f"<h5>Usuarios:</h5>Creados: {created_users_count} usuario(s)<br>Actualizados: {updated_users_count} usuario(s)<br>"
 
 def sheet_reader(sheet):
     wb = load_workbook(sheet)
@@ -138,18 +146,19 @@ def sheet_reader(sheet):
         emp_res = reed_empresas(emp_sheet)
         excel_data.append(emp_res)
     except:
-        try:
-            art_sheet = wb["articulos"]
-            art_res = reed_articulos(art_sheet)
-            excel_data.append(art_res)
-        except:
-            try:
-                usr_sheet = wb["usuarios"]
-                usr_res = reed_usuarios(usr_sheet)
-                excel_data.append(usr_res)
-            except Exception as e:
-                excel_data.append(e)
-                pass
+        pass
+    try:
+        art_sheet = wb["articulos"]
+        art_res = reed_articulos(art_sheet)
+        excel_data.append(art_res)
+    except:
+        pass
+    try:
+        usr_sheet = wb["usuarios"]
+        usr_res = reed_usuarios(usr_sheet)
+        excel_data.append(usr_res)
+    except:
+        pass
     
     return excel_data
     
