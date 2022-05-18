@@ -163,7 +163,7 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING)
@@ -307,7 +307,7 @@ class Factura(models.Model):
     
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
     tipo_pago = models.ForeignKey(
@@ -337,7 +337,7 @@ class Remito(models.Model):
     
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
 	#desc_productos 
@@ -360,7 +360,7 @@ class OrdenDeCompra(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -381,7 +381,7 @@ class OrdenDePago(models.Model):
         on_delete=models.DO_NOTHING) 
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -399,7 +399,7 @@ class ConstanciaRentencion(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING) 
     importe = models.FloatField()
@@ -415,7 +415,7 @@ class Recibo(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
     monto = models.PositiveIntegerField(null=False ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
@@ -459,7 +459,7 @@ class FacturaComision(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'groups__name': "Proveedores"},
+        limit_choices_to={'clase': "4"},
         null=False, 
         on_delete=models.DO_NOTHING)
     documento = models.FileField(upload_to='media/facturasComision/%Y/%m/%d', null=False)
