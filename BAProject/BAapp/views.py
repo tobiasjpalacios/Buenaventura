@@ -1574,8 +1574,8 @@ class APIComprador(View):
         compradores = []
         for comp in MyUser.objects.filter(clase='2'):
             tmp = {
-                'usuario':comp.get_full_name,
-                'empresa':comp.get_razon_social
+                'usuario':comp.get_full_name(),
+                'empresa':comp.empresa.razon_social
             }
             compradores.append(tmp)
         return JsonResponse(list(compradores), safe=False)
@@ -1585,7 +1585,7 @@ class APIVendedor(View):
         vendedores = []
         for vend in MyUser.objects.filter(clase='3'): 
             tmp = {
-                'usuario':vend.get_full_name
+                'usuario': vend.get_full_name()
             }
             vendedores.append(tmp)
         return JsonResponse(list(vendedores), safe=False)
@@ -1683,7 +1683,7 @@ class ProveedorView(View):
 
 class ListCompradorView(View):
     def get(self, request, *args, **kwargs):
-        all_compradores = Comprador.objects.all()
+        all_compradores = MyUser.objects.filter(clase='2')
         return render(request, 'consultar_comprador.html', {'compradores':all_compradores})    
 
 
