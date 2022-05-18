@@ -142,7 +142,8 @@ BuenaVentura Agronegocios
           <div class=" cuadrado col s4 offset-s1 hide " >
              <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
              <span class="left-align">{% if request.user.clase == '3' %}Comprador: {% elif request.user.clase == '2' %}Vendedor: {% endif %}</span>
-             <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b>
+             <b><span class="left-align" id="vendedorSpan">{{ user.get_full_name }}</span></b>
+             <span class="left-align" id="vendedorSpanEmail" style="display: none;">{{ user.email }}</span>
            </div>
          
            <div class="col cuadrado col s4 offset-s1 hide" >
@@ -332,10 +333,10 @@ var errors = [];
         var datalistComp = document.getElementById("datalistComp");
         for (var i = 0; i < compradores_data.length; i++) {
             var optionComp = document.createElement('option');
-            optionComp.setAttribute('value',''+compradores_data[i]['usuario']);
-            optionComp.setAttribute('id','option'+i);
+            optionComp.setAttribute('value', compradores_data[i]['usuario']);
+            optionComp.setAttribute('id', compradores_data[i]['email']);
             all_compradores.push(compradores_data[i]['usuario']);
-            datalistComp.appendChild(optionComp);        
+            datalistComp.appendChild(optionComp);
           }
       }
     });
@@ -899,8 +900,8 @@ function submit(){
   var empTab = document.getElementById('empTable');
   if (validateData(rowCnt)) {
     var dict = [];
-    var inputComp = document.getElementById('inputComp');
-    var vendedor = document.getElementById('vendedorSpan');
+    var inputComp = $('option[value="'+$('#inputComp').val()+'"]').attr('id');
+    var vendedor = document.getElementById('vendedorSpanEmail');
     var observaciones = document.getElementById('inputObser');
     if (userIsComprador) {
       headers.push("Precio compra");
@@ -921,7 +922,6 @@ function submit(){
           tmp_dict[headers[j]] = input;
         }
         else if (headers[j] == "Distribuidor" && userIsComprador) {
-          // agregar distribuidor nulo cuando se pueda
           input = null;
           tmp_dict[headers[j]] = input;
         }
@@ -940,7 +940,7 @@ function submit(){
      if (!userIsComprador) {
        aux_dict = {
           'data':dict,
-          'comprador':inputComp.value,
+          'comprador':inputComp,
           'vendedor':vendedor.innerHTML,
           'observaciones': observaciones.value,
           'envio_comprador': false,
@@ -950,7 +950,7 @@ function submit(){
        aux_dict = {
           'data':dict,
           'comprador':vendedor.innerHTML,
-          'vendedor':inputComp.value,
+          'vendedor':inputComp,
           'observaciones': observaciones.value,
           'envio_comprador': true,
        }
