@@ -92,7 +92,7 @@ class MoUserAdmin(admin.ModelAdmin):
         (_('Permisos'), {
             'fields': ('is_active', 'is_staff','clase',),
         }),
-        (_('Datos Personales'), {'fields': ('fecha_nacimiento', 'sexo', 'dni', 'telefono','domicilio')}),
+        (_('Datos Personales'), {'fields': ('empresa','fecha_nacimiento', 'sexo', 'dni', 'telefono','domicilio')}),
     )
     add_fieldsets = (
         (None, {
