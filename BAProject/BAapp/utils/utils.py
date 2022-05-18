@@ -80,16 +80,16 @@ def reed_usuarios(usr_sheet):
     created_users_count = 0
     updated_users_count = 0
     usr_reader = _read_header(usr_sheet)
-    print(usr_reader)
     for i, row in enumerate(usr_sheet.iter_rows(2, values_only=True)):
         row_data = list()
-        if row[usr_reader["email"]]:
-            for cell in row:
-                row_data.append(str(cell))
-        else:
+        for cell in row:
+            row_data.append(str(cell))
+        if not row[usr_reader["email"]]:
             break
         conv = lambda el : "" if el == "None" or el == None else el
         user_data = [conv(d) for d in row_data]
+        empresa = user_data[usr_reader["empresa"]]
+        empresa = None if empresa == "None" or empresa == "" else Empresa.objects.get(razon_social=empresa)
         fech_nac = user_data[usr_reader["fecha_de_nacimiento"]]
         fech_nac = None if fech_nac == "None" or fech_nac == "" else fech_nac
         dni = user_data[usr_reader["dni"]]
@@ -100,6 +100,7 @@ def reed_usuarios(usr_sheet):
             user.nombre           = user_data[usr_reader["nombre"]]
             user.apellido         = user_data[usr_reader["apellido"]]
             user.clase            = user_data[usr_reader["clase"]]
+            user.empresa          = empresa
             user.fecha_nacimiento = fech_nac
             user.sexo             = user_data[usr_reader["sexo"]]
             user.dni              = dni
@@ -115,6 +116,7 @@ def reed_usuarios(usr_sheet):
                     apellido         = user_data[usr_reader["apellido"]],
                     password         = user_data[usr_reader["password"]],
                     clase            = user_data[usr_reader["clase"]],
+                    empresa          = empresa,
                     fecha_nacimiento = fech_nac,
                     sexo             = user_data[usr_reader["sexo"]],
                     dni              = dni,

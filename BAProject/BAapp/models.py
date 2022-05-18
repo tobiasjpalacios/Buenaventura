@@ -510,7 +510,7 @@ def send_email_notification(sender, instance, **kwargs):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, nombre, apellido, password, clase, fecha_nacimiento, sexo, dni, telefono, domicilio):
+    def create_user(self, email, nombre, apellido, password, clase, empresa, fecha_nacimiento, sexo, dni, telefono, domicilio):
         if not email:
             raise ValueError('Los usuarios deben tener un email')
         if not password:
@@ -520,6 +520,7 @@ class MyUserManager(BaseUserManager):
             nombre = nombre,
             apellido = apellido,
             clase = clase,
+            empresa = empresa,
             fecha_nacimiento = fecha_nacimiento,
             sexo = sexo,
             dni = dni,
