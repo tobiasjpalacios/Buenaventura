@@ -48,7 +48,7 @@ BuenaVentura Agronegocios
               <select multiple id="selectVendedores">
                 <option value="todos" selected>Cualquiera</option>
                 {% for vendedor in todos_vendedores %}
-                <option value={{vendedor.id}}>{{vendedor.persona.user.get_full_name}}</option>
+                <option value={{vendedor.id}}>{{vendedor.get_full_name}}</option>
                 {% endfor %}
               </select>
               <label class="for-input">Vendendor</label>
@@ -60,7 +60,7 @@ BuenaVentura Agronegocios
                 <option value="todos" selected> Todos </option>
                 <option value="Confirmado">Confirmado</option>
                 <option value="Cancelado">Cancelado</option>
-                {% if request.user|has_no_group:"Proveedor"%}
+                {% if request.user.clase != '4' %}
                 <option value="Recibido">Recibido</option>
                 <option value="En Negociación">En Negociación</option>
                 {% endif %}
@@ -122,12 +122,12 @@ BuenaVentura Agronegocios
           <tr style="border-bottom: 1px solid grey;">
             <th>Fecha apertura</th>
             <th>Fecha cierre</th>
-            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+            {% if request.user.clase == '3' or request.user.clase == '2' or request.user.clase == '5'%}
             <th>Cliente </th>
             {% endif %}
             <th>Tipo Negocio</th>
             <th>Vendedor</th>
-            {% if request.user|has_group:"Vendedor"%}
+            {% if request.user.clase == '3'%}
             <th>Proveedores</th>
             {% endif %}
             <th>Código de Negocio</th>
@@ -146,14 +146,14 @@ BuenaVentura Agronegocios
                     {{negocio.fecha_cierre|date:"M d, Y"}}
                 {% endif %}
             </td>
-            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
-            <td>{{negocio.comprador.persona.user.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
+            {% if request.user.clase == '3' or request.user.clase == '2' or request.user.clase == '5'%}
+            <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
             </td>
             {% endif %}
             <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
-            <td>{{negocio.vendedor.persona.user.get_full_name}}
+            <td>{{negocio.vendedor.get_full_name}}
             </td>
-            {% if request.user|has_group:"Vendedor"%}
+            {% if request.user.clase == '3'%}
               {% if negocio.fecha_cierre is not None %}
               <td>
                 <div style="overflow-y: scroll; height: 150px;">

@@ -20,7 +20,7 @@ from django.contrib.auth.models import Permission
 
 class Empresa(models.Model):
     objects = SearchManager()
-    razon_social = models.CharField(max_length=50)
+    razon_social = models.CharField(max_length=50, unique=True)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
     ingresos_brutos = models.CharField(max_length=9, blank=True, null=True)
@@ -510,15 +510,26 @@ def send_email_notification(sender, instance, **kwargs):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, nivel, password = None):
+    def create_user(self, email, nombre, apellido, password, clase, empresa, fecha_nacimiento, sexo, dni, telefono, domicilio):
         if not email:
-            raise ValueError('Los usuarios deben tener una un mail')
+            raise ValueError('Los usuarios deben tener un email')
+        if not password:
+            raise ValueError('Los usuarios deben tener una contraseña')
         user_obj = self.model(
-            email = self.normalize_email(email)
+            email = self.normalize_email(email),
+            nombre = nombre,
+            apellido = apellido,
+            clase = clase,
+            empresa = empresa,
+            fecha_nacimiento = fecha_nacimiento,
+            sexo = sexo,
+            dni = dni,
+            telefono = telefono,
+            domicilio = domicilio
             )
         user_obj.set_password(password)
-        user_obj.is_staff = True
-        user_obj.is_active = True
+        user_obj.is_staff = False
+        user_obj.is_superuser = False
         user_obj.save(using=self.db)
         return user_obj
     def create_superuser(self, email, password = None):
@@ -532,7 +543,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     
-    objects = MyUserManager()
+    objs = MyUserManager()
 
     class Meta:
         verbose_name = 'Usuario'

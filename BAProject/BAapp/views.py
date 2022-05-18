@@ -51,7 +51,7 @@ class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
         grupo_activo = request.user.clase
         negocio = getNegociosByClase(request,grupo_activo,1)
-        vendedor = MyUser.objects.filter(clase='vendedor')
+        vendedor = MyUser.objects.filter(clase='3')
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
 class Info_negocioView(View): 
@@ -1506,17 +1506,17 @@ class carga_excel(View):
     def get(self,request):    
         return render(request, 'carga_excel.html')
     
-    def post(self,request):
-        sheet_reader(request.FILES["myfile"])
-        return self.get(request)
+    def post(self, request):
+        try:
+            excel_data = sheet_reader(request.FILES["myfile"])
+        except Exception as e:
+            excel_data = [e]
+        return render(request, 'carga_excel.html', {'excel_data':excel_data})
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
     if isComprador:
-        chunks = vendedor.split(' ')
-        vendedor_obj = MyUser.objects.get(nombre=chunks[0], apellido=chunks[1])
-        # vendedor_per = Persona.objects.filter(user_id__in=vendedor_usr)
-        # vendedor_obj = Vendedor.objects.get(persona_id__in=vendedor_per)
+        vendedor_obj = MyUser.objects.get(email=vendedor)
         comprador_obj = request.user
         created_by = request.user.get_full_name()
         negocio = Negocio(
@@ -1525,10 +1525,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
             )
         negocio.save()
     else:
-        chunks = comprador.split(' ')
-        comprador_obj = MyUser.objects.get(nombre=chunks[0], apellido=chunks[1])
-        # comprador_per = Persona.objects.filter(user_id__in=comprador_usr)
-        # comprador_obj = Comprador.objects.get(persona_id__in=comprador_per)
+        comprador_obj = MyUser.objects.get(email=comprador)
         vendedor_obj = request.user
         created_by = request.user.get_full_name()
         negocio = Negocio(
@@ -1569,6 +1566,7 @@ class APIComprador(View):
         compradores = []
         for comp in MyUser.objects.filter(clase='2'):
             tmp = {
+                'email':comp.email,
                 'usuario':comp.get_full_name(),
                 'empresa':comp.empresa.razon_social
             }
@@ -2065,7 +2063,7 @@ class APIArticulos(View):
                 apellido = get_distribuidor[1].strip()
                 #distribuidor_usr = User.objects.filter(nombre=get_distribuidor[0],apellido=get_distribuidor[1]).values("id")
                 #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                proveedor = MyUser.objects.filter(nombre=nombre,apellido=apellido).values("id")
+                proveedor = MyUser.objects.get(nombre=nombre,apellido=apellido)
                 # prov_per = Persona.objects.filter(user_id__in=prov_usr)
                 # proveedor = Proveedor.objects.get(persona_id__in=prov_per)
                 #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
