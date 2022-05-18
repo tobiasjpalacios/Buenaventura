@@ -224,7 +224,7 @@ BuenaVentura Agronegocios
  <script>
 
   var userIsComprador = false;
-  "{% if request.user|has_group:'Comprador' %}"
+  "{% if request.user.clase == '2' %}"
   userIsComprador = true;
   "{% endif %}"
 
