@@ -31,7 +31,7 @@ class Empresa(models.Model):
         blank=True,
         null=True)
     domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
-    retenciones = models.ManyToManyField("Retencion")
+    retenciones = models.ManyToManyField("Retencion", blank=True, null=True)
 
     class Meta:
         search_fields = (
@@ -79,14 +79,14 @@ class Negocio(models.Model):
     comprador = models.ForeignKey(
         "MyUser",
         related_name='comprador',
-        limit_choices_to={'clase': "2"},
+        limit_choices_to={'clase': "Comprador"},
         on_delete=models.DO_NOTHING
     )
 
     vendedor = models.ForeignKey(
         "MyUser",
         related_name='vendedor',
-        limit_choices_to={'clase': "3"},
+        limit_choices_to={'clase': "Vendedor"},
         on_delete=models.DO_NOTHING,
         null=True
     )
@@ -163,7 +163,7 @@ class ItemPropuesta(models.Model):
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING)
@@ -307,7 +307,7 @@ class Factura(models.Model):
     
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     tipo_pago = models.ForeignKey(
@@ -337,7 +337,7 @@ class Remito(models.Model):
     
     proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 	#desc_productos 
@@ -360,7 +360,7 @@ class OrdenDeCompra(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -381,7 +381,7 @@ class OrdenDePago(models.Model):
         on_delete=models.DO_NOTHING) 
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -399,7 +399,7 @@ class ConstanciaRentencion(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING) 
     importe = models.FloatField()
@@ -415,7 +415,7 @@ class Recibo(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     monto = models.PositiveIntegerField(null=False ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
@@ -459,7 +459,7 @@ class FacturaComision(models.Model):
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
         "MyUser", 
-        limit_choices_to={'clase': "4"},
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     documento = models.FileField(upload_to='media/facturasComision/%Y/%m/%d', null=False)
@@ -550,17 +550,17 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'Usuarios'
 
     clases = [
-        ('1', 'Administrador'),
-        ('2', 'Comprador'),
-        ('3', 'Vendedor'),
-        ('4', 'Proveedor'),
-        ('5', 'Gerente'),
-        ('6', 'Logistica')]
+        ('Administrador', 'Administrador'),
+        ('Comprador', 'Comprador'),
+        ('Vendedor', 'Vendedor'),
+        ('Proveedor', 'Proveedor'),
+        ('Gerente', 'Gerente'),
+        ('Logistica', 'Logistica')]
 
     nombre = models.CharField(max_length=50, blank=False)
     apellido = models.CharField(max_length=50, blank=False)
     email = models.EmailField(_('email address'), unique = True)
-    clase = models.CharField(null=True, max_length=1, choices=clases)
+    clase = models.CharField(null=True, max_length=13, choices=clases)
 
     fecha_nacimiento = models.DateField(null=True)
     sexo = models.CharField(null=True, max_length=6, choices=GENERO_CHOICES)
@@ -571,7 +571,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING,
-        null=True,
         )
 
     is_staff = models.BooleanField(

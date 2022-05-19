@@ -60,7 +60,7 @@ BuenaVentura Agronegocios
                 <option value="todos" selected> Todos </option>
                 <option value="Confirmado">Confirmado</option>
                 <option value="Cancelado">Cancelado</option>
-                {% if request.user.clase != '4' %}
+                {% if request.user.clase != 'Proveedor' %}
                 <option value="Recibido">Recibido</option>
                 <option value="En Negociación">En Negociación</option>
                 {% endif %}
@@ -122,12 +122,12 @@ BuenaVentura Agronegocios
           <tr style="border-bottom: 1px solid grey;">
             <th>Fecha apertura</th>
             <th>Fecha cierre</th>
-            {% if request.user.clase == '3' or request.user.clase == '2' or request.user.clase == '5'%}
+            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
             <th>Cliente </th>
             {% endif %}
             <th>Tipo Negocio</th>
             <th>Vendedor</th>
-            {% if request.user.clase == '3'%}
+            {% if request.user.clase == 'Vendedor'%}
             <th>Proveedores</th>
             {% endif %}
             <th>Código de Negocio</th>
@@ -146,14 +146,14 @@ BuenaVentura Agronegocios
                     {{negocio.fecha_cierre|date:"M d, Y"}}
                 {% endif %}
             </td>
-            {% if request.user.clase == '3' or request.user.clase == '2' or request.user.clase == '5'%}
+            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
             <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
             </td>
             {% endif %}
             <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
             <td>{{negocio.vendedor.get_full_name}}
             </td>
-            {% if request.user.clase == '3'%}
+            {% if request.user.clase == 'Vendedor'%}
               {% if negocio.fecha_cierre is not None %}
               <td>
                 <div style="overflow-y: scroll; height: 150px;">
