@@ -571,6 +571,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING,
+        null=True,
         )
 
     is_staff = models.BooleanField(
