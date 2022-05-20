@@ -43,7 +43,7 @@ class ArticuloAdmin(admin.ModelAdmin):
     # inlines = (ItemPropuestaInline,)
     list_filter = ('banda_toxicologica', 'marca', 'empresa')
     list_display = ('ingrediente', 'marca','empresa',)
-    search_fields = ['marca','empresa', ]
+    search_fields = ['ingrediente', 'marca','empresa__razon_social', ]
     ordering = ["ingrediente"]
 
 class FacturaAdmin(admin.ModelAdmin):
@@ -262,7 +262,11 @@ class MoUserAdmin(admin.ModelAdmin):
             request.POST['_continue'] = 1
         return super().response_add(request, obj, post_url_continue)
 
-
+class EmpresaAdmin(admin.ModelAdmin):
+    list_display = ('razon_social', 'nombre_comercial', 'cuit','categoria_iva')
+    list_filter = ('categoria_iva',)
+    search_fields = ['razon_social','nombre_comercial','cuit', ]
+    ordering = ["nombre_comercial"]
 
 admin.site.unregister(Group)
 admin.site.register(MyUser, MoUserAdmin)
@@ -271,7 +275,7 @@ admin.site.register(MyUser, MoUserAdmin)
 admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Presupuesto)
 admin.site.register(Propuesta, PropuestaAdmin)
-admin.site.register(Empresa)
+admin.site.register(Empresa, EmpresaAdmin)
 
 admin.site.register(Retencion)
 admin.site.register(ItemPropuesta)
