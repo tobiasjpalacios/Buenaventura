@@ -84,5 +84,5 @@ TIPO_DE_NEGOCIO_CHOICES = (
 
 TIPO_NOTA = (
 	("CR","Credito"),
-	("DV","Devito"),
+	("DV","Débito"),
 )

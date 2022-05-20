@@ -66,7 +66,7 @@
           {% endif %}
           <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
           {% if user.is_authenticated %}
-          <li><a style="color: #ffffff; position:static; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.username|title}}</a></li>
+          <li><a style="color: #ffffff; position:static; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.get_full_name|title}}</a></li>
           <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
         
           {% else %}

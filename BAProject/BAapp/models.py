@@ -11,75 +11,16 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site
-
-class Persona(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.DO_NOTHING, null=True)
-    fecha_nacimiento = models.DateField(null=False)
-    sexo = models.CharField(max_length=6, choices=GENERO_CHOICES)
-    dni = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
-    telefono = models.ForeignKey(
-        "Telefono", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return '{} {}'.format(self.user.first_name, self.user.last_name)
-
-class Vendedor(models.Model):
-    persona = models.ForeignKey(
-        "Persona",
-        on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return 'Vendedor {}'.format(str(self.persona))
-
-
-class Empleado(models.Model):
-    persona = models.ForeignKey(
-        "Persona",
-        on_delete=models.DO_NOTHING)
-    empresa = models.ForeignKey(
-        "Empresa",
-        on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return "{} {} - {}".format(
-            self.__class__.__name__, 
-            self.persona, self.empresa)
-
-    class Meta():
-        abstract = True
-
-class Comprador(Empleado):
-    class Meta():
-        default_related_name = "compradores"
-
-class Gerente(Empleado):
-    class Meta():
-        default_related_name = "gerentes"
-
-
-class Proveedor(models.Model):
-    persona = models.ForeignKey("Persona",on_delete=models.DO_NOTHING)
-    empresa = models.ManyToManyField("Empresa")
-
-    def __str__(self):
-        return "{} {} ".format(self.persona.user.last_name, self.persona.user.first_name)
-
-class Logistica(Empleado):
-    class Meta():
-        default_related_name = "logisticas"
-    
-class Administrador(Empleado):
-    class Meta():
-        default_related_name = "administradores"
-
+from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import Group
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.contrib.auth.models import Permission
 
 class Empresa(models.Model):
     objects = SearchManager()
-    razon_social = models.CharField(max_length=50)
+    razon_social = models.CharField(max_length=50, unique=True)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
     ingresos_brutos = models.CharField(max_length=9, blank=True, null=True)
@@ -90,7 +31,7 @@ class Empresa(models.Model):
         blank=True,
         null=True)
     domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
-    retenciones = models.ManyToManyField("Retencion")
+    retenciones = models.ManyToManyField("Retencion", blank=True, null=True)
 
     class Meta:
         search_fields = (
@@ -109,44 +50,6 @@ class Retencion(models.Model):
 
     def __str__(self):
         return "{}".format(self.name)
-
-
-class Domicilio(models.Model):  
-    direccion = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.direccion
-
-
-class DomicilioPostal(models.Model):
-    Empresa = models.ForeignKey(
-        "Empresa", 
-        null=False, 
-        on_delete=models.CASCADE,
-        related_name="domicilios_postal")
-    Domicilio = models.OneToOneField(
-        "Domicilio", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
-
-
-class DomicilioPersona(models.Model):
-    Persona = models.ForeignKey(
-        "Persona",
-        null=False,
-        on_delete=models.CASCADE,
-        related_name="domicilio")
-    Domicilio = models.OneToOneField(
-        "Domicilio", 
-        null=False, 
-        on_delete=models.DO_NOTHING)
-
-
-class Telefono(models.Model):
-    numero = models.IntegerField()
-
-    def __str__(self):
-        return str(self.numero)
 
 
 class Articulo(models.Model):
@@ -174,11 +77,16 @@ class Articulo(models.Model):
 
 class Negocio(models.Model):
     comprador = models.ForeignKey(
-        "Comprador", 
+        "MyUser",
+        related_name='comprador',
+        limit_choices_to={'clase': "Comprador"},
         on_delete=models.DO_NOTHING
     )
+
     vendedor = models.ForeignKey(
-        "Vendedor",
+        "MyUser",
+        related_name='vendedor',
+        limit_choices_to={'clase': "Vendedor"},
         on_delete=models.DO_NOTHING,
         null=True
     )
@@ -254,7 +162,8 @@ class ItemPropuesta(models.Model):
         null=False, 
         on_delete=models.DO_NOTHING)
     proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING)
@@ -375,7 +284,7 @@ class Notificacion(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     hyperlink = models.CharField(max_length=255)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "MyUser",
         on_delete=models.DO_NOTHING)
     visto = models.BooleanField(default=False)
 
@@ -397,7 +306,8 @@ class Factura(models.Model):
     numero_factura = models.IntegerField(null=False)
     
     proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     tipo_pago = models.ForeignKey(
@@ -426,7 +336,8 @@ class Remito(models.Model):
     fecha_vencimiento = models.DateField(null=False)
     
     proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 	#desc_productos 
@@ -448,7 +359,8 @@ class OrdenDeCompra(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor", 
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -468,7 +380,8 @@ class OrdenDePago(models.Model):
         null=False, 
         on_delete=models.DO_NOTHING) 
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
 
@@ -485,7 +398,8 @@ class ConstanciaRentencion(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING) 
     importe = models.FloatField()
@@ -500,7 +414,8 @@ class Recibo(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     monto = models.PositiveIntegerField(null=False ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
@@ -543,7 +458,8 @@ class FacturaComision(models.Model):
 
     fecha_emision = models.DateField(null=False)
     recibe_proveedor = models.ForeignKey(
-        "Proveedor",
+        "MyUser", 
+        limit_choices_to={'clase': "Proveedor"},
         null=False, 
         on_delete=models.DO_NOTHING)
     documento = models.FileField(upload_to='media/facturasComision/%Y/%m/%d', null=False)
@@ -592,4 +508,167 @@ def send_email_notification(sender, instance, **kwargs):
 
         email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
 
+
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, nombre, apellido, password, clase, empresa, fecha_nacimiento, sexo, dni, telefono, domicilio):
+        if not email:
+            raise ValueError('Los usuarios deben tener un email')
+        if not password:
+            raise ValueError('Los usuarios deben tener una contraseña')
+        user_obj = self.model(
+            email = self.normalize_email(email),
+            nombre = nombre,
+            apellido = apellido,
+            clase = clase,
+            empresa = empresa,
+            fecha_nacimiento = fecha_nacimiento,
+            sexo = sexo,
+            dni = dni,
+            telefono = telefono,
+            domicilio = domicilio
+            )
+        user_obj.set_password(password)
+        user_obj.is_staff = False
+        user_obj.is_superuser = False
+        user_obj.save(using=self.db)
+        return user_obj
+    def create_superuser(self, email, password = None):
+        user_obj = self.model(
+            email = self.normalize_email(email))
+        user_obj.set_password(password)
+        user_obj.is_superuser = True
+        user_obj.save(using=self.db)
+        return user_obj
+
+
+class MyUser(AbstractBaseUser, PermissionsMixin):
+    
+    objs = MyUserManager()
+
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
+
+    clases = [
+        ('Administrador', 'Administrador'),
+        ('Comprador', 'Comprador'),
+        ('Vendedor', 'Vendedor'),
+        ('Proveedor', 'Proveedor'),
+        ('Gerente', 'Gerente'),
+        ('Logistica', 'Logistica')]
+
+    nombre = models.CharField(max_length=50, blank=False)
+    apellido = models.CharField(max_length=50, blank=False)
+    email = models.EmailField(_('email address'), unique = True)
+    clase = models.CharField(null=True, max_length=13, choices=clases)
+
+    fecha_nacimiento = models.DateField(null=True)
+    sexo = models.CharField(null=True, max_length=6, choices=GENERO_CHOICES)
+    dni = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+    telefono = models.CharField(null=True, max_length=10)
+    domicilio = models.CharField(null=True, max_length=255)
+
+    empresa = models.ForeignKey(
+        "Empresa",
+        on_delete=models.DO_NOTHING,
+        null=True,
+        )
+
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=True,
+        help_text=_('Puede loggearse en el administrador.'),
+    )
+
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Quitar este parámetro en lugar de borrar cuentas'
+        ),
+    )
+
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+
+    objects = MyUserManager()
+
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
+
+    def get_full_name(self):
+        """
+        Return the first_name plus the last_name, with a space in between.
+        """
+        return '{} {}'.format(self.nombre, self.apellido)
+
+    def get_clase(self):
+        """
+        Return the clase.
+        """
+        return self.clase
+
+    def get_short_name(self):
+        """Return the short name for the user."""
+        return self.email
+
+    def get_razon_social(self):
+        """Return the short name for the user."""
+        return '{}'.format(self.empresa.razon_social)
+
+# dejo plasmado el sistema de permisos para luego implementarlo
+
+# def set_perms(sender, instance, created, **kwargs):
+#     all = [
+#     'Can view articulo','Can add articulo','Can delete articulo','Can change articulo',
+#     'Can view cheque','Can add cheque','Can delete cheque','Can change cheque',
+#     'Can view constancia retencion','Can add constancia retencion','Can delete constancia retencion','Can change constancia retencion',
+#     'Can view cuenta corriente','Can add cuenta corriente','Can delete cuenta corriente','Can change cuenta corriente',
+#     'Can view empresa','Can add empresa','Can delete empresa','Can change empresa',
+#     'Can view factura','Can add factura','Can delete factura','Can change factura',
+#     'Can view factura comision','Can add factura comision','Can delete factura comision','Can change factura comision',
+#     'Can view financiacion','Can add financiacion','Can delete financiacion','Can change financiacion',
+#     'Can view propuesta','Can add propuesta','Can delete propuesta','Can change propuesta',
+#     'Can view logistica','Can add logistica','Can delete logistica','Can change logistica',
+#     'Can view negocio','Can add negocio','Can delete negocio','Can change negocio',
+#     'Can view nota','Can add nota','Can delete nota','Can change nota',
+#     'Can view notificaciones','Can add notificaciones','Can delete notificaciones','Can change notificaciones',
+#     'Can view compra','Can add compra','Can delete compra','Can change compra',
+#     'Can view orden de pago','Can add orden de pago','Can delete orden de pago','Can change orden de pago',
+#     'Can view presupuesto','Can add presupuesto','Can delete presupuesto','Can change presupuesto',
+#     'Can view recibo','Can add recibo','Can delete recibo','Can change recibo',
+#     'Can view proveedor','Can add proveedor','Can delete proveedor','Can change proveedor',
+#     'Can view remito','Can add remito','Can delete remito','Can change remito',
+#     'Can view retencion','Can add retencion','Can delete retencion','Can change retencion',
+#     'Can view tipo pago','Can add tipo pago','Can delete tipo pago','Can change tipo pago',
+    
+#     'Can view Usuario','Can add Usuario','Can delete Usuario','Can change Usuario',
+#     ]
+#     if created:
+#         #'Admin'
+#         if instance.nivel == '1':
+#             permissions = Permission.objects.filter(name__in = all)
+#             instance.user_permissions.set(permissions)
+#         #'Comprador'
+#         elif instance.nivel == '2':
+#             permissions = Permission.objects.filter(name__in = [])
+#             instance.user_permissions.set(permissions)
+#         #'Vendedor'
+#         elif instance.nivel == '3':
+#             permissions = Permission.objects.filter(name__in = [])
+#             instance.user_permissions.set(permissions)
+#         #'Proveedor'
+#         elif instance.nivel == '4':
+#             permissions = Permission.objects.filter(name__in = [])
+#             instance.user_permissions.set(permissions)
+#         #'Logistica'
+#         elif instance.nivel == '5':
+#             permissions = Permission.objects.filter(name__in = [])
+#             instance.user_permissions.set(permissions)
+        
+# post_save.connect(set_perms, sender = MyUser)
 post_save.connect(send_email_notification, sender=Notificacion)

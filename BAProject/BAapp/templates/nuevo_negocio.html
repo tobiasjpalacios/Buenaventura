@@ -124,14 +124,14 @@ BuenaVentura Agronegocios
          <div class="row">
            
           <div class="row"> 
-            <div class="col s3"> 
+            <div class="col s4"> 
               <span class="col s4 right-align"  style="margin-top: 5%;" > de </span>
-              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_username }}</h5>
+              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_full_name|title }}</h5>
             </div>
-            <div class="col s3"> 
+            <div class="col s4"> 
               <span class="col s4 left-align" style="margin-top: 5%;"> Para</span>
               <div class="row entrada col s8 left-align" style="border-bottom: none; box-shadow: none;">
-                <input placeholder="{% if request.user|has_group:'Comprador' %}Vendedor{% elif request.user|has_group:'Vendedor' %}Comprador{% endif %}" class =" center-align" type="text" id="inputComp" list="datalistComp">
+                <input placeholder="{% if request.user.clase == 'Comprador' %}Vendedor{% elif request.user.clase == 'Vendedor' %}Comprador{% endif %}" class =" center-align" type="text" id="inputComp" list="datalistComp">
                 <datalist id="datalistComp"></datalist>
               </div>
             </div>
@@ -141,13 +141,14 @@ BuenaVentura Agronegocios
           
           <div class=" cuadrado col s4 offset-s1 hide " >
              <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
-             <span class="left-align">{% if request.user|has_group:'Comprador' %}Comprador: {% elif request.user|has_group:'Vendedor' %}Vendedor: {% endif %}</span>
-             <b><span class="left-align" id="vendedorSpan">{{ user.get_username }}</span></b>
+             <span class="left-align">{% if request.user.clase == 'Vendedor' %}Comprador: {% elif request.user.clase == 'Comprador' %}Vendedor: {% endif %}</span>
+             <b><span class="left-align" id="vendedorSpan">{{ user.get_full_name }}</span></b>
+             <span class="left-align" id="vendedorSpanEmail" style="display: none;">{{ user.email }}</span>
            </div>
          
            <div class="col cuadrado col s4 offset-s1 hide" >
            <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
-              <span class="left-align">{% if request.user|has_group:'Comprador' %}Seleccione un vendedor: {% elif request.user|has_group:'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
+              <span class="left-align">{% if request.user.clase == 'Comprador' %}Seleccione un vendedor: {% elif request.user.clase == 'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
          
          </div>
          
@@ -224,7 +225,7 @@ BuenaVentura Agronegocios
  <script>
 
   var userIsComprador = false;
-  "{% if request.user|has_group:'Comprador' %}"
+  "{% if request.user.clase == 'Comprador' %}"
   userIsComprador = true;
   "{% endif %}"
 
@@ -325,17 +326,17 @@ var errors = [];
   $(document).ready(function(){
     $.ajax({
       type: "GET",
-      url: "{% if request.user|has_group:'Vendedor' %}{% url 'api_comprador' %}{% elif request.user|has_group:'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
+      url: "{% if request.user.clase == 'Vendedor' %}{% url 'api_comprador' %}{% elif request.user.clase == 'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
       dataType: "json",
       success: function(data) {      
         compradores_data = data;
         var datalistComp = document.getElementById("datalistComp");
         for (var i = 0; i < compradores_data.length; i++) {
             var optionComp = document.createElement('option');
-            optionComp.setAttribute('value',''+compradores_data[i]['usuario']);
-            optionComp.setAttribute('id','option'+i);
+            optionComp.setAttribute('value', compradores_data[i]['usuario']);
+            optionComp.setAttribute('id', compradores_data[i]['email']);
             all_compradores.push(compradores_data[i]['usuario']);
-            datalistComp.appendChild(optionComp);        
+            datalistComp.appendChild(optionComp);
           }
       }
     });
@@ -899,8 +900,8 @@ function submit(){
   var empTab = document.getElementById('empTable');
   if (validateData(rowCnt)) {
     var dict = [];
-    var inputComp = document.getElementById('inputComp');
-    var vendedor = document.getElementById('vendedorSpan');
+    var inputComp = $('option[value="'+$('#inputComp').val()+'"]').attr('id');
+    var vendedor = document.getElementById('vendedorSpanEmail');
     var observaciones = document.getElementById('inputObser');
     if (userIsComprador) {
       headers.push("Precio compra");
@@ -921,7 +922,6 @@ function submit(){
           tmp_dict[headers[j]] = input;
         }
         else if (headers[j] == "Distribuidor" && userIsComprador) {
-          // agregar distribuidor nulo cuando se pueda
           input = null;
           tmp_dict[headers[j]] = input;
         }
@@ -940,7 +940,7 @@ function submit(){
      if (!userIsComprador) {
        aux_dict = {
           'data':dict,
-          'comprador':inputComp.value,
+          'comprador':inputComp,
           'vendedor':vendedor.innerHTML,
           'observaciones': observaciones.value,
           'envio_comprador': false,
@@ -950,7 +950,7 @@ function submit(){
        aux_dict = {
           'data':dict,
           'comprador':vendedor.innerHTML,
-          'vendedor':inputComp.value,
+          'vendedor':inputComp,
           'observaciones': observaciones.value,
           'envio_comprador': true,
        }
