@@ -40,13 +40,18 @@ class PropuestaAdmin(admin.ModelAdmin):
     inlines = (ItemPropuestaInline,)
 
 class ArticuloAdmin(admin.ModelAdmin):
-    inlines = (ItemPropuestaInline,)
+    # inlines = (ItemPropuestaInline,)
+    list_filter = ('banda_toxicologica', 'marca', 'empresa')
+    list_display = ('ingrediente', 'marca','empresa',)
+    search_fields = ['marca','empresa', ]
+    ordering = ["ingrediente"]
 
 class FacturaAdmin(admin.ModelAdmin):
     list_display  = ('fecha_emision','documento')
 
 class NegocioAdmin(admin.ModelAdmin):
     list_display = ('id_de_neg', 'fecha_cierre')
+
 
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
@@ -267,6 +272,7 @@ admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Presupuesto)
 admin.site.register(Propuesta, PropuestaAdmin)
 admin.site.register(Empresa)
+
 admin.site.register(Retencion)
 admin.site.register(ItemPropuesta)
 admin.site.register(Financiacion)
