@@ -15,6 +15,7 @@ from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, Abs
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.contrib.auth.models import Group, Permission
 
 class Empresa(models.Model):
     objects = SearchManager()
@@ -602,59 +603,15 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         """Return the short name for the user."""
         return '{}'.format(self.empresa.razon_social)
 
-# dejo plasmado el sistema de permisos para luego implementarlo
-
+# sistema de permisos
 def set_perms(sender, instance, created, **kwargs):
-    all = [
-    'Can view articulo','Can add articulo','Can delete articulo','Can change articulo',
-    'Can view cheque','Can add cheque','Can delete cheque','Can change cheque',
-    'Can view constancia retencion','Can add constancia retencion','Can delete constancia retencion','Can change constancia retencion',
-    'Can view cuenta corriente','Can add cuenta corriente','Can delete cuenta corriente','Can change cuenta corriente',
-    'Can view empresa','Can add empresa','Can delete empresa','Can change empresa',
-    'Can view factura','Can add factura','Can delete factura','Can change factura',
-    'Can view factura comision','Can add factura comision','Can delete factura comision','Can change factura comision',
-    'Can view financiacion','Can add financiacion','Can delete financiacion','Can change financiacion',
-    'Can view item propuesta','Can add item propuesta','Can delete item propuesta','Can change item propuesta',
-    'Can view propuesta','Can add propuesta','Can delete propuesta','Can change propuesta',
-    'Can view logistica','Can add logistica','Can delete logistica','Can change logistica',
-    'Can view negocio','Can add negocio','Can delete negocio','Can change negocio',
-    'Can view nota','Can add nota','Can delete nota','Can change nota',
-    'Can view notificaciones','Can add notificaciones','Can delete notificaciones','Can change notificaciones',
-    'Can view orden de compra','Can add orden de compra','Can delete orden de compra','Can change orden de compra',
-    'Can view orden de pago','Can add orden de pago','Can delete orden de pago','Can change orden de pago',
-    'Can view presupuesto','Can add presupuesto','Can delete presupuesto','Can change presupuesto',
-    'Can view recibo','Can add recibo','Can delete recibo','Can change recibo',
-    'Can view proveedor','Can add proveedor','Can delete proveedor','Can change proveedor',
-    'Can view remito','Can add remito','Can delete remito','Can change remito',
-    'Can view retencion','Can add retencion','Can delete retencion','Can change retencion',
-    'Can view tipo pago','Can add tipo pago','Can delete tipo pago','Can change tipo pago',
-    
-    'Can view Usuario','Can add Usuario','Can delete Usuario','Can change Usuario',
-    ]
-    if created:
-        permissions = Permission.objects.filter(name__in = all)
+    perms_name = ["logentry", "group", "permission", "negocio", "itempropuesta", "propuesta", "presupuesto", "contenttype", "session", "site", "myuser"]
+    if instance.is_staff:
+        permissions = Permission.objects.exclude(content_type__model__in=perms_name)
         instance.user_permissions.set(permissions)
-        # #'Admin'
-        # if instance.clase == 'Administrador':
-        #     permissions = Permission.objects.filter(name__in = all)
-        #     instance.user_permissions.set(permissions)
-        # #'Comprador'
-        # elif instance.clase == 'Comprador':
-        #     permissions = Permission.objects.filter(name__in = [])
-        #     instance.user_permissions.set(permissions)
-        # #'Vendedor'
-        # elif instance.clase == 'Vendedor':
-        #     permissions = Permission.objects.filter(name__in = [])
-        #     instance.user_permissions.set(permissions)
-        # #'Proveedor'
-        # elif instance.clase == 'Proveedor':
-        #     permissions = Permission.objects.filter(name__in = [])
-        #     instance.user_permissions.set(permissions)
-        # #'Logistica'
-        # elif instance.clase == 'Logistica':
-        #     permissions = Permission.objects.filter(name__in = [])
-        #     instance.user_permissions.set(permissions)
-        
+    else:
+        instance.user_permissions.clear()
+
 
 # mandar email cada vez que se crea una notificacion (a excepcion de nuevos presupuestos y nuevos negocios)
 @receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
@@ -678,5 +635,5 @@ def send_email_notification(sender, instance, **kwargs):
 
         email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
 
-# post_save.connect(set_perms, sender = MyUser)
-post_save.connect(send_email_notification, sender=Notificacion)
+post_save.connect(set_perms, sender = MyUser)
+post_save.connect(send_email_notification, sender = Notificacion)

@@ -95,7 +95,7 @@ class MyUserAdmin(UserAdmin):
         (None, {'fields': ('nombre','apellido','email', 'password')}),
         (_('Datos Personales'), {'fields': ('empresa','fecha_nacimiento', 'sexo', 'dni', 'telefono','domicilio')}),
         (_('Permisos'), {
-            'fields': ('clase', 'is_active', 'is_staff', 'is_superuser', 'groups'),
+            'fields': ('clase', 'is_active', 'is_staff', 'is_superuser'),
         }),
         (_('Fechas importantes'), {
             'fields': ('last_login', 'date_joined')

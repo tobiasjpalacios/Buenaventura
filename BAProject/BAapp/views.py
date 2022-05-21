@@ -29,7 +29,6 @@ from django.contrib.sites.models import Site
 import operator
 from functools import reduce
 from django.conf import settings
-from django.contrib.auth.models import Group, Permission
 
 
 User = settings.AUTH_USER_MODEL
@@ -2404,12 +2403,3 @@ def formNota(request, *args, **kwargs):
             'tipo':tipo
         }
         return render(request, 'modalForm.html', context)
-
-
-# creando grupos Staff
-group, created = Group.objects.get_or_create(name='Staff')
-perms_name = ["logentry", "group", "permission", "negocio", "itempropuesta", "propuesta", "presupuesto", "contenttype", "session", "site", "myuser"]
-if created:
-    p = Permission.objects.exclude(content_type__model__in=perms_name)
-    group.permissions.set(p)
-    group.save()
