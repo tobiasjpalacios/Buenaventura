@@ -562,21 +562,22 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique = True)
     clase = models.CharField(null=True, max_length=13, choices=clases)
 
-    fecha_nacimiento = models.DateField(null=True)
-    sexo = models.CharField(null=True, max_length=6, choices=GENERO_CHOICES)
-    dni = models.PositiveIntegerField(null=True ,validators=[MinValueValidator(1), MaxValueValidator(99999999)])
-    telefono = models.CharField(null=True, max_length=10)
-    domicilio = models.CharField(null=True, max_length=255)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    sexo = models.CharField(null=True, blank=True, max_length=6, choices=GENERO_CHOICES)
+    dni = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(99999999)])
+    telefono = models.CharField(null=True, blank=True, max_length=10)
+    domicilio = models.CharField(null=True, blank=True, max_length=255)
 
     empresa = models.ForeignKey(
         "Empresa",
         on_delete=models.DO_NOTHING,
         null=True,
+        blank=True,
         )
 
     is_staff = models.BooleanField(
         _('staff status'),
-        default=True,
+        default=False,
         help_text=_('Puede loggearse en el administrador.'),
     )
 
@@ -622,53 +623,56 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
 # dejo plasmado el sistema de permisos para luego implementarlo
 
-# def set_perms(sender, instance, created, **kwargs):
-#     all = [
-#     'Can view articulo','Can add articulo','Can delete articulo','Can change articulo',
-#     'Can view cheque','Can add cheque','Can delete cheque','Can change cheque',
-#     'Can view constancia retencion','Can add constancia retencion','Can delete constancia retencion','Can change constancia retencion',
-#     'Can view cuenta corriente','Can add cuenta corriente','Can delete cuenta corriente','Can change cuenta corriente',
-#     'Can view empresa','Can add empresa','Can delete empresa','Can change empresa',
-#     'Can view factura','Can add factura','Can delete factura','Can change factura',
-#     'Can view factura comision','Can add factura comision','Can delete factura comision','Can change factura comision',
-#     'Can view financiacion','Can add financiacion','Can delete financiacion','Can change financiacion',
-#     'Can view propuesta','Can add propuesta','Can delete propuesta','Can change propuesta',
-#     'Can view logistica','Can add logistica','Can delete logistica','Can change logistica',
-#     'Can view negocio','Can add negocio','Can delete negocio','Can change negocio',
-#     'Can view nota','Can add nota','Can delete nota','Can change nota',
-#     'Can view notificaciones','Can add notificaciones','Can delete notificaciones','Can change notificaciones',
-#     'Can view compra','Can add compra','Can delete compra','Can change compra',
-#     'Can view orden de pago','Can add orden de pago','Can delete orden de pago','Can change orden de pago',
-#     'Can view presupuesto','Can add presupuesto','Can delete presupuesto','Can change presupuesto',
-#     'Can view recibo','Can add recibo','Can delete recibo','Can change recibo',
-#     'Can view proveedor','Can add proveedor','Can delete proveedor','Can change proveedor',
-#     'Can view remito','Can add remito','Can delete remito','Can change remito',
-#     'Can view retencion','Can add retencion','Can delete retencion','Can change retencion',
-#     'Can view tipo pago','Can add tipo pago','Can delete tipo pago','Can change tipo pago',
+def set_perms(sender, instance, created, **kwargs):
+    all = [
+    'Can view articulo','Can add articulo','Can delete articulo','Can change articulo',
+    'Can view cheque','Can add cheque','Can delete cheque','Can change cheque',
+    'Can view constancia retencion','Can add constancia retencion','Can delete constancia retencion','Can change constancia retencion',
+    'Can view cuenta corriente','Can add cuenta corriente','Can delete cuenta corriente','Can change cuenta corriente',
+    'Can view empresa','Can add empresa','Can delete empresa','Can change empresa',
+    'Can view factura','Can add factura','Can delete factura','Can change factura',
+    'Can view factura comision','Can add factura comision','Can delete factura comision','Can change factura comision',
+    'Can view financiacion','Can add financiacion','Can delete financiacion','Can change financiacion',
+    'Can view item propuesta','Can add item propuesta','Can delete item propuesta','Can change item propuesta',
+    'Can view propuesta','Can add propuesta','Can delete propuesta','Can change propuesta',
+    'Can view logistica','Can add logistica','Can delete logistica','Can change logistica',
+    'Can view negocio','Can add negocio','Can delete negocio','Can change negocio',
+    'Can view nota','Can add nota','Can delete nota','Can change nota',
+    'Can view notificaciones','Can add notificaciones','Can delete notificaciones','Can change notificaciones',
+    'Can view orden de compra','Can add orden de compra','Can delete orden de compra','Can change orden de compra',
+    'Can view orden de pago','Can add orden de pago','Can delete orden de pago','Can change orden de pago',
+    'Can view presupuesto','Can add presupuesto','Can delete presupuesto','Can change presupuesto',
+    'Can view recibo','Can add recibo','Can delete recibo','Can change recibo',
+    'Can view proveedor','Can add proveedor','Can delete proveedor','Can change proveedor',
+    'Can view remito','Can add remito','Can delete remito','Can change remito',
+    'Can view retencion','Can add retencion','Can delete retencion','Can change retencion',
+    'Can view tipo pago','Can add tipo pago','Can delete tipo pago','Can change tipo pago',
     
-#     'Can view Usuario','Can add Usuario','Can delete Usuario','Can change Usuario',
-#     ]
-#     if created:
-#         #'Admin'
-#         if instance.nivel == '1':
-#             permissions = Permission.objects.filter(name__in = all)
-#             instance.user_permissions.set(permissions)
-#         #'Comprador'
-#         elif instance.nivel == '2':
-#             permissions = Permission.objects.filter(name__in = [])
-#             instance.user_permissions.set(permissions)
-#         #'Vendedor'
-#         elif instance.nivel == '3':
-#             permissions = Permission.objects.filter(name__in = [])
-#             instance.user_permissions.set(permissions)
-#         #'Proveedor'
-#         elif instance.nivel == '4':
-#             permissions = Permission.objects.filter(name__in = [])
-#             instance.user_permissions.set(permissions)
-#         #'Logistica'
-#         elif instance.nivel == '5':
-#             permissions = Permission.objects.filter(name__in = [])
-#             instance.user_permissions.set(permissions)
+    'Can view Usuario','Can add Usuario','Can delete Usuario','Can change Usuario',
+    ]
+    if created:
+        permissions = Permission.objects.filter(name__in = all)
+        instance.user_permissions.set(permissions)
+        # #'Admin'
+        # if instance.clase == 'Administrador':
+        #     permissions = Permission.objects.filter(name__in = all)
+        #     instance.user_permissions.set(permissions)
+        # #'Comprador'
+        # elif instance.clase == 'Comprador':
+        #     permissions = Permission.objects.filter(name__in = [])
+        #     instance.user_permissions.set(permissions)
+        # #'Vendedor'
+        # elif instance.clase == 'Vendedor':
+        #     permissions = Permission.objects.filter(name__in = [])
+        #     instance.user_permissions.set(permissions)
+        # #'Proveedor'
+        # elif instance.clase == 'Proveedor':
+        #     permissions = Permission.objects.filter(name__in = [])
+        #     instance.user_permissions.set(permissions)
+        # #'Logistica'
+        # elif instance.clase == 'Logistica':
+        #     permissions = Permission.objects.filter(name__in = [])
+        #     instance.user_permissions.set(permissions)
         
-# post_save.connect(set_perms, sender = MyUser)
+post_save.connect(set_perms, sender = MyUser)
 post_save.connect(send_email_notification, sender=Notificacion)

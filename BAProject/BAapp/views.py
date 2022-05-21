@@ -160,13 +160,13 @@ def get_negocios_bygroup(request, fcn):
     grupo_activo = request.user.clase
     #A = Administrador 
     if (grupo_activo == "Administrador"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__empresa=reques.user.empresa).values_list('id', flat=True).order_by('-timestamp').distinct())
     #C = Comprador
     elif (grupo_activo == "Comprador"):
         negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     #V = Vendedor
     elif (grupo_activo == "Vendedor"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
         negociosAbiertos = []
     return negociosAbiertos
@@ -256,7 +256,7 @@ def getNegociosByClase(request, user_clase, tipo):
 
     # administrador
     elif (user_clase == 'Administrador'):
-        negocios = Negocio.objects.all().order_by('-timestamp')
+        negocios = Negocio.objects.filter(comprador__empresa=reques.user.empresa).order_by('-timestamp')
         lista_ids = []
         for a in negocios:
             empleadoA = request.user

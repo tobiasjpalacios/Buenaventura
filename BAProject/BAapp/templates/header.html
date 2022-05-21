@@ -54,12 +54,12 @@
       <div class="no-shadows">
         <a href="#" data-target="mobile-demo" class="sidenav-trigger "><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
-          {% if user.is_superuser %}  
-          <li>
+          {% if user.is_superuser or user.is_staff == True %}  
+          <!-- <li>
             <div style="position:static; height: 64px; background-color: white;">
               <img style="height: 64px" src="{% static 'images/roagro.jpeg' %}">
             </div>
-          </li>
+          </li> -->
           <li>
             <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
           </li>
