@@ -12,18 +12,18 @@ from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import Group
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group, Permission
+from django.db.models import Q
 
 class Empresa(models.Model):
     objects = SearchManager()
     razon_social = models.CharField(max_length=50, unique=True)
     nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
     cuit = models.CharField(max_length=14, blank=True, null=True)
-    ingresos_brutos = models.CharField(max_length=9, blank=True, null=True)
+    ingresos_brutos = models.CharField(max_length=255, blank=True, null=True)
     fecha_exclusion = models.DateField(null=True, blank=True)
     categoria_iva = models.CharField(
         max_length=25, 
@@ -31,7 +31,7 @@ class Empresa(models.Model):
         blank=True,
         null=True)
     domicilio_fiscal = models.CharField(max_length=255, blank=True, null=True)
-    retenciones = models.ManyToManyField("Retencion", blank=True, null=True)
+    retenciones = models.ManyToManyField("Retencion", blank=True)
 
     class Meta:
         search_fields = (
@@ -486,29 +486,6 @@ class Nota(models.Model):
         default_related_name = "notas"
 
 
-# mandar email cada vez que se crea una notificacion (a excepcion de nuevos presupuestos y nuevos negocios)
-@receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
-def send_email_notification(sender, instance, **kwargs):
-    if instance.titulo is not None and "Presupuesto" not in instance.titulo:
-        if instance.descripcion is not None:
-            pre_text = instance.descripcion
-        else:
-            pre_text = instance.titulo
-
-        subject = instance.titulo
-        fecha = formats.date_format(instance.timestamp, "SHORT_DATE_FORMAT")
-        hora = formats.time_format(instance.timestamp, "TIME_FORMAT")
-        formatted_timestamp = f"{fecha} a las {hora} hs"
-        text = f"{pre_text}. Recibido el día {formatted_timestamp}."
-        protocol = "http://"
-        domain = Site.objects.get_current().domain
-        url =  protocol + domain + reverse('notificaciones')
-        to = [instance.user.email]
-        context = {'titulo' : subject, 'texto' : text, 'url' : url}
-
-        email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
-
-
 class MyUserManager(BaseUserManager):
     def create_user(self, email, nombre, apellido, password, clase, empresa, fecha_nacimiento, sexo, dni, telefono, domicilio):
         if not email:
@@ -575,6 +552,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         blank=True,
         )
 
+    is_superuser = models.BooleanField(
+        _('superuser status'),
+        default=True,
+        help_text=_('Puede loggearse en el administrador y dar permisos a otros usuarios.'),
+    )
+    
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -600,6 +583,25 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    def save(self, *args, **kwargs):
+        permissions = Permission.objects.filter(
+            Q(content_type__model="articulo") | Q(content_type__model="cheque") |
+            Q(content_type__model="constanciarentencion") | Q(content_type__model="cuentacorriente") |
+            Q(content_type__model="empresa") | Q(content_type__model="factura") |
+            Q(content_type__model="facturacomision") | Q(content_type__model="nota") | Q(content_type__model="financiacion") |
+            Q(content_type__model="notificacion") | Q(content_type__model="ordendecompra") |
+            Q(content_type__model="ordendepago") | Q(content_type__model="recibo") |
+            Q(content_type__model="remito") | Q(content_type__model="retencion") |
+            Q(content_type__model="tipopago")
+        )
+        if self.is_staff:
+            p = Permission.objects.get(codename='view_articulo')
+            print(p)
+            self.user_permissions.add(p)
+        else:
+            self.user_permissions.clear()
+        return super(MyUser, self).save(*args, **kwargs)
 
     def get_full_name(self):
         """
@@ -674,5 +676,28 @@ def set_perms(sender, instance, created, **kwargs):
         #     permissions = Permission.objects.filter(name__in = [])
         #     instance.user_permissions.set(permissions)
         
-post_save.connect(set_perms, sender = MyUser)
+
+# mandar email cada vez que se crea una notificacion (a excepcion de nuevos presupuestos y nuevos negocios)
+@receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
+def send_email_notification(sender, instance, **kwargs):
+    if instance.titulo is not None and "Presupuesto" not in instance.titulo:
+        if instance.descripcion is not None:
+            pre_text = instance.descripcion
+        else:
+            pre_text = instance.titulo
+
+        subject = instance.titulo
+        fecha = formats.date_format(instance.timestamp, "SHORT_DATE_FORMAT")
+        hora = formats.time_format(instance.timestamp, "TIME_FORMAT")
+        formatted_timestamp = f"{fecha} a las {hora} hs"
+        text = f"{pre_text}. Recibido el día {formatted_timestamp}."
+        protocol = "http://"
+        domain = Site.objects.get_current().domain
+        url =  protocol + domain + reverse('notificaciones')
+        to = [instance.user.email]
+        context = {'titulo' : subject, 'texto' : text, 'url' : url}
+
+        email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
+
+# post_save.connect(set_perms, sender = MyUser)
 post_save.connect(send_email_notification, sender=Notificacion)

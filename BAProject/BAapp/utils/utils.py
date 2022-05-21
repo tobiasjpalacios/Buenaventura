@@ -77,7 +77,7 @@ def reed_articulos(art_sheet):
             setattr(instance, v, c[art_header[v]])
         # solucion temporal, mala y lenta (no se puede actualizar ningun objeto)
         emp_nombre_comercial = Empresa.objects.get(razon_social=c[art_header["empresa"]]).nombre_comercial
-        art = Articulo.objects.filter(ingrediente=c[art_header["ingrediente"]], empresa__nombre_comercial=emp_nombre_comercial).exists()
+        art = Articulo.objects.filter(marca=c[art_header["marca"]], empresa__nombre_comercial=emp_nombre_comercial).exists()
         if not art:
             instance.save()
             created_arts += 1
@@ -102,12 +102,14 @@ def reed_usuarios(usr_sheet):
         fech_nac = None if fech_nac == "None" or fech_nac == "" else fech_nac
         dni = user_data[usr_reader["dni"]]
         dni = None if dni == "None" or dni == "" else dni
+        nombre = user_data[usr_reader["nombre"]].title()
+        clase = user_data[usr_reader["clase"]].lower().capitalize()
         try:
             user = MyUser.objs.get(email=user_data[0])             
             user.email            = user_data[usr_reader["email"]]
-            user.nombre           = user_data[usr_reader["nombre"]]
+            user.nombre           = nombre
             user.apellido         = user_data[usr_reader["apellido"]]
-            user.clase            = user_data[usr_reader["clase"]]
+            user.clase            = clase
             user.empresa          = empresa
             user.fecha_nacimiento = fech_nac
             user.sexo             = user_data[usr_reader["sexo"]]
@@ -120,10 +122,10 @@ def reed_usuarios(usr_sheet):
             try:
                 MyUser.objs.create_user(
                     email            = user_data[usr_reader["email"]],
-                    nombre           = user_data[usr_reader["nombre"]],
+                    nombre           = nombre,
                     apellido         = user_data[usr_reader["apellido"]],
                     password         = user_data[usr_reader["password"]],
-                    clase            = user_data[usr_reader["clase"]],
+                    clase            = clase,
                     empresa          = empresa,
                     fecha_nacimiento = fech_nac,
                     sexo             = user_data[usr_reader["sexo"]],
