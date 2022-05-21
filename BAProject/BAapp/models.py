@@ -15,8 +15,6 @@ from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, Abs
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.models import Group, Permission
-from django.db.models import Q
 
 class Empresa(models.Model):
     objects = SearchManager()
@@ -583,25 +581,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
-
-    def save(self, *args, **kwargs):
-        permissions = Permission.objects.filter(
-            Q(content_type__model="articulo") | Q(content_type__model="cheque") |
-            Q(content_type__model="constanciarentencion") | Q(content_type__model="cuentacorriente") |
-            Q(content_type__model="empresa") | Q(content_type__model="factura") |
-            Q(content_type__model="facturacomision") | Q(content_type__model="nota") | Q(content_type__model="financiacion") |
-            Q(content_type__model="notificacion") | Q(content_type__model="ordendecompra") |
-            Q(content_type__model="ordendepago") | Q(content_type__model="recibo") |
-            Q(content_type__model="remito") | Q(content_type__model="retencion") |
-            Q(content_type__model="tipopago")
-        )
-        if self.is_staff:
-            p = Permission.objects.get(codename='view_articulo')
-            print(p)
-            self.user_permissions.add(p)
-        else:
-            self.user_permissions.clear()
-        return super(MyUser, self).save(*args, **kwargs)
 
     def get_full_name(self):
         """
