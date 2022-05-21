@@ -102,7 +102,7 @@ class MoUserAdmin(admin.ModelAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('nombre','apellido','email', 'password1', 'password2', 'clase', 'empresa'),
+            'fields': ('nombre','apellido','email', 'password1', 'password2', 'clase'),
         }),
     )
 
