@@ -10,10 +10,12 @@
             <li><a href="{% url 'logistica'  %}">Logistica</a></li>
             <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
             <li><a href="#">Mas Opciones </a></li>
-            {% if request.user|has_group:"Vendedor" %}
-            <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta</a></li>
+            {% if request.user.clase == "Vendedor" %}
+            <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta </a></li>
             {% endif %}
+            {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
             <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
+            {% endif %}
             <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
         </ul>
     </div>
