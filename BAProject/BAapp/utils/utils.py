@@ -285,7 +285,6 @@ def sheet_writer():
     _readable_column_width(usr_sheet)
 
     file = FileIO("db.xlsx", 'w+')
-    downloads_path = str(Path.home() / "Downloads")
     wb.save(file)
     file.seek(0)
 

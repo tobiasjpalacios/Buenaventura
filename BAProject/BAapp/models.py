@@ -507,7 +507,7 @@ class MyUserManager(BaseUserManager):
         user_obj = self.model(
             email = self.normalize_email(email))
         user_obj.set_password(password)
-	user_obj.is_staff = True
+        user_obj.is_staff = True
         user_obj.is_superuser = True
         user_obj.save(using=self.db)
         return user_obj
@@ -515,6 +515,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     
+    objects = MyUserManager()
     objs = MyUserManager()
 
     class Meta:
