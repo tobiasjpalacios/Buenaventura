@@ -507,6 +507,7 @@ class MyUserManager(BaseUserManager):
         user_obj = self.model(
             email = self.normalize_email(email))
         user_obj.set_password(password)
+	user_obj.is_staff = True
         user_obj.is_superuser = True
         user_obj.save(using=self.db)
         return user_obj
@@ -567,8 +568,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     )
 
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-
-    objects = MyUserManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
