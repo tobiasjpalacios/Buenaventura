@@ -1504,7 +1504,7 @@ def listasNAA(request,negocioFilter, tipo):
     return lista_negocios
 
 class carga_excel(View):    
-    def get(self,request):    
+    def get(self, request):    
         return render(request, 'carga_excel.html')
     
     def post(self, request):

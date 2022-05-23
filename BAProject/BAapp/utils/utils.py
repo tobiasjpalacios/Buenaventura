@@ -8,6 +8,7 @@ from django.db import IntegrityError, transaction
 from django.db.models.fields.reverse_related import ManyToOneRel
 from django.utils.safestring import mark_safe
 from BAapp.models import MyUser
+from pathlib import Path
 
 from BAapp.models import Articulo, Empresa, Retencion
 
@@ -283,8 +284,9 @@ def sheet_writer():
     _readable_column_width(ing_sheet)
     _readable_column_width(usr_sheet)
 
-    file = FileIO("dump.xlsx", 'w+')
-    wb.save(file)
+    file = FileIO("db.xlsx", 'w+')
+    downloads_path = str(Path.home() / "Downloads")
+    wb.save(downloads_path + "/" + file.name)
     file.seek(0)
 
     return file
