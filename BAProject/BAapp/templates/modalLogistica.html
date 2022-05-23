@@ -10,8 +10,8 @@
 </style>
 <div class="modal-content">
     <h4>{{negocio.comprador.empresa.razon_social}} {{negocio.fechaaux|date:"M d, Y"}}</h4>
-    <div class="col s6"><span class="">Cliente {{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</span> </div>
-    <div class="col s6"><span class="">Vendedor {{negocio.vendedor.persona.user.last_name}} {{negocio.vendedor.persona.user.first_name}}</span> </div>
+    <div class="col s6"><span class="">Cliente {{negocio.comprador.get_full_name}}</span> </div>
+    <div class="col s6"><span class="">Vendedor {{negocio.vendedor.get_full_name}}</span> </div>
     <div class="row">
     <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> Articulos</span> </div>
     <table class="striped">
@@ -76,9 +76,9 @@
           </div> 
         {% if request.user|has_group:"Vendedor" %} 
             <select id="selectModalAlertLog">
-                <option class="selected" value="-1">{{cliente.persona.user.last_name}} {{cliente.persona.user.first_name}} - {{cliente.empresa.razon_social}}</option>
+                <option class="selected" value="-1">{{cliente.get_full_name}} - {{cliente.empresa.razon_social}}</option>
                 {% for proveedor in proveedores %}
-                    <option value={{proveedor.id}} >{{proveedor.persona.user.last_name}} {{proveedor.persona.user.last_name}}</option>
+                    <option value={{proveedor.id}} >{{proveedor.get_full_name}}</option>
                 {% endfor %}
             </select>             
         {% endif %}

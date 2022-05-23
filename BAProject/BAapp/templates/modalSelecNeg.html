@@ -25,7 +25,7 @@
                     </td>
                     <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                     <td>{{negocio.comprador.empresa.razon_social}}</td>
-                    <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
+                    <td>{{negocio.comprador.get_full_name}}</td>
                     <td class="center"><strong>{{negocio.id_de_neg}}</strong></td>
                     {% if negocio.estado == 'Confirmado' %}
                     <td class="green-text">

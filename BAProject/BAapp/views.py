@@ -1814,7 +1814,7 @@ class NegocioView(View):
             prop = Propuesta(
                 negocio=negocio,
                 observaciones=data["observaciones"],
-                envio_comprador=request.user.groups.filter(name="Compradores").exists()
+                envio_comprador=request.user.clase == 'Comprador'
             )
             prop.save()
             for item in data["items"]:

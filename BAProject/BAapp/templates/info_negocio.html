@@ -97,11 +97,11 @@ BuenaVentura Agronegocios
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th>Marca</th>
+                            <th>Empresa</th>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <th>Distribuidor</th>
                             {% endif %}
-                            <th>Cant</th>
+                            <th>Cantidad</th>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
                             <th>Precio Venta</th>
                             {% endif %}
@@ -109,7 +109,7 @@ BuenaVentura Agronegocios
                             <th>Precio Compra</th>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-                            <th>Divisa</th>
+                            {% comment %} <th>Divisa</th> {% endcomment %}
                             <th>Forma de pago</th>
                             {% endif %}
                             <th></th>
@@ -119,9 +119,9 @@ BuenaVentura Agronegocios
                         {% for item in items %}
                         <tr>
                             <td>{{item.articulo.ingrediente}}</td>
-                            <td>{{item.articulo.marca}}</td>
+                            <td>{{item.articulo.empresa.nombre_comercial}}</td>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
-                            <td>{{item.empresa.razon_social}}</td>
+                            <td>{{item.proveedor.get_full_name|default:'N/E'}}</td>
                             {% endif %}
                             <td>{{item.cantidad}}</td>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
@@ -131,8 +131,8 @@ BuenaVentura Agronegocios
                             <td>${{item.precio_compra}}</td>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-                            <td>{{item.divisa}}</td>
-                            <td>{{item.tipo_pago.nombre}}</td>
+                            {% comment %} <td>{{item.divisa}}</td> {% endcomment %}
+                            <td>{{item.tipo_pago.nombre|default:'N/E'}}</td>
                             {% endif %}
                             <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)"
                                     class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red no-shadows"><i

@@ -114,6 +114,9 @@ class Negocio(models.Model):
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
 
+    def get_tipo_de_negocio_display(self):
+        return self.tipo_de_negocio
+
 
 class Propuesta(models.Model):
     negocio = models.ForeignKey(

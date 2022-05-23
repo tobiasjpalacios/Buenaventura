@@ -150,7 +150,7 @@ BuenaVentura Agronegocios
             <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
             </td>
             {% endif %}
-            <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
+            <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
             <td>{{negocio.vendedor.get_full_name}}
             </td>
             {% if request.user.clase == 'Vendedor'%}

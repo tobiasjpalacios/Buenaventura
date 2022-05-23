@@ -193,7 +193,7 @@ function alertAnimation() {
 }
 
 function closeAlert(id) {
-  $(id).hide();
+  $(id).css("display", "none");
 }
 
 // funcion editar despues de negocio confirmado
