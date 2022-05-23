@@ -286,7 +286,7 @@ def sheet_writer():
 
     file = FileIO("db.xlsx", 'w+')
     downloads_path = str(Path.home() / "Downloads")
-    wb.save(downloads_path + "/" + file.name)
+    wb.save(file)
     file.seek(0)
 
     return file
