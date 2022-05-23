@@ -41,6 +41,7 @@ urlpatterns = [
     path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),
     path('reloadSem/', reloadSem, name="reloadSem"),   
     path('carga_excel/', login_required(login_url='/', redirect_field_name='router')(carga_excel.as_view()), name="carga_excel"),
+    path('descarga_db_excel/', login_required(login_url='/', redirect_field_name='router')(descarga_db_excel), name="descarga_db_excel"),
     path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('todosFiltro/<tipo>', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),

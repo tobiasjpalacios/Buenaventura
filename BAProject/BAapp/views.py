@@ -1,7 +1,8 @@
 import json
+from zipfile import BadZipFile
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
@@ -24,6 +25,7 @@ from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import MultiValueDictKeyError
 from .utils.email_send import email_send
 from django.contrib.sites.models import Site
 import operator
@@ -1508,9 +1510,16 @@ class carga_excel(View):
     def post(self, request):
         try:
             excel_data = sheet_reader(request.FILES["myfile"])
-        except Exception as e:
-            excel_data = [e]
+        except MultiValueDictKeyError:
+            excel_data = ["Seleccione un archivo"]
+        except BadZipFile:
+            excel_data = ["El archivo seleccionado es incorrecto"]
+
         return render(request, 'carga_excel.html', {'excel_data':excel_data})
+
+def descarga_db_excel(request):
+    sheet_writer()
+    return HttpResponseRedirect(reverse('carga_excel'))
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None

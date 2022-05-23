@@ -98,14 +98,14 @@ def reed_usuarios(usr_sheet):
         user_data = [conv(d) for d in row_data]
         empresa = user_data[usr_reader["empresa"]]
         empresa = None if empresa == "None" or empresa == "" else Empresa.objects.get(razon_social=empresa)
-        fech_nac = user_data[usr_reader["fecha_de_nacimiento"]]
+        fech_nac = user_data[usr_reader["fecha_nacimiento"]]
         fech_nac = None if fech_nac == "None" or fech_nac == "" else fech_nac
         dni = user_data[usr_reader["dni"]]
         dni = None if dni == "None" or dni == "" else dni
         nombre = user_data[usr_reader["nombre"]].title()
         clase = user_data[usr_reader["clase"]].lower().capitalize()
         try:
-            user = MyUser.objs.get(email=user_data[0])             
+            user = MyUser.objs.get(email=user_data[usr_reader["email"]])
             user.email            = user_data[usr_reader["email"]]
             user.nombre           = nombre
             user.apellido         = user_data[usr_reader["apellido"]]
@@ -143,24 +143,24 @@ def sheet_reader(sheet):
     wb = load_workbook(sheet)
     excel_data = list()
 
-    try:
-        emp_sheet = wb["empresas"]
-        emp_res = reed_empresas(emp_sheet)
-        excel_data.append(emp_res)
-    except:
-        pass
-    try:
-        art_sheet = wb["articulos"]
-        art_res = reed_articulos(art_sheet)
-        excel_data.append(art_res)
-    except:
-        pass
-    try:
-        usr_sheet = wb["usuarios"]
-        usr_res = reed_usuarios(usr_sheet)
-        excel_data.append(usr_res)
-    except:
-        pass
+    # try:
+    emp_sheet = wb["empresas"]
+    emp_res = reed_empresas(emp_sheet)
+    excel_data.append(emp_res)
+    # except:
+    #     pass
+    # try:
+    #     art_sheet = wb["articulos"]
+    #     art_res = reed_articulos(art_sheet)
+    #     excel_data.append(art_res)
+    # except:
+    #     pass
+    # try:
+    #     usr_sheet = wb["usuarios"]
+    #     usr_res = reed_usuarios(usr_sheet)
+    #     excel_data.append(usr_res)
+    # except:
+    #     pass
     
     return excel_data
     
@@ -172,7 +172,10 @@ def _get_actual_fields(model):
             fields.append(i.name)
     return fields
 
-def _write_header(sheet, fields):
+exclude_rows = ["id", "last_login", "is_superuser", "is_staff", "is_active", "date_joined", "groups", "user_permissions"]
+def _write_header(sheet, fields, is_usr):
+    if is_usr:
+        fields = list(filter(lambda f: f not in exclude_rows, fields))
     fill = PatternFill(
         fill_type="solid",
         start_color="9AC0CD",
@@ -205,15 +208,19 @@ def sheet_writer():
     art_sheet.title = "articulos"
     art_fields = _get_actual_fields(Articulo)
     print(art_fields)
-    _write_header(art_sheet, art_fields)
+    _write_header(art_sheet, art_fields, False)
 
     emp_sheet = wb.create_sheet(title="empresas")
     emp_fields = _get_actual_fields(Empresa)
-    _write_header(emp_sheet, emp_fields)
+    _write_header(emp_sheet, emp_fields, False)
 
     ing_sheet = wb.create_sheet(title="ingredientes")
     ing_fields = ('Nombre',)
-    _write_header(ing_sheet, ing_fields)
+    _write_header(ing_sheet, ing_fields, False)
+
+    usr_sheet = wb.create_sheet(title="usuarios")
+    usr_fields = _get_actual_fields(MyUser)
+    _write_header(usr_sheet, usr_fields, True)
 
     #write the data to the workbook
     row = 2
@@ -245,6 +252,17 @@ def sheet_writer():
         cell = ing_sheet.cell(row,1)
         cell.value = ingrediente['ingrediente']
         row += 1
+    
+    row = 2
+    usr_fields = list(filter(lambda f: f not in exclude_rows, usr_fields))
+    for usuario in MyUser.objects.all():
+        for field in range(len(usr_fields)):
+            cell = usr_sheet.cell(row,field+1)
+            if usr_fields[field] == "password":
+                cell.value = "noeditable"
+            else:
+                cell.value = str(getattr(usuario, usr_fields[field]))
+        row += 1
 
     # Data Validation
     empdv = DataValidation(
@@ -273,6 +291,7 @@ def sheet_writer():
     _readable_column_width(art_sheet)
     _readable_column_width(emp_sheet)
     _readable_column_width(ing_sheet)
+    _readable_column_width(usr_sheet)
 
     file = FileIO("dump.xlsx", 'w+')
     wb.save(file)
