@@ -378,8 +378,7 @@ def filtrarNegocios(request):
             if idDeNeg == "" or int(idDeNeg) <= 0:
                 listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
             else:
-                idDeNeg = f"BVi-{idDeNeg}"
-                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id_de_neg__contains=idDeNeg).values_list('id', flat=True)
+                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id=idDeNeg).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
         listaTipo = getIdsQuery(listaTipo)         
@@ -414,11 +413,11 @@ def getIdsQuery(lista):
 def getProveedoresNegocio(negocio):
     proveedores = []
     if (negocio.fecha_cierre is not None):
-        items = ItemPropuesta.objects.filter(propuesta__id = negocio.id_prop)
+        items = ItemPropuesta.objects.filter(propuesta__negocio__id = negocio.id)
         proveedores = []
         id_proveedores = [] 
         for b in items:
-            if (b.proveedor.id not in id_proveedores):
+            if (b.proveedor and b.proveedor.id not in id_proveedores):
                 id_proveedores.append(b.proveedor.id)
                 prov = b.proveedor.apellido + " " + b.proveedor.nombre  
                 proveedores.append(prov)
@@ -1767,10 +1766,6 @@ class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
 
-        if negocio.id_de_neg == "":
-            negocio.id_de_neg = f"BVi-{negocio.pk}"
-            negocio.save()
-
         if not negocio.vendedor == request.user and not negocio.comprador == request.user:
             return redirect('home')
 
@@ -1895,7 +1890,7 @@ class NegocioView(View):
             formatted_fecha_cierre = f"{fecha} a las {hora} hs"
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
-        pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
+        pre_text = f"El presupuesto del negocio {negocio.get_id_de_neg()} ha sido"
         pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 

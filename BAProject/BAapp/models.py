@@ -102,20 +102,12 @@ class Negocio(models.Model):
     )
     aprobado = models.BooleanField(default=False)
     cancelado = models.BooleanField(default=False)
-    id_de_neg = models.CharField(
-        "Identificador de negocio",
-        max_length=255,
-        null=True,
-        blank=True,
-        editable=False,
-        default=""
-    )
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
 
-    def get_tipo_de_negocio_display(self):
-        return self.tipo_de_negocio
+    def get_id_de_neg(self):
+        return f"BVi-{self.pk}"
 
 
 class Propuesta(models.Model):
