@@ -8,6 +8,7 @@ from django.db import IntegrityError, transaction
 from django.db.models.fields.reverse_related import ManyToOneRel
 from django.utils.safestring import mark_safe
 from BAapp.models import MyUser
+from pathlib import Path
 
 from BAapp.models import Articulo, Empresa, Retencion
 
@@ -27,6 +28,7 @@ def reed_empresas(emp_sheet):
         if c[emp_header["id"]]:
             instance = Empresa.objects.get(id=c[emp_header["id"]])
             emp_actualizadas += 1
+            emp_creadas -= 1
         if not c[emp_header["razon_social"]]:
             break
         for v in emp_header.keys():
@@ -38,35 +40,23 @@ def reed_empresas(emp_sheet):
                         instance.retenciones.add(obj)
                 continue
             setattr(instance, v, c[emp_header[v]])
-        try:
-            instance.save()
-            emp_creadas += 1
-        except IntegrityError:
-            instance = Empresa.objects.get(razon_social=c[emp_header["razon_social"]])
-            instance.nombre_comercial = c[emp_header["nombre_comercial"]]
-            instance.cuit             = c[emp_header["cuit"]]
-            instance.ingresos_brutos  = c[emp_header["ingresos_brutos"]]
-            instance.fecha_exclusion  = c[emp_header["fecha_exclusion"]]
-            instance.categoria_iva    = c[emp_header["categoria_iva"]]
-            instance.domicilio_fiscal = c[emp_header["domicilio_fiscal"]]
-            if c[emp_header["retenciones"]]:
-                rets = c[emp_header["retenciones"]].split("+")
-                for ret in rets:
-                    obj = Retencion.objects.get(name=ret)
-                    instance.retenciones.add(obj)
-            instance.save()
-            emp_actualizadas += 1
-    
+        instance.save()
+        emp_creadas += 1
+    emp_creadas = 0 if emp_creadas < 0 else emp_creadas
+
     return f"<h5>Empresas:</h5>Creadas: {emp_creadas} empresa(s)<br>Actualizadas: {emp_actualizadas} empresa(s)<br>"
 
 
 def reed_articulos(art_sheet):
     art_header = _read_header(art_sheet)
     created_arts = 0
+    updated_arts = 0
     for c in art_sheet.iter_rows(2, values_only=True):
         instance = Articulo()
         if c[art_header["id"]]:
             instance = Articulo.objects.get(id=c[art_header["id"]])
+            updated_arts += 1
+            created_arts -= 1
         if not c[art_header["marca"]]:
             break
         for v in art_header.keys():
@@ -77,12 +67,13 @@ def reed_articulos(art_sheet):
             setattr(instance, v, c[art_header[v]])
         # solucion temporal, mala y lenta (no se puede actualizar ningun objeto)
         emp_nombre_comercial = Empresa.objects.get(razon_social=c[art_header["empresa"]]).nombre_comercial
-        art = Articulo.objects.filter(ingrediente=c[art_header["ingrediente"]], empresa__nombre_comercial=emp_nombre_comercial).exists()
+        art = Articulo.objects.filter(marca=c[art_header["marca"]], empresa__nombre_comercial=emp_nombre_comercial).exists()
         if not art:
             instance.save()
             created_arts += 1
-    
-    return f"<h5>Articulos:</h5>Creados: {created_arts} articulo(s)<br>"
+    created_arts = 0 if created_arts < 0 else created_arts
+
+    return f"<h5>Articulos:</h5>Creados: {created_arts} articulo(s)<br>Actualizados: {updated_arts} articulo(s)<br>"
 
 def reed_usuarios(usr_sheet):
     created_users_count = 0
@@ -98,16 +89,18 @@ def reed_usuarios(usr_sheet):
         user_data = [conv(d) for d in row_data]
         empresa = user_data[usr_reader["empresa"]]
         empresa = None if empresa == "None" or empresa == "" else Empresa.objects.get(razon_social=empresa)
-        fech_nac = user_data[usr_reader["fecha_de_nacimiento"]]
+        fech_nac = user_data[usr_reader["fecha_nacimiento"]]
         fech_nac = None if fech_nac == "None" or fech_nac == "" else fech_nac
         dni = user_data[usr_reader["dni"]]
         dni = None if dni == "None" or dni == "" else dni
+        nombre = user_data[usr_reader["nombre"]].title()
+        clase = user_data[usr_reader["clase"]].lower().capitalize()
         try:
-            user = MyUser.objs.get(email=user_data[0])             
+            user = MyUser.objs.get(email=user_data[usr_reader["email"]])
             user.email            = user_data[usr_reader["email"]]
-            user.nombre           = user_data[usr_reader["nombre"]]
+            user.nombre           = nombre
             user.apellido         = user_data[usr_reader["apellido"]]
-            user.clase            = user_data[usr_reader["clase"]]
+            user.clase            = clase
             user.empresa          = empresa
             user.fecha_nacimiento = fech_nac
             user.sexo             = user_data[usr_reader["sexo"]]
@@ -120,10 +113,10 @@ def reed_usuarios(usr_sheet):
             try:
                 MyUser.objs.create_user(
                     email            = user_data[usr_reader["email"]],
-                    nombre           = user_data[usr_reader["nombre"]],
+                    nombre           = nombre,
                     apellido         = user_data[usr_reader["apellido"]],
                     password         = user_data[usr_reader["password"]],
-                    clase            = user_data[usr_reader["clase"]],
+                    clase            = clase,
                     empresa          = empresa,
                     fecha_nacimiento = fech_nac,
                     sexo             = user_data[usr_reader["sexo"]],
@@ -170,7 +163,10 @@ def _get_actual_fields(model):
             fields.append(i.name)
     return fields
 
-def _write_header(sheet, fields):
+exclude_rows = ["id", "last_login", "is_superuser", "is_staff", "is_active", "date_joined", "groups", "user_permissions"]
+def _write_header(sheet, fields, is_usr):
+    if is_usr:
+        fields = list(filter(lambda f: f not in exclude_rows, fields))
     fill = PatternFill(
         fill_type="solid",
         start_color="9AC0CD",
@@ -203,15 +199,19 @@ def sheet_writer():
     art_sheet.title = "articulos"
     art_fields = _get_actual_fields(Articulo)
     print(art_fields)
-    _write_header(art_sheet, art_fields)
+    _write_header(art_sheet, art_fields, False)
 
     emp_sheet = wb.create_sheet(title="empresas")
     emp_fields = _get_actual_fields(Empresa)
-    _write_header(emp_sheet, emp_fields)
+    _write_header(emp_sheet, emp_fields, False)
 
     ing_sheet = wb.create_sheet(title="ingredientes")
     ing_fields = ('Nombre',)
-    _write_header(ing_sheet, ing_fields)
+    _write_header(ing_sheet, ing_fields, False)
+
+    usr_sheet = wb.create_sheet(title="usuarios")
+    usr_fields = _get_actual_fields(MyUser)
+    _write_header(usr_sheet, usr_fields, True)
 
     #write the data to the workbook
     row = 2
@@ -243,6 +243,17 @@ def sheet_writer():
         cell = ing_sheet.cell(row,1)
         cell.value = ingrediente['ingrediente']
         row += 1
+    
+    row = 2
+    usr_fields = list(filter(lambda f: f not in exclude_rows, usr_fields))
+    for usuario in MyUser.objects.all():
+        for field in range(len(usr_fields)):
+            cell = usr_sheet.cell(row,field+1)
+            if usr_fields[field] == "password":
+                cell.value = "noeditable"
+            else:
+                cell.value = str(getattr(usuario, usr_fields[field]))
+        row += 1
 
     # Data Validation
     empdv = DataValidation(
@@ -271,9 +282,11 @@ def sheet_writer():
     _readable_column_width(art_sheet)
     _readable_column_width(emp_sheet)
     _readable_column_width(ing_sheet)
+    _readable_column_width(usr_sheet)
 
-    file = FileIO("dump.xlsx", 'w+')
-    wb.save(file)
+    file = FileIO("db.xlsx", 'w+')
+    downloads_path = str(Path.home() / "Downloads")
+    wb.save(downloads_path + "/" + file.name)
     file.seek(0)
 
     return file

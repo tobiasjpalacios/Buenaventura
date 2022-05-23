@@ -150,12 +150,13 @@ BuenaVentura Agronegocios
             <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
             </td>
             {% endif %}
-            <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
+            <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
             <td>{{negocio.vendedor.get_full_name}}
             </td>
             {% if request.user.clase == 'Vendedor'%}
               {% if negocio.fecha_cierre is not None %}
               <td>
+              {% if negocio.proveedores %}
                 <div style="overflow-y: scroll; height: 150px;">
                   <ol class="collection" start="1">
                     {% for prov in negocio.proveedores %}
@@ -163,12 +164,15 @@ BuenaVentura Agronegocios
                     {% endfor %}
                   </ol>
                 </div>
+              {% else %}
+                N/E
+              {% endif %}
               </td>
               {% else %}
               <td>Por Definir</td>
               {% endif %}
             {% endif %}
-            <td><strong>{{negocio.id_de_neg}}</strong></td>
+            <td><strong>{{negocio.get_id_de_neg}}</strong></td>
             <td class="green-text center">{{negocio.estado}}</td>
             <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
                 href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>

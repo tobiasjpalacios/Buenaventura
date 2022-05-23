@@ -28,6 +28,7 @@ from django.db.models.functions import TruncDay
 import json
 from django.contrib.auth.forms import *
 from django.contrib.auth.models import Permission
+from django.contrib.auth.admin import UserAdmin
 from django.shortcuts import redirect
 from datetime import datetime
 
@@ -50,7 +51,10 @@ class FacturaAdmin(admin.ModelAdmin):
     list_display  = ('fecha_emision','documento')
 
 class NegocioAdmin(admin.ModelAdmin):
-    list_display = ('id_de_neg', 'fecha_cierre')
+    list_display = ('codigo_de_negocio', 'fecha_cierre')
+
+    def codigo_de_negocio(self, instance):
+        return instance.get_id_de_neg()
 
 
 csrf_protect_m = method_decorator(csrf_protect)
@@ -86,18 +90,19 @@ class MyUserCreationForm(forms.ModelForm):
             user.save()
         return user
     
-class MyUserAdmin(admin.ModelAdmin):
+class MyUserAdmin(UserAdmin):
     list_display = ('email', 'active', 'admin')
-
-class MoUserAdmin(admin.ModelAdmin):
     add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
     fieldsets = (
         (None, {'fields': ('nombre','apellido','email', 'password')}),
-        (_('Permisos'), {
-            'fields': ('is_active', 'is_staff','clase',),
-        }),
         (_('Datos Personales'), {'fields': ('empresa','fecha_nacimiento', 'sexo', 'dni', 'telefono','domicilio')}),
+        (_('Permisos'), {
+            'fields': ('clase', 'is_active', 'is_staff', 'is_superuser'),
+        }),
+        (_('Fechas importantes'), {
+            'fields': ('last_login', 'date_joined')
+        }),
     )
     add_fieldsets = (
         (None, {
@@ -269,7 +274,7 @@ class EmpresaAdmin(admin.ModelAdmin):
     ordering = ["nombre_comercial"]
 
 admin.site.unregister(Group)
-admin.site.register(MyUser, MoUserAdmin)
+admin.site.register(MyUser, MyUserAdmin)
 
 
 admin.site.register(Articulo, ArticuloAdmin)

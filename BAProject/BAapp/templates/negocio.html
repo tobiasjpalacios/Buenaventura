@@ -17,9 +17,10 @@
 
 {% if request.user.clase == 'Vendedor' %}
 
-<div class="materialert error fixed">
+<div class="materialert error fixed" id="clienteAlert">
   <div class="material-icons">error_outline</div>
   Vista Cliente Activado
+  <button type="button" class="close-alert" onclick="closeAlert('#clienteAlert');">×</button>
 </div>
 
 <div class="switch-container">
@@ -43,7 +44,7 @@
       </div>
       <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Negociación</h4>
     </div>
-    <strong style="font-size: 30px; font-weight: 900; margin-left: 20px;" class="grey-text text-darken-3">{{negocio.id_de_neg}}</strong>
+    <strong style="font-size: 30px; font-weight: 900; margin-left: 20px;" class="grey-text text-darken-3">{{negocio.get_id_de_neg}}</strong>
   </div>  
 </div>
 
@@ -66,7 +67,7 @@
 <div class="row" id="div-table-{{prop.id}}">
   <div class="col s12 m9 {% if prop.envio_comprador and request.user.clase == 'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m3{%endif%}">
     <div class="prop-title">
-      <p class="prop-creator-name grey-text text-darken-3"><strong>{% if prop.envio_comprador %} {{ negocio.comprador.user.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.user.get_full_name }} {% endif %}</strong></p>
+      <p class="prop-creator-name grey-text text-darken-3"><strong>{% if prop.envio_comprador %} {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.get_full_name }} {% endif %}</strong></p>
       <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y H:i" }} hs</p>
     </div>
     <div class="card">
@@ -108,7 +109,7 @@
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo }}</td>
                 {% if not request.user.clase == 'Comprador' %}
-                <td class="show{{prop.id}} clientViewSM">{{ item.proveedor.get_full_name|default_if_none:'' }}</td>
+                <td class="show{{prop.id}} clientViewSM">{{ item.proveedor.get_full_name|default:'N/E' }}</td>
                 {% endif %}
                 <td class="show{{prop.id}}">{{ item.cantidad }}</td>
                 <td class="show{{prop.id}}">{{ item.precio_venta }}</td>
@@ -344,7 +345,7 @@
         <span class="obser">Observaciones</span>
         <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
         <br><br>
-          <a class="send-btn no-shadow bv-green waves-effect waves-light btn modal-trigger" id="send-prop-btn" href="#modalSend" onclick="beforeSubmit();"><i class="material-icons right">send</i>Enviar</a>
+          <a class="send-btn no-shadow bv-green waves-effect waves-light btn modal-trigger" id="send-prop-btn" href="#modalSend" onclick="beforeSubmit();" disabled><i class="material-icons right">send</i>Enviar</a>
         </div>
     </div>
   </div>
@@ -428,6 +429,7 @@
 
   var isAccepted = false;
   var isCanceled = false;
+  var propUpdated = false;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -524,6 +526,8 @@
     resetForAccept(index)
     edits.items[index].aceptado = true;
     $($("#form")[0].rows[index+1]).addClass("green white-text white-text-input")
+    $('#send-prop-btn').removeAttr('disabled');
+    propUpdated = true;
   }
 
   function reject(index){
@@ -531,6 +535,8 @@
     resetAll(index, "False")
     $($("#form")[0].rows[index+1]).addClass("red white-text white-text-input")
     edits.items[index]={};
+    $('#send-prop-btn').removeAttr('disabled');
+    propUpdated = true;
   }
 
   function update(index){
@@ -569,6 +575,8 @@
       }
     })
     lastForAccept.items[index] = edits.items[index]
+    $('#send-prop-btn').removeAttr('disabled');
+    propUpdated = true;
   }
 
   function resetAll(index, aceptado){
@@ -728,7 +736,17 @@
     $("#artSearch").val("");
     counter = counter + 1;
     contadoTasa(rowId);
+    $('#send-prop-btn').removeAttr('disabled');
+    propUpdated = true;
   }
+
+  var obsOriginalValue = $("#observaciones").val();
+  $("#observaciones").on('keyup', function () {
+    $('#send-prop-btn').removeAttr('disabled');
+    if ($(this).val() == obsOriginalValue && !propUpdated) {
+      $('#send-prop-btn').attr('disabled', 'disabled');
+    } 
+  });
 
   function beforeSubmit() {
     var proc = {}
@@ -775,7 +793,7 @@
   function submitProp() {
     var proc = {}
     var errors = false;
-    var errorFields = [];
+    var errorFields = {};
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
@@ -785,37 +803,45 @@
     })
     var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
     var artName = "";
+    var listOfErrors = []
+    var listOfElems = []
     proc.items.forEach(element => {
       for (k in element) {
         if (k == "articulo") {
           "{% for art in arts %}"
             var artId = parseInt("{{art.id}}");
             if (artId == element[k]) {
-              artName = "{{art.marca}}";
+              artName = "{{art}}";
             }
           "{% endfor %}"
         }
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k)) {
             var v = element[k];
-            var errorDesc = "El campo \""+k+"\" del artículo \""+artName+"\" contiene errores."
+            k = k == "precio_venta" ? "precio" : k; 
+            var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"
             if (v == null || v == "" || v == undefined) {
-              if (userIsComprador && ((k == "precio_compra" && (v == 0 || v == null)) || (k == "proveedor" && (v == "" || v == null)))) {
-                // do nothing
-              }
-              else {
-                errorFields.push(errorDesc);
+              if (!(userIsComprador && ((k == "precio_compra") || (k == "proveedor")))) {
+                listOfErrors.push(errorDesc)
+                errorFields[artName] = listOfErrors;
                 errors = true;
               }
             }
           }
         }
       }
+      listOfElems.push(element)
+      for (i in listOfElems) {
+        if (listOfElems[i] != listOfElems[i-1]) {
+          listOfErrors = [];
+        }
+      }
     })
+    console.log(errorFields)
     console.log(proc);
     var print_errors = "";
-    for (var i = 0; i < errorFields.length; i++) {
-      print_errors = print_errors.concat('\n'+errorFields[i]+'\n')
+    for (var key in errorFields) {
+      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replace(',','');
     }
     if (errors) {
       swal("Oops!", print_errors, "error");

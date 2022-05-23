@@ -27,7 +27,7 @@ BuenaVentura Agronegocios
         <select>
           <option value="" disabled selected>Elija su opcion</option>
           {% for proveedor in proveedores %}
-          	<option value="{{ proveedor.id }}">{{proveedor.persona.user.last_name}}, {{proveedor.persona.user.first_name}}</option>
+          	<option value="{{ proveedor.id }}">{{proveedor.get_full_name}}</option>
           {% endfor %}
        </select>
         <label>Proveedor</label>

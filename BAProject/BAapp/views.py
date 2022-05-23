@@ -1,7 +1,8 @@
 import json
+from zipfile import BadZipFile
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.views import PasswordChangeView, redirect_to_login
 from django.contrib.auth.forms import PasswordChangeForm
@@ -24,11 +25,14 @@ from BAapp.utils.utils import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import MultiValueDictKeyError
 from .utils.email_send import email_send
 from django.contrib.sites.models import Site
 import operator
 from functools import reduce
 from django.conf import settings
+
+
 User = settings.AUTH_USER_MODEL
 
 def cuentas(request):
@@ -376,8 +380,7 @@ def filtrarNegocios(request):
             if idDeNeg == "" or int(idDeNeg) <= 0:
                 listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
             else:
-                idDeNeg = f"BVi-{idDeNeg}"
-                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id_de_neg__contains=idDeNeg).values_list('id', flat=True)
+                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id=idDeNeg).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
         listaTipo = getIdsQuery(listaTipo)         
@@ -412,11 +415,11 @@ def getIdsQuery(lista):
 def getProveedoresNegocio(negocio):
     proveedores = []
     if (negocio.fecha_cierre is not None):
-        items = ItemPropuesta.objects.filter(propuesta__id = negocio.id_prop)
+        items = ItemPropuesta.objects.filter(propuesta__negocio__id = negocio.id)
         proveedores = []
         id_proveedores = [] 
         for b in items:
-            if (b.proveedor.id not in id_proveedores):
+            if (b.proveedor and b.proveedor.id not in id_proveedores):
                 id_proveedores.append(b.proveedor.id)
                 prov = b.proveedor.apellido + " " + b.proveedor.nombre  
                 proveedores.append(prov)
@@ -1501,15 +1504,22 @@ def listasNAA(request,negocioFilter, tipo):
     return lista_negocios
 
 class carga_excel(View):    
-    def get(self,request):    
+    def get(self, request):    
         return render(request, 'carga_excel.html')
     
     def post(self, request):
         try:
             excel_data = sheet_reader(request.FILES["myfile"])
-        except Exception as e:
-            excel_data = [e]
+        except MultiValueDictKeyError:
+            excel_data = ["Seleccione un archivo"]
+        except BadZipFile:
+            excel_data = ["El archivo seleccionado es incorrecto"]
+
         return render(request, 'carga_excel.html', {'excel_data':excel_data})
+
+def descarga_db_excel(request):
+    sheet_writer()
+    return HttpResponseRedirect(reverse('carga_excel'))
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
@@ -1765,10 +1775,6 @@ class NegocioView(View):
     def get(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
 
-        if negocio.id_de_neg == "":
-            negocio.id_de_neg = f"BVi-{negocio.pk}"
-            negocio.save()
-
         if not negocio.vendedor == request.user and not negocio.comprador == request.user:
             return redirect('home')
 
@@ -1812,7 +1818,7 @@ class NegocioView(View):
             prop = Propuesta(
                 negocio=negocio,
                 observaciones=data["observaciones"],
-                envio_comprador=request.user.groups.filter(name="Compradores").exists()
+                envio_comprador=request.user.clase == 'Comprador'
             )
             prop.save()
             for item in data["items"]:
@@ -1893,7 +1899,7 @@ class NegocioView(View):
             formatted_fecha_cierre = f"{fecha} a las {hora} hs"
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
-        pre_text = f"El presupuesto del negocio {negocio.id_de_neg} ha sido"
+        pre_text = f"El presupuesto del negocio {negocio.get_id_de_neg()} ha sido"
         pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 

@@ -344,3 +344,7 @@ span.obser {
 .btn-floating.btn-large:hover {
     opacity: 1;
 }
+
+.swal-modal {
+    white-space: pre;
+}
