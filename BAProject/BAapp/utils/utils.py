@@ -27,6 +27,7 @@ def reed_empresas(emp_sheet):
         if c[emp_header["id"]]:
             instance = Empresa.objects.get(id=c[emp_header["id"]])
             emp_actualizadas += 1
+            emp_creadas -= 1
         if not c[emp_header["razon_social"]]:
             break
         for v in emp_header.keys():
@@ -38,35 +39,23 @@ def reed_empresas(emp_sheet):
                         instance.retenciones.add(obj)
                 continue
             setattr(instance, v, c[emp_header[v]])
-        try:
-            instance.save()
-            emp_creadas += 1
-        except IntegrityError:
-            instance = Empresa.objects.get(razon_social=c[emp_header["razon_social"]])
-            instance.nombre_comercial = c[emp_header["nombre_comercial"]]
-            instance.cuit             = c[emp_header["cuit"]]
-            instance.ingresos_brutos  = c[emp_header["ingresos_brutos"]]
-            instance.fecha_exclusion  = c[emp_header["fecha_exclusion"]]
-            instance.categoria_iva    = c[emp_header["categoria_iva"]]
-            instance.domicilio_fiscal = c[emp_header["domicilio_fiscal"]]
-            if c[emp_header["retenciones"]]:
-                rets = c[emp_header["retenciones"]].split("+")
-                for ret in rets:
-                    obj = Retencion.objects.get(name=ret)
-                    instance.retenciones.add(obj)
-            instance.save()
-            emp_actualizadas += 1
-    
+        instance.save()
+        emp_creadas += 1
+    emp_creadas = 0 if emp_creadas < 0 else emp_creadas
+
     return f"<h5>Empresas:</h5>Creadas: {emp_creadas} empresa(s)<br>Actualizadas: {emp_actualizadas} empresa(s)<br>"
 
 
 def reed_articulos(art_sheet):
     art_header = _read_header(art_sheet)
     created_arts = 0
+    updated_arts = 0
     for c in art_sheet.iter_rows(2, values_only=True):
         instance = Articulo()
         if c[art_header["id"]]:
             instance = Articulo.objects.get(id=c[art_header["id"]])
+            updated_arts += 1
+            created_arts -= 1
         if not c[art_header["marca"]]:
             break
         for v in art_header.keys():
@@ -81,8 +70,9 @@ def reed_articulos(art_sheet):
         if not art:
             instance.save()
             created_arts += 1
-    
-    return f"<h5>Articulos:</h5>Creados: {created_arts} articulo(s)<br>"
+    created_arts = 0 if created_arts < 0 else created_arts
+
+    return f"<h5>Articulos:</h5>Creados: {created_arts} articulo(s)<br>Actualizados: {updated_arts} articulo(s)<br>"
 
 def reed_usuarios(usr_sheet):
     created_users_count = 0
@@ -143,24 +133,24 @@ def sheet_reader(sheet):
     wb = load_workbook(sheet)
     excel_data = list()
 
-    # try:
-    emp_sheet = wb["empresas"]
-    emp_res = reed_empresas(emp_sheet)
-    excel_data.append(emp_res)
-    # except:
-    #     pass
-    # try:
-    #     art_sheet = wb["articulos"]
-    #     art_res = reed_articulos(art_sheet)
-    #     excel_data.append(art_res)
-    # except:
-    #     pass
-    # try:
-    #     usr_sheet = wb["usuarios"]
-    #     usr_res = reed_usuarios(usr_sheet)
-    #     excel_data.append(usr_res)
-    # except:
-    #     pass
+    try:
+        emp_sheet = wb["empresas"]
+        emp_res = reed_empresas(emp_sheet)
+        excel_data.append(emp_res)
+    except:
+        pass
+    try:
+        art_sheet = wb["articulos"]
+        art_res = reed_articulos(art_sheet)
+        excel_data.append(art_res)
+    except:
+        pass
+    try:
+        usr_sheet = wb["usuarios"]
+        usr_res = reed_usuarios(usr_sheet)
+        excel_data.append(usr_res)
+    except:
+        pass
     
     return excel_data
     
