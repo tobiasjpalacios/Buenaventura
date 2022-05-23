@@ -515,6 +515,7 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
     
+    objects = MyUserManager()
     objs = MyUserManager()
 
     class Meta:
