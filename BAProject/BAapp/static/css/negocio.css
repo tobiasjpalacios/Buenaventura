@@ -219,6 +219,12 @@ span.obser {
     user-select: none;
 }
 
+.container__watermark>img.w2-hide {
+    margin: 70px;
+    opacity: 0.2;
+    user-select: none;
+}
+
 .white-text-input>td>input {
     color: white;
     border-bottom: 1px solid white !important;

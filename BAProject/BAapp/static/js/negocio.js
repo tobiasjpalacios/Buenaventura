@@ -212,6 +212,22 @@ function addTable() {
     }
 }
 
+$("#client-view-sw").change(function() {
+
+  $(".card").toggleClass("tableClientView");
+  $(".card-title").toggleClass("tableClientView");
+  $(".card-action").toggleClass("tableClientView");
+  $(".circle-container").toggle("display");
+  $(".data-table").toggleClass("tableClientView");
+  $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
+  $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
+  $(".w1").toggle("display");
+  $(".w2").toggle("display");
+  $(".w2-hide").toggle("display");
+  $(".w3").toggle("display");
+  
+});
+
 //
 
 setTimeout(function() {
