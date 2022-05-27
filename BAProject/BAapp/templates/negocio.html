@@ -64,13 +64,20 @@
   }
 </style>
 {% if not prop.items.count == 0 %}
-<div class="row" id="div-table-{{prop.id}}">
+<div class="row history-tables" id="div-table-{{prop.id}}">
+  <div class="circle-container col s3" style="display: none;">
+    <div class="circle">
+      <div class="circle-inner">
+        <img src="{% static 'images/bv-white-bg.png' %}">
+      </div>
+    </div>
+  </div>
   <div class="col s12 m9 {% if prop.envio_comprador and request.user.clase == 'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m3{%endif%}">
     <div class="prop-title">
-      <p class="prop-creator-name grey-text text-darken-3"><strong>{% if prop.envio_comprador %} {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.get_full_name }} {% endif %}</strong></p>
-      <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y H:i" }} hs</p>
+      <p class="prop-creator-name grey-text text-darken-3">{% if prop.envio_comprador %} {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.get_full_name }} {% endif %}</p>
+      <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
     </div>
-    <div class="card">
+    <div class="card history-card">
       <div class="container__wrapper">
         <div class="container__watermark">
           <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
@@ -82,10 +89,10 @@
           <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
         </div>
       </div>
-      <div class="card-content dark-text">
+      <div class="dark-text">
         <div class="row">
-          <table>
-            <thead>
+          <table class="data-table">
+            <thead class="card-title">
               <tr>
                 <th class="show{{prop.id}}">Articulo</th>
                 {% if not request.user.clase == 'Comprador' %}
@@ -104,7 +111,7 @@
                 <th class="clientViewSM">Ver más</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="card-content">
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}class="green white-text"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo }}</td>
@@ -131,7 +138,7 @@
         </div>
       </div>
       <div class="card-action">
-        <span class="obser">Observaciones:</span>
+        <span class="obser">Observaciones</span>
         <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
       </div>
     </div>
@@ -146,28 +153,29 @@
 
   var sm{{prop.id}} = false;
   var propIdId = "{{prop.id}}";
+  var hasPush{{prop.id}} = false;
+  if ($("#div-table-{{prop.id}} > div:nth-child(2)").hasClass("push-m3")) {
+    hasPush{{prop.id}} = true;
+  }
 
   $("#client-view-sw").change(function() {
-
+    if (hasPush{{prop.id}}) {
+      $("#div-table-{{prop.id}} > div:nth-child(2)").toggleClass("push-m3");
+    }
     if($(this).is(":checked")) {
-  
       var propId = "{{prop.id}}";
       if (sm{{prop.id}}) {
         showMore(propId);
         sm{{prop.id}} = !sm{{prop.id}};
       }
-
     }
     else {
-
       var propId = "{{prop.id}}";
       if (sm{{prop.id}}) {
         showMore(propId);
         sm{{prop.id}} = !sm{{prop.id}};
       }
     }
-
-    
   });
   
   $(document).ready(function() {
@@ -195,7 +203,7 @@
 
 {% endif %}
 {% if forloop.last %}
-<div class="row" id="form-table-div">
+<div class="row history-tables" id="form-table-div">
   <div class="col s12 m9 push-m3">
     <div class="prop-title">
       <p class="prop-creator-name grey-text text-darken-3"><strong>Nueva propuesta</strong></p>
@@ -215,7 +223,7 @@
       <div class="card-content dark-text">
         <div class="row">
           <table {% if forloop.last %}id="form"{%endif%}>
-            <thead>  
+            <thead class="edit-thead">  
               <tr>
                 <th class="show0">Articulo</th>
                 <th class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Distribuidor</th>
@@ -415,6 +423,7 @@
     <i class="large material-icons">menu</i>
   </a>
   <ul>
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.propuestas.last.id %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
     {% if negocio.aprobado %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
@@ -746,6 +755,18 @@
     if ($(this).val() == obsOriginalValue && !propUpdated) {
       $('#send-prop-btn').attr('disabled', 'disabled');
     } 
+  });
+
+  $("#client-view-sw").change(function() {
+
+    $(".card").toggleClass("tableClientView");
+    $(".card-title").toggleClass("tableClientView");
+    $(".card-action").toggleClass("tableClientView");
+    $(".circle-container").toggle("display");
+    $(".data-table").toggleClass("tableClientView");
+    $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
+    $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
+    
   });
 
   function beforeSubmit() {
