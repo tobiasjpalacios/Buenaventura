@@ -165,4 +165,6 @@ function limpiarFiltros() {
   $("#selectEstados option[value='todos']").prop('selected', true).change();
   $("#selectTipo option[value='todos']").prop('selected', true).change();
   $("#selectTipo").formSelect();
+
+  filtrar();
 }

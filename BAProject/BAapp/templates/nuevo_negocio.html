@@ -917,17 +917,17 @@ function submit(){
       var tmp_dict = {};
       var tmp = {};
       for (var j = 0; j < headers.length; j++) {
-        var input = null;
+        var input = document.getElementById('input'+j+'.'+i);
         if (headers[j] == "Precio compra" && userIsComprador) {
           input = 0;
           tmp_dict[headers[j]] = input;
         }
-        else if (headers[j] == "Distribuidor" && userIsComprador) {
-          input = null;
+        else if (headers[j] == "Distribuidor") {
+          var inputValue = input.value;
+          input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
           tmp_dict[headers[j]] = input;
         }
         else {
-          input = document.getElementById('input'+j+'.'+i+'');
           tmp_dict[headers[j]] = (input != null) ? input.value : null;
         }
       }
@@ -1044,7 +1044,7 @@ function input_distribuidor(c,td){
   for (var i = 0; i < distribuidores_data.length; i++) {
     var optionDis = document.createElement('option');
     optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
-    optionDis.setAttribute('id','option'+i);
+    optionDis.setAttribute('id',distribuidores_data[i].email);
     all_distribuidores.push(distribuidores_data[i].nombre);
     datalistDis.appendChild(optionDis);        
   }

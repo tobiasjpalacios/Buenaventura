@@ -377,9 +377,10 @@ def filtrarNegocios(request):
                 listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
         listaIdDeNeg = []
         if idDeNeg is not None:
-            if idDeNeg == "" or int(idDeNeg) <= 0:
+            if not idDeNeg or int(idDeNeg) <= 0:
                 listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
             else:
+                idDeNeg = int(idDeNeg) - 1999
                 listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id=idDeNeg).values_list('id', flat=True)
         listaVendedor = getIdsQuery(listaVendedor)
         listaEstado = getIdsQuery(listaEstado)
@@ -1597,7 +1598,8 @@ class APIDistribuidor(View):
         proveedores = []
         for pro in MyUser.objects.filter(clase='Proveedor'):
             tmp = {
-                'nombre':pro.get_full_name()
+                'nombre':pro.get_full_name(),
+                'email':pro.email
             }
             proveedores.append(tmp)
         return JsonResponse(list(proveedores), safe=False)
@@ -2058,21 +2060,11 @@ class APIArticulos(View):
             #     domicilio = Domicilio(direccion=domicilio_str)
             #     domicilio.save()
 
-            #quilombo para traer al objecto empresa
             if isComprador:
                 proveedor = None
-            elif len(distribuidor.strip()) != 0:
-                get_distribuidor = actual.get("Distribuidor").split(" ")
-                nombre = get_distribuidor[0].strip()
-                apellido = get_distribuidor[1].strip()
-                #distribuidor_usr = User.objects.filter(nombre=get_distribuidor[0],apellido=get_distribuidor[1]).values("id")
-                #distribuidor_per = Persona.objects.filter(user_id__in=distribuidor_usr)
-                proveedor = MyUser.objects.get(nombre=nombre,apellido=apellido)
-                # prov_per = Persona.objects.filter(user_id__in=prov_usr)
-                # proveedor = Proveedor.objects.get(persona_id__in=prov_per)
-                #distribuidor = Empresa.objects.get(id__in=distribuidor_emp)
             else:
-                proveedor = None
+                get_distribuidor = actual.get("Distribuidor")
+                proveedor = MyUser.objects.get(email=get_distribuidor)
 
             #traer el objecto tipo de pago
             if len(actual.get("Tipo de pago").strip()) != 0:

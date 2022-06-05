@@ -107,7 +107,7 @@ class Negocio(models.Model):
         return "Negocio: {}".format(self.timestamp)
 
     def get_id_de_neg(self):
-        return f"BVi-{self.pk}"
+        return f"BVi-{self.pk + 1999}"
 
 
 class Propuesta(models.Model):
