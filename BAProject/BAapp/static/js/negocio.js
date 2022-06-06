@@ -69,6 +69,8 @@ $(document).ready(function(){
         }
     })
 
+    allTDLinebreak();
+
     // var btn_sm_1 = document.getElementById('btn-sm-1');
     
     // $(btn_sm_1).each(function () {
@@ -225,9 +227,27 @@ $("#client-view-sw").change(function() {
   $(".w2").toggle("display");
   $(".w2-hide").toggle("display");
   $(".w3").toggle("display");
-  $(".divisa").toggle("display");
   
 });
+
+function allTDLinebreak() {
+  $("td:first-child").each(function() {
+    var elem = $(this);
+    var text = elem.text();
+    if (!(elem.parent().attr('id') == 'extra')) {
+      var textArray = text.split(" ");
+      var i = 1;
+      for (word in textArray) {
+        if (i % 4 == 0) {
+          textArray[word] = textArray[word] + "<br/>";
+        }
+        i++;
+      }
+      text = textArray.join(" ");
+      elem.html(text);
+    }
+  })
+}
 
 //
 

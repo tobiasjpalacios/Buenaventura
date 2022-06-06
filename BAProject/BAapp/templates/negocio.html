@@ -409,7 +409,9 @@
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
       <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">save</i></a>\
     </td>\
-    <td></td>\
+    <td>\
+      <a class=\"action-btn btn-small bv-gray btn-floating waves-effect waves-light\" onclick=\"showMore(0);\"><i class=\"i1 material-icons table-icons\">search</i></a>\
+    </td>\
     ";
     $('select').formSelect();
     headers.forEach(element => {
@@ -428,6 +430,7 @@
     contadoTasa(rowId);
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
+    allTDLinebreak();
   }
 
   var obsOriginalValue = $("#observaciones").val();

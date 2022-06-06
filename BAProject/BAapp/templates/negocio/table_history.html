@@ -59,10 +59,9 @@
                 {% if not request.user.clase == 'Comprador' %}
                 <th class="show{{prop.id}} clientViewSM">Precio compra</th>
                 {% endif %}
-                <th class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%}">Tipo pago</th>
+                <th class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%} clientView">Tipo pago</th>
                 <th class="not-show{{prop.id}} clientView">Tasa</th>
-                <th class="divisa" style="display: none;">Divisa</th>
-                <th class="not-show{{prop.id}} clientView">Fecha pago</th>
+                <th class="not-show{{prop.id}}">Fecha pago</th>
                 <th class="not-show{{prop.id}} clientView">Fecha entrega</th>
                 <th class="not-show{{prop.id}} clientView">Destino</th>
                 <th class="clientViewSM">Ver más</th>
@@ -80,10 +79,9 @@
                 {% if not request.user.clase == 'Comprador' %}
                 <td class="show{{prop.id}} clientViewSM">{{ item.precio_compra|default_if_none:"0,0" }}</td>
                 {% endif %}
-                <td class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%} ">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
+                <td class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%} clientView">{{ item.tipo_pago.nombre|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.tasa }}%</td>
-                <td class="divisa" style="display: none;">{{ item.divisa }}</td>
-                <td class="not-show{{prop.id}} clientView">{{ item.fecha_pago|default:"Sin definir" }}</td>
+                <td class="not-show{{prop.id}}">{{ item.fecha_pago|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.destino|default:"Sin definir" }}</td>
                 <td class="clientViewSM">
