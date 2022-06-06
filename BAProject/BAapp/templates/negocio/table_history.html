@@ -23,7 +23,13 @@
   </div>
   <div class="col s12 m9 {% if prop.envio_comprador and request.user.clase == 'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m3{%endif%}">
     <div class="prop-title">
-      <p class="prop-creator-name grey-text text-darken-3">{% if prop.envio_comprador %} {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} {% else %} {{ negocio.vendedor.get_full_name }} {% endif %}</p>
+      <p class="prop-creator-name grey-text text-darken-3" id="prop-creator-name-{{prop.id}}">
+        {% if prop.envio_comprador %} 
+        {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} 
+        {% else %} 
+        {{ negocio.vendedor.get_full_name }} 
+        {% endif %}
+      </p>
       <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
     </div>
     <div class="card history-card">
@@ -55,6 +61,7 @@
                 {% endif %}
                 <th class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%}">Tipo pago</th>
                 <th class="not-show{{prop.id}} clientView">Tasa</th>
+                <th class="divisa" style="display: none;">Divisa</th>
                 <th class="not-show{{prop.id}} clientView">Fecha pago</th>
                 <th class="not-show{{prop.id}} clientView">Fecha entrega</th>
                 <th class="not-show{{prop.id}} clientView">Destino</th>
@@ -75,6 +82,7 @@
                 {% endif %}
                 <td class="{% if request.user.clase == 'Comprador' %}show{{prop.id}}{% elif request.user.clase == 'Vendedor' %}not-show{{prop.id}}{%endif%} ">{{ item.tipo_pago|default_if_none:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.tasa }}%</td>
+                <td class="divisa" style="display: none;">{{ item.divisa }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.fecha_pago|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.destino|default:"Sin definir" }}</td>
@@ -101,6 +109,8 @@
   //   $('[id="' + this.id + '"]:gt(0)').remove();
   // });
 
+  var propCreatorNameEl_{{prop.id}} = $("#prop-creator-name-{{prop.id}}");
+  var propCreatorNameOrig_{{prop.id}} = $("#prop-creator-name-{{prop.id}}").text();
   var sm{{prop.id}} = false;
   var propIdId = "{{prop.id}}";
   var hasPush{{prop.id}} = false;
@@ -118,6 +128,7 @@
         showMore(propId);
         sm{{prop.id}} = !sm{{prop.id}};
       }
+      propCreatorNameEl_{{prop.id}}.text("{{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }}");
     }
     else {
       var propId = "{{prop.id}}";
@@ -125,6 +136,7 @@
         showMore(propId);
         sm{{prop.id}} = !sm{{prop.id}};
       }
+      propCreatorNameEl_{{prop.id}}.text(propCreatorNameOrig_{{prop.id}});
     }
   });
   

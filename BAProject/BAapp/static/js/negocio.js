@@ -225,6 +225,7 @@ $("#client-view-sw").change(function() {
   $(".w2").toggle("display");
   $(".w2-hide").toggle("display");
   $(".w3").toggle("display");
+  $(".divisa").toggle("display");
   
 });
 

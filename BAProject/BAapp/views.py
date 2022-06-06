@@ -2047,8 +2047,8 @@ class APIArticulos(View):
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
             tipo_pago_str = actual.get("Tipo de pago")
-            divisa_tmp = actual.get("Divisa")
-            divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
+            divisa = actual.get("Divisa")
+            # divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             tasa_tmp = actual.get("Tasa")
             tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
             # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),
@@ -2063,8 +2063,7 @@ class APIArticulos(View):
             if isComprador:
                 proveedor = None
             else:
-                get_distribuidor = actual.get("Distribuidor")
-                proveedor = MyUser.objects.get(email=get_distribuidor)
+                proveedor = MyUser.objects.get(email=distribuidor)
 
             #traer el objecto tipo de pago
             if len(actual.get("Tipo de pago").strip()) != 0:
