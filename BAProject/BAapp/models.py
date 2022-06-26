@@ -211,12 +211,25 @@ class ItemPropuesta(models.Model):
             blank = True,
             on_delete=models.DO_NOTHING,
         )
-    tasa = models.CharField(
-        max_length=15,
-        choices=TASA_CHOICES,
-        blank=True,
-        null=True
-        )
+
+    # tasa = models.CharField(
+    #     max_length=15,
+    #     choices=TASA_CHOICES,
+    #     blank=True,
+    #     null=True
+    #     )
+
+    tasa = models.DecimalField(
+                max_digits=3, 
+                decimal_places=2, 
+                validators=[
+                        MaxValueValidator(6),
+                        MinValueValidator(0)],
+                default=1,
+                blank=True,
+                null=True
+            )
+
     fecha_salida_entrega = models.DateTimeField(
         null=True,
         blank=True
