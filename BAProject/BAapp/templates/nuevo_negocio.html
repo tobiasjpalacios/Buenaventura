@@ -116,7 +116,7 @@ table#empTable thread div tr {
 
   
 <div class="center-align">
-  <h4 style="margin-left: 5%;">Seleccione al comprador</h4>
+  <h4 style="margin-left: 5%;">Seleccione al {% if request.user.clase == 'Comprador' %}vendedor{% elif request.user.clase == 'Vendedor' %}comprador{% endif %}</h4>
 </div>
    
    
@@ -926,7 +926,7 @@ function submit(){
           input = 0;
           tmp_dict[headers[j]] = input;
         }
-        else if (headers[j] == "Distribuidor") {
+        else if (headers[j] == "Distribuidor" && !userIsComprador) {
           var inputValue = input.value;
           input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
           tmp_dict[headers[j]] = input;
