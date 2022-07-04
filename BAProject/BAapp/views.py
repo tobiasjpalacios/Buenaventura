@@ -1587,6 +1587,7 @@ class APIVendedor(View):
         vendedores = []
         for vend in MyUser.objects.filter(clase='Vendedor'): 
             tmp = {
+                'email': vend.email,
                 'usuario': vend.get_full_name()
             }
             vendedores.append(tmp)
