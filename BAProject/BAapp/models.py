@@ -220,10 +220,10 @@ class ItemPropuesta(models.Model):
     #     )
 
     tasa = models.DecimalField(
-                max_digits=3, 
+                max_digits=4, 
                 decimal_places=2, 
                 validators=[
-                        MaxValueValidator(6),
+                        MaxValueValidator(100),
                         MinValueValidator(0)],
                 default=1,
                 blank=True,

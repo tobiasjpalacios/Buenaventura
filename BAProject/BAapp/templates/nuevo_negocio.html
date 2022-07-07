@@ -960,19 +960,19 @@ function submit(){
           'envio_comprador': true,
        }
      }
-    //  fetch("{% url 'api_articulos' %}",{
-    //   method:'POST',
-    //   headers: {
-    //     [window.drf.csrfHeaderName]:window.drf.csrfToken,
-    //     'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-    //   },
-    //   body: JSON.stringify(aux_dict),
-    //  }).then(async function(res){
-    //     var data = await res.json();
-    //     var url = "{% url 'negocio' "0" %}";
-    //     url = url.replace('0',data);
-    //     window.location = url;
-    //  });
+     fetch("{% url 'api_articulos' %}",{
+      method:'POST',
+      headers: {
+        [window.drf.csrfHeaderName]:window.drf.csrfToken,
+        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
+      },
+      body: JSON.stringify(aux_dict),
+     }).then(async function(res){
+        var data = await res.json();
+        var url = "{% url 'negocio' "0" %}";
+        url = url.replace('0',data);
+        window.location = url;
+     });
   }else{
     var print_errors="";
     for (var i = 0; i < errors.length; i++) {
@@ -1114,7 +1114,6 @@ function input_tasa(c,td){
   var ele = document.createElement('input');
   ele.setAttribute('type', 'number');
   ele.setAttribute('min', '0');
-  ele.setAttribute('value', '0');
   ele.setAttribute('step', '.01');
 
 

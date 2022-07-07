@@ -31,6 +31,7 @@ from django.contrib.sites.models import Site
 import operator
 from functools import reduce
 from django.conf import settings
+from decimal import *
 
 
 User = settings.AUTH_USER_MODEL
@@ -2050,8 +2051,10 @@ class APIArticulos(View):
             tipo_pago_str = actual.get("Tipo de pago")
             divisa = actual.get("Divisa")
             # divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
-            tasa_tmp = actual.get("Tasa")
-            tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
+            
+            tasa = Decimal(actual.get("Tasa"))
+            # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
+
             # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),
             # por lo que la query arroja resultados que pueden ser no deseados.
             articulo = Articulo.objects.filter(empresa__nombre_comercial=empresa, ingrediente=ingrediente).first()
@@ -2098,6 +2101,8 @@ class APIArticulos(View):
                 aceptado=False,
                 fecha_pago=actual.get("Fecha de pago"),
                 fecha_entrega=actual.get("Fecha de entrega"),)
+            print(type(tasa))
+            print(tasa)
             item.save()
         return JsonResponse(negocio.pk, safe=False)
 
