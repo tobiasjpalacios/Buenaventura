@@ -275,7 +275,7 @@ var savings_data;
 var compradores_data;
 var distribuidores_data;
 var tipo_pago;
-var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
+// var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
 
 // to validate if inputs are correct
 var isValidated = false;
@@ -885,7 +885,7 @@ function validateData(rowCnt){
           input.style.borderColor = '#CF0029';
         }
       }else if ((!userIsComprador && j == 7) || (userIsComprador && j == 5)){
-         if (tasas.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null || input.value == '/') {
+         if (input.value === null || input.value == '/' || input.value >= 0) {
           isValidated = true;
          }else{
           isValidated = false;
@@ -960,19 +960,19 @@ function submit(){
           'envio_comprador': true,
        }
      }
-     fetch("{% url 'api_articulos' %}",{
-      method:'POST',
-      headers: {
-        [window.drf.csrfHeaderName]:window.drf.csrfToken,
-        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-      },
-      body: JSON.stringify(aux_dict),
-     }).then(async function(res){
-        var data = await res.json();
-        var url = "{% url 'negocio' "0" %}";
-        url = url.replace('0',data);
-        window.location = url;
-     });
+    //  fetch("{% url 'api_articulos' %}",{
+    //   method:'POST',
+    //   headers: {
+    //     [window.drf.csrfHeaderName]:window.drf.csrfToken,
+    //     'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
+    //   },
+    //   body: JSON.stringify(aux_dict),
+    //  }).then(async function(res){
+    //     var data = await res.json();
+    //     var url = "{% url 'negocio' "0" %}";
+    //     url = url.replace('0',data);
+    //     window.location = url;
+    //  });
   }else{
     var print_errors="";
     for (var i = 0; i < errors.length; i++) {
@@ -1112,24 +1112,17 @@ function input_tipoPago(c,td){
 
 function input_tasa(c,td){
   var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('size', '9');
+  ele.setAttribute('type', 'number');
+  ele.setAttribute('min', '0');
+  ele.setAttribute('value', '0');
+  ele.setAttribute('step', '.01');
+
+
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-  ele.setAttribute('onclick','this.select();');
   ele.setAttribute('placeholder', 'Tasa');
   ele.setAttribute('autocomplete', 'off');
-  var datalistTasa = document.createElement('datalist');
-  datalistTasa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
   
   td.appendChild(ele);
-  td.appendChild(datalistTasa);
-  for (var i = 0; i < tasas.length; i++) {
-    var optionTasa = document.createElement('option');
-    optionTasa.setAttribute('value',''+tasas[i]+'');
-    optionTasa.setAttribute('id','option'+i);
-    datalistTasa.appendChild(optionTasa);        
-  }
 }
 
 function input_fechaPago(c,td){
