@@ -64,13 +64,7 @@
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show0">
-                  <select name="tasa" id="tas{{item.id}}">
-                    {% for v,t in tasas %}
-                    <option value="{{ v }}" {% if v == item.tasa %}selected{% endif %}{% if v == None %}selected disabled{% endif %}>{{ t }}</option>
-                  {% endfor %}
-                  </select>
-                </td>
+                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
                 <td class="not-show0">
@@ -124,11 +118,7 @@
                   </select>
                 </td>
                 <td class="not-show0">
-                  <select name="tasa" id="tasAdd">
-                  {% for v,t in tasas %}
-                    <option value="{{ v }}" {% if v == None %}selected disabled{% endif %}>{{ t }}</option>
-                  {% endfor %}
-                  </select>
+                  <input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0">
                 </td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
