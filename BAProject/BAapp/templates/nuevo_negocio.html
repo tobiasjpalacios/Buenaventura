@@ -650,6 +650,8 @@ function closeDiv(divName){
 function refreshEmpresa(inputId){
   var input = document.getElementById('input0.'+inputId).value;
   var datalist = document.getElementById('datalist1.'+inputId);
+  var input_empresa = document.getElementById('input1.'+inputId);
+  input_empresa.value = "";
 
   var url = "{% url 'filterArticulo' "replace" %}";
   url = url.replace('replace',input);
@@ -1023,12 +1025,23 @@ function input_empresa(c,td){
   
   td.appendChild(ele);
   td.appendChild(datalistMar);
-  for (var i = 0; i < savings_data.length; i++) {
-    var optionMar = document.createElement('option');
-    optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
-    optionMar.setAttribute('id','option'+i);
-    all_empresas.push(savings_data[i].empresa__nombre_comercial);
-    datalistMar.appendChild(optionMar);        
+  // caso 0
+  var optionMar = document.createElement('option');
+  optionMar.setAttribute('value',''+savings_data[0].empresa__nombre_comercial+'');
+  optionMar.setAttribute('id','option'+0);
+  all_empresas.push(savings_data[0].empresa__nombre_comercial);
+  datalistMar.appendChild(optionMar);   
+  // caso n > 0
+  for (var i = 1; i < savings_data.length; i++) {
+    var curr_empresa = savings_data[i].empresa__nombre_comercial;
+    var last_empresa = savings_data[i-1].empresa__nombre_comercial;
+    if (curr_empresa != last_empresa) {
+      optionMar = document.createElement('option');
+      optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
+      optionMar.setAttribute('id','option'+i);
+      all_empresas.push(savings_data[i].empresa__nombre_comercial);
+      datalistMar.appendChild(optionMar);        
+    }
   }
 }
 

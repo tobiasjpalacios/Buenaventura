@@ -1622,7 +1622,7 @@ class APIEmpresa(View):
         return JsonResponse(list(empresas), safe=False)        
 
 def filterArticulo(request, ingrediente):
-    empresas = Articulo.objects.filter(ingrediente=ingrediente).values("empresa__nombre_comercial")
+    empresas = Articulo.objects.filter(ingrediente=ingrediente).values("empresa__nombre_comercial").distinct()
     return JsonResponse(list(empresas), safe=False)
 
 class ListArticuloView(View):
