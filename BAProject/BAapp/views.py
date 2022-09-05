@@ -11,8 +11,8 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
-from django.db.models import Q
-from django.urls import reverse
+from django.db.models import Q, Count
+from django.urls import reverse, resolve
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
@@ -1621,8 +1621,8 @@ class APIEmpresa(View):
             
         return JsonResponse(list(empresas), safe=False)        
 
-def filterArticulo(request, ingrediente):
-    empresas = Articulo.objects.filter(ingrediente=ingrediente).values("empresa__nombre_comercial").distinct()
+def filterArticulo(request, word):
+    empresas = Articulo.objects.filter(Q(ingrediente=word) | Q(marca=word)).values("empresa__nombre_comercial", "ingrediente", "marca")
     return JsonResponse(list(empresas), safe=False)
 
 class ListArticuloView(View):
@@ -2022,15 +2022,25 @@ def cargarListasNegociosCerrados(negocioFilter):
             lista_negocios.append(lista)
     return lista_negocios
 
+def removeDuplicates(arr):
+    new_arr = list()
+    new_arr.append(arr[0].id)
+    for i in range(1, len(arr)):
+        if (arr[i].ingrediente != arr[i-1].ingrediente):
+            new_arr.append(arr[i].id)
+    return new_arr
+
 class APIArticulos(View):
     def get(self,request):
         articulos = None
-        if (request.GET.get('search', None)):
+        if request.GET.get('search', None):
             words = request.GET['search'].split(" ")
             query = reduce(operator.and_, (Q(ingrediente__icontains=word) | Q(empresa__nombre_comercial__icontains=word) for word in words))
             articulos = Articulo.objects.filter(query)
         else:
-            articulos = Articulo.objects.all()
+            articulos = Articulo.objects.all().order_by('ingrediente')
+            query = removeDuplicates(list(articulos))
+            articulos = Articulo.objects.filter(pk__in=query).order_by('ingrediente')
         return JsonResponse(list(articulos.values("empresa__nombre_comercial", "ingrediente", "id", "marca")), safe=False)
 
     def post(self,request):

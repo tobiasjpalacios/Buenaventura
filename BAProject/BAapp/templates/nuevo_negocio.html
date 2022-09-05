@@ -648,27 +648,63 @@ function closeDiv(divName){
 }
 
 function refreshEmpresa(inputId){
-  var input = document.getElementById('input0.'+inputId).value;
-  var datalist = document.getElementById('datalist1.'+inputId);
+  var input0 = document.getElementById('input0.'+inputId).value;
+  var datalist0 = document.getElementById('datalist0.'+inputId);
+  var datalist1 = document.getElementById('datalist1.'+inputId);
   var input_empresa = document.getElementById('input1.'+inputId);
   input_empresa.value = "";
 
   var url = "{% url 'filterArticulo' "replace" %}";
-  url = url.replace('replace',input);
+  url = url.replace('replace',input0);
   $.ajax({
     type: "GET",
     url: url,
     dataType: "json",
-    success: function(data) {    
-      datalist.innerHTML = " ";
+    success: function(data) {   
+      datalist0.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
+        option.setAttribute('value',''+data[i].marca+'');
         option.setAttribute('id','option'+i);
-        datalist.appendChild(option);
+        datalist0.appendChild(option);
+      } 
+      datalist1.innerHTML = " ";
+      // caso 0
+      option.setAttribute('value',''+data[0].empresa__nombre_comercial+'');
+      option.setAttribute('id','option'+0);
+      datalist1.appendChild(option);
+      // casos i > 0
+      var option = document.createElement('option');
+      for (var i = 1; i < data.length; i++) {
+        var curr_empresa = data[i].empresa__nombre_comercial;
+        var last_empresa = data[i-1].empresa__nombre_comercial;
+        if (curr_empresa != last_empresa) {
+          option = document.createElement('option');
+          option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
+          option.setAttribute('id','option'+i);
+          datalist1.appendChild(option);
+        }
       }
     }
   });
+}
+
+function isEmpty(str) {
+    return !str.trim().length;
+}
+
+function resetIngredientesDatalist(inputId) {
+  var input = document.getElementById('input0.'+inputId).value;
+  if (!isEmpty(input)) {
+    var datalist = document.getElementById('datalist0.'+inputId);
+    datalist.innerHTML = " ";
+    for (var i = 0; i < savings_data.length; i++) {
+      var option = document.createElement('option');
+      option.setAttribute('value',''+savings_data[i].ingrediente+'');
+      option.setAttribute('id','option'+i);
+      datalist.appendChild(option);
+    }
+  }
 }
 
 function removeRow(artRow){
@@ -994,6 +1030,7 @@ function input_ingrediente(c,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
   ele.setAttribute('onchange','refreshEmpresa("'+rowCnt+'")');
+  ele.setAttribute('onkeyup','resetIngredientesDatalist("'+rowCnt+'")');
   ele.setAttribute('onclick','this.select();');
   ele.setAttribute('placeholder', 'Ingrediente');
   ele.setAttribute('autocomplete', 'off');
@@ -1031,7 +1068,7 @@ function input_empresa(c,td){
   optionMar.setAttribute('id','option'+0);
   all_empresas.push(savings_data[0].empresa__nombre_comercial);
   datalistMar.appendChild(optionMar);   
-  // caso n > 0
+  // casos i > 0
   for (var i = 1; i < savings_data.length; i++) {
     var curr_empresa = savings_data[i].empresa__nombre_comercial;
     var last_empresa = savings_data[i-1].empresa__nombre_comercial;
