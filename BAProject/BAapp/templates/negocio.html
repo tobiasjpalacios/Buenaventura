@@ -401,7 +401,7 @@
     <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
     {% endif %}\
     <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><select name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
