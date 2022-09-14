@@ -2031,19 +2031,13 @@ def removeDuplicates(arr):
     return new_arr
 
 class APIArticulos(View):
-    def get(self,request):
-        articulos = None
-        if request.GET.get('search', None):
-            words = request.GET['search'].split(" ")
-            query = reduce(operator.and_, (Q(ingrediente__icontains=word) | Q(empresa__nombre_comercial__icontains=word) for word in words))
-            articulos = Articulo.objects.filter(query)
-        else:
-            articulos = Articulo.objects.all().order_by('ingrediente')
-            query = removeDuplicates(list(articulos))
-            articulos = Articulo.objects.filter(pk__in=query).order_by('ingrediente')
+    def get(self, request):
+        articulos = Articulo.objects.all().order_by('ingrediente')
+        query = removeDuplicates(list(articulos))
+        articulos = Articulo.objects.filter(pk__in=query).order_by('ingrediente')
         return JsonResponse(list(articulos.values("empresa__nombre_comercial", "ingrediente", "id", "marca")), safe=False)
 
-    def post(self,request):
+    def post(self, request):
         recieved = json.loads(request.body.decode("utf-8"))
         observacion = recieved.get("observaciones")
         isComprador = recieved.get("envio_comprador")

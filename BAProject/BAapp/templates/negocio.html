@@ -120,6 +120,7 @@
   var isAccepted = false;
   var isCanceled = false;
   var propUpdated = false;
+  var arts_data;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -141,28 +142,13 @@
   $(document).ready(function(){
     edits.new = {}
 
-    $("#artSearch").devbridgeAutocomplete({
-      serviceUrl: "{% url 'api_articulos' %}",
-      paramName: "search",
-      noCache: true,
-      ajaxSettings: {
-        method: "GET",
-        dataType: "json"
-      },
-      transformResult: function(res){
-        var data = {"suggestions":[]};
-        $.map(res, (a) => {
-          data.suggestions.push({
-            'value': a.ingrediente + " ",
-            'data': ""+a.id,
-          })
-        })
-        return data;
-      },
-      minChars: 2,
-      onSelect: function (suggestion) {
-        $("#artValue").val(suggestion.data)
-      },
+    $.ajax({
+      type: "GET",
+      url: "{% url 'api_articulos' %}",
+      dataType: "json",
+      success: function(data) {      
+        arts_data = data;
+      }
     });
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
@@ -191,6 +177,10 @@
       $("#form-table-div").hide();
     }
 
+  });
+
+  $(window).on('load', function(){
+    articuloDatalist(); // agrega los articulos a la datalist de table_edit
   });
 
   var userIsComprador = false;
@@ -323,7 +313,8 @@
       if (element != "divisa") {
         input = $($("#extra").find('[name="'+element+'"]'))[0];
       }
-      var artId = parseInt($("#artValue")[0].value);
+      var artSearchInput = $("#artSearch").val();
+      var artId = parseInt($('#artDatalist option[value="' + artSearchInput +'"]').attr("id"));
       if (input != null) {
         if (!input.value){
           if (userIsComprador) {
@@ -336,6 +327,10 @@
             errors = true;
             $(input).addClass("invalid");
           }
+        }
+        else if (input.value != 0) {
+          // TODO: ver que valide los 0s y que agregue clase invalida a los select
+          $(input).removeClass("invalid");
         }
         if (element === "distribuidor"){
           element = "proveedor";
@@ -534,7 +529,7 @@
     console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replace(',','');
+      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replaceAll(",", "");
     }
     if (errors) {
       swal("Oops!", print_errors, "error");

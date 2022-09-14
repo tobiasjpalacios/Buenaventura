@@ -260,3 +260,28 @@ $(window).on('load', function () {
     $(this).remove();
   });
 });
+
+// table_edit
+
+function articuloDatalist() {
+  var artDatalist = document.getElementById("artDatalist");
+  for (var i = 0; i < arts_data.length; i++) {
+    var option = document.createElement('option');
+    option.setAttribute('value',''+arts_data[i].ingrediente);
+    artDatalist.appendChild(option);        
+  }
+}
+
+function resetIngredientesDatalist() {
+  var input = document.getElementById("artSearch").value;
+  if (!isEmpty(input)) {
+    var datalist = document.getElementById("artDatalist");
+    datalist.innerHTML = " ";
+    for (var i = 0; i < arts_data.length; i++) {
+      var option = document.createElement('option');
+      option.setAttribute('value',''+arts_data[i].ingrediente+'');
+      option.setAttribute('id',''+arts_data[i].id);
+      datalist.appendChild(option);
+    }
+  }
+}

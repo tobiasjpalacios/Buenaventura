@@ -240,22 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
       direction: 'right',
       hoverEnabled: false
     });
-  });
-
-$(document).ready(function(){
-    $('.fixed-action-btn').floatingActionButton();
-  });
- $(document).ready(function(){
-    $('.tooltipped').tooltip();
-  });
-
-  $(document).ready(function(){
-    $('.modal').modal();
-  });
-
-   $(document).ready(function(){
-    $('select').formSelect();
-  });    
+  }); 
 
 // datepicker initialization and conf
 
@@ -287,18 +272,22 @@ var all_compradores = []
 var errors = [];
 
   $(document).ready(function(){
-  // $("#empTable thead tr th").each(function(index){
-  //   if ($(this).text() != "Operaciones"){
-  //     headers.push($(this).text())
-  //   }
-  // })
-  $("#flip").click(function(){
-    $("#ocultar").slideToggle("slow");
-  });
-  
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+    $('.modal').modal();
+    $('select').formSelect();   
+    // $("#empTable thead tr th").each(function(index){
+    //   if ($(this).text() != "Operaciones"){
+    //     headers.push($(this).text())
+    //   }
+    // })
+    $("#flip").click(function(){
+      $("#ocultar").slideToggle("slow");
+    });
+    
 
-  
-  $.ajax({
+    
+    $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
       dataType: "json",
@@ -325,10 +314,6 @@ var errors = [];
       }
     });
 
-    hideSend();
-  });
-
-  $(document).ready(function(){
     $.ajax({
       type: "GET",
       url: "{% if request.user.clase == 'Vendedor' %}{% url 'api_comprador' %}{% elif request.user.clase == 'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
@@ -348,10 +333,7 @@ var errors = [];
     hideSend();
   });
 
-  
-
-
-
+  console.log(savings_data);
 
   
   function hideSend(){
@@ -362,7 +344,6 @@ var errors = [];
       divS.style.display = "block";
     }
   };
-
 
 
 function addRow() {
@@ -1044,7 +1025,6 @@ function input_ingrediente(c,td){
     optionIng.setAttribute('value',''+savings_data[i].ingrediente);
     all_ingredientes.push(savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
-
   }
 }
 
