@@ -57,8 +57,8 @@
                   <tr data-id={{negocio.id}}>
                       <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                       <td>{{negocio.comprador.empresa.razon_social}}</td>
-                      <td>{{negocio.comprador.persona.user.last_name}} {{negocio.comprador.persona.user.first_name}}</td>
-                      <td><strong>{{negocio.id_de_neg}}</strong></td>
+                      <td>{{negocio.comprador.get_full_name}}</td>
+                      <td><strong>{{negocio.get_id_de_neg}}</strong></td>
                       <td>{{negocio.estado}}</td>
                       <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
                   </tr>

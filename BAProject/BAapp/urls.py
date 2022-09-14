@@ -17,7 +17,6 @@ urlpatterns = [
     path('administrar/', admin, name="admin"),
     path('testeo/', testeo, name="testeo"),
     path('chat/', chat, name="chat"),
-    path('inicio/', inicio, name="inicio"),
     path('cliente/', cliente, name="Cliente"),
     path('createAlertaNV/', createAlertaNV, name="createAlertaNV"),
     path('password/',PasswordsChangeView.as_view(template_name="tempAux/changePassword.html")),
@@ -41,13 +40,15 @@ urlpatterns = [
     path('detalleSemaforo/', detalleSemaforo, name="detalleSemaforo"),
     path('setFechaPagoReal/', setFechaPagoReal, name="setFechaPagoReal"),
     path('reloadSem/', reloadSem, name="reloadSem"),   
-    path('carga_excel/', carga_excel.as_view(), name="carga_excel"),
+    path('carga_excel/', login_required(login_url='/', redirect_field_name='router')(carga_excel.as_view()), name="carga_excel"),
+    path('descarga_db_excel/', login_required(login_url='/', redirect_field_name='router')(descarga_db_excel), name="descarga_db_excel"),
     path('filtrarNegocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('todosFiltro/<tipo>', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),
 
 
     #nuevas urls
+    path('nuevo_negocio/', login_required(login_url='/', redirect_field_name='router')(NuevoNegocioView.as_view()), name="nuevo_negocio"),
     path('notificaciones/', login_required(login_url='/', redirect_field_name='router')(NotificacionesView.as_view()), name ="notificaciones"),
     path('presupuestos/', login_required(login_url='/', redirect_field_name='router')(PresupuestosView.as_view()), name="presupuestos"),
     path('todos_negocios/', login_required(login_url='/', redirect_field_name='router')(TodoseNegociosView.as_view()), name ="todos_negocios"),
@@ -95,7 +96,6 @@ urlpatterns = [
     #crear comprobantes
 
     path('selecNegComprobante/<tipo>', selecNegComprobante, name="selecNegComprobante"),
-
 
     path('formFactura/<neg>', formFactura, name="formFactura"),
     path('formFactura/', formFactura, name="formFactura"),

@@ -19,7 +19,7 @@ BuenaVentura Agronegocios
 
 <body>
 
-    {% if request.user|has_no_group:"Logistica"%}
+    {% if request.user.clase != 'Logistica' %}
     <!-- Esto es el semaforo de vencimientos -->
     <div class="row" style="height: 100%;">
 
@@ -45,21 +45,21 @@ BuenaVentura Agronegocios
                 <table>
                     <thead>
                         <th>Fecha</th>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                        {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente' %}
                         <th>Cliente</th>
                         {% endif %}
                         <th>Vendedor</th>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                        {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente' %}
                         <th>Empresa</th>
                         {% endif %}
                     </thead>
                     <tbody>
                         <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                        <td>{{negocio.comprador.persona.user.get_full_name}}</td>
+                        {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente' %}
+                        <td>{{negocio.comprador.get_full_name}}</td>
                         {% endif %}
-                        <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                        <td>{{negocio.vendedor.get_full_name}}</td>
+                        {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente' %}
                         <td>{{negocio.comprador.empresa.razon_social}}</td>
                         {% endif %}
                     </tbody>
@@ -97,19 +97,19 @@ BuenaVentura Agronegocios
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th>Marca</th>
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                            <th>Empresa</th>
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <th>Distribuidor</th>
                             {% endif %}
-                            <th>Cant</th>
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+                            <th>Cantidad</th>
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
                             <th>Precio Venta</th>
                             {% endif %}
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <th>Precio Compra</th>
                             {% endif %}
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
-                            <th>Divisa</th>
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
+                            {% comment %} <th>Divisa</th> {% endcomment %}
                             <th>Forma de pago</th>
                             {% endif %}
                             <th></th>
@@ -119,20 +119,20 @@ BuenaVentura Agronegocios
                         {% for item in items %}
                         <tr>
                             <td>{{item.articulo.ingrediente}}</td>
-                            <td>{{item.articulo.marca}}</td>
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
-                            <td>{{item.empresa.razon_social}}</td>
+                            <td>{{item.articulo.empresa.nombre_comercial}}</td>
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
+                            <td>{{item.proveedor.get_full_name|default:'N/E'}}</td>
                             {% endif %}
                             <td>{{item.cantidad}}</td>
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
                             <td>${{item.precio_venta}}</td>
                             {% endif %}
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <td>${{item.precio_compra}}</td>
                             {% endif %}
-                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}
-                            <td>{{item.divisa}}</td>
-                            <td>{{item.tipo_pago.nombre}}</td>
+                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
+                            {% comment %} <td>{{item.divisa}}</td> {% endcomment %}
+                            <td>{{item.tipo_pago.nombre|default:'N/E'}}</td>
                             {% endif %}
                             <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)"
                                     class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red no-shadows"><i

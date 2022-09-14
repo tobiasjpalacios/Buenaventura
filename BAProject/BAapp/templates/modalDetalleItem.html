@@ -24,7 +24,7 @@
     <td>{{item.articulo.ingrediente}}</td>
     <td>{{item.articulo.marca}}</td>
     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
-      <td>{{item.proveedor.persona.user.get_full_name}}</td>
+      <td>{{item.proveedor.get_full_name}}</td>
     {% endif %}
   </tbody>
   </table>

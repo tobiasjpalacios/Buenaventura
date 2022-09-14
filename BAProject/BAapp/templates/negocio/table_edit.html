@@ -1,0 +1,164 @@
+{% load static %}
+<div class="row history-tables" id="form-table-div">
+  <div class="col s12 m9 push-m3">
+    <div class="prop-title">
+      <p class="prop-creator-name grey-text text-darken-3"><strong>Nueva propuesta</strong></p>
+    </div>
+    <div class="card">
+      <div class="container__wrapper">
+        <div class="container__watermark">
+          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+        <div class="container__watermark">
+          <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+        </div>
+      </div>
+      <div class="card-content dark-text">
+        <div class="row">
+          <table {% if forloop.last %}id="form"{%endif%}>
+            <thead class="edit-thead">  
+              <tr>
+                <th class="show0">Articulo</th>
+                <th class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Distribuidor</th>
+                <th class="show0">Cantidad</th>
+                <th class="show0">{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
+                <th class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Precio compra</th>
+                <th class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">Tipo pago</th>
+                <th class="not-show0">Tasa</th>
+                <th class="not-show0">Fecha pago</th>
+                <th class="not-show0">Fecha entrega</th>
+                <th class="not-show0">Destino</th>
+                <th>Operaciones</th>
+                <th>Ver más</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for item in prop.items.all %}
+              <tr {% if item.aceptado %}class="green white-text white-text-input"{% endif %}>
+                <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
+                {% if not request.user.clase == 'Comprador' %}
+                <td class="show0">
+                  {% if item.proveedor == None %}
+                  <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off'>
+                  <datalist id='distResults'>
+                  {% for dist in distribuidores %}
+                    <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
+                  {% endfor %}
+                  </datalist>
+                  {% else %}
+                  {{ item.proveedor.get_full_name }}
+                  {% endif %}
+                </td>
+                {% endif %}
+                <td class="show0"><input type="number" name="cantidad" min="0" value="{{ item.cantidad|default_if_none:'' }}"></td>
+                <td class="show0"><input type="number" name="precio_venta" min="0" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min="0" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
+                  <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
+                    <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
+                  {% for tipo_pago in tipo_pagos %}
+                    <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0">
+                  <input type="text" name="destino" value="{{item.destino}}"/>
+                </td>
+                <td>
+                  {% if not item.aceptado %}
+                  <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons table-icons">done</i></a>
+                  <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
+                  {% endif %}
+                  <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
+                  <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}');"><i class="material-icons table-icons">undo</i></a>
+                </td>
+                <td>
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                </td>
+              </tr>
+              <script>
+                $(document).ready(function() {
+                  contadoTasa("{{item.id}}");
+                });
+              </script>
+            {% endfor %}
+            {% if not negocio.aprobado %}
+              <tr id="extra">
+                <td class="show0">
+                    <input type="hidden" id='artValue'>
+                    <input type="text" name='articulo' id='artSearch' class="autocomplete">
+                </td>
+                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
+                  <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
+                  <datalist id='distResults'>
+                  {% for dist in distribuidores %}
+                    <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
+                  {% endfor %}
+                  </datalist>
+                </td>
+                <td class="show0"><input type="number" name="cantidad" min="0"></td>
+                <td class="show0">
+                  <input type="number" name="precio_venta" step=".01" min="0" placeholder="{{ item.precio_venta }}">
+                </td>
+                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
+                  <input type="number" name="precio_compra" min="0" step=".01" placeholder="{{ item.precio_compra }}">
+                </td>
+                <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
+                  <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
+                    <option value="" selected disabled>Elija tipo pago</option>
+                  {% for tipo_pago in tipo_pagos %}
+                    <option value="{{ tipo_pago.id }}">{{ tipo_pago.nombre }}</option>
+                  {% endfor %}
+                  </select>
+                </td>
+                <td class="not-show0">
+                  <input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0">
+                </td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0">
+                  <input type="text" name="destino" value=""/>
+                </td>
+                <td><a class="action-btn no-shadow bv-dark-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
+                <td>
+                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-action">
+        <span class="obser">Observaciones</span>
+        <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
+        <br><br>
+          <a class="send-btn no-shadow bv-green waves-effect waves-light btn modal-trigger" id="send-prop-btn" href="#modalSend" onclick="beforeSubmit();" disabled><i class="material-icons right">send</i>Enviar</a>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+  $("#client-view-sw").change(function() {
+    if($(this).is(":checked")) {
+      if (sm) {
+        showMore(0);
+      }
+      
+    }
+    else {
+      if (sm) {
+        showMore(0);
+      }
+    }
+    for (var i in listProp) {
+      toggleClientView(listProp[i]);
+    }
+  });
+</script>

@@ -49,9 +49,9 @@
             <tbody>
                 <td>{{negocio.timestamp|date:"M d, Y"}}</td>
                 {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                    <td>{{negocio.comprador.persona.user.get_full_name}}</td>
+                    <td>{{negocio.comprador.get_full_name}}</td>
                 {% endif %}
-                <td>{{negocio.vendedor.persona.user.get_full_name}}</td>
+                <td>{{negocio.vendedor.get_full_name}}</td>
                 {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
                     <td>{{negocio.comprador.empresa.razon_social}}</td>
                 {% endif %}

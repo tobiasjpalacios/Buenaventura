@@ -69,6 +69,8 @@ $(document).ready(function(){
         }
     })
 
+    allTDLinebreak();
+
     // var btn_sm_1 = document.getElementById('btn-sm-1');
     
     // $(btn_sm_1).each(function () {
@@ -193,7 +195,7 @@ function alertAnimation() {
 }
 
 function closeAlert(id) {
-  $(id).hide();
+  $(id).css("display", "none");
 }
 
 // funcion editar despues de negocio confirmado
@@ -211,3 +213,50 @@ function addTable() {
       $("#div-table-"+n).show();
     }
 }
+
+$("#client-view-sw").change(function() {
+
+  $(".card").toggleClass("tableClientView");
+  $(".card-title").toggleClass("tableClientView");
+  $(".card-action").toggleClass("tableClientView");
+  $(".circle-container").toggle("display");
+  $(".data-table").toggleClass("tableClientView");
+  $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
+  $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
+  $(".w1").toggle("display");
+  $(".w2").toggle("display");
+  $(".w2-hide").toggle("display");
+  $(".w3").toggle("display");
+  
+});
+
+function allTDLinebreak() {
+  $("td:first-child").each(function() {
+    var elem = $(this);
+    var text = elem.text();
+    if (!(elem.parent().attr('id') == 'extra')) {
+      var textArray = text.split(" ");
+      var i = 1;
+      for (word in textArray) {
+        if (i % 4 == 0) {
+          textArray[word] = textArray[word] + "<br/>";
+        }
+        i++;
+      }
+      text = textArray.join(" ");
+      elem.html(text);
+    }
+  })
+}
+
+//
+
+setTimeout(function() {
+  $(".blink_text").fadeIn();
+}, 10000);
+
+$(window).on('load', function () {
+  $(".contain").fadeOut("fast", function() {
+    $(this).remove();
+  });
+});

@@ -1,3 +1,4 @@
+from distutils.util import strtobool
 from pathlib import Path
 import django.db.models.options as options
 import os
@@ -14,20 +15,21 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('search_fields',)
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = strtobool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+AUTH_USER_MODEL = 'BAapp.MyUser'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -73,7 +75,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Choose db config depending on the environment
 db_conf = str(BASE_DIR.joinpath('config/mariadb.conf'))
-if(os.environ["DOCKER"]):
+if strtobool(os.environ.get("DOCKER")):
     db_conf = str(BASE_DIR.joinpath('config/mariadb-docker.conf'))
 
 
@@ -141,10 +143,11 @@ SITE_ID = 1
 
 # When DEBUG is set to False
 
-if DEBUG is False:
+if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
-    ALLOWED_HOSTS = ["https://bvagro.com.ar", "https://www.clientes.bvagro.com.ar"]
+    # Allowed hosts genera bad request 400
+    # ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')

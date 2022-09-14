@@ -4,27 +4,7 @@ from django.contrib.auth.forms import PasswordChangeForm, User
 from .models import *
 from .choices import *
 
-class ProveedorForm(ModelForm):
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    class Meta:
-        model = Proveedor
-        fields = '__all__'
 
-        widget = {
-        'fecha_nacimiento': forms.TextInput(attrs={'class':'datepicker'}),
-    }
-
-
-class CompradorForm(ModelForm):
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-
-    class Meta:
-        model = Comprador
-        fields = '__all__'
-
-        widget = {
-            'fecha_nacimiento' : forms.TextInput(attrs={'class':'datepicker'}),
-        }
 
 class ArticuloForm(ModelForm):
 
