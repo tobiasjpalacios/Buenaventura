@@ -268,6 +268,7 @@ function articuloDatalist() {
   for (var i = 0; i < arts_data.length; i++) {
     var option = document.createElement('option');
     option.setAttribute('value',''+arts_data[i].ingrediente);
+    option.setAttribute('id',''+arts_data[i].id);
     artDatalist.appendChild(option);        
   }
 }

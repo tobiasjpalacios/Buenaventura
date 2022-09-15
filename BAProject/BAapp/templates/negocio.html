@@ -316,21 +316,22 @@
       var artSearchInput = $("#artSearch").val();
       var artId = parseInt($('#artDatalist option[value="' + artSearchInput +'"]').attr("id"));
       if (input != null) {
-        if (!input.value){
-          if (userIsComprador) {
-            if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
-              errors = true;
-              $(input).addClass("invalid");
-            }
-          }
-          else {
-            errors = true;
-            $(input).addClass("invalid");
-          }
+		if (!input.value) {
+			if (userIsComprador) {
+				if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+					errors = true;
+					$(input).addClass("invalid");
+				}
+			}
+			errors = true;
+			$(input).addClass("invalid");
+			if (input.name == "tipo_pago" || input.name == "tasa") {
+				input.parentElement.classList.add("select-error");
+			}
         }
         else if (input.value != 0) {
-          // TODO: ver que valide los 0s y que agregue clase invalida a los select
-          $(input).removeClass("invalid");
+			errors = false;
+          	$(input).removeClass("invalid");
         }
         if (element === "distribuidor"){
           element = "proveedor";

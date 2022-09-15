@@ -460,3 +460,7 @@ table.tableClientView tr td {
         display: none;
     }
 }
+
+.select-error.select-wrapper input.select-dropdown {
+    border-bottom: 2px solid #F44336;
+}
