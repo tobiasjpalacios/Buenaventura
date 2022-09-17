@@ -1123,7 +1123,7 @@ function input_tipoPago(c,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('onchange','desactivarTasa('+rowCnt+');');
+  ele.setAttribute('onchange','desactivarTasa('+c+', '+rowCnt+');');
   ele.setAttribute('placeholder', 'Tipo de pago');
   ele.setAttribute('autocomplete', 'off');
   var datalistPagos = document.createElement('datalist');
@@ -1189,10 +1189,10 @@ function input_destino(c, td){
   td.appendChild(ele);
 }
 
-function desactivarTasa(row){
-  var inputPago = document.getElementById("input7."+row).value;
-  var datalistTasa = document.getElementById("input8."+row);
-  var inputTasa = document.getElementById("input8."+row);
+function desactivarTasa(c, row){
+  var inputPago = document.getElementById("input"+c+"."+row).value;
+  var datalistTasa = document.getElementById("input"+(c+1)+"."+row);
+  var inputTasa = document.getElementById("input"+(c+1)+"."+row);
   if (inputPago.toLowerCase() =="contado") {
     inputTasa.disabled = true;
     inputTasa.setAttribute("placeholder","/");

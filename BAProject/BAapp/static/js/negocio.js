@@ -108,7 +108,7 @@ function contadoTasa(aggId) {
       var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
       if (selectedText.toLowerCase() === "contado") {
         tasa.disabled = true;
-        tasa.value = '0';
+        tasa.value = 0;
       }
       else {
         tasa.disabled = false;
