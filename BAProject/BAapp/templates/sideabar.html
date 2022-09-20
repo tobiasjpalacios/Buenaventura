@@ -1,25 +1,29 @@
 {% block body%}
 
 {% load auth_extras %}
+
 <body>
-    <div class="col s12 l2 m3 mysidebar vl pinned">
-        <ul class="section table-of-contents ">
-            <li><a href="{% url 'notificaciones'  %}">Notificaciones</a></li>
-            <li><a href="{% url 'presupuestos'  %}">Presupuestos</a></li>
-            <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
-            <li><a href="{% url 'logistica'  %}">Logistica</a></li>
-            <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
-            <li><a href="#">Mas Opciones </a></li>
-            {% if request.user.clase == "Vendedor" %}
-            <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta </a></li>
-            {% endif %}
-            {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
-            <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
-            {% endif %}
-            <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
-        </ul>
-    </div>
-</body>   
+
+  <ul id="slide-out" class="sidenav">
+    <li><a href="{% url 'notificaciones'  %}">Notificacioneshola</a></li>
+    <li><a href="{% url 'presupuestos'  %}">Presupuestos</a></li>
+    <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
+    <li><a href="{% url 'logistica'  %}">Logistica</a></li>
+    <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
+    <li><a href="#">Mas Opciones </a></li>
+    {% if request.user.clase == "Vendedor" %}
+      <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta </a></li>
+    {% endif %}
+    {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
+      <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
+    {% endif %}
+    <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
+    <li><a class="sidenav-close" href="#!">Clicking this will close Sidenav</a></li>
+  </ul>
+  <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
+  
+</body>
+
 <style>
     .gb_text{
         color: #4fad31 !important;
@@ -39,6 +43,17 @@
 </style>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, options);
+  });
+
+$(document).ready(function(){
+  $('.sidenav').sidenav();
+  $('.sidenav').open();
+});
+
 function openModalAlerta(){
     $.ajax({
         type: 'POST',
