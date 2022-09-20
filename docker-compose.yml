@@ -27,8 +27,8 @@ services:
       - "8000:8000"
     volumes:
 
-      - .:/code
-      # - ./BAProject:/app
+      # - .:/code
+      - ./BAProject:/app
 
       - /data/static:/app/static
       - /data/media:/app/media

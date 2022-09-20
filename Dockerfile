@@ -9,11 +9,11 @@ RUN python -m pip install -r req.txt
 WORKDIR /app
 COPY ./BAProject ./
 
-COPY ./docker-entrypoint.sh ./
-# COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-RUN ["chmod", "+x", "/app/docker-entrypoint.sh"] 
-# RUN ["chmod", "+x", "/docker-entrypoint.sh"] 
-ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
-# ENTRYPOINT [ "/docker-entrypoint.sh" ]
+COPY ./docker-entrypoint.sh /entry.sh
+# COPY ./docker-entrypoint.sh ./
+RUN ["chmod", "+x", "/entry.sh"] 
+# RUN ["chmod", "+x", "/app/docker-entrypoint.sh"] 
+ENTRYPOINT [ "/entry.sh" ]
+# ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
 
 
