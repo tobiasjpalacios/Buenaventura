@@ -45,21 +45,20 @@
 <div class="navbar-fixed" >
   <nav class="no-shadows myhead">
     <div class="row nav-wrapper">
-      <div class="iconMenu col l2 m3 s3 " >
-        <a href="{% url 'home' %}" style="display: flex; justify-content: center; align-items: center;">
-          <img width="80%" style="position:relative;" src="{% static 'images/Buenaventura_blanco.png' %}">
-        </a>
-      </div>
 
-      <div class="no-shadows">
+        <!-- izquierda -->
         <a href="#" class="sidenav-trigger "><i class="material-icons">menu</i></a>
+        
+        <!-- medio -->
+        <a href="{% url 'home' %}" class="brand-logo center" style="height:100%">
+          <img height="100%"  style="position:relative;" src="{% static 'images/Buenaventura_blanco.png' %}">
+        </a>
+        
+        <!-- derecha -->
         <ul class="right hide-on-med-and-down">
           {% if user.is_staff %}  
-          <!-- <li>
-            <div style="position:static; height: 64px; background-color: white;">
-              <img style="height: 64px" src="{% static 'images/roagro.jpeg' %}">
-            </div>
-          </li> -->
+          <li>
+          </li>
           <li>
             <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
           </li>
@@ -74,7 +73,6 @@
         
           {% endif %}
         </ul>
-      </div>
     </div>
   </nav>
 
