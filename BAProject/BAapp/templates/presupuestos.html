@@ -18,8 +18,7 @@ BuenaVentura Agronegocios
     <link rel="stylesheet" type="text/css" href="{% static '/css/presupuestos.css' %}">
 </head>
 
-<body>
-
+<body>  
 
     <!---------------------------------Presupuestos titulo ---------------------------------------------->
     <div class="row">
@@ -37,113 +36,117 @@ BuenaVentura Agronegocios
 
 
         <!-----------------------------------recibido-------------------------------------------->
-       
-        <div style="height: 60px; justify-content: flex-start; margin-top: 2%;" class="col clv">
-            <h5 class="col l9 s9" style="margin:0; font-weight: bold;"> Recibidos</h5>
-        </div>
 
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Items</th>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                          <th class="center">Empresa</th>
-                          <th>Cliente</th>
-                        {% endif %}
-                        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
-                        <th>Vendedor</th>
-                        {% endif %}
-                        <th>Ver Negociación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for preprec in presupuestos_recibidos %}
-                    <tr>
-                        <td>{{preprec.fecha|date:"M d, Y"}}</td>
-                        <td>
-                            <div style="overflow-y: scroll; height: 150px;">
-                                <ol class="collection" start="1">
-                                    {% for item in preprec.items %}
-                                    <li class="collection-item">{{item}}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </td>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                        <td class="col1 center">{{preprec.empresa}}</td>
-                        <td>{{preprec.comprador}}</td>
-                        {% endif %}
-                        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
-                        <td>{{preprec.vendedor}}</td>
-                        {% endif %}
-                        <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                href="{% url 'info_negocio' preprec.id_prop %}"><i
-                                class=" small material-icons ">search</i></a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
-            
+        <div class="col s12 m4 l1"></div>
+        <div class="col s12 m4 l10">
 
-        </div>
+            <div style="height: 60px; justify-content: flex-start; margin-top: 2%;" class="col clv">
+                <h5 class="col l9 s9" style="margin:0; font-weight: bold;"> Recibidos</h5>
+            </div>
+
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Items</th>
+                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                              <th class="center">Empresa</th>
+                              <th>Cliente</th>
+                            {% endif %}
+                            {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+                            <th>Vendedor</th>
+                            {% endif %}
+                            <th>Ver Negociación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for preprec in presupuestos_recibidos %}
+                        <tr>
+                            <td>{{preprec.fecha|date:"M d, Y"}}</td>
+                            <td>
+                                <div style="overflow-y: scroll; height: 150px;">
+                                    <ol class="collection" start="1">
+                                        {% for item in preprec.items %}
+                                        <li class="collection-item">{{item}}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                            </td>
+                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                            <td class="col1 center">{{preprec.empresa}}</td>
+                            <td>{{preprec.comprador}}</td>
+                            {% endif %}
+                            {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+                            <td>{{preprec.vendedor}}</td>
+                            {% endif %}
+                            <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                    href="{% url 'info_negocio' preprec.id_prop %}"><i
+                                    class=" small material-icons ">search</i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 1 %}"> Ver todos </a>
 
 
-        <!------------------------------------------------------------------------------->
+            </div>
 
-        <!--------------------------------en Negociación ----------------------------------------------->
-        
-        <div style="height: 60px; justify-content: flex-start; margin-top: 2%;" class="col clv">
-            <h5 class="col l9 s9" style="margin:0; font-weight: bold;"> En Negociación</h5>
-        </div>
 
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Items</th>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                        <th class="center">Empresa</th>
-                        <th>Cliente</th>
-                        {% endif %}
-                        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
-                        <th>Vendedor</th>
-                        {% endif %}
-                        <th>Ver Negociación</th>
-                    </tr>
-                </thead>
+            <!------------------------------------------------------------------------------->
 
-                <tbody>
-                    {% for prepneg in presupuestos_negociando %}
-                    <tr class="activado card">
-                        <td>{{prepneg.fecha|date:"M d, Y"}}</td>
-                        <td>
-                            <div style="overflow-y: scroll; height: 150px;">
-                                <ol class="collection" start="1">
-                                    {% for item in prepneg.items %}
-                                    <li class="collection-item">{{item}}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </td>
-                        {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
-                        <td class="center">{{prepneg.empresa}} </td>
-                        <td>{{prepneg.comprador}}</td>
-                        {% endif %}
-                        {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
-                        <td>{{prepneg.vendedor}}</td>
-                        {% endif %}
-                        <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                href="{% url 'info_negocio' prepneg.id_prop %}"><i
-                                class=" small material-icons ">search</i></a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 2 %}"> Ver todos </a>
+            <!--------------------------------en Negociación ----------------------------------------------->
+
+            <div style="height: 60px; justify-content: flex-start; margin-top: 2%;" class="col clv">
+                <h5 class="col l9 s9" style="margin:0; font-weight: bold;"> En Negociación</h5>
+            </div>
+
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Items</th>
+                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                            <th class="center">Empresa</th>
+                            <th>Cliente</th>
+                            {% endif %}
+                            {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+                            <th>Vendedor</th>
+                            {% endif %}
+                            <th>Ver Negociación</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for prepneg in presupuestos_negociando %}
+                        <tr class="activado card">
+                            <td>{{prepneg.fecha|date:"M d, Y"}}</td>
+                            <td>
+                                <div style="overflow-y: scroll; height: 150px;">
+                                    <ol class="collection" start="1">
+                                        {% for item in prepneg.items %}
+                                        <li class="collection-item">{{item}}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </div>
+                            </td>
+                            {% if request.user|has_group:"Vendedor" or request.user|has_group:"Comprador" or request.user|has_group:"Gerente" %}
+                            <td class="center">{{prepneg.empresa}} </td>
+                            <td>{{prepneg.comprador}}</td>
+                            {% endif %}
+                            {% if request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administrador" %}
+                            <td>{{prepneg.vendedor}}</td>
+                            {% endif %}
+                            <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                    href="{% url 'info_negocio' prepneg.id_prop %}"><i
+                                    class=" small material-icons ">search</i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a class="verTodos btn white-text no-shadows" href="{% url 'todosFiltro' 2 %}"> Ver todos </a>
+            </div>
         </div>
     </div>
 
