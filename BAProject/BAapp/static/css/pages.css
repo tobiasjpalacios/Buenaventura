@@ -76,6 +76,15 @@ body{
      border-radius: 50%; 
      text-align: center;
    }
+
+.btn-bv{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: #005321;
+    border-radius: 15px;
+  }
  
 .shear_circule{
      background-color: white; 
@@ -177,3 +186,4 @@ body{
   color: white !important;
   font-weight: bold !important;
 }
+
