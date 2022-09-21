@@ -4,27 +4,83 @@
 
 <body>
 
-  <ul id="slide-out" class="sidenav">
+  <ul id="slide-out" class="sidenav" style="background-color:#4fad31;">
     <li><div style="display: inline-block"></div></li>
-    <li><a href="{% url 'notificaciones'  %}">Notificaciones</a></li>
-    <li><a href="{% url 'presupuestos'  %}">Presupuestos</a></li>
-    <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
-    <li><a href="{% url 'logistica'  %}">Logistica</a></li>
-    <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
-    <li><a href="#">Mas Opciones </a></li>
+    <li>
+      <a href="{% url 'notificaciones'  %}">
+        <i class="small material-icons iconbar" style="position: relative;">notifications_none</i>
+        Notificaciones
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'presupuestos'  %}">
+        <i class="material-icons small iconbar">monetization_on</i>
+        Presupuestos
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'vencimientos'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">access_alarm</i>
+        Vencimientos
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'logistica'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">local_shipping</i>
+        Logistica
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'comprobantes'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">folder</i>
+        Comprobantes
+      </a>
+    </li>
+    <li>
+      <a class="gb_text" href="{% url 'todos_negocios'  %}"> 
+        <i class="small iconbar material-icons" style="position: relative;">add</i>
+        Negocios 
+      </a>
+    </li>
     {% if request.user.clase == "Vendedor" %}
-      <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta </a></li>
+      <li>
+        <a class="gb_text" href="#" onclick="openModalAlerta()">
+          Enviar Alerta 
+        </a>
+      </li>
     {% endif %}
     {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
-      <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
+      <li style=" display: flex; justify-content: center;">
+        <div class="btn-bv">
+          <a href="{% url 'nuevo_negocio'  %}"> Cotizá </a>
+        </div>
+      </li>
     {% endif %}
-    <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
-    <li><a class="sidenav-close" href="#!">Clicking this will close Sidenav</a></li>
   </ul>
   
 </body>
 
 <style>
+
+    .btn-bv{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        background: #005321;
+        border-radius: 15px;
+        width: 50%;
+        color: #fff;
+    }
+
+    .iconbar{
+        color: #ffffff !important;
+    }
+
+    .sidenav li>a {
+        color: #ffffff !important;
+    }
+
     .gb_text{
         color: #4fad31 !important;
         font-weight: bold !important;
