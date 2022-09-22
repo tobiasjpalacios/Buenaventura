@@ -1195,10 +1195,11 @@ function desactivarTasa(c, row){
   var inputTasa = document.getElementById("input"+(c+1)+"."+row);
   if (inputPago.toLowerCase() =="contado") {
     inputTasa.disabled = true;
-    inputTasa.setAttribute("placeholder","/");
+    inputTasa.value = 0;
   }else if (inputTasa.disabled) {
     inputTasa.disabled = false;
     inputTasa.setAttribute("placeholder","Tasa");
+    inputTasa.value = "";
   }
 }
 
