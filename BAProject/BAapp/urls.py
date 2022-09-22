@@ -90,7 +90,7 @@ urlpatterns = [
     # crear propuestas
 
     path('api/', include(apipatters)),
-    path('filterArticulo/<str:ingrediente>', filterArticulo, name="filterArticulo"),
+    path('filterArticulo/<str:word>', filterArticulo, name="filterArticulo"),
     path('getPagos/', getPagos, name="getPagos"),
 
     #crear comprobantes

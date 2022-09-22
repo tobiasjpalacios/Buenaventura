@@ -120,6 +120,7 @@
   var isAccepted = false;
   var isCanceled = false;
   var propUpdated = false;
+  var arts_data;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -141,28 +142,14 @@
   $(document).ready(function(){
     edits.new = {}
 
-    $("#artSearch").devbridgeAutocomplete({
-      serviceUrl: "{% url 'api_articulos' %}",
-      paramName: "search",
-      noCache: true,
-      ajaxSettings: {
-        method: "GET",
-        dataType: "json"
-      },
-      transformResult: function(res){
-        var data = {"suggestions":[]};
-        $.map(res, (a) => {
-          data.suggestions.push({
-            'value': a.ingrediente + " " + a.empresa__nombre_comercial,
-            'data': ""+a.id,
-          })
-        })
-        return data;
-      },
-      minChars: 2,
-      onSelect: function (suggestion) {
-        $("#artValue").val(suggestion.data)
-      },
+    $.ajax({
+      type: "GET",
+      url: "{% url 'api_articulos' %}",
+      dataType: "json",
+      success: function(data) {      
+        arts_data = data;
+        articuloDatalist(); // agrega los articulos a la datalist de table_edit
+      }
     });
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
@@ -192,6 +179,7 @@
     }
 
   });
+
 
   var userIsComprador = false;
   "{% if request.user.clase == 'Comprador' %}"
@@ -323,33 +311,38 @@
       if (element != "divisa") {
         input = $($("#extra").find('[name="'+element+'"]'))[0];
       }
-      var artId = parseInt($("#artValue")[0].value);
+      var artSearchInput = $("#artSearch").val();
+      var artId = parseInt($('#artDatalist option[value="' + artSearchInput +'"]').attr("id"));
       if (input != null) {
-        if (!input.value){
+        if (!input.value) {
           if (userIsComprador) {
             if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
-              errors = true;
-              $(input).addClass("invalid");
+              errors = true || errors;
             }
+          } else {
+            errors = true || errors;
           }
-          else {
-            errors = true;
-            $(input).addClass("invalid");
+          $(input).addClass("invalid");
+          if (input.name == "tipo_pago") {
+            input.parentElement.classList.add("select-error");
           }
+        } else {
+          errors = false || errors
+          $(input).removeClass("invalid");
         }
-        if (element === "distribuidor"){
+        if (element === "distribuidor") {
           element = "proveedor";
           var opt = $("#distResults [value='"+input.value+"']");
           n[element] = opt.data('value');
         } else {
-          if (input.type == "number" || input.type == "hidden" || input.name == "tipo_pago"){
-            if (input.name == "precio_venta" || input.name == "precio_compra") {
+          if (input.type == "number" || input.type == "hidden") {
+            if (input.name == "precio_venta" || input.name == "precio_compra" || input.name == "tasa") {
               n[element] = parseFloat(input.value);
             }
             else {
               n[element] = parseInt(input.value);
             }
-          }else {
+          } else {
             n[element] = input.value;
             n["articulo"] = artId;
             n["pagado"] = false;
@@ -401,10 +394,10 @@
     <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
     {% endif %}\
     <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"></td>\
     <td>\
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
       <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">save</i></a>\
@@ -415,10 +408,8 @@
     ";
     $('select').formSelect();
     headers.forEach(element => {
-      if (userIsComprador) {
-        if (element == "precio") {
-          element = "precio_venta";
-        }
+      if (userIsComprador && element == "precio") {
+        element = "precio_venta";
       }
       var input = $($("#extra").find('[name="'+element+'"]'))
       input.val("");
@@ -428,6 +419,7 @@
     $("#artSearch").val("");
     counter = counter + 1;
     contadoTasa(rowId);
+    contadoTasa('Add');
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
     allTDLinebreak();
@@ -534,7 +526,7 @@
     console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replace(',','');
+      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replaceAll(",", "");
     }
     if (errors) {
       swal("Oops!", print_errors, "error");

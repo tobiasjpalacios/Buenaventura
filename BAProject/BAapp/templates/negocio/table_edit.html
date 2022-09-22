@@ -91,8 +91,10 @@
             {% if not negocio.aprobado %}
               <tr id="extra">
                 <td class="show0">
-                    <input type="hidden" id='artValue'>
-                    <input type="text" name='articulo' id='artSearch' class="autocomplete">
+                    <!-- <input type="hidden" id='artValue'> -->
+                    <input type="text" name='articulo' id='artSearch' list="artDatalist">
+                    <datalist id="artDatalist">
+                    </datalist>
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
@@ -104,10 +106,10 @@
                 </td>
                 <td class="show0"><input type="number" name="cantidad" min="0"></td>
                 <td class="show0">
-                  <input type="number" name="precio_venta" step=".01" min="0" placeholder="{{ item.precio_venta }}">
+                  <input type="number" name="precio_venta" step=".01" min="0">
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
-                  <input type="number" name="precio_compra" min="0" step=".01" placeholder="{{ item.precio_compra }}">
+                  <input type="number" name="precio_compra" min="0" step=".01">
                 </td>
                 <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
@@ -118,10 +120,10 @@
                   </select>
                 </td>
                 <td class="not-show0">
-                  <input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0">
+                  <input type="number" name="tasa" step=".01" id="tasAdd" min="0">
                 </td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega"></td>
                 <td class="not-show0">
                   <input type="text" name="destino" value=""/>
                 </td>

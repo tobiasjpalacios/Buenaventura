@@ -108,7 +108,7 @@ function contadoTasa(aggId) {
       var selectedText = tipo_pago.options[tipo_pago.selectedIndex].text;
       if (selectedText.toLowerCase() === "contado") {
         tasa.disabled = true;
-        tasa.value = '0';
+        tasa.value = 0;
       }
       else {
         tasa.disabled = false;
@@ -260,3 +260,29 @@ $(window).on('load', function () {
     $(this).remove();
   });
 });
+
+// table_edit
+
+function articuloDatalist() {
+  var artDatalist = document.getElementById("artDatalist");
+  for (var i = 0; i < arts_data.length; i++) {
+    var option = document.createElement('option');
+    option.setAttribute('value',''+arts_data[i].ingrediente);
+    option.setAttribute('id',''+arts_data[i].id);
+    artDatalist.appendChild(option);        
+  }
+}
+
+function resetIngredientesDatalist() {
+  var input = document.getElementById("artSearch").value;
+  if (!isEmpty(input)) {
+    var datalist = document.getElementById("artDatalist");
+    datalist.innerHTML = " ";
+    for (var i = 0; i < arts_data.length; i++) {
+      var option = document.createElement('option');
+      option.setAttribute('value',''+arts_data[i].ingrediente+'');
+      option.setAttribute('id',''+arts_data[i].id);
+      datalist.appendChild(option);
+    }
+  }
+}

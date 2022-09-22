@@ -240,22 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
       direction: 'right',
       hoverEnabled: false
     });
-  });
-
-$(document).ready(function(){
-    $('.fixed-action-btn').floatingActionButton();
-  });
- $(document).ready(function(){
-    $('.tooltipped').tooltip();
-  });
-
-  $(document).ready(function(){
-    $('.modal').modal();
-  });
-
-   $(document).ready(function(){
-    $('select').formSelect();
-  });    
+  }); 
 
 // datepicker initialization and conf
 
@@ -287,18 +272,22 @@ var all_compradores = []
 var errors = [];
 
   $(document).ready(function(){
-  // $("#empTable thead tr th").each(function(index){
-  //   if ($(this).text() != "Operaciones"){
-  //     headers.push($(this).text())
-  //   }
-  // })
-  $("#flip").click(function(){
-    $("#ocultar").slideToggle("slow");
-  });
-  
+    $('.fixed-action-btn').floatingActionButton();
+    $('.tooltipped').tooltip();
+    $('.modal').modal();
+    $('select').formSelect();   
+    // $("#empTable thead tr th").each(function(index){
+    //   if ($(this).text() != "Operaciones"){
+    //     headers.push($(this).text())
+    //   }
+    // })
+    $("#flip").click(function(){
+      $("#ocultar").slideToggle("slow");
+    });
+    
 
-  
-  $.ajax({
+    
+    $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
       dataType: "json",
@@ -325,10 +314,6 @@ var errors = [];
       }
     });
 
-    hideSend();
-  });
-
-  $(document).ready(function(){
     $.ajax({
       type: "GET",
       url: "{% if request.user.clase == 'Vendedor' %}{% url 'api_comprador' %}{% elif request.user.clase == 'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
@@ -348,10 +333,7 @@ var errors = [];
     hideSend();
   });
 
-  
-
-
-
+  console.log(savings_data);
 
   
   function hideSend(){
@@ -362,7 +344,6 @@ var errors = [];
       divS.style.display = "block";
     }
   };
-
 
 
 function addRow() {
@@ -648,25 +629,63 @@ function closeDiv(divName){
 }
 
 function refreshEmpresa(inputId){
-  var input = document.getElementById('input0.'+inputId).value;
-  var datalist = document.getElementById('datalist1.'+inputId);
+  var input0 = document.getElementById('input0.'+inputId).value;
+  var datalist0 = document.getElementById('datalist0.'+inputId);
+  var datalist1 = document.getElementById('datalist1.'+inputId);
+  var input_empresa = document.getElementById('input1.'+inputId);
+  input_empresa.value = "";
 
   var url = "{% url 'filterArticulo' "replace" %}";
-  url = url.replace('replace',input);
+  url = url.replace('replace',input0);
   $.ajax({
     type: "GET",
     url: url,
     dataType: "json",
-    success: function(data) {    
-      datalist.innerHTML = " ";
+    success: function(data) {   
+      datalist0.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
+        option.setAttribute('value',''+data[i].marca+'');
         option.setAttribute('id','option'+i);
-        datalist.appendChild(option);
+        datalist0.appendChild(option);
+      } 
+      datalist1.innerHTML = " ";
+      // caso 0
+      option.setAttribute('value',''+data[0].empresa__nombre_comercial+'');
+      option.setAttribute('id','option'+0);
+      datalist1.appendChild(option);
+      // casos i > 0
+      var option = document.createElement('option');
+      for (var i = 1; i < data.length; i++) {
+        var curr_empresa = data[i].empresa__nombre_comercial;
+        var last_empresa = data[i-1].empresa__nombre_comercial;
+        if (curr_empresa != last_empresa) {
+          option = document.createElement('option');
+          option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
+          option.setAttribute('id','option'+i);
+          datalist1.appendChild(option);
+        }
       }
     }
   });
+}
+
+function isEmpty(str) {
+    return !str.trim().length;
+}
+
+function resetIngredientesDatalist(inputId) {
+  var input = document.getElementById('input0.'+inputId).value;
+  if (!isEmpty(input)) {
+    var datalist = document.getElementById('datalist0.'+inputId);
+    datalist.innerHTML = " ";
+    for (var i = 0; i < savings_data.length; i++) {
+      var option = document.createElement('option');
+      option.setAttribute('value',''+savings_data[i].ingrediente+'');
+      option.setAttribute('id','option'+i);
+      datalist.appendChild(option);
+    }
+  }
 }
 
 function removeRow(artRow){
@@ -992,6 +1011,7 @@ function input_ingrediente(c,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
   ele.setAttribute('onchange','refreshEmpresa("'+rowCnt+'")');
+  ele.setAttribute('onkeyup','resetIngredientesDatalist("'+rowCnt+'")');
   ele.setAttribute('onclick','this.select();');
   ele.setAttribute('placeholder', 'Ingrediente');
   ele.setAttribute('autocomplete', 'off');
@@ -1005,7 +1025,6 @@ function input_ingrediente(c,td){
     optionIng.setAttribute('value',''+savings_data[i].ingrediente);
     all_ingredientes.push(savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
-
   }
 }
 
@@ -1023,12 +1042,23 @@ function input_empresa(c,td){
   
   td.appendChild(ele);
   td.appendChild(datalistMar);
-  for (var i = 0; i < savings_data.length; i++) {
-    var optionMar = document.createElement('option');
-    optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
-    optionMar.setAttribute('id','option'+i);
-    all_empresas.push(savings_data[i].empresa__nombre_comercial);
-    datalistMar.appendChild(optionMar);        
+  // caso 0
+  var optionMar = document.createElement('option');
+  optionMar.setAttribute('value',''+savings_data[0].empresa__nombre_comercial+'');
+  optionMar.setAttribute('id','option'+0);
+  all_empresas.push(savings_data[0].empresa__nombre_comercial);
+  datalistMar.appendChild(optionMar);   
+  // casos i > 0
+  for (var i = 1; i < savings_data.length; i++) {
+    var curr_empresa = savings_data[i].empresa__nombre_comercial;
+    var last_empresa = savings_data[i-1].empresa__nombre_comercial;
+    if (curr_empresa != last_empresa) {
+      optionMar = document.createElement('option');
+      optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
+      optionMar.setAttribute('id','option'+i);
+      all_empresas.push(savings_data[i].empresa__nombre_comercial);
+      datalistMar.appendChild(optionMar);        
+    }
   }
 }
 
@@ -1093,7 +1123,7 @@ function input_tipoPago(c,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
   ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('onchange','desactivarTasa('+rowCnt+');');
+  ele.setAttribute('onchange','desactivarTasa('+c+', '+rowCnt+');');
   ele.setAttribute('placeholder', 'Tipo de pago');
   ele.setAttribute('autocomplete', 'off');
   var datalistPagos = document.createElement('datalist');
@@ -1159,16 +1189,17 @@ function input_destino(c, td){
   td.appendChild(ele);
 }
 
-function desactivarTasa(row){
-  var inputPago = document.getElementById("input7."+row).value;
-  var datalistTasa = document.getElementById("input8."+row);
-  var inputTasa = document.getElementById("input8."+row);
+function desactivarTasa(c, row){
+  var inputPago = document.getElementById("input"+c+"."+row).value;
+  var datalistTasa = document.getElementById("input"+(c+1)+"."+row);
+  var inputTasa = document.getElementById("input"+(c+1)+"."+row);
   if (inputPago.toLowerCase() =="contado") {
     inputTasa.disabled = true;
-    inputTasa.setAttribute("placeholder","/");
+    inputTasa.value = 0;
   }else if (inputTasa.disabled) {
     inputTasa.disabled = false;
     inputTasa.setAttribute("placeholder","Tasa");
+    inputTasa.value = "";
   }
 }
 
