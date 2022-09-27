@@ -2056,7 +2056,10 @@ class APIArticulos(View):
             divisa = actual.get("Divisa")
             # divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             
-            tasa = Decimal(actual.get("Tasa"))
+            if actual.get("Tasa")!="":
+                tasa = Decimal(actual.get("Tasa"))
+            else:
+                tasa = 0    
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
             # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),
