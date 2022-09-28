@@ -1520,8 +1520,8 @@ class carga_excel(View):
         return render(request, 'carga_excel.html', {'excel_data':excel_data})
 
 def descarga_db_excel(request):
-    sheet_writer()
-    return HttpResponseRedirect(reverse('carga_excel'))
+    response = sheet_writer()
+    return response
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
@@ -2056,10 +2056,10 @@ class APIArticulos(View):
             divisa = actual.get("Divisa")
             # divisa = get_from_tuple(DIVISA_CHOICES,divisa_tmp)
             
-            if actual.get("Tasa")!="":
-                tasa = Decimal(actual.get("Tasa"))
+            if not actual.get("Tasa"):
+                tasa = 0
             else:
-                tasa = 0    
+                tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
             # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),

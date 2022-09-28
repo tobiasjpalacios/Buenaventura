@@ -53,25 +53,22 @@ BuenaVentura Agronegocios
                           </p>
                     </div>
                     <div class="col s6">
-                      <form method="post">
-                        {% csrf_token %}
-                          <div class="card-panel blue">
-                              <span class="card-title center">Bajar archivo</span>
-                              </div>
+                      <div class="card-panel blue">
+                        <span class="card-title center">Bajar archivo</span>
+                        </div>
+                        <div class="row">
+                            <div class="col s12">
                               <div class="row">
-                                  <div class="col s12">
-                                    <div class="row">
-                                      <div class="input-field col s11 offset-1">
-                                        <i class="material-icons prefix">arrow_downward</i>
-                                        <textarea id="icon_prefix2" class="materialize-textarea" name="dwld-file"></textarea>
-                                        <label for="icon_prefix2">Escribe el nombre del archivo</label>
-                                      </div>
-                                      <a class="red btn col s10 offset-s1" href="{% url 'descarga_db_excel' %}">Descargar base de datos</a>
-                                    </div>
-                                  </div>
-                                </div>
+                                <!-- <div class="input-field col s11 offset-1">
+                                  <i class="material-icons prefix">arrow_downward</i>
+                                  <textarea id="icon_prefix2" class="materialize-textarea" name="dwld-file"></textarea>
+                                  <label for="icon_prefix2">Escribe el nombre del archivo</label>
+                                </div> -->
+                                <a class="red btn col s10 offset-s1" href="{% url 'descarga_db_excel' %}" target="_blank">Descargar base de datos</a>
+                              </div>
                             </div>
-                        </form>
+                          </div>
+                      </div>
                     </div>
                 </div>
               </div>
