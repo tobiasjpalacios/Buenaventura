@@ -9,6 +9,8 @@ from django.db.models.fields.reverse_related import ManyToOneRel
 from django.utils.safestring import mark_safe
 from BAapp.models import MyUser
 from pathlib import Path
+import os
+from django.http import HttpResponse, Http404
 
 from BAapp.models import Articulo, Empresa, Retencion
 
@@ -287,5 +289,8 @@ def sheet_writer():
     file = FileIO("db.xlsx", 'w+')
     wb.save(file)
     file.seek(0)
-
-    return file
+    
+    with open(file.name, 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = 'inline; filename=' + file.name
+        return response
