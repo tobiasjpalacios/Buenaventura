@@ -1622,7 +1622,10 @@ class APIEmpresa(View):
         return JsonResponse(list(empresas), safe=False)        
 
 def filterArticulo(request, word):
-    empresas = Articulo.objects.filter(Q(ingrediente=word) | Q(marca=word)).values("empresa__nombre_comercial", "ingrediente", "marca")
+    if word == 'undefined':
+        empresas = Articulo.objects.values("empresa__nombre_comercial", "ingrediente", "marca", "id")
+    else:
+        empresas = Articulo.objects.filter(id=word).values("empresa__nombre_comercial", "ingrediente", "marca", "id")
     return JsonResponse(list(empresas), safe=False)
 
 class ListArticuloView(View):
@@ -2033,8 +2036,8 @@ def removeDuplicates(arr):
 class APIArticulos(View):
     def get(self, request):
         articulos = Articulo.objects.all().order_by('ingrediente')
-        query = removeDuplicates(list(articulos))
-        articulos = Articulo.objects.filter(pk__in=query).order_by('ingrediente')
+        # query = removeDuplicates(list(articulos))
+        # articulos = Articulo.objects.filter(pk__in=query).order_by('ingrediente')
         return JsonResponse(list(articulos.values("empresa__nombre_comercial", "ingrediente", "id", "marca")), safe=False)
 
     def post(self, request):
