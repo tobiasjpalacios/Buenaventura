@@ -630,13 +630,14 @@ function closeDiv(divName){
 
 function refreshEmpresa(inputId){
   var input0 = document.getElementById('input0.'+inputId).value;
+  var optionId = $('#datalist0\\.'+inputId+' option[value="'+input0+'"]').attr('id');
   var datalist0 = document.getElementById('datalist0.'+inputId);
   var datalist1 = document.getElementById('datalist1.'+inputId);
   var input_empresa = document.getElementById('input1.'+inputId);
   input_empresa.value = "";
 
   var url = "{% url 'filterArticulo' "replace" %}";
-  url = url.replace('replace',input0);
+  url = url.replace('replace',optionId);
   $.ajax({
     type: "GET",
     url: url,
@@ -645,8 +646,8 @@ function refreshEmpresa(inputId){
       datalist0.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].marca+'');
-        option.setAttribute('id','option'+i);
+        option.setAttribute('value',''+data[i].marca+' '+data[i].ingrediente);
+        option.setAttribute('id', data[i].id);
         datalist0.appendChild(option);
       } 
       datalist1.innerHTML = " ";
@@ -681,8 +682,8 @@ function resetIngredientesDatalist(inputId) {
     datalist.innerHTML = " ";
     for (var i = 0; i < savings_data.length; i++) {
       var option = document.createElement('option');
-      option.setAttribute('value',''+savings_data[i].ingrediente+'');
-      option.setAttribute('id','option'+i);
+      option.setAttribute('value',''+savings_data[i].marca+' '+savings_data[i].ingrediente);
+      option.setAttribute('id',savings_data[i].id);
       datalist.appendChild(option);
     }
   }
@@ -1022,7 +1023,8 @@ function input_ingrediente(c,td){
   td.appendChild(datalistIng);
   for (var i = 0; i < savings_data.length; i++) {
     var optionIng = document.createElement('option');
-    optionIng.setAttribute('value',''+savings_data[i].ingrediente);
+    optionIng.setAttribute('value',''+savings_data[i].marca+' '+savings_data[i].ingrediente);
+    optionIng.setAttribute('id',''+savings_data[i].id);
     all_ingredientes.push(savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
   }
@@ -1052,7 +1054,7 @@ function input_empresa(c,td){
   for (var i = 1; i < savings_data.length; i++) {
     var curr_empresa = savings_data[i].empresa__nombre_comercial;
     var last_empresa = savings_data[i-1].empresa__nombre_comercial;
-    if (curr_empresa != last_empresa) {
+    if (curr_empresa != last_empresa && $.inArray(curr_empresa, all_empresas) == -1) {
       optionMar = document.createElement('option');
       optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
       optionMar.setAttribute('id','option'+i);

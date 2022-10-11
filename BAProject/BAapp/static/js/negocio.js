@@ -268,7 +268,7 @@ function articuloDatalist() {
   for (var i = 0; i < arts_data.length; i++) {
     var option = document.createElement('option');
     option.innerText = arts_data[i].empresa__nombre_comercial;
-    option.setAttribute('value',''+arts_data[i].ingrediente);
+    option.setAttribute('value',''+arts_data[i].marca + ' ' + arts_data[i].ingrediente);
     option.setAttribute('id',''+arts_data[i].id);
     artDatalist.appendChild(option);        
   }
@@ -282,7 +282,7 @@ function resetIngredientesDatalist() {
     for (var i = 0; i < arts_data.length; i++) {
       var option = document.createElement('option');
       option.innerText = arts_data[i].empresa__nombre_comercial;
-      option.setAttribute('value',''+arts_data[i].ingrediente);
+      option.setAttribute('value',''+arts_data[i].marca + ' ' + arts_data[i].ingrediente);
       option.setAttribute('id',''+arts_data[i].id);
       datalist.appendChild(option);
     }
