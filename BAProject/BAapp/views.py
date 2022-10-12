@@ -2051,8 +2051,7 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            empresa = actual.get("Empresa")
-            ingrediente = actual.get("Ingrediente")
+            articulo_id = actual.get("ArticuloID")
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
             tipo_pago_str = actual.get("Tipo de pago")
@@ -2065,9 +2064,7 @@ class APIArticulos(View):
                 tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
-            # NOTE: Articulo filtra por nombre comercial (muchos articulos con el mismo nombre de empresa),
-            # por lo que la query arroja resultados que pueden ser no deseados.
-            articulo = Articulo.objects.filter(empresa__nombre_comercial=empresa, ingrediente=ingrediente).first()
+            articulo = Articulo.objects.get(id=articulo_id)
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:
@@ -2111,8 +2108,6 @@ class APIArticulos(View):
                 aceptado=False,
                 fecha_pago=actual.get("Fecha de pago"),
                 fecha_entrega=actual.get("Fecha de entrega"),)
-            print(type(tasa))
-            print(tasa)
             item.save()
         return JsonResponse(negocio.pk, safe=False)
 

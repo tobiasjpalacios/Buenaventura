@@ -672,7 +672,7 @@ function refreshEmpresa(inputId){
 }
 
 function isEmpty(str) {
-    return !str.trim().length;
+  return !str.trim().length;
 }
 
 function resetIngredientesDatalist(inputId) {
@@ -920,7 +920,6 @@ function validateData(rowCnt){
   }
   return (isValidated && boolCant && boolMar && boolIng && boolComp);
 };
-
 function submit(){
   var empTab = document.getElementById('empTable');
   if (validateData(rowCnt)) {
@@ -932,6 +931,7 @@ function submit(){
       headers.push("Precio compra");
       headers.push("Distribuidor");
     }
+    headers.push("ArticuloID");
     for (var i in headers) {
       if (userIsComprador && headers[i] == "Precio") {
         headers[i] = "Precio venta";
@@ -942,17 +942,25 @@ function submit(){
       var tmp = {};
       for (var j = 0; j < headers.length; j++) {
         var input = document.getElementById('input'+j+'.'+i);
-        if (headers[j] == "Precio compra" && userIsComprador) {
-          input = 0;
-          tmp_dict[headers[j]] = input;
-        }
-        else if (headers[j] == "Distribuidor" && !userIsComprador) {
-          var inputValue = input.value;
-          input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
-          tmp_dict[headers[j]] = input;
-        }
-        else {
-          tmp_dict[headers[j]] = (input != null) ? input.value : null;
+        var inputValue;
+        if (input != null && headers[j] != "ArticuloID") {
+          if (headers[j] == "Precio compra" && userIsComprador) {
+            input = 0;
+            tmp_dict[headers[j]] = input;
+          }
+          else if (headers[j] == "Distribuidor" && !userIsComprador) {
+            inputValue = input.value;
+            input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
+            tmp_dict[headers[j]] = input;
+          }
+          else if (input.id == "input0."+i) {
+            inputValue = input.value;
+            input = $('#datalist0\\.'+i+' option[value="'+inputValue+'"]').attr('id');
+            tmp_dict["ArticuloID"] = parseInt(input);
+          }
+          else {
+            tmp_dict[headers[j]] = (input != null) ? input.value : null;
+          }
         }
       }
       // default para divisa
@@ -1012,7 +1020,7 @@ function input_ingrediente(c,td){
   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
   ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
   ele.setAttribute('onchange','refreshEmpresa("'+rowCnt+'")');
-  ele.setAttribute('onkeyup','resetIngredientesDatalist("'+rowCnt+'")');
+  ele.setAttribute('onblur','resetIngredientesDatalist("'+rowCnt+'")');
   ele.setAttribute('onclick','this.select();');
   ele.setAttribute('placeholder', 'Ingrediente');
   ele.setAttribute('autocomplete', 'off');
@@ -1025,7 +1033,7 @@ function input_ingrediente(c,td){
     var optionIng = document.createElement('option');
     optionIng.setAttribute('value',''+savings_data[i].marca+' '+savings_data[i].ingrediente);
     optionIng.setAttribute('id',''+savings_data[i].id);
-    all_ingredientes.push(savings_data[i].ingrediente); //to validate later
+    all_ingredientes.push(''+savings_data[i].marca+' '+savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
   }
 }
