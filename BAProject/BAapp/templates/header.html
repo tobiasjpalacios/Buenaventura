@@ -32,6 +32,13 @@
   {% block style %}
   {% endblock style %}
 
+  .mycenter{
+    position: absolute!important;
+    left: 50%!important;
+    top: 50%!important;
+    transform: translate(-50%, -50%)!important;
+  }
+
   </style>
 
   <!-- title -->
@@ -52,26 +59,24 @@
         <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: flex;"><i class="material-icons">menu</i></a>
 
         <!-- medio -->
-        <a href="{% url 'home' %}" class="brand-logo center" style="height:100%">
-          <img height="100%"  style="position:relative;" src="{% static 'images/Buenaventura_header.png' %}">
+        <a href="{% url 'home' %}" class="brand-logo center valign-wrapper" style="height:100%">
+          <img height="70%" class="mycenter" src="{% static 'images/Buenaventura-blanco.png' %}">
         </a>
 
         <!-- derecha -->
         <ul class="right hide-on-med-and-down">
           {% if user.is_staff %}  
           <li>
-          </li>
-          <li>
             <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
           </li>
           {% endif %}
           <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
           {% if user.is_authenticated %}
-          <li><a style="color: #ffffff; position:static; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.get_full_name|title}}</a></li>
-          <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
+          <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">{{user.get_full_name|title}}</a></li>
+          <li><a  href="{% url 'logout' %}" style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
         
           {% else %}
-          <li><a style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+          <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
         
           {% endif %}
         </ul>
