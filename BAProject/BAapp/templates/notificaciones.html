@@ -12,160 +12,142 @@ BuenaVentura Agronegocios
 
 
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static '/css/notificaciones.css' %}">
 </head>
 
 <body style="overflow: hidden;">
 
+    <!-- modals -->
     <div id="modalDetalleNegocio" class="modal">
         <div id="modalNegocio" class="modal-content">
         </div>
     </div>
 
+    <!-- page -->
     <div class="row" style="height: 100%;">
 
+
+        <!-- titulo -->
         <div class="menuZone clv">
-            <div class="menu">
-                <div>
-                    <div class="col-s2 h-bar circule">
-                        <i class="medium material-icons"
-                            style="position: relative; color:#005221;">notifications_none</i>
-                    </div>
-                </div>
-                <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Notificaciones</h4>
-            </div>
-        </div>
-
-        <div class="clv col s12 m4 l1"></div>
-        <div class="clv col s12 m4 l10">
+            <!-- <div class="tituloPagina col s12 l3 offset-l1">
+                <h4 class="" style="margin:0; font-weight: 300;"> Notificaciones</h4>
+            </div> -->
+            <h4 class="tituloPagina"> Notificaciones</h4>
+        </div>    
         
+        <div style="width: 100%; height: 80vh">
 
-            <div style="width: 100%;">
-                <!----------------Titulitos ------------------->
-                <div class="col s4 l4 bloque-izquierdo clvP">
-                    <div class="titulos">
-                        <span class=" titulito">
-                            Presupuestos
-                        </span>
+            <!------------Notificaciones Prespuesto----------------------->
+
+            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 offset-l2 l9" style="height: 100%;">
+                <div style= "height: 7%;"></div>
+                <div class="headNotis">
+                    <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
-                            src="{% static 'images/presupuesto.png' %}">
-                    </div>
-                    <div class="nuevos">
-                        <a>00</a>
-                        <a>Nuevos</a>
+                        src="{% static 'images/presupuesto.png' %}">
+                        Presupuestos
+                    </span>
+                    <div class="countNotis">
+                        <span>1</span>
                     </div>
                 </div>
-                <div class="col l4 s4 bloque-centro clvP">
-                    <div class="titulos">
-                        <span class="titulito">
-                            Logística
-                        </span>
+                <div class="tableNotis">
+                    <table>
+                        <tbody>
+                            {% for noti in lista_presupuestos%}
+                            <tr style="border-bottom: 0px; ">
+                                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
+                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                        onclick="detalleNotis('{{noti.id}}')"><i
+                                            class=" small material-icons ">search</i></a></td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footNotis">
+                    <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
+                </div>
+            </div></div>
+
+            <!-----------------notificaciones logistica ------------------>
+
+            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 offset-l2 l9 " style="height: 100%;">
+                <div class="headNotis">
+                    <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
-                            src="{% static 'images/logistica.png' %}">
-                    </div>
-                    <div class="nuevos">
-                        <a>00</a>
-                        <a>Nuevos</a>
-                    </div>
+                        src="{% static 'images/logistica.png' %}">
+                        Logística
+                    </span>
                 </div>
-                <div class="col l4 s4 bloque-derecho clvP">
-                    <div class="titulos">
-                        <span class="titulito">
-                            Vencimientos
-                        </span>
+                <div class="tableNotis">
+                    <table>
+                        <tbody>
+                            {% for noti in lista_logistica_noti %}
+                            <tr style="border-bottom: 0px; ">
+                                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
+                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                        onclick="detalleNotis('{{noti.id}}')"><i
+                                            class=" small material-icons ">search</i></a></td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footNotis">
+                    <a class="verTodos btn white-text no-shadows" href="{% url 'logistica' %}"> Ver todos </a>
+                </div>
+            </div></div>
+
+            <!-------------notificaciones vencmientos ---------------------->
+
+            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 offset-l1 l9" style="height: 100%;">
+                <div style= "height: 7%;"></div>
+                <div class="headNotis">
+                    <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
-                            src="{% static 'images/vencimientos.png' %}">
-                    </div>
-                    <div class="nuevos">
-                        <a>00</a>
-                        <a>Nuevos</a>
-                    </div>
+                        src="{% static 'images/vencimientos.png' %}">
+                        Vencimientos
+                    </span>
                 </div>
-                <!------------------------------------------------------------------------------->
-
-                <!------------notificaciones Prespuesto----------------------->
-                <div class="col s4 tamañoCuadros" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
-                    <div style="overflow-y: scroll; height: 100%;">
-                        <table>
-                            <tbody>
-                                {% for noti in lista_presupuestos%}
-                                <tr style="border-bottom: 0px; ">
-                                    <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                            onclick="detalleNotis('{{noti.id}}')"><i
-                                                class=" small material-icons ">search</i></a></td>
-                                </tr>
-                                {% endfor %}
-                                
-                            </tbody>
-                        </table>
-                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
-                    </div>
+                <div class="tableNotis">
+                    <table>
+                        <tbody>
+                            {% for noti in lista_vencimiento%}
+                            <tr style="border-bottom: 0px; ">
+                                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
+                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                        onclick="detalleNotis('{{noti.id}}')"><i
+                                            class=" small material-icons ">search</i></a></td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
                 </div>
-                <!----------------------------------->
-                <!-----------------notificaciones logistica ------------------>
-                <div class="col s4 tamañoCuadros bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
-                    <div style="overflow-y: scroll; height: 100%;">
-                        <table>
-                            <tbody>
-                                {% for noti in lista_logistica_noti %}
-                                <tr style="border-bottom: 0px; ">
-                                    <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                            onclick="detalleNotis('{{noti.id}}')"><i
-                                                class=" small material-icons ">search</i></a></td>
-                                </tr>
-                                {% endfor %}
-                                
-                            </tbody>
-                        </table>
-                        <a class="verTodos btn white-text no-shadows" href="{% url 'logistica' %}"> Ver todos </a>
-                    </div>
+                <div class="footNotis">
+                    <a class="verTodos btn white-text no-shadows" href="{% url 'vencimientos' %}"> Ver todos </a>
                 </div>
-                <!----------------------------------->
+            </div></div>    
 
-                <!-------------notificaciones vencmientos ---------------------->
-
-                <div class="col  s4 tamañoCuadros" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
-                    <div style="overflow-y: scroll; height: 100%;">
-                        <table>
-                            <tbody>
-                                {% for noti in lista_vencimiento%}
-                                <tr style="border-bottom: 0px; ">
-                                    <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
-                                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                            onclick="detalleNotis('{{noti.id}}')"><i
-                                                class=" small material-icons ">search</i></a></td>
-                                </tr>
-                                {% endfor %}
-                                
-                            </tbody>
-                        </table>
-                        <a class="verTodos btn white-text no-shadows" href="{% url 'vencimientos' %}"> Ver todos </a>
-                    </div>
-                    
-                </div>
-                <!----------------------------------->
-                <div class="col s12 " style="height: 70px; border-top: 1px solid rgb(128, 128, 128, 0.5); "></div>
-            </div>
-
+            <!-- <div class="col s12 l4 tamañoCuadros" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); "> -->
+                
         </div>
-
-        <!------ Modals Notis ---------->
-
-        <div id="alertaNotis" class="modal">
-            <div id="modalNotis" class="modal-content">
-            </div>
+    </div>
+    <!------ Modals Notis ---------->
+    <div id="alertaNotis" class="modal">
+        <div id="modalNotis" class="modal-content">
         </div>
-
-        <!---------------->
-
+    </div>
+    <!---------------->
     <script>
         $(document).ready(function () {
-            $('select').formSelect();
-        });
+        $('select').formSelect();
+            });
 
         $(document).ready(function () {
             $('.datepicker').datepicker();

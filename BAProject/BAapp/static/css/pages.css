@@ -1,9 +1,7 @@
 
 .verTodos{
-  margin-top: 2%;
-  margin-left: 2%;
-  margin-bottom: 2%;
-  border-radius: 3em;
+  width: 70%;
+  border-radius: 1em;
   background-color: #4fad31 !important; 
 }
 
@@ -39,7 +37,17 @@ body{
      width: 100%;
    }
  
-.menu{
+.tituloPagina{
+  margin:3%; 
+  font-weight: 300;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  color: #459A33;
+}
+
+.tituloPaginaViejo{
   display: flex; 
   justify-content: center; 
   align-items: center;
