@@ -11,3 +11,9 @@
 th{
     font-weight: 800 !important;
 }
+
+.tablelog{
+    background-color: white;
+    border-radius: 19px 19px 19px 19px;
+    margin-left: 5%;
+}
