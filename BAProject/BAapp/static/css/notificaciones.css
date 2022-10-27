@@ -57,6 +57,12 @@ a{
 
 .notisSpace{
   height: 60%;
+  margin-top: 3%;
+  transition: margin-top .1s;
+}
+
+.notisSpace:hover{
+  margin-top: 0%;
 }
 
 .tableNotis{
@@ -90,3 +96,4 @@ a{
   align-items: center;
   justify-content: center;
 }
+
