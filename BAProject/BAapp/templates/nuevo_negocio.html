@@ -646,7 +646,7 @@ function refreshEmpresa(inputId){
       datalist0.innerHTML = " ";
       for (var i = 0; i < data.length; i++) {
         var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].marca+' '+data[i].ingrediente);
+        option.setAttribute('value',''+data[i].ingrediente);
         option.setAttribute('id', data[i].id);
         datalist0.appendChild(option);
       } 
@@ -682,7 +682,7 @@ function resetIngredientesDatalist(inputId) {
     datalist.innerHTML = " ";
     for (var i = 0; i < savings_data.length; i++) {
       var option = document.createElement('option');
-      option.setAttribute('value',''+savings_data[i].marca+' '+savings_data[i].ingrediente);
+      option.setAttribute('value',''+savings_data[i].ingrediente);
       option.setAttribute('id',savings_data[i].id);
       datalist.appendChild(option);
     }
@@ -1031,9 +1031,9 @@ function input_ingrediente(c,td){
   td.appendChild(datalistIng);
   for (var i = 0; i < savings_data.length; i++) {
     var optionIng = document.createElement('option');
-    optionIng.setAttribute('value',''+savings_data[i].marca+' '+savings_data[i].ingrediente);
+    optionIng.setAttribute('value',''+savings_data[i].ingrediente);
     optionIng.setAttribute('id',''+savings_data[i].id);
-    all_ingredientes.push(''+savings_data[i].marca+' '+savings_data[i].ingrediente); //to validate later
+    all_ingredientes.push(''+savings_data[i].ingrediente); //to validate later
     datalistIng.appendChild(optionIng);        
   }
 }
