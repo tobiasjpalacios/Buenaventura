@@ -48,6 +48,7 @@ urlpatterns = [
 
 
     #nuevas urls
+    path('inicio/', login_required(login_url='/', redirect_field_name='router')(Inicio.as_view()), name="inicio"),
     path('nuevo_negocio/', login_required(login_url='/', redirect_field_name='router')(NuevoNegocioView.as_view()), name="nuevo_negocio"),
     path('notificaciones/', login_required(login_url='/', redirect_field_name='router')(NotificacionesView.as_view()), name ="notificaciones"),
     path('presupuestos/', login_required(login_url='/', redirect_field_name='router')(PresupuestosView.as_view()), name="presupuestos"),

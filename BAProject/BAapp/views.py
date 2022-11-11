@@ -48,6 +48,10 @@ def chat(request):
 
 # los nuevos views
 
+class Inicio(View):
+    def get(self, request, *args, **kwargs):
+        return render(request,'inicio.html')
+
 class NuevoNegocioView(View):
     def get(self, request, *args, **kwargs):
         return render(request,'nuevo_negocio.html')
@@ -451,7 +455,7 @@ def check_user_group_after_login(request):
         'Logisticas': redirect('vistaLogistica')
     }
 
-    return redirect('notificaciones')
+    return redirect('inicio')
 
 def landing_page(request):
     if (request.user.is_authenticated):

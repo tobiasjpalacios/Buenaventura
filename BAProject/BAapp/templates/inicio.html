@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}
+{%block body%}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/inicio.css' %}">
+</head>
+
+<body style="overflow: hidden;">
+    <a class="bnt-mid btn align-text white-text no-shadows" href="{% url 'nuevo_negocio' %}"> Cotizá </a>
+</body>
+
+<script>
+</script>
+{% endblock body %}
