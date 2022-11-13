@@ -393,8 +393,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
+                    </div>        
+            
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">
                         <div class="u-row"
                             style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
@@ -464,7 +464,7 @@
                                                                         <div>
                                                                             <div><strong><u>Identificador de
                                                                                         negocio:</u>
-                                                                                    {{ negocio.get_id_de_neg }}</strong></div>
+                                                                                    {{ prop.negocio.get_id_de_neg }}</strong></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -502,7 +502,7 @@
                                                                                 </a>
                                                                             </div>
 
-                                                                            Equipo Buenaventura
+                                                                            Observaciones: {{ obs | default:'No hay observaciones' }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -590,9 +590,7 @@
                             </div>
                         </div>
                     </div>
-
-
-
+                    {% if prop.negocio.aprobado %}
                     <div class="u-row-container" style="padding: 0px;background-color: transparent;">
                         <div class="u-row"
                             style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
@@ -692,13 +690,13 @@
                                                             <div class="v-text-align"
                                                                 style="line-height: 180%; text-align: left; word-wrap: break-word;">
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.get_full_name }}
+                                                                    {{ prop.negocio.vendedor.get_full_name }}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.get_razon_social }}
+                                                                    {{ prop.negocio.vendedor.get_razon_social }}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.empresa.domicilio_fiscal }}
+                                                                    {{ prop.negocio.vendedor.empresa.domicilio_fiscal }}
                                                                 </p>
                                                             </div>
 
@@ -955,7 +953,7 @@
                             {% endfor %}
                         </div>
                     </div>
-
+                    {% endif %}
                 </td>
             </tr>
         </tbody>
