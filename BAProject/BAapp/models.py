@@ -124,10 +124,21 @@ class Propuesta(models.Model):
         ordering = ('timestamp',)
      
     def calcularPrecio(self):
-        total = 0
+        total = 0.0
         for item in self.items.all():
-            total += item.precio * item.cantidad
+            total += item.precio_venta * item.cantidad
         return total
+
+    def calcularTasa(self):
+        tasa = 0.0
+        for item in self.items.all():
+            if item.tasa:
+                cur_precio = item.precio_venta * item.cantidad
+                tasa += ((cur_precio / 100) * float(item.tasa))
+        return tasa
+
+    def calcularTotal(self):
+        return self.calcularPrecio() + self.calcularTasa()
 
     def calcularDiferencias(self, prop2):
         diffs = []
@@ -604,11 +615,11 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return self.clase
 
     def get_short_name(self):
-        """Return the short name for the user."""
+        """Return the email of the user."""
         return self.email
 
     def get_razon_social(self):
-        """Return the short name for the user."""
+        """Return the empresa__razon_social of the user."""
         return '{}'.format(self.empresa.razon_social)
 
 # sistema de permisos

@@ -1930,7 +1930,7 @@ class NegocioView(View):
 
         full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
         recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-        context = {'titulo' : titulo, 'id_de_neg' : negocio.get_id_de_neg(), 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp}
+        context = {'titulo' : titulo, 'negocio' : negocio, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
 
         # TODO: uncomment this before merging to develop!
         # if not negocio_update:

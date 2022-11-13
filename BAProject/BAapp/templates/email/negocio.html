@@ -1,3 +1,4 @@
+{% load multiply %}
 <!DOCTYPE HTML
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
@@ -463,7 +464,7 @@
                                                                         <div>
                                                                             <div><strong><u>Identificador de
                                                                                         negocio:</u>
-                                                                                    {{ id_de_neg }}</strong></div>
+                                                                                    {{ negocio.get_id_de_neg }}</strong></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -489,13 +490,15 @@
                                                                     <div>
                                                                         <div>{{ texto }}
 
-                                                                            <div class="v-text-align" align="left" style="padding: 30px 30px 30px 0px;">
-                                                                                <a href="{{ url }}"
-                                                                                    target="_blank" class="v-button"
+                                                                            <div class="v-text-align" align="left"
+                                                                                style="padding: 30px 30px 30px 0px;">
+                                                                                <a href="{{ url }}" target="_blank"
+                                                                                    class="v-button"
                                                                                     style="box-sizing: border-box;display: inline-block;font-family:'Montserrat',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #459A33; border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
                                                                                     <span
                                                                                         style="display:block;padding:10px 20px;line-height:120%;"><span
-                                                                                            style="font-size: 14px; line-height: 16.8px;">Ir a negociación</span></span>
+                                                                                            style="font-size: 14px; line-height: 16.8px;">Ir
+                                                                                            a negociación</span></span>
                                                                                 </a>
                                                                             </div>
 
@@ -688,14 +691,15 @@
 
                                                             <div class="v-text-align"
                                                                 style="line-height: 180%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
+                                                                <p style="font-size: 14px; line-height: 180%;">
+                                                                    {{ negocio.vendedor.get_full_name }}
+                                                                </p>
+                                                                <p style="font-size: 14px; line-height: 180%;">
+                                                                    {{ negocio.vendedor.get_razon_social }}
+                                                                </p>
+                                                                <p style="font-size: 14px; line-height: 180%;">
+                                                                    {{ negocio.vendedor.empresa.domicilio_fiscal }}
+                                                                </p>
                                                             </div>
 
                                                         </td>
@@ -739,26 +743,54 @@
                                                 <tbody>
                                                     <tr>
                                                         <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 60px;font-family: 'Montserrat',sans-serif;color: white;"
+                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;color: white;"
                                                             align="left">
 
                                                             <div class="v-text-align"
                                                                 style="line-height: 180%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">This is a
-                                                                    new Text block</p>
+                                                                <p style="font-size: 14px; line-height: 180%;">Articulos
+                                                                </p>
+                                                                <p style="font-size: 14px; line-height: 180%;">Tasas
+                                                                    aplicadas&ast;</p>
                                                                 <p style="font-size: 14px; line-height: 180%;"> </p>
                                                                 <p style="font-size: 14px; line-height: 180%;"><span
-                                                                        style="font-size: 20px; line-height: 36px;"><strong>$300.00</strong></span>
+                                                                        style="font-size: 20px; line-height: 36px;"><strong>Total</strong></span>
                                                                 </p>
                                                             </div>
 
                                                         </td>
+                                                        <td class="v-container-padding-padding"
+                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;color: white;"
+                                                            align="rigth">
+
+                                                            <div class="v-text-align"
+                                                                style="line-height: 180%; text-align: left; word-wrap: break-word;">
+                                                                <p style="font-size: 14px; line-height: 180%;">${{ prop.calcularPrecio }}</p>
+                                                                <p style="font-size: 14px; line-height: 180%;">+${{ prop.calcularTasa }}</p>
+                                                                <p style="font-size: 14px; line-height: 180%;"> </p>
+                                                                <p style="font-size: 14px; line-height: 180%;"><span
+                                                                        style="font-size: 20px; line-height: 36px;"><strong>${{ prop.calcularTotal }}</strong></span>
+                                                                </p>
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <table id="u_content_text_7" style="font-family: 'Montserrat',sans-serif;"
+                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
+                                                border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="v-container-padding-padding"
+                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 60px;font-family: 'Montserrat',sans-serif;color: white;"
+                                                            align="left">
+
+                                                            <div class="v-text-align"
+                                                                style="text-align: left; word-wrap: break-word;">
+                                                                <p style="font-size: 14px"><small>&ast;Ver detalles en
+                                                                        productos aceptados</small></p>
+                                                            </div>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -793,7 +825,7 @@
                                                             <h1 class="v-text-align v-font-size"
                                                                 style="padding-left: 20px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: 600; font-family: 'Rubik',sans-serif; font-size: 20px;">
                                                                 <div>
-                                                                    <div><u>Productos entregados</u></div>
+                                                                    <div><u>Productos aceptados</u></div>
                                                                 </div>
                                                             </h1>
 
@@ -838,7 +870,8 @@
 
                                                                         <img align="center" border="0"
                                                                             src="https://via.placeholder.com/150x150.png?text={{ forloop.counter }}"
-                                                                            alt="{{ art.articulo }}" title="{{ art.articulo }}"
+                                                                            alt="{{ art.articulo }}"
+                                                                            title="{{ art.articulo }}"
                                                                             style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 80%;max-width: 150px;"
                                                                             width="150" />
 
@@ -892,13 +925,15 @@
 
                                                             <div class="v-text-align"
                                                                 style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 140%;">${{ art.precio_venta }}</p>
+                                                                <p style="font-size: 14px; line-height: 140%;">${% multiply art.precio_venta art.cantidad %}</p>
                                                                 <br>
                                                                 <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Cantidad:</strong> 5
+                                                                    <strong>Precio unitario:</strong> ${{ art.precio_venta }} x {{ art.cantidad }} u.
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Tipo de pago:</strong> {{ art.tipo_pago.nombre }}
+                                                                    <strong>Tipo de pago:</strong> {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %}
+                                                                    (tasa {{ art.tasa }}%)
+                                                                    {% endif %}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">
                                                                     <strong>Fecha de entrega:</strong> {{ art.fecha_entrega }}
