@@ -16,6 +16,10 @@ def email_send(
         to = to_email
         text_content = get_template(path_to_text).render(context)
         html_content = get_template(path_to_html).render(context)
+        # NOTE: test purposes, delete after!
+        with open('dump.html', 'w', encoding='utf-8') as file:
+            file.write(html_content)
+        #
         msg = EmailMultiAlternatives(subject, text_content, from_email, to)
         msg.attach_alternative(html_content, "text/html")
         msg.send()

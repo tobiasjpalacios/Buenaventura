@@ -1906,7 +1906,7 @@ class NegocioView(View):
             formatted_fecha_cierre = f"{fecha} a las {hora} hs"
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
-        pre_text = f"El presupuesto del negocio {negocio.get_id_de_neg()} ha sido"
+        pre_text = f"El presupuesto del negocio BVi-{negocio.get_id_de_neg()} ha sido"
         pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
@@ -1915,7 +1915,6 @@ class NegocioView(View):
             color = "green"
             texto = f"""
             {pre_text} aprobado. {pos_cierre_text}
-
             {pos_text}
             """
         elif negocio.cancelado:
@@ -1923,19 +1922,20 @@ class NegocioView(View):
             color = "red"
             texto = f"""
             {pre_text} cancelado. {pos_cierre_text}
-
             {pos_text}
             """
         else:
             negocio_update = True
 
+
         full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
         recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
+        context = {'titulo' : titulo, 'id_de_neg' : negocio.get_id_de_neg(), 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp}
 
-        if not negocio_update:
-            email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-            print(email_response)
+        # TODO: uncomment this before merging to develop!
+        # if not negocio_update:
+        email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        print(email_response)
         
         res = render(request, 'negocio.html')
         

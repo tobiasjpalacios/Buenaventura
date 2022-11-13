@@ -151,3 +151,4 @@ database
 **/*Zone.Identifier
 *.xlsx
 .yml 
+dump.html
