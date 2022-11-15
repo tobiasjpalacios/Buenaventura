@@ -646,11 +646,14 @@ def send_email_notification(sender, instance, **kwargs):
         hora = formats.time_format(instance.timestamp, "TIME_FORMAT")
         formatted_timestamp = f"{fecha} a las {hora} hs"
         text = f"{pre_text}. Recibido el día {formatted_timestamp}."
+        categoria = f"{instance.categoria}".lower()
+        # agrega "s" al final a categoria en caso de ser vencimientos o presupuestos
+        categoria = categoria + "s" if instance.categoria != "Logistica" else categoria
         protocol = "http://"
         domain = Site.objects.get_current().domain
-        url =  protocol + domain + reverse('notificaciones')
+        url =  protocol + domain + reverse(categoria)
         to = [instance.user.email]
-        context = {'titulo' : subject, 'texto' : text, 'url' : url}
+        context = {'titulo' : subject, 'texto' : text, 'url' : url, 'categoria' : categoria}
 
         email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
 

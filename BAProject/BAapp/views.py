@@ -976,7 +976,7 @@ def sendAlertaModal(request):
                 pass
             elif (ourid2[a] == "]"):
                 negocio = Negocio.objects.get(id=int(id_carga))
-                user = negocio.comprador.persona.user
+                user = negocio.comprador
                 notif = Notificacion(
                     titulo=titulo,
                     descripcion = descri,
@@ -988,7 +988,7 @@ def sendAlertaModal(request):
                 id_carga += str(ourid2[a])
             else:    
                 negocio = Negocio.objects.get(id=int(id_carga))
-                user = negocio.comprador.persona.user
+                user = negocio.comprador
                 notif = Notificacion(
                     titulo=titulo,
                     descripcion = descri,
@@ -1930,10 +1930,9 @@ class NegocioView(View):
         recipient_list = [negocio.vendedor.email, negocio.comprador.email]
         context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
 
-        # TODO: uncomment this before merging to develop!
-        # if not negocio_update:
-        email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-        print(email_response)
+        if not negocio_update:
+            email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+            print(email_response)
         
         res = render(request, 'negocio.html')
         
