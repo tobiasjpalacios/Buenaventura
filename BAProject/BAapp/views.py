@@ -976,7 +976,7 @@ def sendAlertaModal(request):
                 pass
             elif (ourid2[a] == "]"):
                 negocio = Negocio.objects.get(id=int(id_carga))
-                user = negocio.comprador.persona.user
+                user = negocio.comprador
                 notif = Notificacion(
                     titulo=titulo,
                     descripcion = descri,
@@ -988,7 +988,7 @@ def sendAlertaModal(request):
                 id_carga += str(ourid2[a])
             else:    
                 negocio = Negocio.objects.get(id=int(id_carga))
-                user = negocio.comprador.persona.user
+                user = negocio.comprador
                 notif = Notificacion(
                     titulo=titulo,
                     descripcion = descri,
@@ -1907,31 +1907,28 @@ class NegocioView(View):
 
         pre_titulo = f"Presupuesto de {request.user.get_full_name()}"
         pre_text = f"El presupuesto del negocio {negocio.get_id_de_neg()} ha sido"
-        pos_text = "Hacé click en el botón de abajo para ver el estado de la negociación."
+        pos_text = "Hacé click en el botón de abajo para ver el historial de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
         if negocio.aprobado:
             titulo = f"{pre_titulo} aprobado"
-            color = "green"
             texto = f"""
             {pre_text} aprobado. {pos_cierre_text}
-
             {pos_text}
             """
         elif negocio.cancelado:
             titulo = f"{pre_titulo} cancelado"
-            color = "red"
             texto = f"""
             {pre_text} cancelado. {pos_cierre_text}
-
             {pos_text}
             """
         else:
             negocio_update = True
 
+
         full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
         recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-        context = {'titulo' : titulo, 'color' : color, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url}
+        context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
 
         if not negocio_update:
             email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
