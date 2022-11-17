@@ -630,14 +630,13 @@ function closeDiv(divName){
 
 function refreshEmpresa(inputId){
   var input0 = document.getElementById('input0.'+inputId).value;
-  var optionId = $('#datalist0\\.'+inputId+' option[value="'+input0+'"]').attr('id');
   var datalist0 = document.getElementById('datalist0.'+inputId);
   var datalist1 = document.getElementById('datalist1.'+inputId);
   var input_empresa = document.getElementById('input1.'+inputId);
   input_empresa.value = "";
 
   var url = "{% url 'filterArticulo' "replace" %}";
-  url = url.replace('replace',optionId);
+  url = url.replace('replace',input0);
   $.ajax({
     type: "GET",
     url: url,
@@ -931,7 +930,6 @@ function submit(){
       headers.push("Precio compra");
       headers.push("Distribuidor");
     }
-    headers.push("ArticuloID");
     for (var i in headers) {
       if (userIsComprador && headers[i] == "Precio") {
         headers[i] = "Precio venta";
@@ -943,7 +941,7 @@ function submit(){
       for (var j = 0; j < headers.length; j++) {
         var input = document.getElementById('input'+j+'.'+i);
         var inputValue;
-        if (input != null && headers[j] != "ArticuloID") {
+        if (input != null) {
           if (headers[j] == "Precio compra" && userIsComprador) {
             input = 0;
             tmp_dict[headers[j]] = input;
@@ -952,11 +950,6 @@ function submit(){
             inputValue = input.value;
             input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
             tmp_dict[headers[j]] = input;
-          }
-          else if (input.id == "input0."+i) {
-            inputValue = input.value;
-            input = $('#datalist0\\.'+i+' option[value="'+inputValue+'"]').attr('id');
-            tmp_dict["ArticuloID"] = parseInt(input);
           }
           else {
             tmp_dict[headers[j]] = (input != null) ? input.value : null;

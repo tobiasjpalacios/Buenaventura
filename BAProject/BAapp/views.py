@@ -1623,9 +1623,9 @@ class APIEmpresa(View):
 
 def filterArticulo(request, word):
     if word == 'undefined':
-        empresas = Articulo.objects.values("empresa__nombre_comercial", "ingrediente", "marca", "id")
+        empresas = Articulo.objects.values("empresa__nombre_comercial", "ingrediente", "marca", "id").order_by("ingrediente")
     else:
-        empresas = Articulo.objects.filter(id=word).values("empresa__nombre_comercial", "ingrediente", "marca", "id")
+        empresas = Articulo.objects.filter(ingrediente=word).values("empresa__nombre_comercial", "ingrediente", "marca", "id").order_by("ingrediente")
     return JsonResponse(list(empresas), safe=False)
 
 class ListArticuloView(View):
@@ -2048,7 +2048,8 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            articulo_id = actual.get("ArticuloID")
+            empresa_nombre = actual.get("Empresa")
+            ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
             tipo_pago_str = actual.get("Tipo de pago")
@@ -2061,7 +2062,8 @@ class APIArticulos(View):
                 tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
-            articulo = Articulo.objects.get(id=articulo_id)
+            empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
+            articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:
