@@ -2063,7 +2063,7 @@ class APIArticulos(View):
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
             empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
-            articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
+            articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:
