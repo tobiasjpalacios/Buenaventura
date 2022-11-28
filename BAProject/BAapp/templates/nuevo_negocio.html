@@ -1,240 +1,167 @@
 {% extends 'base.html' %}
 {% load auth_extras %}
 {% block imports %}
-   {% load static %}
+{% load static %}
 {% endblock imports %}
 {% block style%}
 
 
 body {
-  background: #96f291;
+background: #96f291;
 }
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+-webkit-appearance: none;
+margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+-moz-appearance: textfield;
 }
 
 {% endblock style%}
 {% block title %}
 BuenaVentura Agronegocios
-{% endblock title %}   
+{% endblock title %}
 {%block body%}
 
 <head>
   <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/css/vencimientos.css' %}">
-  
-<style>
-   
-  .titulo1 {
-   height: 60px;
-  
-   
-   background-color: #757474;
-   font-family: 'Montserrat' ;
+  <link rel="stylesheet" type="text/css" href="{% static '/css/nuevo_negocio.css' %}">
+</head>
 
- }
+<body style="overflow: hidden;">
 
- .barra{
-  border-radius: 2em;
-  background-color: #757474;
-  height: 40px;
- 
-}
+  <div class="float: right; row">
+    
+    <!-- titulo -->
+    <div class="menuZone clv">
+        <h4 class="tituloPagina">Cotizar</h4>
+    </div> 
 
-.active , .barra1:hover {
-  font-weight: bold;
-}
-
-.barra1{
- 
- height: 40px;
- 
-}
-.titulito{
-  color :black ;
-  font-size: 20px;
-  font-family: 'Montserrat';
-  text-align: left;
-}
-
-.cuadrado{
-  border-left: 2px solid rgba(128, 128, 128, 0.555) ;
-  border-right: 2px solid rgba(128, 128, 128, 0.555) ;
-  border-top: 2px solid rgba(128, 128, 128, 0.555) ;
-  border-bottom: 2px solid rgba(128, 128, 128, 0.555) ;
-  border-color: rgba(128, 128, 128, 0.555);
-  
-}
-
-.boton{
-  border-radius: 2em;
-  width: 35%;
-}
-
-.iconito{
-  position: relative;
-  top: 5px;
-}
-
-.entrada{
-  border-bottom: 1px solid rgba(128, 128, 128, 0.801);
-}
-
-#inputComp {
-  border-bottom: none !important; 
-  box-shadow: none !important; 
-  font-size: 120%;
-}
-
-table#empTable thread div tr {
-  border-bottom: none;
-}
-
-</style>
+    <div class="subtitulo">
+      <b class="">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</b>
+    </div> 
 
 
- <div class="float: right; row">
-  <div class="menuZone clv">
-    <div class="menu">
-        <div class="col-s2 h-bar circule">
-            <i class="medium material-icons" style="position: relative; color:#005221;">local_shipping</i>
+
+
+
+    <div>
+      <div class="card-content ">
+
+
+        <div style="height: 70px;"></div>
+
+        <div class="row">
+
+          <div class="">
+            <div class="entrada col s4 offset-s4 left-align" style="border-bottom: none; box-shadow: none;">
+              <input
+                placeholder="{% if request.user.clase == 'Comprador' %}Seleccione al vendedor{% elif request.user.clase == 'Vendedor' %}Seleccione al comprador{% endif %}"
+                class="principalselec center-align" type="text" id="inputComp" list="datalistComp">
+              <datalist id="datalistComp"></datalist>
+            </div>
+          </div>
+
+          <div class=" cuadrado col s4 offset-s1 hide ">
+            <div class="col s12 barra center-align "><span class="titulito center-align white-text"> remitente </span>
+            </div>
+            <span class="left-align">{% if request.user.clase == 'Vendedor' %}Comprador: {% elif request.user.clase ==
+              'Comprador' %}Vendedor: {% endif %}</span>
+            <b><span class="left-align" id="vendedorSpan">{{ user.get_full_name }}</span></b>
+            <span class="left-align" id="vendedorSpanEmail" style="display: none;">{{ user.email }}</span>
+          </div>
+
+          <div class="col cuadrado col s4 offset-s1 hide">
+            <div class="col s12 barra center-align "><span class="titulito center-align white-text"> destinatario</span>
+            </div>
+            <span class="left-align">{% if request.user.clase == 'Comprador' %}Seleccione un vendedor: {% elif
+              request.user.clase == 'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
+          </div>
+
         </div>
-        <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Nuevo Negocio</h4>
-    </div>
-</div>
 
 
-  
-<div class="center-align">
-  <h4 style="margin-left: 5%;">Seleccione al {% if request.user.clase == 'Comprador' %}vendedor{% elif request.user.clase == 'Vendedor' %}comprador{% endif %}</h4>
-</div>
-   
-   
-    <div >
-       <div class="card-content ">
-        
-         
-         <div style="height: 100px;"></div>
-         
-         <div class="row">
-           
-          <div class="row"> 
-            <div class="col s4"> 
-              <span class="col s4 right-align"  style="margin-top: 5%;" > de </span>
-              <h5   style=" margin-left: 10%; padding-bottom: 6px;" class="col s6 ">{{ user.get_full_name|title }}</h5>
-            </div>
-            <div class="col s4"> 
-              <span class="col s4 left-align" style="margin-top: 5%;"> Para</span>
-              <div class="row entrada col s8 left-align" style="border-bottom: none; box-shadow: none;">
-                <input placeholder="{% if request.user.clase == 'Comprador' %}Vendedor{% elif request.user.clase == 'Vendedor' %}Comprador{% endif %}" class =" center-align" type="text" id="inputComp" list="datalistComp">
-                <datalist id="datalistComp"></datalist>
-              </div>
-            </div>
-            
-            
+        <br>
+
+
+        <!-- zona de articulos -->
+
+        <table id="empTable" class="col s10 offset-s1">
+
+        </table>
+        <br>
+
+        <div class="row">
+          <div class="col s12 center-align" id="div-agr-btn" style="padding-left: 10%;">
+            <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila"
+              onclick="addRow()" >
+              <i id="iconadd"class="material-icons small" style="display: none;">add</i>
+              <span>Agregar Artículo</span>
+            </a>
           </div>
-          
-          <div class=" cuadrado col s4 offset-s1 hide " >
-             <div  class="col s12 barra center-align " ><span class="titulito center-align white-text">  remitente </span> </div>
-             <span class="left-align">{% if request.user.clase == 'Vendedor' %}Comprador: {% elif request.user.clase == 'Comprador' %}Vendedor: {% endif %}</span>
-             <b><span class="left-align" id="vendedorSpan">{{ user.get_full_name }}</span></b>
-             <span class="left-align" id="vendedorSpanEmail" style="display: none;">{{ user.email }}</span>
-           </div>
-         
-           <div class="col cuadrado col s4 offset-s1 hide" >
-           <div  class="col s12 barra center-align " ><span class="titulito center-align white-text"> destinatario</span> </div>
-              <span class="left-align">{% if request.user.clase == 'Comprador' %}Seleccione un vendedor: {% elif request.user.clase == 'Vendedor' %}Seleccione un comprador: {% endif %}</span><br>
-         
-         </div>
-         
-       </div>
-       
-         
-         <br>
-         
-         
-         
-         
-          <table id="empTable">
+        </div>
 
-          </table>
-          <br>
-         
-         <div class="row">
-          <div class="col s10 center-align " >
-            <a class="boton blue waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila" onclick="addRow()" style="margin-left: 10%;">Agregar Artículo</a> 
+        <!-- <div class="col s12">
+          <div class="col s12   left-align " style="border-bottom: 2px rgba(128, 128, 128, 0.801) solid;"><span
+              class="titulito center-align " id="observaciones"> Observaciones</span> </div>
+
+          <div style="margin-top: 4%;" class="row left-align col s10 offset-1 ">
+            <label for="inputObser"> Escriba aqui</label>
+            <input class="error" type="text" id="inputObser">
           </div>
-         </div>
-         
-             <div class="col s12">
-               <div  class="col s12   left-align "  style="border-bottom: 2px rgba(128, 128, 128, 0.801) solid;"><span class="titulito center-align " id="observaciones"> Observaciones</span> </div>
-                
-               <div style="margin-top: 4%;" class="row left-align col s10 offset-1 ">
-                <label for="inputObser"> Escriba aqui</label>
-                <input class ="error" type="text" id="inputObser">
-               </div>
-             </div>
-
-         
+        </div> -->
 
 
-         <div class="row " id="divProp" style="display:none" >
-           <a style="margin-left: 10%;" class="green waves-effect waves-light col s10  btn" onclick="showModal()">Realizar Propuesta</a>
-         
-         </div>
-       </div>
-      
-     </div>
-     <div style="height: 20px;"></div>
+
+
+        <div class="row col s12 center-align" id="divProp" style="display:none">
+          <a class="green waves-effect waves-light boton btn"
+            onclick="showModal()">Realizar Propuesta</a>
+
+        </div>
+      </div>
+
     </div>
-</div>
+    <div style="height: 20px;"></div>
+  </div>
+  </div>
 
-<!--
+  <!--
  <i class="material-icons">cancel</i>
  <i class="material-icons">add</i>
 -->
-<br>
+  <br>
 
 
- <div class="fixed-action-btn">
-   <a class="btn-floating btn-large red">
-     <i class="large material-icons">dehaze</i>
-   </a>
-   <ul>
-     <li><a class="btn-floating green tooltipped" data-position="left"  data-tooltip="ir a Whatsapp"><i class="material-icons">call</i></a></li>
-     <li><a class="btn-floating blue tooltipped" data-position="left"  data-tooltip="Reutilizar pedido "><i class="material-icons">cached</i></a></li>
-     <li><a class="btn-floating orange tooltipped" data-position="left"  data-tooltip="Nuevo Pedido"><i class="material-icons">add_circle</i></a></li>
-   </ul>
- </div>
+  
 
- <div id="modalSubmit" class="modal">
-   <div class="modal-content">
-     <h4>Advertencia!</h4>
-     <p>¿Desea realizar una Propuesta ?</p>
-   </div>
-   <div class="modal-footer">
-     <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i class="material-icons">check</i></a>
-   </div>
- </div>
+  <div id="modalSubmit" class="modal">
+    <div class="modal-content">
+      <h4>Advertencia!</h4>
+      <p>¿Desea realizar una Propuesta ?</p>
+    </div>
+    <div class="modal-footer">
+      <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i
+          class="material-icons">check</i></a>
+    </div>
+  </div>
 
- <script>
+</body>
+
+<script>
 
   var userIsComprador = false;
   "{% if request.user.clase == 'Comprador' %}"
   userIsComprador = true;
   "{% endif %}"
 
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     var elems = document.querySelectorAll('#botonsito');
     var instances = M.FloatingActionButton.init(elems, {
       direction: 'right',
@@ -242,67 +169,67 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-$(document).ready(function(){
+  $(document).ready(function () {
     $('.fixed-action-btn').floatingActionButton();
   });
- $(document).ready(function(){
+  $(document).ready(function () {
     $('.tooltipped').tooltip();
   });
 
-  $(document).ready(function(){
+  $(document).ready(function () {
     $('.modal').modal();
   });
 
-   $(document).ready(function(){
+  $(document).ready(function () {
     $('select').formSelect();
-  });    
+  });
 
-// datepicker initialization and conf
+  // datepicker initialization and conf
 
-function start_datepicker(){
+  function start_datepicker() {
     $('.datepicker').datepicker({
-    format: 'dd/mm/yyyy',
-  });
-}
-var rowCnt = 0;
-var headers = (userIsComprador) ? 
-              ["Ingrediente", "Empresa", "Cantidad", "Precio",
-              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"]
-              : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad", 
-              "Precio venta", "Precio compra", 
-              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
-var savings_data;
-var compradores_data;
-var distribuidores_data;
-var tipo_pago;
-// var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
+      format: 'dd/mm/yyyy',
+    });
+  }
+  var rowCnt = 0;
+  var headers = (userIsComprador) ?
+    ["Ingrediente", "Empresa", "Cantidad", "Precio",
+      "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"]
+    : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad",
+      "Precio venta", "Precio compra",
+      "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"];
+  var savings_data;
+  var compradores_data;
+  var distribuidores_data;
+  var tipo_pago;
+  // var tasas = ["0%","0.3%","0.4%","0.5%","0.6%","0.70%","0.75%","0.85%","1.00%","2.00%","2.50%","2.75%","3.00%","3.50%","36.00%","INCLUIDA"];
 
-// to validate if inputs are correct
-var isValidated = false;
-var all_ingredientes = [];
-var all_empresas = [];
-var all_distribuidores = [];
-var all_tipoPago = [];
-var all_compradores = []
-var errors = [];
+  // to validate if inputs are correct
+  var isValidated = false;
+  var all_ingredientes = [];
+  var all_empresas = [];
+  var all_distribuidores = [];
+  var all_tipoPago = [];
+  var all_compradores = []
+  var errors = [];
 
-  $(document).ready(function(){
-  // $("#empTable thead tr th").each(function(index){
-  //   if ($(this).text() != "Operaciones"){
-  //     headers.push($(this).text())
-  //   }
-  // })
-  $("#flip").click(function(){
-    $("#ocultar").slideToggle("slow");
-  });
-  
+  $(document).ready(function () {
+    // $("#empTable thead tr th").each(function(index){
+    //   if ($(this).text() != "Operaciones"){
+    //     headers.push($(this).text())
+    //   }
+    // })
+    $("#flip").click(function () {
+      $("#ocultar").slideToggle("slow");
+    });
 
-  
-  $.ajax({
+
+
+    $.ajax({
       type: "GET",
       url: "{% url 'api_articulos' %}",
       dataType: "json",
-      success: function(data) {      
+      success: function (data) {
         savings_data = data;
       }
     });
@@ -311,7 +238,7 @@ var errors = [];
       type: "GET",
       url: "{% url 'api_distribuidor' %}",
       dataType: "json",
-      success: function(data) {      
+      success: function (data) {
         distribuidores_data = data;
       }
     });
@@ -320,7 +247,7 @@ var errors = [];
       type: "GET",
       url: "{% url 'getPagos' %}",
       dataType: "json",
-      success: function(data) {      
+      success: function (data) {
         tipo_pago = data;
       }
     });
@@ -328,482 +255,495 @@ var errors = [];
     hideSend();
   });
 
-  $(document).ready(function(){
+  $(document).ready(function () {
     $.ajax({
       type: "GET",
       url: "{% if request.user.clase == 'Vendedor' %}{% url 'api_comprador' %}{% elif request.user.clase == 'Comprador' %}{% url 'api_vendedor' %}{% endif %}",
       dataType: "json",
-      success: function(data) {      
+      success: function (data) {
         compradores_data = data;
         var datalistComp = document.getElementById("datalistComp");
         for (var i = 0; i < compradores_data.length; i++) {
-            var optionComp = document.createElement('option');
-            optionComp.setAttribute('value', compradores_data[i]['usuario']);
-            optionComp.setAttribute('id', compradores_data[i]['email']);
-            all_compradores.push(compradores_data[i]['usuario']);
-            datalistComp.appendChild(optionComp);
-          }
+          var optionComp = document.createElement('option');
+          optionComp.setAttribute('value', compradores_data[i]['usuario']);
+          optionComp.setAttribute('id', compradores_data[i]['email']);
+          all_compradores.push(compradores_data[i]['usuario']);
+          datalistComp.appendChild(optionComp);
+        }
       }
     });
     hideSend();
   });
 
-  
 
 
 
 
-  
-  function hideSend(){
+
+
+  function hideSend() {
     var divS = document.getElementById("divProp");
-    if (rowCnt < 1){
+
+    if (rowCnt < 1) {
       divS.style.display = "none";
-    }else {
+      document.getElementById("agr_art").classList.remove('btn-agr-change');
+      document.getElementById("iconadd").style.display = "none";
+      document.getElementById("div-agr-btn").style.paddingLeft = "";
+      document.getElementById("agr_art").style.display = "";
+      
+    } else {
       divS.style.display = "block";
+      document.getElementById("agr_art").classList.add('btn-agr-change');
+      document.getElementById("iconadd").style.display = "";
+      document.getElementById("agr_art").style.display = "flex";
+      document.getElementById("div-agr-btn").style.paddingLeft = "10%";
     }
   };
 
 
 
-function addRow() {
-  var general = (userIsComprador) ? ["Ingrediente", "Empresa", "Cantidad"] : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad"];
-  var pago = (userIsComprador) ? ["Precio", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Tipo de pago", "Tasa", "Fecha de pago"];
-  var logistica = ["Fecha de entrega","Destino"];
-
-  
-  var empTab = document.getElementById('empTable');
-
-  var thread = document.createElement("thread"); // numero de filas
-  thread.setAttribute("id","thread"+rowCnt);
-  empTab.appendChild(thread);
-
-  var input = document.createElement("div");
-  var articulo = document.createElement("a");
-  
-  articulo.setAttribute("content"," Articulo n°"+(rowCnt+1));
-  articulo.setAttribute("class","  titulito col l12 m12 s12");
-  thread.appendChild(input);
-  input.appendChild(articulo);
-  var barra = document.createElement("div")
-  barra.style.borderBottom="2px solid rgba(128, 128, 128, 0.555) "
-  barra.style.marginLeft="1%"
-  barra.setAttribute("class","   col l9 m9 s9");
-  input.appendChild(barra);
-  var delbutton = document.createElement("a");
-  delbutton.setAttribute("class","btn-floating btn-large waves-effect waves-light red");
-  delbutton.style.top = "-25px"
-  input.appendChild(delbutton);
-  var logo = document.createElement("i")
-  logo.setAttribute("class","material-icons")
-  logo.setAttribute("content","add");
-  logo.innerHTML = "close"
-  delbutton.appendChild(logo);
-  
-  var art_count = " Articulo n°"+(rowCnt+1)
-  articulo.innerHTML = art_count
-
-  delbutton.setAttribute("data-row", rowCnt+1)
-  delbutton.onclick = function(){removeRow(delbutton.dataset.row)}
-
-  var tr1 = document.createElement("tr");
-  tr1.style.display = "none";
-  var tr2 = document.createElement("tr");
-  tr2.style.display = "none";
-  var tr3 = document.createElement("tr");
-  tr3.style.display = "none";
-  tr1.setAttribute("class","content")
-  
-  var outerGeneral = document.createElement("div");
-  var innerGeneral = document.createElement("div");
-  innerGeneral.setAttribute("type","button")
-  var outerFinanciamiento = document.createElement("div");
-  var innerFinanciamiento = document.createElement("div");
-  var outerLogistica = document.createElement("div");
-  var innerLogistica = document.createElement("div");
+  function addRow() {
+    hideSend();
+    var general = (userIsComprador) ? ["Ingrediente", "Empresa", "Cantidad"] : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad"];
+    var pago = (userIsComprador) ? ["Precio", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Tipo de pago", "Tasa", "Fecha de pago"];
+    var logistica = ["Fecha de entrega", "Destino"];
 
 
-  outerGeneral.appendChild(innerGeneral);
-  outerGeneral.appendChild(tr1);
-  thread.appendChild(outerGeneral);
+    var empTab = document.getElementById('empTable');
+
+    var thread = document.createElement("thread"); // numero de filas
+    thread.setAttribute("id", "thread" + rowCnt);
+    thread.style.display="grid";
+    empTab.appendChild(thread);
+
+    var input = document.createElement("div");
+    var articulo = document.createElement("a");
+
+    articulo.setAttribute("content", " Articulo n°" + (rowCnt + 1));
+    articulo.setAttribute("class", "titulito");
+    thread.appendChild(input);
+    input.appendChild(articulo);
+    input.style.display="flex"
+    //var barra = document.createElement("div")
+    //barra.style.borderBottom = "2px solid rgba(128, 128, 128, 0.555) "
+    //barra.style.marginLeft = "1%"
+    //barra.setAttribute("class", "   col l9 m9 s9");
+    //input.appendChild(barra);
+    var delbutton = document.createElement("a");
+    delbutton.setAttribute("class", "btn-floating btn-small waves-effect waves-light red");
+    delbutton.style.marginLeft = "10px"
+    input.appendChild(delbutton);
+    var logo = document.createElement("i")
+    logo.setAttribute("class", "material-icons")
+    logo.setAttribute("content", "add");
+    logo.innerHTML = "close"
+    delbutton.appendChild(logo);
+
+    var art_count = " Articulo n°" + (rowCnt + 1)
+    articulo.innerHTML = art_count
+
+    delbutton.setAttribute("data-row", rowCnt + 1)
+    delbutton.onclick = function () { removeRow(delbutton.dataset.row) }
+
+    var tr1 = document.createElement("tr");
+    tr1.style.display = "none";
+    var tr2 = document.createElement("tr");
+    tr2.style.display = "none";
+    var tr3 = document.createElement("tr");
+    tr3.style.display = "none";
+    tr1.setAttribute("class", "content")
+
+    var outerGeneral = document.createElement("div");
+    var innerGeneral = document.createElement("div");
+    innerGeneral.setAttribute("type", "button")
+    var outerFinanciamiento = document.createElement("div");
+    var innerFinanciamiento = document.createElement("div");
+    var outerLogistica = document.createElement("div");
+    var innerLogistica = document.createElement("div");
 
 
-  outerFinanciamiento.appendChild(innerFinanciamiento);
-  outerFinanciamiento.appendChild(tr2);
-  thread.appendChild(outerFinanciamiento);
+    outerGeneral.appendChild(innerGeneral);
+    outerGeneral.appendChild(tr1);
+    thread.appendChild(outerGeneral);
 
-  
-  outerLogistica.appendChild(innerLogistica);
-  outerLogistica.appendChild(tr3);
-  thread.appendChild(outerLogistica);
-  innerGeneral.setAttribute("class"," col s12 left-align ");
-  innerGeneral.classList.add('barra1');
-  
-  var id = "innerGeneral"+rowCnt;
-  innerGeneral.setAttribute("id",id);
-  innerGeneral.setAttribute("style","none");
-  innerGeneral.setAttribute("onclick",`closeDiv(${id})`);
-  
-  var nom1 = document.createElement("a");
-  nom1.setAttribute("value"," Informacion general");
-  nom1.setAttribute("class","  titulito col l5 m12 s12");
-  nom1.innerHTML="Informacion General"
-  nom1.style.color="#4fad31"
-  
-  
-  nom1.style.userSelect="none"
-  innerGeneral.appendChild(nom1);
-  
-  var icon1 = document.createElement("i");
-  icon1.setAttribute("value","expand_more")
-  icon1.setAttribute("class","material-icons iconito")
-  icon1.innerHTML="expand_more"
-  nom1.appendChild(icon1);
-  var br = document.createElement("br");
-  nom1.appendChild(br);
 
-  innerFinanciamiento.setAttribute("class","col s12");
-  innerFinanciamiento.classList.add('barra1');
-  var id = ("innerFinanciamiento"+rowCnt);
-  innerFinanciamiento.setAttribute("id",id);
-  innerFinanciamiento.setAttribute("style","none");
-  innerFinanciamiento.setAttribute("onclick",`closeDiv(${id})`);
-  var nom2 = document.createElement("a");
-  nom2.setAttribute("value","  Montos y financiamiento");
-  nom2.setAttribute("class","  titulito  col l5 m12 s12 ");
-  nom2.innerHTML=" Montos y Financiamiento"
-  nom2.style.color="#4fad31"
- 
-  
-  nom2.style.userSelect="none"
-  innerFinanciamiento.appendChild(nom2);
-  var icon2 = document.createElement("i");
-  icon2.setAttribute("value","expand_more")
-  icon2.setAttribute("class","material-icons iconito")
-  icon2.innerHTML="expand_more"
-  nom2.appendChild(icon2);
+    outerFinanciamiento.appendChild(innerFinanciamiento);
+    outerFinanciamiento.appendChild(tr2);
+    thread.appendChild(outerFinanciamiento);
 
-  innerLogistica.setAttribute("class","col s12");
-  innerLogistica.classList.add('barra1');
-  var id = "innerLogistica"+rowCnt;
-  innerLogistica.setAttribute("id",id);
-  innerLogistica.setAttribute("style","none");
-  innerLogistica.setAttribute("onclick",`closeDiv(${id})`);
-  var nom3 = document.createElement("a");
-  nom3.setAttribute("content"," Configuracion de logistica");
-  nom3.setAttribute("class"," titulito  col l5 m12 s12 ");
-  nom3.style.color="#4fad31"
 
-  
-  nom3.style.userSelect="none"
-  nom3.innerHTML="Logistica"
-  innerLogistica.appendChild(nom3);
-  var icon = document.createElement("i");
-  icon.setAttribute("value","expand_more")
-  icon.setAttribute("class","material-icons iconito")
-  icon.innerHTML="expand_more"
-  nom3.appendChild(icon);
+    outerLogistica.appendChild(innerLogistica);
+    outerLogistica.appendChild(tr3);
+    thread.appendChild(outerLogistica);
+    innerGeneral.setAttribute("class", " col s12 left-align ");
+    innerGeneral.classList.add('barra1');
 
-  for(var i = 0; i < general.length; i++){
-    var th1 = document.createElement("th");
-    th1.setAttribute("id","th_"+general[i]+rowCnt);
-    th1.innerHTML = general[i];
-    tr1.appendChild(th1);
-  }
+    var id = "innerGeneral" + rowCnt;
+    innerGeneral.setAttribute("id", id);
+    innerGeneral.setAttribute("style", "none");
+    innerGeneral.setAttribute("onclick", `closeDiv(${id})`);
 
-  for(var i = 0; i < pago.length; i++){
-    var th2 = document.createElement("th");
-    th2.setAttribute("id","th_"+pago[i]+rowCnt);
-    th2.innerHTML = pago[i];
-    tr2.appendChild(th2);
-  }
-  
-  for(var i = 0; i < logistica.length; i++){
-    var th3 = document.createElement("th");
-    th3.setAttribute("id","th_"+logistica[i]+rowCnt);
-    th3.innerHTML = logistica[i];
-    tr3.appendChild(th3);
-  }
-  var br = document.createElement("br");
-  var br2 = document.createElement("br");
-  thread.appendChild(br);
-  thread.appendChild(br2); 
+    var nom1 = document.createElement("a");
+    nom1.setAttribute("value", " Informacion general");
+    nom1.setAttribute("class", "  titulito col l5 m12 s12");
+    nom1.innerHTML = "Informacion General"
+    nom1.style.color = "#4fad31"
 
-var headers = (userIsComprador) ?
-              ["Ingrediente", "Empresa", "Cantidad", "Precio", 
-              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"] 
-              : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad", 
-              "Precio venta", "Precio compra", 
-              "Tipo de pago", "Tasa", "Fecha de pago","Fecha de entrega", "Destino"];
 
-  //console.log(headers);
+    nom1.style.userSelect = "none"
+    innerGeneral.appendChild(nom1);
 
-  if (userIsComprador) {
-    for (var c = 0; c < headers.length; c++){    
-      if (c==0) {
-        var th = document.getElementById("th_Ingrediente"+rowCnt);
-        input_ingrediente(c, th)
-      }else if(c==1){   
-        var th = document.getElementById("th_Empresa"+rowCnt);
-        input_empresa(c, th);
-      }else if (c==2) {
-        var th = document.getElementById("th_Cantidad"+rowCnt);
-        input_cantidad(c,th);
-      }else if (c==4) {
-        var th = document.getElementById("th_Tipo de pago"+rowCnt);
-        input_tipoPago(c, th);
-      }else if (c==5) {
-        var th = document.getElementById("th_Tasa"+rowCnt);
-        input_tasa(c, th);
-      }else if(c==6){
-        var th = document.getElementById("th_Fecha de pago"+rowCnt);
-        input_fechaPago(c, th);
-      }else if (c==7) {
-        var th = document.getElementById("th_Fecha de entrega"+rowCnt);
-        input_fechaEntrega(c, th);
-      }else if (c==8) {
-        var th = document.getElementById("th_Destino"+rowCnt);
-        input_destino(c,th);
-      }else{
-        var th = document.getElementById("th_"+headers[c]+rowCnt);
-        var ele = document.createElement('input');
-        ele.setAttribute('type', 'text');
-        ele.setAttribute('size', '4');
-  
-        ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-        ele.setAttribute('autocomplete', 'off');
-        ele.setAttribute('placeholder', "0.00");
-        th.appendChild(ele);
-      };
+    var icon1 = document.createElement("i");
+    icon1.setAttribute("value", "expand_more")
+    icon1.setAttribute("class", "material-icons iconito")
+    icon1.innerHTML = "expand_more"
+    nom1.appendChild(icon1);
+    var br = document.createElement("br");
+    nom1.appendChild(br);
+
+    innerFinanciamiento.setAttribute("class", "col s12");
+    innerFinanciamiento.classList.add('barra1');
+    var id = ("innerFinanciamiento" + rowCnt);
+    innerFinanciamiento.setAttribute("id", id);
+    innerFinanciamiento.setAttribute("style", "none");
+    innerFinanciamiento.setAttribute("onclick", `closeDiv(${id})`);
+    var nom2 = document.createElement("a");
+    nom2.setAttribute("value", "  Montos y financiamiento");
+    nom2.setAttribute("class", "  titulito  col l5 m12 s12 ");
+    nom2.innerHTML = " Montos y Financiamiento"
+    nom2.style.color = "#4fad31"
+
+
+    nom2.style.userSelect = "none"
+    innerFinanciamiento.appendChild(nom2);
+    var icon2 = document.createElement("i");
+    icon2.setAttribute("value", "expand_more")
+    icon2.setAttribute("class", "material-icons iconito")
+    icon2.innerHTML = "expand_more"
+    nom2.appendChild(icon2);
+
+    innerLogistica.setAttribute("class", "col s12");
+    innerLogistica.classList.add('barra1');
+    var id = "innerLogistica" + rowCnt;
+    innerLogistica.setAttribute("id", id);
+    innerLogistica.setAttribute("style", "none");
+    innerLogistica.setAttribute("onclick", `closeDiv(${id})`);
+    var nom3 = document.createElement("a");
+    nom3.setAttribute("content", " Configuracion de logistica");
+    nom3.setAttribute("class", " titulito  col l5 m12 s12 ");
+    nom3.style.color = "#4fad31"
+
+
+    nom3.style.userSelect = "none"
+    nom3.innerHTML = "Logistica"
+    innerLogistica.appendChild(nom3);
+    var icon = document.createElement("i");
+    icon.setAttribute("value", "expand_more")
+    icon.setAttribute("class", "material-icons iconito")
+    icon.innerHTML = "expand_more"
+    nom3.appendChild(icon);
+
+    for (var i = 0; i < general.length; i++) {
+      var th1 = document.createElement("th");
+      th1.setAttribute("id", "th_" + general[i] + rowCnt);
+      th1.innerHTML = general[i];
+      tr1.appendChild(th1);
     }
-  }
-  else {
-    for (var c = 0; c < headers.length; c++){   
-      if (c==0) {
-        var th = document.getElementById("th_Ingrediente"+rowCnt);
-        input_ingrediente(c, th)  
-      }else if(c==1){   
-        var th = document.getElementById("th_Empresa"+rowCnt);
-        input_empresa(c, th);
-      }else if (c==2) {
-        var th = document.getElementById("th_Distribuidor"+rowCnt);
-        input_distribuidor(c, th);
-      }else if (c==3) {
-        var th = document.getElementById("th_Cantidad"+rowCnt);
-        input_cantidad(c,th);
-      }else if (c==6) {
-        var th = document.getElementById("th_Tipo de pago"+rowCnt);
-        input_tipoPago(c, th);
-      }else if (c==7) {
-        var th = document.getElementById("th_Tasa"+rowCnt);
-        input_tasa(c, th);
-      }else if(c==8){
-        var th = document.getElementById("th_Fecha de pago"+rowCnt);
-        input_fechaPago(c, th);
-      }else if (c==9) {
-        var th = document.getElementById("th_Fecha de entrega"+rowCnt);
-        input_fechaEntrega(c, th);
-      }else if (c==10) {
-        var th = document.getElementById("th_Destino"+rowCnt);
-        input_destino(c,th);
-      }else{
-        var th = document.getElementById("th_"+headers[c]+rowCnt);
-        var ele = document.createElement('input');
-        ele.setAttribute('type', 'text');
-        ele.setAttribute('size', '4');
-  
-        ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-        ele.setAttribute('autocomplete', 'off');
-        ele.setAttribute('placeholder', "0.00");
-        th.appendChild(ele);
-      };
+
+    for (var i = 0; i < pago.length; i++) {
+      var th2 = document.createElement("th");
+      th2.setAttribute("id", "th_" + pago[i] + rowCnt);
+      th2.innerHTML = pago[i];
+      tr2.appendChild(th2);
     }
-  }
-  rowCnt++;
-  hideSend();
 
-//   var coll = document.getElementsByClassName("barra1");
-// var iz;
-//   for (var iz = 0; iz < coll.length; iz++) {
-//     coll[iz].addEventListener("click", function() {
-//       this.classList.toggle("active");
-//       var content = this.nextElementSibling;
-//       debugger
-//       if (content.style.display === "none") {
-//         content.style.display = "block";
-//       } else {
-//         content.style.display = "none";
-//       } 
-//   });
-// }
-}
-
-function closeDiv(divName){
-  var content = divName.nextElementSibling;
-  if (content.style.display === "none") {
-    content.style.display = "block";
-  } else {
-    content.style.display = "none";
-  } 
-  
-}
-
-function refreshEmpresa(inputId){
-  var input = document.getElementById('input0.'+inputId).value;
-  var datalist = document.getElementById('datalist1.'+inputId);
-
-  var url = "{% url 'filterArticulo' "replace" %}";
-  url = url.replace('replace',input);
-  $.ajax({
-    type: "GET",
-    url: url,
-    dataType: "json",
-    success: function(data) {    
-      datalist.innerHTML = " ";
-      for (var i = 0; i < data.length; i++) {
-        var option = document.createElement('option');
-        option.setAttribute('value',''+data[i].empresa__nombre_comercial+'');
-        option.setAttribute('id','option'+i);
-        datalist.appendChild(option);
-      }
+    for (var i = 0; i < logistica.length; i++) {
+      var th3 = document.createElement("th");
+      th3.setAttribute("id", "th_" + logistica[i] + rowCnt);
+      th3.innerHTML = logistica[i];
+      tr3.appendChild(th3);
     }
-  });
-}
+    var br = document.createElement("br");
+    var br2 = document.createElement("br");
+    thread.appendChild(br);
+    thread.appendChild(br2);
 
-function removeRow(artRow){
-  var thread = document.getElementById('thread'+(artRow-1));
-  thread.remove();
-  rowCnt--;
-  hideSend();
-  reduceCounter(artRow);
-  M.toast({html: 'Articulo eliminado.'});
-}
+    var headers = (userIsComprador) ?
+      ["Ingrediente", "Empresa", "Cantidad", "Precio",
+        "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"]
+      : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad",
+        "Precio venta", "Precio compra",
+        "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"];
 
-function reduceCounter(artRow) {
-  var elements = [].slice.call(document.querySelectorAll('a'))
-    .filter(function (el) {
-      return el.textContent.includes("Articulo n°");
-    });
-  var delButtons = [].slice.call(document.querySelectorAll('a'))
-  .filter(function (el) {
-    return el.dataset.row > 0;
-  });
-  for (var i = 0; i < elements.length; i++) {
-    var el = elements[i];
-    var elText = elements[i].innerHTML;
-    var number = elText.split('°')[1];
-    var delButton = delButtons[i];
-    if (number > artRow) {
-      el.innerHTML = "Articulo n°"+(number-1);
-      delButton.dataset.row = number-1;
-      idChanger(number);
-    }
-  }
-}
+    //console.log(headers);
 
-function idChanger(newRowCnt) {
-  var thread = document.getElementById('thread'+(newRowCnt-1));
-  thread.id = "thread"+(newRowCnt-2);
-  
-  var innerGeneral = document.getElementById('innerGeneral'+(newRowCnt-1));
-  innerGeneral.id = "innerGeneral"+(newRowCnt-2);
-  innerGeneral.setAttribute('onclick', 'closeDiv(innerGeneral'+(newRowCnt-2)+')')
-  
-  var innerFinanciamiento = document.getElementById('innerFinanciamiento'+(newRowCnt-1));
-  innerFinanciamiento.id = "innerFinanciamiento"+(newRowCnt-2);
-  innerFinanciamiento.setAttribute('onclick', 'closeDiv(innerFinanciamiento'+(newRowCnt-2)+')')
-  
-  var innerLogistica = document.getElementById('innerLogistica'+(newRowCnt-1));
-  innerLogistica.id = "innerLogistica"+(newRowCnt-2);
-  innerLogistica.setAttribute('onclick', 'closeDiv(innerLogistica'+(newRowCnt-2)+')')
-
-  for (var c = 0; c < headers.length; c++) {
-    var th = document.getElementById("th_"+headers[c]+(newRowCnt-1));
-    th.id = "th_"+headers[c]+(newRowCnt-2);
-    
-    var input = document.getElementById("input"+c+'.'+(newRowCnt-1));
-    input.id = "input"+c+'.'+(newRowCnt-2);
-    if (input.hasAttribute("list")) {
-      input.setAttribute("list", "datalist"+c+'.'+(newRowCnt-2));
-    }
-    if (c==0) {
-      input.setAttribute("onchange", "refreshEmpresa("+(newRowCnt-2)+")");
-    }
     if (userIsComprador) {
-      if (c==4) {
-        input.setAttribute("onchange", "desactivarTasa("+(newRowCnt-2)+")");
+      for (var c = 0; c < headers.length; c++) {
+        if (c == 0) {
+          var th = document.getElementById("th_Ingrediente" + rowCnt);
+          input_ingrediente(c, th)
+        } else if (c == 1) {
+          var th = document.getElementById("th_Empresa" + rowCnt);
+          input_empresa(c, th);
+        } else if (c == 2) {
+          var th = document.getElementById("th_Cantidad" + rowCnt);
+          input_cantidad(c, th);
+        } else if (c == 4) {
+          var th = document.getElementById("th_Tipo de pago" + rowCnt);
+          input_tipoPago(c, th);
+        } else if (c == 5) {
+          var th = document.getElementById("th_Tasa" + rowCnt);
+          input_tasa(c, th);
+        } else if (c == 6) {
+          var th = document.getElementById("th_Fecha de pago" + rowCnt);
+          input_fechaPago(c, th);
+        } else if (c == 7) {
+          var th = document.getElementById("th_Fecha de entrega" + rowCnt);
+          input_fechaEntrega(c, th);
+        } else if (c == 8) {
+          var th = document.getElementById("th_Destino" + rowCnt);
+          input_destino(c, th);
+        } else {
+          var th = document.getElementById("th_" + headers[c] + rowCnt);
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'text');
+          ele.setAttribute('size', '4');
+
+          ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+          ele.setAttribute('autocomplete', 'off');
+          ele.setAttribute('placeholder', "0.00");
+          th.appendChild(ele);
+        };
       }
     }
     else {
-      if (c==6) {
-        input.setAttribute("onchange", "desactivarTasa("+(newRowCnt-2)+")");
+      for (var c = 0; c < headers.length; c++) {
+        if (c == 0) {
+          var th = document.getElementById("th_Ingrediente" + rowCnt);
+          input_ingrediente(c, th)
+        } else if (c == 1) {
+          var th = document.getElementById("th_Empresa" + rowCnt);
+          input_empresa(c, th);
+        } else if (c == 2) {
+          var th = document.getElementById("th_Distribuidor" + rowCnt);
+          input_distribuidor(c, th);
+        } else if (c == 3) {
+          var th = document.getElementById("th_Cantidad" + rowCnt);
+          input_cantidad(c, th);
+        } else if (c == 6) {
+          var th = document.getElementById("th_Tipo de pago" + rowCnt);
+          input_tipoPago(c, th);
+        } else if (c == 7) {
+          var th = document.getElementById("th_Tasa" + rowCnt);
+          input_tasa(c, th);
+        } else if (c == 8) {
+          var th = document.getElementById("th_Fecha de pago" + rowCnt);
+          input_fechaPago(c, th);
+        } else if (c == 9) {
+          var th = document.getElementById("th_Fecha de entrega" + rowCnt);
+          input_fechaEntrega(c, th);
+        } else if (c == 10) {
+          var th = document.getElementById("th_Destino" + rowCnt);
+          input_destino(c, th);
+        } else {
+          var th = document.getElementById("th_" + headers[c] + rowCnt);
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'text');
+          ele.setAttribute('size', '4');
+
+          ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+          ele.setAttribute('autocomplete', 'off');
+          ele.setAttribute('placeholder', "0.00");
+          th.appendChild(ele);
+        };
       }
     }
+    rowCnt++;
+    hideSend();
 
-    var datalist = document.getElementById("datalist"+c+'.'+(newRowCnt-1));
-    if (datalist != null) {
-      datalist.id = "datalist"+c+'.'+(newRowCnt-2);
+    //   var coll = document.getElementsByClassName("barra1");
+    // var iz;
+    //   for (var iz = 0; iz < coll.length; iz++) {
+    //     coll[iz].addEventListener("click", function() {
+    //       this.classList.toggle("active");
+    //       var content = this.nextElementSibling;
+    //       debugger
+    //       if (content.style.display === "none") {
+    //         content.style.display = "block";
+    //       } else {
+    //         content.style.display = "none";
+    //       } 
+    //   });
+    // }
+  }
+
+  function closeDiv(divName) {
+    var content = divName.nextElementSibling;
+    if (content.style.display === "none") {
+      content.style.display = "block";
+    } else {
+      content.style.display = "none";
+    }
+
+  }
+
+  function refreshEmpresa(inputId) {
+    var input = document.getElementById('input0.' + inputId).value;
+    var datalist = document.getElementById('datalist1.' + inputId);
+
+    var url = "{% url 'filterArticulo' "replace" %}";
+    url = url.replace('replace', input);
+    $.ajax({
+      type: "GET",
+      url: url,
+      dataType: "json",
+      success: function (data) {
+        datalist.innerHTML = " ";
+        for (var i = 0; i < data.length; i++) {
+          var option = document.createElement('option');
+          option.setAttribute('value', '' + data[i].empresa__nombre_comercial + '');
+          option.setAttribute('id', 'option' + i);
+          datalist.appendChild(option);
+        }
+      }
+    });
+  }
+
+  function removeRow(artRow) {
+    var thread = document.getElementById('thread' + (artRow - 1));
+    thread.remove();
+    rowCnt--;
+    hideSend();
+    reduceCounter(artRow);
+    M.toast({ html: 'Articulo eliminado.' });
+  }
+
+  function reduceCounter(artRow) {
+    var elements = [].slice.call(document.querySelectorAll('a'))
+      .filter(function (el) {
+        return el.textContent.includes("Articulo n°");
+      });
+    var delButtons = [].slice.call(document.querySelectorAll('a'))
+      .filter(function (el) {
+        return el.dataset.row > 0;
+      });
+    for (var i = 0; i < elements.length; i++) {
+      var el = elements[i];
+      var elText = elements[i].innerHTML;
+      var number = elText.split('°')[1];
+      var delButton = delButtons[i];
+      if (number > artRow) {
+        el.innerHTML = "Articulo n°" + (number - 1);
+        delButton.dataset.row = number - 1;
+        idChanger(number);
+      }
     }
   }
-}
 
-function removeNextRow(){
+  function idChanger(newRowCnt) {
+    var thread = document.getElementById('thread' + (newRowCnt - 1));
+    thread.id = "thread" + (newRowCnt - 2);
 
-}
+    var innerGeneral = document.getElementById('innerGeneral' + (newRowCnt - 1));
+    innerGeneral.id = "innerGeneral" + (newRowCnt - 2);
+    innerGeneral.setAttribute('onclick', 'closeDiv(innerGeneral' + (newRowCnt - 2) + ')')
 
-function showModal(){
-  $('#modalSubmit').modal('open');
-};
+    var innerFinanciamiento = document.getElementById('innerFinanciamiento' + (newRowCnt - 1));
+    innerFinanciamiento.id = "innerFinanciamiento" + (newRowCnt - 2);
+    innerFinanciamiento.setAttribute('onclick', 'closeDiv(innerFinanciamiento' + (newRowCnt - 2) + ')')
 
-function validateData(rowCnt){
-  var boolComp = false;
-  var inputComprador = document.getElementById("inputComp");
-  var distOrComp = (userIsComprador) ? "vendedor" : "comprador";
-  if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
-    boolComp = false;
-    var error = "El "+distOrComp+" no puede estar vacio";
-    if (errors.indexOf(error) < 0) {
-      errors.push(error);
+    var innerLogistica = document.getElementById('innerLogistica' + (newRowCnt - 1));
+    innerLogistica.id = "innerLogistica" + (newRowCnt - 2);
+    innerLogistica.setAttribute('onclick', 'closeDiv(innerLogistica' + (newRowCnt - 2) + ')')
+
+    for (var c = 0; c < headers.length; c++) {
+      var th = document.getElementById("th_" + headers[c] + (newRowCnt - 1));
+      th.id = "th_" + headers[c] + (newRowCnt - 2);
+
+      var input = document.getElementById("input" + c + '.' + (newRowCnt - 1));
+      input.id = "input" + c + '.' + (newRowCnt - 2);
+      if (input.hasAttribute("list")) {
+        input.setAttribute("list", "datalist" + c + '.' + (newRowCnt - 2));
+      }
+      if (c == 0) {
+        input.setAttribute("onchange", "refreshEmpresa(" + (newRowCnt - 2) + ")");
+      }
+      if (userIsComprador) {
+        if (c == 4) {
+          input.setAttribute("onchange", "desactivarTasa(" + (newRowCnt - 2) + ")");
+        }
+      }
+      else {
+        if (c == 6) {
+          input.setAttribute("onchange", "desactivarTasa(" + (newRowCnt - 2) + ")");
+        }
+      }
+
+      var datalist = document.getElementById("datalist" + c + '.' + (newRowCnt - 1));
+      if (datalist != null) {
+        datalist.id = "datalist" + c + '.' + (newRowCnt - 2);
+      }
     }
-    inputComprador.style.borderColor = '#CF0029';
-  }else{ 
-    if (all_compradores.indexOf(inputComprador.value)  > -1) {
-      boolComp = true;
-    }else{
+  }
+
+  function removeNextRow() {
+
+  }
+
+  function showModal() {
+    $('#modalSubmit').modal('open');
+  };
+
+  function validateData(rowCnt) {
+    var boolComp = false;
+    var inputComprador = document.getElementById("inputComp");
+    var distOrComp = (userIsComprador) ? "vendedor" : "comprador";
+    if (inputComprador.value === null || inputComprador.value.match(/^ *$/) !== null) {
       boolComp = false;
-      var error = "El "+distOrComp+" seleccionado no está dentro de las opciones permitidas";
+      var error = "El " + distOrComp + " no puede estar vacio";
       if (errors.indexOf(error) < 0) {
         errors.push(error);
       }
       inputComprador.style.borderColor = '#CF0029';
+    } else {
+      if (all_compradores.indexOf(inputComprador.value) > -1) {
+        boolComp = true;
+      } else {
+        boolComp = false;
+        var error = "El " + distOrComp + " seleccionado no está dentro de las opciones permitidas";
+        if (errors.indexOf(error) < 0) {
+          errors.push(error);
+        }
+        inputComprador.style.borderColor = '#CF0029';
+      }
     }
-  }
-  for (var i = 0; i < rowCnt; i++) {
-    var boolIng = false;
-    var boolMar = false;
-    var boolCant = false;
-    for (var j = 0; j < headers.length; j++) {
-      var input = document.getElementById('input'+j+'.'+i+'');
-      if (j == 0) { //ingrediente
-        if (input.value === null || input.value.match(/^ *$/) !== null) {
-          boolIng = false
-          var error = "El ingrediente no puede estar vacio";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-        }else{
-          if (all_ingredientes.indexOf(input.value) > -1) {
-            boolIng = true;
-          }else{
-            boolIng = false;
-            var error = "El ingrediente no está dentro de las opciones permitidas";
+    for (var i = 0; i < rowCnt; i++) {
+      var boolIng = false;
+      var boolMar = false;
+      var boolCant = false;
+      for (var j = 0; j < headers.length; j++) {
+        var input = document.getElementById('input' + j + '.' + i + '');
+        if (j == 0) { //ingrediente
+          if (input.value === null || input.value.match(/^ *$/) !== null) {
+            boolIng = false
+            var error = "El ingrediente no puede estar vacio";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
             }
             input.style.borderColor = '#CF0029';
+          } else {
+            if (all_ingredientes.indexOf(input.value) > -1) {
+              boolIng = true;
+            } else {
+              boolIng = false;
+              var error = "El ingrediente no está dentro de las opciones permitidas";
+              if (errors.indexOf(error) < 0) {
+                errors.push(error);
+              }
+              input.style.borderColor = '#CF0029';
+            }
           }
-        }
-      }else if (j == 1) {
+        } else if (j == 1) {
           if (input.value === null || input.value.match(/^ *$/) !== null) {
             boolMar = false;
             var error = "La empresa no puede estar vacia, si no requiere una en específico seleccione NINGUNA";
@@ -811,10 +751,10 @@ function validateData(rowCnt){
               errors.push(error);
             }
             input.style.borderColor = '#CF0029';
-          }else{
+          } else {
             if (all_empresas.indexOf(input.value) > -1) {
               boolMar = true;
-            }else{
+            } else {
               boolMar = false;
               var error = "La empresa no está dentro de las opciones permitidas";
               if (errors.indexOf(error) < 0) {
@@ -823,354 +763,354 @@ function validateData(rowCnt){
               input.style.borderColor = '#CF0029';
             }
           }
-      }else if (!userIsComprador && j == 2) {
-        if (all_distribuidores.indexOf(input.value)  > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "El distribuidor seleccionado no está dentro de las opciones permitidas";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-        }
-      }else if ((!userIsComprador && j == 3) || (userIsComprador && j == 2)) {
-        if (input.value === null || input.value.match(/^ *$/) !== null) {
-          boolCant = false;
-          var error = "La cantidad no puede estar vacia";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-        }else{
-          if (!isNaN(input.value)) {
-            boolCant = true;
-          }else{
-            boolCant = false;
-            var error = "La cantidad debe ser un número";
+        } else if (!userIsComprador && j == 2) {
+          if (all_distribuidores.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+            isValidated = true;
+          } else {
+            isValidated = false;
+            var error = "El distribuidor seleccionado no está dentro de las opciones permitidas";
             if (errors.indexOf(error) < 0) {
               errors.push(error);
             }
-            input.style.borderColor = '#CF0029'; 
+            input.style.borderColor = '#CF0029';
+          }
+        } else if ((!userIsComprador && j == 3) || (userIsComprador && j == 2)) {
+          if (input.value === null || input.value.match(/^ *$/) !== null) {
+            boolCant = false;
+            var error = "La cantidad no puede estar vacia";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
+          } else {
+            if (!isNaN(input.value)) {
+              boolCant = true;
+            } else {
+              boolCant = false;
+              var error = "La cantidad debe ser un número";
+              if (errors.indexOf(error) < 0) {
+                errors.push(error);
+              }
+              input.style.borderColor = '#CF0029';
+            }
+          }
+        } else if ((!userIsComprador && j == 4) || (userIsComprador && j == 3)) {
+          if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+            isValidated = true;
+          } else {
+            isValidated = false;
+            errors.push("El precio venta debe ser un número");
+            input.style.borderColor = '#CF0029';
+          }
+        } else if (!userIsComprador && j == 5) {
+          if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+            isValidated = true;
+          } else {
+            isValidated = false;
+            var error = "El precio compra debe ser un número";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
+          }
+        } else if ((!userIsComprador && j == 6) || (userIsComprador && j == 4)) {
+          if (all_tipoPago.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
+            isValidated = true;
+          } else {
+            isValidated = false;
+            var error = "El tipo de pago seleccionado no está dentro de las opciones permitidas";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
+          }
+        } else if ((!userIsComprador && j == 7) || (userIsComprador && j == 5)) {
+          if (input.value === null || input.value == '/' || input.value >= 0) {
+            isValidated = true;
+          } else {
+            isValidated = false;
+            var error = "La tasa seleccionada no está dentro de las opciones permitidas";
+            if (errors.indexOf(error) < 0) {
+              errors.push(error);
+            }
+            input.style.borderColor = '#CF0029';
           }
         }
-      }else if ((!userIsComprador && j == 4) || (userIsComprador && j == 3)) {
-        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          errors.push("El precio venta debe ser un número");
-          input.style.borderColor = '#CF0029'; 
-        }
-      }else if (!userIsComprador && j == 5) {
-        if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "El precio compra debe ser un número";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029'; 
-        }
-      }else if((!userIsComprador && j == 6) || (userIsComprador && j == 4)){
-        if (all_tipoPago.indexOf(input.value)  > -1  || input.value === null || input.value.match(/^ *$/) !== null) {
-          isValidated = true;
-        }else{
-          isValidated = false;
-          var error = "El tipo de pago seleccionado no está dentro de las opciones permitidas";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-        }
-      }else if ((!userIsComprador && j == 7) || (userIsComprador && j == 5)){
-         if (input.value === null || input.value == '/' || input.value >= 0) {
-          isValidated = true;
-         }else{
-          isValidated = false;
-          var error = "La tasa seleccionada no está dentro de las opciones permitidas";
-          if (errors.indexOf(error) < 0) {
-            errors.push(error);
-          }
-          input.style.borderColor = '#CF0029';
-         }
       }
     }
-  }
-  return (isValidated && boolCant && boolMar && boolIng && boolComp);
-};
+    return (isValidated && boolCant && boolMar && boolIng && boolComp);
+  };
 
-function submit(){
-  var empTab = document.getElementById('empTable');
-  if (validateData(rowCnt)) {
-    var dict = [];
-    var inputComp = $('option[value="'+$('#inputComp').val()+'"]').attr('id');
-    var vendedor = document.getElementById('vendedorSpanEmail');
-    var observaciones = document.getElementById('inputObser');
-    if (userIsComprador) {
-      headers.push("Precio compra");
-      headers.push("Distribuidor");
-    }
-    for (var i in headers) {
-      if (userIsComprador && headers[i] == "Precio") {
-        headers[i] = "Precio venta";
+  function submit() {
+    var empTab = document.getElementById('empTable');
+    if (validateData(rowCnt)) {
+      var dict = [];
+      var inputComp = $('option[value="' + $('#inputComp').val() + '"]').attr('id');
+      var vendedor = document.getElementById('vendedorSpanEmail');
+      var observaciones = document.getElementById('inputObser');
+      if (userIsComprador) {
+        headers.push("Precio compra");
+        headers.push("Distribuidor");
       }
-    }
-     for (var i = 0; i < rowCnt; i++) {
-      var tmp_dict = {};
-      var tmp = {};
-      for (var j = 0; j < headers.length; j++) {
-        var input = document.getElementById('input'+j+'.'+i);
-        if (headers[j] == "Precio compra" && userIsComprador) {
-          input = 0;
-          tmp_dict[headers[j]] = input;
-        }
-        else if (headers[j] == "Distribuidor" && !userIsComprador) {
-          var inputValue = input.value;
-          input = userIsComprador ? null : $('option[value="'+inputValue+'"]').attr('id');
-          tmp_dict[headers[j]] = input;
-        }
-        else {
-          tmp_dict[headers[j]] = (input != null) ? input.value : null;
+      for (var i in headers) {
+        if (userIsComprador && headers[i] == "Precio") {
+          headers[i] = "Precio venta";
         }
       }
-      // default para divisa
-      headers.push("Divisa");
-      tmp_dict["Divisa"] = "USD"
-      //
-      dict.push(tmp_dict);
-     }
-     var aux_dict = {};
-     if (!userIsComprador) {
-       aux_dict = {
-          'data':dict,
-          'comprador':inputComp,
-          'vendedor':vendedor.innerHTML,
+      for (var i = 0; i < rowCnt; i++) {
+        var tmp_dict = {};
+        var tmp = {};
+        for (var j = 0; j < headers.length; j++) {
+          var input = document.getElementById('input' + j + '.' + i);
+          if (headers[j] == "Precio compra" && userIsComprador) {
+            input = 0;
+            tmp_dict[headers[j]] = input;
+          }
+          else if (headers[j] == "Distribuidor" && !userIsComprador) {
+            var inputValue = input.value;
+            input = userIsComprador ? null : $('option[value="' + inputValue + '"]').attr('id');
+            tmp_dict[headers[j]] = input;
+          }
+          else {
+            tmp_dict[headers[j]] = (input != null) ? input.value : null;
+          }
+        }
+        // default para divisa
+        headers.push("Divisa");
+        tmp_dict["Divisa"] = "USD"
+        //
+        dict.push(tmp_dict);
+      }
+      var aux_dict = {};
+      if (!userIsComprador) {
+        aux_dict = {
+          'data': dict,
+          'comprador': inputComp,
+          'vendedor': vendedor.innerHTML,
           'observaciones': observaciones.value,
           'envio_comprador': false,
-       }
-     }
-     else {
-       aux_dict = {
-          'data':dict,
-          'comprador':vendedor.innerHTML,
-          'vendedor':inputComp,
+        }
+      }
+      else {
+        aux_dict = {
+          'data': dict,
+          'comprador': vendedor.innerHTML,
+          'vendedor': inputComp,
           'observaciones': observaciones.value,
           'envio_comprador': true,
-       }
-     }
-     fetch("{% url 'api_articulos' %}",{
-      method:'POST',
-      headers: {
-        [window.drf.csrfHeaderName]:window.drf.csrfToken,
-        'Content-Type':'application/x-www-form-urlencoded;charset=utf-8',
-      },
-      body: JSON.stringify(aux_dict),
-     }).then(async function(res){
+        }
+      }
+      fetch("{% url 'api_articulos' %}", {
+        method: 'POST',
+        headers: {
+          [window.drf.csrfHeaderName]: window.drf.csrfToken,
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+        body: JSON.stringify(aux_dict),
+      }).then(async function (res) {
         var data = await res.json();
         var url = "{% url 'negocio' "0" %}";
-        url = url.replace('0',data);
+        url = url.replace('0', data);
         window.location = url;
-     });
-  }else{
-    var print_errors="";
-    for (var i = 0; i < errors.length; i++) {
-      print_errors = print_errors.concat('\n'+errors[i])
+      });
+    } else {
+      var print_errors = "";
+      for (var i = 0; i < errors.length; i++) {
+        print_errors = print_errors.concat('\n' + errors[i])
+      }
+      swal("Oops!", print_errors, "error");
+      errors = [];
     }
-    swal("Oops!", print_errors, "error");
-    errors = [];
+  };
+
+
+  // funciones de los inputs
+
+  function input_ingrediente(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('list', 'datalist' + (c) + '.' + rowCnt);
+    ele.setAttribute('onchange', 'refreshEmpresa("' + rowCnt + '")');
+    ele.setAttribute('onclick', 'this.select();');
+    ele.setAttribute('placeholder', 'Ingrediente');
+    ele.setAttribute('autocomplete', 'off');
+    var datalistIng = document.createElement('datalist');
+    datalistIng.setAttribute('id', 'datalist' + (c) + '.' + rowCnt);
+
+    td.appendChild(ele);
+    td.appendChild(datalistIng);
+    for (var i = 0; i < savings_data.length; i++) {
+      var optionIng = document.createElement('option');
+      optionIng.setAttribute('value', '' + savings_data[i].ingrediente);
+      all_ingredientes.push(savings_data[i].ingrediente); //to validate later
+      datalistIng.appendChild(optionIng);
+
+    }
   }
-};
 
 
-// funciones de los inputs
+  function input_empresa(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('list', 'datalist' + (c) + '.' + (rowCnt));
+    ele.setAttribute('onclick', 'this.select();');
+    ele.setAttribute('placeholder', 'Empresa');
+    ele.setAttribute('autocomplete', 'off');
+    var datalistMar = document.createElement('datalist');
+    datalistMar.setAttribute('id', 'datalist' + (c) + '.' + rowCnt);
 
-function input_ingrediente(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-  ele.setAttribute('onchange','refreshEmpresa("'+rowCnt+'")');
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Ingrediente');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistIng = document.createElement('datalist');
-  datalistIng.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-  
-  td.appendChild(ele);
-  td.appendChild(datalistIng);
-  for (var i = 0; i < savings_data.length; i++) {
-    var optionIng = document.createElement('option');
-    optionIng.setAttribute('value',''+savings_data[i].ingrediente);
-    all_ingredientes.push(savings_data[i].ingrediente); //to validate later
-    datalistIng.appendChild(optionIng);        
-
+    td.appendChild(ele);
+    td.appendChild(datalistMar);
+    for (var i = 0; i < savings_data.length; i++) {
+      var optionMar = document.createElement('option');
+      optionMar.setAttribute('value', '' + savings_data[i].empresa__nombre_comercial + '');
+      optionMar.setAttribute('id', 'option' + i);
+      all_empresas.push(savings_data[i].empresa__nombre_comercial);
+      datalistMar.appendChild(optionMar);
+    }
   }
-}
 
+  function input_distribuidor(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('list', 'datalist' + (c) + '.' + rowCnt);
+    ele.setAttribute('onclick', 'this.select();');
+    ele.setAttribute('placeholder', 'Distribuidor');
+    ele.setAttribute('autocomplete', 'off');
+    var datalistDis = document.createElement('datalist');
+    datalistDis.setAttribute('id', 'datalist' + (c) + '.' + rowCnt);
 
-function input_empresa(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Empresa');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistMar = document.createElement('datalist');
-  datalistMar.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-  
-  td.appendChild(ele);
-  td.appendChild(datalistMar);
-  for (var i = 0; i < savings_data.length; i++) {
-    var optionMar = document.createElement('option');
-    optionMar.setAttribute('value',''+savings_data[i].empresa__nombre_comercial+'');
-    optionMar.setAttribute('id','option'+i);
-    all_empresas.push(savings_data[i].empresa__nombre_comercial);
-    datalistMar.appendChild(optionMar);        
+    td.appendChild(ele);
+    td.appendChild(datalistDis);
+    for (var i = 0; i < distribuidores_data.length; i++) {
+      var optionDis = document.createElement('option');
+      optionDis.setAttribute('value', '' + distribuidores_data[i].nombre);
+      optionDis.setAttribute('id', distribuidores_data[i].email);
+      all_distribuidores.push(distribuidores_data[i].nombre);
+      datalistDis.appendChild(optionDis);
+    }
   }
-}
 
-function input_distribuidor(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+rowCnt);
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('placeholder', 'Distribuidor');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistDis = document.createElement('datalist');
-  datalistDis.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-
-  td.appendChild(ele);
-  td.appendChild(datalistDis);
-  for (var i = 0; i < distribuidores_data.length; i++) {
-    var optionDis = document.createElement('option');
-    optionDis.setAttribute('value',''+distribuidores_data[i].nombre);
-    optionDis.setAttribute('id',distribuidores_data[i].email);
-    all_distribuidores.push(distribuidores_data[i].nombre);
-    datalistDis.appendChild(optionDis);        
-  }
-}
-
-function input_cantidad(c,td){
+  function input_cantidad(c, td) {
     var ele = document.createElement('input');
     ele.setAttribute('type', 'text');
     ele.setAttribute('size', '4');
 
-    ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('autocomplete', 'off');
     ele.setAttribute('placeholder', "0.00");
     td.appendChild(ele);
-}
-
-// function input_divisa(c,td){
-//   var ele = document.createElement('input');
-//   ele.setAttribute('type', 'text');
-//   ele.setAttribute('size', '9');
-//   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-//   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-//   ele.setAttribute('onclick','this.select();');
-//   ele.setAttribute('placeholder', 'Divisa');
-//   ele.setAttribute('autocomplete', 'off');
-//   var datalistDivisa = document.createElement('datalist');
-//   datalistDivisa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-  
-//   td.appendChild(ele);
-//   td.appendChild(datalistDivisa);
-//   for (var i = 0; i < divisas.length; i++) {
-//     var optionDivisa = document.createElement('option');
-//     optionDivisa.setAttribute('value',''+divisas[i]);
-//     optionDivisa.setAttribute('id','option'+i);
-//     datalistDivisa.appendChild(optionDivisa);        
-//   }
-// }
-
-function input_tipoPago(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
-  ele.setAttribute('onclick','this.select();');
-  ele.setAttribute('onchange','desactivarTasa('+rowCnt+');');
-  ele.setAttribute('placeholder', 'Tipo de pago');
-  ele.setAttribute('autocomplete', 'off');
-  var datalistPagos = document.createElement('datalist');
-  datalistPagos.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
-  
-  td.appendChild(ele);
-  td.appendChild(datalistPagos);
-  for (var i = 0; i < tipo_pago.length; i++) {
-    var optionPagos = document.createElement('option');
-    optionPagos.setAttribute('value',''+tipo_pago[i].nombre);
-    optionPagos.setAttribute('id','option'+i);
-    all_tipoPago.push(tipo_pago[i].nombre);
-    datalistPagos.appendChild(optionPagos);        
   }
-}
 
-function input_tasa(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'number');
-  ele.setAttribute('min', '0');
-  ele.setAttribute('step', '.01');
+  // function input_divisa(c,td){
+  //   var ele = document.createElement('input');
+  //   ele.setAttribute('type', 'text');
+  //   ele.setAttribute('size', '9');
+  //   ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
+  //   ele.setAttribute('list', 'datalist'+(c)+'.'+(rowCnt));
+  //   ele.setAttribute('onclick','this.select();');
+  //   ele.setAttribute('placeholder', 'Divisa');
+  //   ele.setAttribute('autocomplete', 'off');
+  //   var datalistDivisa = document.createElement('datalist');
+  //   datalistDivisa.setAttribute('id', 'datalist'+(c)+'.'+rowCnt);
 
+  //   td.appendChild(ele);
+  //   td.appendChild(datalistDivisa);
+  //   for (var i = 0; i < divisas.length; i++) {
+  //     var optionDivisa = document.createElement('option');
+  //     optionDivisa.setAttribute('value',''+divisas[i]);
+  //     optionDivisa.setAttribute('id','option'+i);
+  //     datalistDivisa.appendChild(optionDivisa);        
+  //   }
+  // }
 
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('placeholder', 'Tasa');
-  ele.setAttribute('autocomplete', 'off');
-  
-  td.appendChild(ele);
-}
+  function input_tipoPago(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('list', 'datalist' + (c) + '.' + (rowCnt));
+    ele.setAttribute('onclick', 'this.select();');
+    ele.setAttribute('onchange', 'desactivarTasa(' + rowCnt + ');');
+    ele.setAttribute('placeholder', 'Tipo de pago');
+    ele.setAttribute('autocomplete', 'off');
+    var datalistPagos = document.createElement('datalist');
+    datalistPagos.setAttribute('id', 'datalist' + (c) + '.' + rowCnt);
 
-function input_fechaPago(c,td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('size', '18');
-  ele.setAttribute('class', 'datepicker');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('placeholder', 'Seleccione Fecha');
-  ele.setAttribute('autocomplete', 'off');
-  td.appendChild(ele);
-  start_datepicker();
-}
-
-function input_fechaEntrega(c, td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('size', '1');
-  ele.setAttribute('class', 'datepicker');
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('placeholder', 'Seleccione Fecha');
-  ele.setAttribute('autocomplete', 'off');
-  td.appendChild(ele);
-  start_datepicker();
-}
-
-function input_destino(c, td){
-  var ele = document.createElement('input');
-  ele.setAttribute('type', 'text');
-  ele.setAttribute('size', '4');
-
-  ele.setAttribute('id', 'input'+(c)+'.'+rowCnt);
-  ele.setAttribute('autocomplete', 'off');
-  ele.setAttribute('placeholder', "Destino");
-  td.appendChild(ele);
-}
-
-function desactivarTasa(row){
-  var inputPago = document.getElementById("input7."+row).value;
-  var datalistTasa = document.getElementById("input8."+row);
-  var inputTasa = document.getElementById("input8."+row);
-  if (inputPago.toLowerCase() =="contado") {
-    inputTasa.disabled = true;
-    inputTasa.setAttribute("placeholder","/");
-  }else if (inputTasa.disabled) {
-    inputTasa.disabled = false;
-    inputTasa.setAttribute("placeholder","Tasa");
+    td.appendChild(ele);
+    td.appendChild(datalistPagos);
+    for (var i = 0; i < tipo_pago.length; i++) {
+      var optionPagos = document.createElement('option');
+      optionPagos.setAttribute('value', '' + tipo_pago[i].nombre);
+      optionPagos.setAttribute('id', 'option' + i);
+      all_tipoPago.push(tipo_pago[i].nombre);
+      datalistPagos.appendChild(optionPagos);
+    }
   }
-}
+
+  function input_tasa(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'number');
+    ele.setAttribute('min', '0');
+    ele.setAttribute('step', '.01');
+
+
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('placeholder', 'Tasa');
+    ele.setAttribute('autocomplete', 'off');
+
+    td.appendChild(ele);
+  }
+
+  function input_fechaPago(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('size', '18');
+    ele.setAttribute('class', 'datepicker');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('placeholder', 'Seleccione Fecha');
+    ele.setAttribute('autocomplete', 'off');
+    td.appendChild(ele);
+    start_datepicker();
+  }
+
+  function input_fechaEntrega(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('size', '1');
+    ele.setAttribute('class', 'datepicker');
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('placeholder', 'Seleccione Fecha');
+    ele.setAttribute('autocomplete', 'off');
+    td.appendChild(ele);
+    start_datepicker();
+  }
+
+  function input_destino(c, td) {
+    var ele = document.createElement('input');
+    ele.setAttribute('type', 'text');
+    ele.setAttribute('size', '4');
+
+    ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
+    ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('placeholder', "Destino");
+    td.appendChild(ele);
+  }
+
+  function desactivarTasa(row) {
+    var inputPago = document.getElementById("input7." + row).value;
+    var datalistTasa = document.getElementById("input8." + row);
+    var inputTasa = document.getElementById("input8." + row);
+    if (inputPago.toLowerCase() == "contado") {
+      inputTasa.disabled = true;
+      inputTasa.setAttribute("placeholder", "/");
+    } else if (inputTasa.disabled) {
+      inputTasa.disabled = false;
+      inputTasa.setAttribute("placeholder", "Tasa");
+    }
+  }
 
 
 

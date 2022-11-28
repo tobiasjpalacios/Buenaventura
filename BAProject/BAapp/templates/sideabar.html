@@ -2,6 +2,11 @@
 
 {% load auth_extras %}
 
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/css/sidebar.css' %}">
+
+
 <body>
 
   <ul id="slide-out" class="sidenav" style="background-color:#4fad31;">
@@ -31,7 +36,7 @@
       </a>
     </li>
     <li>
-      <a href="{% url 'comprobantes'  %}">
+      <a href="{% url 'menu_comprobantes'  %}">
         <i class="small iconbar material-icons" style="position: relative;">folder</i>
         Comprobantes
       </a>

@@ -110,31 +110,55 @@ class Info_negocioView(View):
 
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
-        facturas = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
-        remitos = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
-        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        recibos = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        cheques = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
-        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
-        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        notas = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        moment_url = request.resolver_match.url_name
+        if moment_url=="facturas":
+            data = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+        elif moment_url=="remitos":
+            data = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+        elif moment_url=="ordenesCompra":
+            data = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        elif moment_url=="ordenesPagos":
+            data = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        elif moment_url=="contancias":
+            data = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        elif moment_url=="recibos":
+            data = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        elif moment_url=="cheques":
+            data = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        elif moment_url=="cuentasCorrientes":
+            data = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        elif moment_url=="facturasComision":
+            data = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+        elif moment_url=="notas":
+            data = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
 
-        comprobantes = {
-                    "facturas": facturas,
-                    "remitos": remitos,
-                    "ordenesDeCompra": ordenesDeCompra,
-                    "ordenesDePago": ordenesDePago,
-                    "constancias": constancias,
-                    "recibos": recibos,
-                    "cheques": cheques,
-                    "cuentasCorriente": cuentasCorriente,
-                    "facturasComision": facturasComision,
-                    "notas": notas,          
-                }
-        
-        return render(request, 'comprobantes.html',{"comprobantes":comprobantes})
+        return render(request, 'comprobantes.html',{"data":data})
+
+class MenuComprobantesView(View):
+    def get(self, request, *args, **kwargs):
+        lista_comprobantes = [{"nombre":"Facturas",
+                            "url": "facturas"},
+                        {"nombre":"Remitos",
+                            "url": "remitos"},
+                        {"nombre":"Orden de compra",
+                            "url": "ordenesCompras"},
+                        {"nombre":"Orden de pago",
+                            "url": "ordenesPagos"},
+                        {"nombre":"Constancia rentención",
+                            "url": "contancias"},
+                        {"nombre":"Recibo",
+                            "url": "recibos"},
+                        {"nombre":"Cheques",
+                            "url": "cheques"},
+                        {"nombre":"Cuentas corrientes",
+                            "url": "cuentasCorrientes"},
+                        {"nombre":"Factura comisiones",
+                            "url": "facturasComision"},
+                        {"nombre":"Nota",
+                            "url": "notas"}, 
+                        ]
+        return render(request, 'menu_comprobantes.html',{"lista_comprobantes":lista_comprobantes})
+
 
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):

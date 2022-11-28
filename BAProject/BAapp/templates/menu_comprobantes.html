@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}
+{%block body%}
+
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/old_vendedor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static '/css/comprobantes.css' %}">
+</head>
+
+<body style="overflow: hidden;">
+
+    <!-- page -->
+    <div class="row" style="height: 100%;">
+
+        <!-- titulo -->
+        <div class="menuZone clv">
+            <h4 class="tituloPagina"> Comprobantes</h4>
+        </div>    
+        
+        <div style="width: 100%; height: 70vh">
+
+            <div class="zonaBotones">
+                {% for comprobante in lista_comprobantes %}
+
+                <div class="col l10 offset-l1">
+                    <div class="col s12 m2 l2 offset-l1 card botonComprobante" href="{% url comprobante.url %}">
+                        <div class="">
+                            <i class="material-icons medium card-content">description</i>
+                            <div class="card-content">
+                                <span class="card-title activator grey-text text-darken-4">{{comprobante.nombre}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!---------------->
+    <script>
+    </script>
+
+</body>
+{% endblock body %}
