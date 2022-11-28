@@ -1,0 +1,95 @@
+.titulo1 {
+    height: 60px;
+
+
+    background-color: #757474;
+    font-family: 'Montserrat';
+
+}
+b{
+    color: #757474!important;
+}
+
+.barra {
+    border-radius: 2em;
+    background-color: #757474;
+    height: 40px;
+
+}
+
+.active,
+.barra1:hover {
+    font-weight: bold;
+}
+
+.barra1 {
+    height: 40px;
+}
+
+.titulito {
+    color: black !important;
+    font-size: 20px;
+    font-family: 'Montserrat';
+    text-align: left;
+}
+
+.subtitulo{
+    text-align: justify;
+    font-size: 15px;
+    color: #323232 !important;
+    margin-left: 3%;
+    width: 94%;
+}
+
+.btn-agr-change{
+    display: flex;
+    width: fit-content;
+
+    background-color: white!important;
+    color: green!important;
+    border: 1px solid green!important;
+}
+
+input, select, textarea{
+    color: #757474;
+}
+
+.principalselec{
+    background-color: white;
+    border-radius: 19px 19px 19px 19px !important;
+    box-shadow: 0px 0px 10px 1px rgb(0 0 0 / 20%) !important;
+    color: #757474 !important;
+}
+
+.cuadrado {
+    border-left: 2px solid rgba(128, 128, 128, 0.555);
+    border-right: 2px solid rgba(128, 128, 128, 0.555);
+    border-top: 2px solid rgba(128, 128, 128, 0.555);
+    border-bottom: 2px solid rgba(128, 128, 128, 0.555);
+    border-color: rgba(128, 128, 128, 0.555);
+
+}
+
+.boton {
+    border-radius: 1em;
+    width: fit-content;
+}
+
+.iconito {
+    position: relative;
+    top: 5px;
+}
+
+.entrada {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.801);
+}
+
+#inputComp {
+    border-bottom: none !important;
+    box-shadow: none;
+    font-size: 120%;
+}
+
+table#empTable thread div tr {
+    border-bottom: none;
+}
