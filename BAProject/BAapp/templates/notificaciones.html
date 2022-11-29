@@ -41,8 +41,8 @@ BuenaVentura Agronegocios
 
             <!------------Notificaciones Prespuesto----------------------->
 
-            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 offset-l2 l9" style="height: 100%;">
-                <div class="headNotis">
+            <div class="col s12 l4 blockSpace"><div class="col s10 offset-s1 offset-l2 l9" style="height: 100%;">
+                <div class="headBlock">
                     <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
                         src="{% static 'images/presupuesto.png' %}">
@@ -52,7 +52,7 @@ BuenaVentura Agronegocios
                         <span>1</span>
                     </div>
                 </div>
-                <div class="tableNotis">
+                <div class="tableBlock">
                     <table>
                         <tbody>
                             {% for noti in lista_presupuestos%}
@@ -67,22 +67,22 @@ BuenaVentura Agronegocios
                         </tbody>
                     </table>
                 </div>
-                <div class="footNotis">
+                <div class="footBlock">
                     <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
                 </div>
             </div></div>
 
             <!-----------------notificaciones logistica ------------------>
 
-            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 offset-l1 l9 " style="height: 100%;">
-                <div class="headNotis">
+            <div class="col s12 l4 blockSpace"><div class="col s10 offset-s1 offset-l1 l9 " style="height: 100%;">
+                <div class="headBlock">
                     <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
                         src="{% static 'images/logistica.png' %}">
                         Logística
                     </span>
                 </div>
-                <div class="tableNotis">
+                <div class="tableBlock">
                     <table>
                         <tbody>
                             {% for noti in lista_logistica_noti %}
@@ -97,22 +97,22 @@ BuenaVentura Agronegocios
                         </tbody>
                     </table>
                 </div>
-                <div class="footNotis">
+                <div class="footBlock">
                     <a class="verTodos btn white-text no-shadows" href="{% url 'logistica' %}"> Ver todos </a>
                 </div>
             </div></div>
 
             <!-------------notificaciones vencmientos ---------------------->
 
-            <div class="col s12 l4 notisSpace"><div class="col s10 offset-s1 l9" style="height: 100%;">
-                <div class="headNotis">
+            <div class="col s12 l4 blockSpace"><div class="col s10 offset-s1 l9" style="height: 100%;">
+                <div class="headBlock">
                     <span class="titulito">
                         <img class="imgchica text-align left hide-on-small-only"
                         src="{% static 'images/vencimientos.png' %}">
                         Vencimientos
                     </span>
                 </div>
-                <div class="tableNotis">
+                <div class="tableBlock">
                     <table>
                         <tbody>
                             {% for noti in lista_vencimiento%}
@@ -127,7 +127,7 @@ BuenaVentura Agronegocios
                         </tbody>
                     </table>
                 </div>
-                <div class="footNotis">
+                <div class="footBlock">
                     <a class="verTodos btn white-text no-shadows" href="{% url 'vencimientos' %}"> Ver todos </a>
                 </div>
             </div></div>    

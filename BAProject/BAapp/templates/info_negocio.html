@@ -23,23 +23,20 @@ BuenaVentura Agronegocios
     <!-- Esto es el semaforo de vencimientos -->
     <div class="row" style="height: 100%;">
 
-        <div class="menuZone clv">
-            <div class="menu" style="background-color:rgb(88, 88, 88);">
-                <div class="col-s2 h-bar circule">
-                    <i class="medium material-icons" style="position: relative; color:rgb(88, 88, 88);">info_outline</i>
-                </div>
-                <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Info Negocio</h4>
-            </div>
-            <div style="padding-right: 2%; margin-inline-start: auto;">
-                <a class="verTodos waves-effect waves-light btn no-shadows" href="{% url 'negocio' pk=negocio.id %}"> Negociación </a>
-            </div>
-        </div>
+        <!-- titulo -->
+        <div class="menuZone clv" style="display: flex;">
+            <h4 class="tituloPagina">Información del negocio</h4>
+            <a class="verTodos waves-effect waves-light btn no-shadows" href="{% url 'negocio' pk=negocio.id %}"> Negociación </a>
+        </div> 
 
-        <div class="modal-content">
-            <div class="" style="width: 50%;">
+
+        <!-- contenido -->
+
+        <div class="col s12 l7"><div class="modal-content col s12 l11">
+            <div>
                 <div class="">
                     <div style="height: 60px; justify-content: flex-start; " class="col clv">
-                        <h5 class="subtit"> Datos</h5>
+                        <h5 class="subtituloPagina">Datos</h5>
                     </div>
                 </div>
                 <table>
@@ -66,31 +63,12 @@ BuenaVentura Agronegocios
                 </table>               
             </div>
 
-            <div class="col s12" style="height: 20px;"></div>
-
-            {% if resultado == 'Cancelado' %}           
-                <div style="height: 60px; justify-content: flex-start; " class="col clv">
-                    <h5 class="col l9 s9" style="color:red; margin:0; font-weight:900;"> {{resultado}} </h5>
-                </div>
             
-
-            {% elif resultado == 'Confirmado' %}
-                <div style="height: 60px; justify-content: flex-start; " class="col clv">
-                   <h5 class="col l9 s9" style="color:greenyellow; margin:0; font-weight:900;"> {{resultado}} </h5>
-                </div>
-
-            {% else %}
-                <div style="height: 60px; justify-content: flex-start; " class="col clv">
-                    <h5 class="col l9 s9" style="color:rgb(112, 191, 223); margin:0; font-weight:900;"> {{resultado}} </h5>
-                </div>
-            {% endif %}
-
-            <div class="col s12" style="width: 100%; border-bottom: 2px rgba(128, 128, 128, 0.52) solid;"></div>
 
             <div class="">
                 <div class="">
                     <div style="height: 60px; justify-content: flex-start; " class="col clv">
-                        <h5 class="subtit"> Articulos</h5>
+                        <h5 class="subtituloPagina">Articulos</h5>
                     </div>
                 </div>
                 <table>
@@ -135,8 +113,8 @@ BuenaVentura Agronegocios
                             <td>{{item.tipo_pago.nombre|default:'N/E'}}</td>
                             {% endif %}
                             <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)"
-                                    class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close modal-trigger red no-shadows"><i
-                                        class=" small material-icons ">search</i></a></td>
+                                    class=""><i
+                                        class="botonSearch small material-icons ">search</i></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -144,10 +122,8 @@ BuenaVentura Agronegocios
             </div>
             <div class="">
 
-                <div class="col s12" style="width: 100%; border-bottom: 2px rgba(128, 128, 128, 0.52) solid;"></div>
-
                 <div style="height: 60px; justify-content: flex-start; " class="clv">
-                    <h5 class="subtit"> Comprobantes</h5>
+                    <h5 class="subtituloPagina">Comprobantes</h5>
                 </div>
 
                 <div class="" id="mostrar">
@@ -440,7 +416,7 @@ BuenaVentura Agronegocios
 
 
             </div>
-        </div>
+        </div></div>
     </div>
 
     <!------ Modals ---------->
