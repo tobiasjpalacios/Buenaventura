@@ -150,5 +150,4 @@ database
 #Others
 **/*Zone.Identifier
 *.xlsx
-*.yml
 dump.html
