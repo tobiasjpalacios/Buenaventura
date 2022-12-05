@@ -1,45 +1,30 @@
 <style>
-.titulito{
-   font-size: 30px;
+.modal-title {
+   font-size: 32px;
    font-family: 'Montserrat';
-   text-align: center;
+   text-align: left;
+   font-weight: 600;
+   color: black;
  }
 
-
- .barra{
-  background-color: #757474;
-  height: 40px;
-  border-radius: 1em;
-  
+* {
+   font-size: 14px;
 }
 
+.tablita thead tr {
+   border-bottom: 1px solid black;
+}
+
+.tablita tbody tr {
+   border: none;
+}
 </style>
 
   <div class="modal-content">
+   <h4 class="modal-title">{{notificacion.titulo}}</h4>
    <div class="row" >
-      <div class="col s12 " ">
-         <div class="col s10 "><h4 class="left-align ">{{notificacion.titulo}}</h4></div>
-         <div class="col s2 "><span class="right-align" style="color: grey;">{{notificacion.timestamp|date:"M d, Y"}}  </span> </div>
-         <div class="col s12"  style="border-bottom: solid rgb(128, 128, 128, 0.5);"></div>
-      </div>
-      <br>
-      <div class="espacio col s12" style="height: 25px;"></div>
-      
-      <div class="col s12">
-         <div  >
-      <div class="conteiner col s10 offset-s1">
-         <span style="margin-top: 0px;" >{% if notificacion.descripcion != None %}{{notificacion.descripcion}}{% else %}Sin descripción {% endif %}</span> 
-      </div>
-      <br>
-      <div class="espacio" style="height: 30px;"> </div>
-      </div>
-      
-   </div>
-   
       <div class="col s12">
          
-         <div  class="col s12 barra center-align " ><span class="titulito white-text center-align "> Negocio Relacionado</span> </div>
-         <div class="espacio" style="height: 30px;"> </div>
          <table class="tablita" id="tablitaAlerta">
             <thead>
               <tr>
@@ -60,7 +45,7 @@
                       <td>{{negocio.comprador.get_full_name}}</td>
                       <td><strong>{{negocio.get_id_de_neg}}</strong></td>
                       <td>{{negocio.estado}}</td>
-                      <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
+                      <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class="material-icons" style="color: #459A33;">search</i></a></td>
                   </tr>
             </tbody>
           </table>
@@ -68,7 +53,3 @@
       </div>
    </div>
   </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Aceptar</a>
-  </div>
-
