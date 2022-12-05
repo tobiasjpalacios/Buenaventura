@@ -9,9 +9,8 @@ table{
 }
 
 .zonaBotones{
-    margin-left: 5%;
-    width: 90%;
-
+    margin-left: 3%;
+    margin-right: 3%;
 }
 
 .botonComprobante{
@@ -29,17 +28,29 @@ table{
 
 .card{
     /* width: 20%; */
-    border-radius: 19px 19px 19px 19px;
+    border-radius: 25px;
     transition: background-color .1s;
-    font-weight: 800 !important;
-    font-size: 125%;
     text-align: center;
-    height: 25%;
-    width: 25%;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.card i {
+    color: #459A33;
 }
 
 .card-content{
     padding: 10px;
+}
+
+.card-content span {
+    font-size: 20px !important;
+    font-weight: 400 !important;
 }
 
 .into_card{
@@ -50,5 +61,5 @@ table{
 }
 
 .card:hover{
-    background-color: grey;
+    background-color: rgba(69, 154, 51, 0.21);
   }
