@@ -63,8 +63,6 @@ class FacturaForm(forms.ModelForm):
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     fecha_vencimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker2'}))
-    documento = forms.FileInput()
-
 
     class Meta:
         model = Factura
@@ -75,17 +73,21 @@ class RemitoForm(forms.ModelForm):
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
     fecha_vencimiento = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = Remito
         fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super(RemitoForm, self).__init__(*args, **kwargs)
+        for fname, field in self.fields.items():
+            if fname == "observaciones":
+                field.widget.attrs['class'] = 'materialize-textarea'
 
 class OrdenDeCompraForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = OrdenDeCompra
@@ -95,7 +97,6 @@ class OrdenDePagoForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = OrdenDePago
@@ -105,7 +106,6 @@ class ConstanciaRentencionForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = ConstanciaRentencion
@@ -115,7 +115,6 @@ class ReciboForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = Recibo
@@ -125,7 +124,6 @@ class ChequesForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
 
 
     class Meta:
@@ -138,7 +136,6 @@ class CuentaCorrientesForm(forms.ModelForm):
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = CuentaCorriente
@@ -148,7 +145,6 @@ class FacturaComisionesForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = FacturaComision
@@ -158,7 +154,6 @@ class NotaForm(forms.ModelForm):
 
     negocio = forms.ModelChoiceField(queryset=Negocio.objects.all(), widget=forms.HiddenInput())    
     fecha_emision = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}))
-    documento = forms.FileInput()
     
     class Meta:
         model = Nota

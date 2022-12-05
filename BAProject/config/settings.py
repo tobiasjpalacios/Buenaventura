@@ -36,8 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'crispy_forms',
+    'crispy_forms_materialize',
     'BAapp',
 ]
+
+# Default layout to use with "crispy_forms"
+CRISPY_TEMPLATE_PACK = 'materialize_css_forms'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
