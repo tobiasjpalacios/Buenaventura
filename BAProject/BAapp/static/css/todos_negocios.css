@@ -7,7 +7,7 @@ html, body {
 }
 #inputBuscadorNegocio {
     margin: 0px; 
-    color: white !important;
+    color: #757474 !important;
     border-bottom: 0px solid #000; 
     box-shadow: 0 0px 0 0 #000; 
     border: #000; 
@@ -38,9 +38,7 @@ html, body {
     z-index: 999;
     background-color: #ebebeb !important;
 }
-#navFiltro {
-    background-color: #dfdfdf6b !important;
-}
+
 #fixedForScroll {
     position: fixed;
     display: none;
@@ -65,4 +63,13 @@ span.date-text {
 
 input {
     border-bottom: 0px !important;
+}
+
+.fltbtn{
+    background-color: #4fad31;
+    border-radius: 2em;
+}
+
+.btn:hover{
+    background-color: #4fad31 !important;
 }
