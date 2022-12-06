@@ -62,4 +62,9 @@ table{
 
 .card:hover{
     background-color: rgba(69, 154, 51, 0.21);
-  }
+}
+
+.modal-content .row {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}

@@ -1,273 +1,120 @@
+<style>
+.modal-title {
+    font-size: 32px;
+    font-family: 'Montserrat';
+    text-align: left;
+    font-weight: 600;
+    color: black;
+    }
+
+* {
+    font-size: 14px;
+}
+
+.tablita thead tr {
+    border-bottom: 1px solid black;
+}
+
+.tablita tbody tr {
+    border: none;
+}
+
+.striped-custom:nth-child(even) {
+    background-color: rgba(82, 174, 50, 0.18);
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.buscador {
+    border: 0.5px solid rgba(206, 206, 207, 0.31);
+    box-shadow: 0px 3.00408px 30.0408px rgba(0, 67, 86, 0.08);
+    border-radius: 15px;
+}
+
+#inputBuscador {
+    border-bottom: none !important;
+    box-shadow: none !important;
+    font-weight: 400;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+}
+
+#inputBuscador:focus {
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+#inputBuscador::placeholder {
+    font-weight: 400;
+    font-size: 14px;
+    color: #706F6F;
+    text-align: start;
+}
+
+.input-field .prefix {
+    font-size: 1.5rem !important;
+    color: #706F6F !important;
+    margin-top: 5px !important;
+    margin-left: 5px !important;
+    user-select: none !important;
+}
+
+.input-field .prefix.active {
+    color: #706F6F !important;
+    user-select: none !important; 
+}
+</style>
+
 <div class="modal-content">
-    <h4 class="center">CARGAR {{tipo}}</h4>
+    <h4 class="left modal-title">Cargar {{tipo|lower}}</h4>
     <div class="row">
-      <div class="right">  
-        </div>
-        <input id="inputBuscador" placeholder="Buscar Negocio" onkeyup="searchBuscador()" type="text">
-        <br><br>
-        <table class="tablita" id="tablita">
-          <thead>
-            <tr>
-                <th class="auxSem"></th>
-                <th>Fecha</th>
-                <th>Empresa</th>
-                <th>Cliente</th>
-                <th class="center">Código de Negocio</th>
-                <th>Estado</th>
-                <th>Ver Negociación</th>
-            </tr>
-          </thead>
-          <tbody id="table">
+        <div class="col s12 m12">
+            <div class="col s12 m6 buscador input-field valign-wrapper">
+                <i class="material-icons prefix">search</i>
+                <input id="inputBuscador" placeholder="Buscar Negocio" onkeyup="searchBuscador()" type="text">
+            </div>
             {% for negocio in negocios%}
-                <tr data-id={{negocio.id}}>
-                    <td class="auxSem">
-                        <a class="waves-effect waves-light btn bv-green no-shadows" onclick="agregarComprobante('{{negocio.id}}')" id="input_{{negocio.id}}"><i class="material-icons">send</i></a>
-                    </td>
-                    <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-                    <td>{{negocio.comprador.empresa.razon_social}}</td>
-                    <td>{{negocio.comprador.get_full_name}}</td>
-                    <td class="center"><strong>{{negocio.get_id_de_neg}}</strong></td>
-                    {% if negocio.estado == 'Confirmado' %}
-                    <td class="green-text">
-                        <strong>{{negocio.estado}}</strong>
-                    {% elif negocio.estado == 'Cancelado' %}
-                    <td class="red-text">
-                        <strong>{{negocio.estado}}</strong>
-                    {% elif negocio.estado == 'En Negociación' %}
-                    <td class="light-blue-text">
-                        <strong>{{negocio.estado}}</strong>
-                    {% else %}
-                    <td>
-                        {{negocio.estado}}
-                    {% endif %}
-                    </td>
-                    <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
-                </tr>
+            <div class="striped-custom col s12 m12">
+                <table class="tablita responsive-table" id="tablita">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Empresa</th>
+                        <th>Cliente</th>
+                        <th>Código de Negocio</th>
+                        <th>Estado</th>
+                        <th>Ver Negociación</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table">
+                        <tr data-id={{negocio.id}}>
+                            <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+                            <td>{{negocio.comprador.empresa.razon_social}}</td>
+                            <td>{{negocio.comprador.get_full_name}}</td>
+                            <td>{{negocio.get_id_de_neg}}</td>
+                            <td>{{negocio.estado}}</td>
+                            <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class="material-icons" style="color: #459A33;">search</i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             {% endfor %}
-          </tbody>
-        </table>
+        </div>
     </div>
-  <div class="modal-footer">
-    <input type="hidden" name="tipoN" id="tipoN" value={{tipoN}}>
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancelar</a>
-  </div>
 </div>
 
 <script>
     
     $(document).ready(function(){
-    $('select').formSelect();
+        $('select').formSelect();
     });
-
-    function agregarComprobante(idNeg){
-        var valor = $('#tipoN').val();
-        switch (valor) {
-            case '1':
-                openModalFormFactura(idNeg);
-                break;       
-            case '2':
-                openModalFormRemitos(idNeg);
-                break;      
-            case '3':
-                openModalFormRemitos(idNeg);
-                break;
-            case '4':
-                openModalFormOrdenDePago(idNeg);
-                break;
-            case '5':
-                openModalFormConstanciaRentencion(idNeg);
-                break;
-            case '6':
-                openModalFormRemitos(idNeg);
-                break;
-            case '7':
-                openModalFormCheques(idNeg);
-                break;
-            case '8':
-                openModalformCuentaCorriente(idNeg);
-                break;
-            case '9':
-                openModalformFacturaComision(idNeg);
-                break;
-            case '10':
-                openModalFormNota(idNeg);
-                break;
-        }
-    }
-
-    function openModalFormFactura(idNeg) {
-        var urlTemp = '{% url "formFactura" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormFactura").html(data);
-                $('#factura').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalFormRemitos(idNeg) {
-        var urlTemp = '{% url "formRemito" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormRemito").html(data);
-                $('#remito').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalFormOrdenDeCompra(idNeg) {
-        var urlTemp = '{% url "formOrdenDeCompra" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormOrdenDeCompra").html(data);
-                $('#ordenDeCompra').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalFormOrdenDePago(idNeg) {
-        var urlTemp = '{% url "formOrdenDePago" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormOrdenDePago").html(data);
-                $('#ordenDePago').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalFormConstanciaRentencion(idNeg) {
-        var urlTemp = '{% url "formConstanciaRentencion" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { idNeg: idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormConstanciaRentencion").html(data);
-                $('#constanciaRentencion').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalFormRecibo(idNeg) {
-        var urlTemp = '{% url "formRecibo" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormRecibo").html(data);
-                $('#recibo').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-
-    function openModalFormCheques(idNeg) {
-        var urlTemp = '{% url "formChequeDef" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data : { csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormCheques").html(data);
-                $('#cheques').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalformCuentaCorriente(idNeg) {
-        var urlTemp = '{% url "formCuentaCorriente" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalformCuentaCorriente").html(data);
-                $('#cuentaCorrientes').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-
-    function openModalformFacturaComision(idNeg) {
-        var urlTemp = '{% url "formFacturaComision" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalformFacturaComision").html(data);
-                $('#facturaComisiones').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
-    
-    function openModalFormNota(idNeg) {
-        var urlTemp = '{% url "formNota" 0 %}';
-        var urlf = urlTemp.replace('0',idNeg);
-        $.ajax({
-            url: urlf,
-            data: { 'idNeg':idNeg,
-            csrfmiddlewaretoken: '{{ csrf_token }}' },
-            success: function (data) {
-                $("#modalFormNota").html(data);
-                $('#nota').modal('open');
-            },
-            error: function (response) {
-                console.log("Error")
-            }
-        })
-    };
 
     function searchBuscador() {
         var value = $("#inputBuscador").val().toLowerCase();
-        $("#tablita tr").filter(function () {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $(".striped-custom").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
         });
     }
 
