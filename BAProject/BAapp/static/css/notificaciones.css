@@ -66,3 +66,21 @@ a{
   justify-content: center;
 }
 
+.opcion {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.notis-container {
+  width: 100%;
+  height: 70vh;
+}
+
+@media only screen and (max-width: 992px) {
+  .notis-container .blockSpace {
+    margin-bottom: 20vh;
+  }
+  .opcion {
+    font-size: 24px;
+  }
+}
