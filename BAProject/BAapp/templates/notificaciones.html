@@ -37,40 +37,44 @@ BuenaVentura Agronegocios
             <h4 class="tituloPagina"> Notificaciones</h4>
         </div>    
         
-        <div style="width: 100%; height: 70vh">
+        <div class="notis-container">
 
             <!------------Notificaciones Prespuesto----------------------->
 
-            <div class="col s12 l4 blockSpace"><div class="col s10 offset-s1 offset-l2 l9" style="height: 100%;">
-                <div class="headBlock">
-                    <span class="titulito">
-                        <img class="imgchica text-align left hide-on-small-only"
-                        src="{% static 'images/presupuesto.png' %}">
-                        Presupuestos
-                    </span>
-                    <div class="countNotis">
-                        <span>1</span>
+            <div class="col s12 l4 blockSpace">
+                <div class="col s10 offset-s1 offset-l2 l9" style="height: 100%;">
+                    <div class="headBlock">
+                        <span class="titulito">
+                            <img class="imgchica text-align left hide-on-small-only"
+                            src="{% static 'images/presupuesto.png' %}">
+                            Presupuestos
+                        </span>
+                        {% if lista_presupuestos.count %}
+                        <div class="countNotis">
+                            <span>{{ lista_presupuestos.count }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="tableBlock">
+                        <table>
+                            <tbody>
+                                {% for noti in lista_presupuestos%}
+                                <tr style="border-bottom: 0px; ">
+                                    <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
+                                    <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows"
+                                            onclick="detalleNotis('{{noti.id}}')"><i
+                                                class="material-icons" style="color: #459A33;">search</i></a></td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="footBlock">
+                        <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
                     </div>
                 </div>
-                <div class="tableBlock">
-                    <table>
-                        <tbody>
-                            {% for noti in lista_presupuestos%}
-                            <tr style="border-bottom: 0px; ">
-                                <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                                        onclick="detalleNotis('{{noti.id}}')"><i
-                                            class=" small material-icons ">search</i></a></td>
-                            </tr>
-                            {% endfor %}
-                            
-                        </tbody>
-                    </table>
-                </div>
-                <div class="footBlock">
-                    <a class="verTodos btn white-text no-shadows" href="{% url 'presupuestos' %}"> Ver todos </a>
-                </div>
-            </div></div>
+            </div>
 
             <!-----------------notificaciones logistica ------------------>
 
@@ -81,6 +85,11 @@ BuenaVentura Agronegocios
                         src="{% static 'images/logistica.png' %}">
                         Logística
                     </span>
+                    {% if lista_logistica_noti.count %}
+                    <div class="countNotis">
+                        <span>{{ lista_logistica_noti.count }}</span>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="tableBlock">
                     <table>
@@ -88,9 +97,9 @@ BuenaVentura Agronegocios
                             {% for noti in lista_logistica_noti %}
                             <tr style="border-bottom: 0px; ">
                                 <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}}</td>
-                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows"
                                         onclick="detalleNotis('{{noti.id}}')"><i
-                                            class=" small material-icons ">search</i></a></td>
+                                            class="material-icons" style="color: #459A33;">search</i></a></td>
                             </tr>
                             {% endfor %}
                             
@@ -111,6 +120,11 @@ BuenaVentura Agronegocios
                         src="{% static 'images/vencimientos.png' %}">
                         Vencimientos
                     </span>
+                    {% if lista_vencimiento.count %}
+                    <div class="countNotis">
+                        <span>{{ lista_vencimiento.count }}</span>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="tableBlock">
                     <table>
@@ -118,9 +132,9 @@ BuenaVentura Agronegocios
                             {% for noti in lista_vencimiento%}
                             <tr style="border-bottom: 0px; ">
                                 <td class="opcion center">{{noti.titulo}} {{noti.timestamp|date:"M d, Y"}} </td>
-                                <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
+                                <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows"
                                         onclick="detalleNotis('{{noti.id}}')"><i
-                                            class=" small material-icons ">search</i></a></td>
+                                            class="material-icons" style="color: #459A33;">search</i></a></td>
                             </tr>
                             {% endfor %}
                             
