@@ -127,8 +127,15 @@ table.striped>tbody>tr:nth-child(odd) {
     white-space: pre;
 }
 
+/* 
 div.row.history-tables {
     min-width: 1600px;
+} */
+
+.menuZone {
+    display: flex;
+    justify-content: space-between!important;
+    width: 96%;
 }
 
 .card {

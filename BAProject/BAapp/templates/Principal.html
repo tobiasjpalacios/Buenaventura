@@ -8,35 +8,29 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
   <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
-  <style type="text/css">
-  /*html {
-    font-family: "Montseratt";
-  }*/
-  </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <!-- style -->
-  <style type="text/css">
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: #4fad31;
-      opacity: 1; /* Firefox */
-      text-align: center;
-    }
-  </style>
+
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/inicio.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
+
   <!-- title -->
   <title>
     Buenaventura Negocios
   </title>
 </head>
+
 <body style="background-color: #005221">
     <div style="background-color: #005221; height:80px; color:#ffffff; "> <center><br><img width="200" src="{% static 'images/Buenaventura_blanco.png' %}"></center> </div>
     <div style="background-color: #4fad31; "class="center">
       <br>
       <center><img width="100px" src="{% static 'images/BV_darkgreen.png' %}"></center>
-      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat; font-size: 200%;height: 10px"><b>Bienvenido/a</b></p>
-      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Ingresá a tu panel de control</p>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat; font-size: 200%;height: 10px"><b>Inicio de sesión</b></p>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Eres un nuevo usuario?</p>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Crea una nueva cuenta</p>
 
       <div class="row">
-        <form action="{% url 'login' %}" method="POST" class="col s12">
+        <form action="{% url 'login' %}" method="POST" class="col s12 whitedivStyle">
           {%csrf_token%}
           <div class="row">
             <div style="border-radius: 2em; background-color: #ffffff ;height:45px;"class="center col s4 offset-s4">
