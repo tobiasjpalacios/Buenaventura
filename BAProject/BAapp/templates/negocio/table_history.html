@@ -14,26 +14,26 @@
   }
 </style>
 <div class="row history-tables" id="div-table-{{prop.id}}">
-  <div class="circle-container col s3" style="display: none;">
-    <div class="circle">
+  <div class="circle-container col s3 {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}push-m6{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m6{%endif%}">
+    <div class="circle {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}circle-right{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}circle-right{%endif%}" id="circle{{prop.id}}">
       <div class="circle-inner">
-        <img src="{% static 'images/bv-white-bg.png' %}">
+        <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
       </div>
     </div>
   </div>
-  <div class="col s12 m9 {% if prop.envio_comprador and request.user.clase == 'Comprador' %}push-m3{% elif not prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m3{%endif%}">
+  <div class="col s12 m9 {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}pull-m3{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}pull-m3{%endif%}">
     <div class="prop-title">
-      <p class="prop-creator-name grey-text text-darken-3" id="prop-creator-name-{{prop.id}}">
+      <p class="prop-creator-name table-nego id="prop-creator-name-{{prop.id}}">
         {% if prop.envio_comprador %} 
         {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} 
         {% else %} 
         {{ negocio.vendedor.get_full_name }} 
         {% endif %}
       </p>
-      <p class="prop-date grey-text text-darken-4">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
+      <p class="prop-date table-nego">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
     </div>
-    <div class="card history-card">
-      <div class="container__wrapper">
+    <div class="card history-card table-nego {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}card-right{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}card-right{%endif%}" id="card{{prop.id}}">
+      <!-- <div class="container__wrapper">
         <div class="container__watermark">
           <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
         </div>
@@ -44,11 +44,11 @@
         <div class="container__watermark">
           <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
         </div>
-      </div>
+      </div> -->
       <div class="dark-text">
         <div class="row">
-          <table class="data-table">
-            <thead class="card-title">
+          <table class="data-table table-nego">
+            <thead class="card-title table-nego">
               <tr>
                 <th class="show{{prop.id}}">Articulo</th>
                 {% if not request.user.clase == 'Comprador' %}
@@ -85,7 +85,7 @@
                 <td class="not-show{{prop.id}} clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
                 <td class="not-show{{prop.id}} clientView">{{ item.destino|default:"Sin definir" }}</td>
                 <td class="clientViewSM">
-                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}}); sm{{prop.id}}=!sm{{prop.id}};"><i class="i{{prop.id}} material-icons table-icons">search</i></a>
+                  <a class="action-btn btn-floating btn waves-effect waves-green transparent no-shadows" id="btn-sm-{{prop.id}}" onclick="showMore({{prop.id}}); sm{{prop.id}}=!sm{{prop.id}};"><i class="i{{prop.id}} material-icons table-icons" style="color: #459A33;">search</i></a>
                 </td>
               </tr>
             {% endfor %}
@@ -93,7 +93,7 @@
           </table>
         </div>
       </div>
-      <div class="card-action">
+      <div class="card-action table-nego">
         <span class="obser">Observaciones</span>
         <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
       </div>
@@ -140,6 +140,10 @@
   
   $(document).ready(function() {
     listProp.push("{{prop.id}}");
+  });
+
+  $(window).on('load', function () {
+    vAlignCircle({{prop.id}});
   });
   
 </script>

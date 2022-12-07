@@ -214,21 +214,21 @@ function addTable() {
     }
 }
 
-$("#client-view-sw").change(function() {
+// $("#client-view-sw").change(function() {
 
-  $(".card").toggleClass("tableClientView");
-  $(".card-title").toggleClass("tableClientView");
-  $(".card-action").toggleClass("tableClientView");
-  $(".circle-container").toggle("display");
-  $(".data-table").toggleClass("tableClientView");
-  $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
-  $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
-  $(".w1").toggle("display");
-  $(".w2").toggle("display");
-  $(".w2-hide").toggle("display");
-  $(".w3").toggle("display");
+//   // $(".card").toggleClass("tableClientView");
+//   // $(".card-title").toggleClass("tableClientView");
+//   // $(".card-action").toggleClass("tableClientView");
+//   // $(".circle-container").toggle("display");
+//   // $(".data-table").toggleClass("tableClientView");
+//   // $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
+//   // $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
+//   // $(".w1").toggle("display");
+//   // $(".w2").toggle("display");
+//   // $(".w2-hide").toggle("display");
+//   // $(".w3").toggle("display");
   
-});
+// });
 
 function allTDLinebreak() {
   $("td:first-child").each(function() {
@@ -285,4 +285,12 @@ function resetIngredientesDatalist() {
       datalist.appendChild(option);
     }
   }
+}
+
+function vAlignCircle(n) {
+  var parentHeight = $("#card" + n).height();
+  var childHeight = $("#circle" + n).height();
+  var offset = childHeight / 4;
+  var marginTop = ((parentHeight - childHeight) / 2) + offset;
+  $("#circle" + n).css('margin-top', marginTop);
 }
