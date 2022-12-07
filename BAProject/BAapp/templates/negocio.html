@@ -93,7 +93,8 @@ BuenaVentura Agronegocios
 <div id="modalSend" class="modal">
   <div class="modal-content">
     <h4>Enviar propuesta</h4>
-    <p>Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?</p>
+    <p id="p1">Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?</p>
+    <p id="p2" style="display: none;"></p>
   </div>
   <div class="modal-footer">
     <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">CANCELAR</a>
@@ -123,6 +124,7 @@ BuenaVentura Agronegocios
   var isAccepted = false;
   var isCanceled = false;
   var propUpdated = false;
+  var unsavedChanges = false;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -218,7 +220,7 @@ BuenaVentura Agronegocios
     }
     resetForAccept(index)
     edits.items[index].aceptado = true;
-    $($("#form")[0].rows[index+1]).addClass("green white-text white-text-input")
+    $($("#form")[0].rows[index+1]).css('background-color', '#4CB8484A');
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
   }
@@ -226,7 +228,7 @@ BuenaVentura Agronegocios
   function reject(index){
     console.log("rejected")
     resetAll(index, "False")
-    $($("#form")[0].rows[index+1]).addClass("red white-text white-text-input")
+    $($("#form")[0].rows[index+1]).css('background-color', '#EE8A8A');
     edits.items[index]={};
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
@@ -244,8 +246,7 @@ BuenaVentura Agronegocios
         $(input).removeClass("invalid");
       }
     }
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"])
-    $($("#form")[0].rows[index+1]).addClass("yellow");
+    $($("#form")[0].rows[index+1]).css('background-color', '#FDDA77');
     editable_fields.forEach(element => {
       if (element != "observaciones") {
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
@@ -270,19 +271,20 @@ BuenaVentura Agronegocios
     lastForAccept.items[index] = edits.items[index]
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
+    unsavedChanges = false;
+    console.log($("#save-" + index).removeClass("blinkSave"));
   }
 
   function resetAll(index, aceptado){
     console.log("resetAll");
     if (aceptado == "False") {
-      $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+      $($("#form")[0].rows[index+1]).css('background-color', '');
     }
     edits.items[index] = Object.assign({},last.items[index]);
     editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]');
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change();
-        input.formSelect()
       }
       else {
         input.val(edits.items[index][element]);
@@ -292,13 +294,12 @@ BuenaVentura Agronegocios
 
   function resetForAccept(index) {
     console.log("resetForAccept");
-    $($("#form")[0].rows[index+1]).removeClass(["red","green","yellow","white-text","white-text-input"]);
+    $($("#form")[0].rows[index+1]).css('background-color', '');
     edits.items[index] = Object.assign({},lastForAccept.items[index]);
     editable_fields.forEach(element => {
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change()
-        input.formSelect()
       }
       else if (element == "distribuidor") {
         // do nothing
@@ -307,6 +308,26 @@ BuenaVentura Agronegocios
         input.val(edits.items[index][element])
       }
     });
+  }
+
+  function removeUpdate(index) {
+    editable_fields.forEach(element => {
+      if (element != "observaciones") {
+        var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
+        if (input != null) {
+          var inputValue = input.value;
+          var updatedElementValue = lastForAccept.items[index][element];
+          if (element == "tasa") {
+            updatedElementValue = parseFloat(lastForAccept.items[index][element])
+          }
+          unsavedChanges = (inputValue == updatedElementValue) || unsavedChanges;
+        }
+      }
+    });
+    if (unsavedChanges) {
+      $($("#form")[0].rows[index+1]).css('background-color', '');
+      console.log($("#save-" + index).addClass("blinkSave"));
+    }
   }
 
   var counter = 0;
@@ -332,12 +353,22 @@ BuenaVentura Agronegocios
           if (userIsComprador) {
             if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
               errors = true;
-              $(input).addClass("invalid");
+              if (input.name == "tipo_pago") {
+                $(input).parent().addClass("invalid");
+              }
+              else {
+                $(input).addClass("invalid");
+              }
             }
           }
           else {
             errors = true;
-            $(input).addClass("invalid");
+            if (input.name == "tipo_pago") {
+              $(input).parent().addClass("invalid");
+            }
+            else {
+              $(input).addClass("invalid");
+            }
           }
         }
         if (element === "distribuidor"){
@@ -398,22 +429,22 @@ BuenaVentura Agronegocios
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\"></td>\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
-    <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"')\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\"><option value=\""+n.tasa+"\" selected disabled>"+n.tasa+"%</option>{% for v,t in tasas %}<option value=\"{{ v }}\" {% if v == "+n.tasa+" %}selected{% endif %}{% if v == None %}disabled{% endif %}>{{ t }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\"/></td>\
+    <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td>\
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
-      <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">save</i></a>\
+      <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\" id=\"save-"+(table.rows.length-3)+"\"><i class=\"material-icons table-icons\">save</i></a>\
     </td>\
     <td>\
-      <a class=\"action-btn btn-small bv-gray btn-floating waves-effect waves-light\" onclick=\"showMore(0);\"><i class=\"i1 material-icons table-icons\">search</i></a>\
+      <a class=\"action-btn btn-floating btn waves-effect waves-green transparent no-shadows\" onclick=\"showMore(0);\"><i class=\"i1 material-icons table-icons\" style=\"color: #459A33;\">search</i></a>\
     </td>\
     ";
     $('select').formSelect();
@@ -471,7 +502,8 @@ BuenaVentura Agronegocios
     }
     var checker = arr => arr.every(Boolean);
     var modalTitle = $("#modalSend .modal-content h4");
-    var modalBody = $("#modalSend .modal-content p");
+    var modalBody = $("#modalSend .modal-content p#p1");
+    var modalBodyUnsaved = $("#modalSend .modal-content p#p2");
     if (checker(acc)) {
       modalTitle.text("Confirmar negocio");
       modalBody.text("Estás a punto de confirmar el negocio. ¿Deseas continuar con la operación?");
@@ -484,6 +516,8 @@ BuenaVentura Agronegocios
       modalTitle.text("Enviar propuesta");
       modalBody.text("Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?");
     }
+    modalBodyUnsaved.toggle(unsavedChanges);
+    modalBodyUnsaved.text("Tenés cambios sin guardar.");
   }
 
   function submitProp() {
@@ -516,7 +550,7 @@ BuenaVentura Agronegocios
             var v = element[k];
             k = k == "precio_venta" ? "precio" : k; 
             var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"
-            if (v == null || v == "" || v == undefined) {
+            if (!v) {
               if (!(userIsComprador && ((k == "precio_compra") || (k == "proveedor")))) {
                 listOfErrors.push(errorDesc)
                 errorFields[artName] = listOfErrors;
