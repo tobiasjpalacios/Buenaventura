@@ -55,7 +55,22 @@
         </a>
       </li>
     {% endif %}
+    <div class="show-on-collapse">
+      {% if user.is_staff %}  
+      <li>
+        <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
+      </li>
+      {% endif %}
+      <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
+      {% if user.is_authenticated %}
+      <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat; cursor: pointer;">{{user.get_full_name|title}}</a></li>
+      <li><a  href="{% url 'logout' %}" style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
+      {% else %}
+      <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+      {% endif %}
+    </div>
     {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
+      <br>
       <li style=" display: flex; justify-content: center;">
         <div class="btn-bv">
           <a href="{% url 'nuevo_negocio'  %}"> Cotizá </a>
