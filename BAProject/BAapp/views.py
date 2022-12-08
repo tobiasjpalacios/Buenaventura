@@ -172,7 +172,7 @@ class ComprobantesView(View):
         camposNombres = camposNombres[2:largo]
         campos = campos[2:largo]
 
-        return render(request, 'comprobantes.html',{"num": num, "data":data, "camposNombres":camposNombres, "campos":campos})
+        return render(request, 'comprobantes.html',{"num": num,"tipo": comprobanteTipo(num), "data":data, "camposNombres":camposNombres, "campos":campos})
 
 class MenuComprobantesView(View):
     def get(self, request, *args, **kwargs):
@@ -2213,22 +2213,7 @@ def comprobanteTipo(num):
             'default': "casi",
         }
     return options.get(num)
- 
-def comprobanteNum(num):
-    options = {
-            'Facturas': "1",
-            'Remitos': "2",
-            'Orden': "ORDEN DE COMPRA",
-            '4': "ORDEN DE PAGO",
-            '5': "CONSTANCIA DE RETENCION",
-            '6': "RECIBO",
-            '7': "CHEQUE",
-            '8': "CUENTA CORRIENTE",
-            '9': "FACTURA COMISION",
-            '10': "NOTA",
-            'default': "casi",
-        }
-    return options.get(num)
+
 
 def selecNegComprobante(request, *args, **kwargs):
     if request.method == 'POST':
