@@ -4,6 +4,9 @@
 
 
 {% load static %}
+
+{% if user.is_authenticated %}
+
 <link rel="stylesheet" type="text/css" href="{% static '/css/sidebar.css' %}">
 
 
@@ -315,5 +318,7 @@ function formAlertaLog(){
          
   };
 </script>
+
+{% endif %}
 
 {% endblock body %}

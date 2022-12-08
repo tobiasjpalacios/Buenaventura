@@ -56,8 +56,9 @@
     <nav class="no-shadows myhead row nav-wrapper">
         <!-- izquierda -->
         <!-- <a href="#" class="sidenav-trigger "><i class="material-icons">menu</i></a> -->
+        {% if user.is_authenticated %}
         <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: flex;"><i class="material-icons">menu</i></a>
-
+        {% endif %}
         <!-- medio -->
         <a href="{% url 'home' %}" class="brand-logo center valign-wrapper" style="height:100%">
           <img height="70%" class="mycenter" src="{% static 'images/Buenaventura-blanco.png' %}">
@@ -74,10 +75,6 @@
           {% if user.is_authenticated %}
           <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">{{user.get_full_name|title}}</a></li>
           <li><a  href="{% url 'logout' %}" style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
-        
-          {% else %}
-          <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
-        
           {% endif %}
         </ul>
     </nav>

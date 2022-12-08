@@ -26,8 +26,8 @@ BuenaVentura Agronegocios
 
     <!-- buscador -->
     <div class="row">
-      <div class="container">
-        <div class="input-field col s4 offset-s4 whitedivStyle" style="height: 50%; padding: 0rem; margin-top: 0;">
+      <div class="col s12">
+        <div class="input-field col s9 m4 whitedivStyle offset-m4 offset-s2" style="height: 50%; padding: 0rem; margin-top: 0;">
           <i class="small material-icons shearG" style="position: relative; left: 10px;">search</i>
           <input id="inputBuscadorNegocio"
             placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text" autocomplete="off">
@@ -39,7 +39,7 @@ BuenaVentura Agronegocios
       <!-- filtros -->
       <nav id="navFiltro" class="whitedivStyle" style="height: 100px;">
         <div class="nav-wrapper clv" style="width: 100%;">
-          <ul id="nav-mobile" class="" style="display: flex; justify-content: space-between;">
+          <ul id="nav-mobile" class="col s12" style="display: flex; justify-content: space-between;">
             <li>
               <div class="input-field clv">
                 <select multiple id="selectVendedores">
@@ -114,7 +114,7 @@ BuenaVentura Agronegocios
       </div>
 
       <!-- tabla info -->
-      <div class="offset-s2" style="width: 100%; position: relative;">
+      <div class="offset-s2 tabla-info" style="width: 100%; position: relative;">
         <table id="tableNegocios">
           <thead>
             <tr style="border-bottom: 1px solid grey;">

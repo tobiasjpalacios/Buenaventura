@@ -1,5 +1,5 @@
 html, body {
-    overflow-x: hidden;
+    overflow-x: scroll;
 }
 #inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
     color: white !important;
@@ -44,6 +44,7 @@ html, body {
     display: none;
     z-index: 997;
 }
+
 label.for-input {
     color: rgb(110, 110, 110) !important;
     font-weight: 600;
@@ -72,4 +73,13 @@ input {
 
 .btn:hover{
     background-color: #4fad31 !important;
+}
+
+@media only screen and (max-width: 1092px) {
+    #navFiltro {
+        min-width: 923px;
+    }
+    .tabla-info {
+        min-width: 923px;
+    }
 }

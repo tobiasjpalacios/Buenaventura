@@ -77,3 +77,9 @@ b{
 #tablesSem{
   height: 60vh;
 }
+
+@media only screen and (max-width: 992px) {
+  .totalh {
+    margin-bottom: 15vh;
+  }
+}

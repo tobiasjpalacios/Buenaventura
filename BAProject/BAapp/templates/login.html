@@ -1,23 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+BuenaVentura Agronegocios
+{% endblock title %}
+{%block body%}
+
 <head>
-  {% load static %}
-  <!-- imports -->
-  <meta charset="utf-8">
-  <!--Import materialize.css-->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
-  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/inicio.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
-
-  <!-- title -->
-  <title>
-    Buenaventura Negocios
-  </title>
 </head>
 
 <body>
@@ -60,12 +56,13 @@
 </div>
 </body>
 
-    <script>
-      window.onload = function() {
-        loginSuccess = "{{ loginSuccess }}";
-        if (loginSuccess == "False") {
-          alert("El usuario o contraseña es incorrecto.");
-        }
-      }
-    </script>
-</html>
+<script>
+  window.onload = function() {
+    loginSuccess = "{{ loginSuccess }}";
+    if (loginSuccess == "False") {
+      alert("El usuario o contraseña es incorrecto.");
+    }
+  }
+</script>
+
+{%endblock body%}
