@@ -44,7 +44,9 @@ BuenaVentura Agronegocios
     </div> 
 
     <div class="subtitulo">
-      <b class="">Esta pagina es para cotizar nuevos negocios, seleccione un comprador y agregue los articulos que sean necesarios.</b>
+      <b class="">Esta página es para cotizar nuevos negocios. Seleccione un
+        {% if request.user.clase == 'Comprador' %}vendedor{% elif request.user.clase == 'Vendedor' %}comprador{% endif %} 
+         y agregue los articulos que sean necesarios.</b>
     </div> 
 
 
@@ -288,7 +290,7 @@ BuenaVentura Agronegocios
     var articulo = document.createElement("a");
 
     articulo.setAttribute("content", " Articulo n°" + (rowCnt + 1));
-    articulo.setAttribute("class", "titulito");
+    articulo.setAttribute("class", "titulito art-num");
     thread.appendChild(input);
     input.appendChild(articulo);
     input.style.display="flex"
@@ -298,7 +300,7 @@ BuenaVentura Agronegocios
     //barra.setAttribute("class", "   col l9 m9 s9");
     //input.appendChild(barra);
     var delbutton = document.createElement("a");
-    delbutton.setAttribute("class", "btn-floating btn-small waves-effect waves-light red");
+    delbutton.setAttribute("class", "btn-floating btn-small waves-effect waves-light red no-shadows");
     delbutton.style.marginLeft = "10px"
     input.appendChild(delbutton);
     var logo = document.createElement("i")
@@ -364,6 +366,7 @@ BuenaVentura Agronegocios
     var icon1 = document.createElement("i");
     icon1.setAttribute("value", "expand_more")
     icon1.setAttribute("class", "material-icons iconito")
+    icon1.setAttribute('id', 'iconito'+id)
     icon1.innerHTML = "expand_more"
     nom1.appendChild(icon1);
     var br = document.createElement("br");
@@ -387,6 +390,7 @@ BuenaVentura Agronegocios
     var icon2 = document.createElement("i");
     icon2.setAttribute("value", "expand_more")
     icon2.setAttribute("class", "material-icons iconito")
+    icon2.setAttribute('id', 'iconito'+id)
     icon2.innerHTML = "expand_more"
     nom2.appendChild(icon2);
 
@@ -408,6 +412,7 @@ BuenaVentura Agronegocios
     var icon = document.createElement("i");
     icon.setAttribute("value", "expand_more")
     icon.setAttribute("class", "material-icons iconito")
+    icon.setAttribute('id', 'iconito'+id)
     icon.innerHTML = "expand_more"
     nom3.appendChild(icon);
 
@@ -547,10 +552,14 @@ BuenaVentura Agronegocios
 
   function closeDiv(divName) {
     var content = divName.nextElementSibling;
+    var iconId = 'iconito' + divName.id;
+    var iconExpand = document.getElementById(iconId);
     if (content.style.display === "none") {
       content.style.display = "block";
+      iconExpand.innerHTML = "expand_less";
     } else {
       content.style.display = "none";
+      iconExpand.innerHTML = "expand_more";
     }
 
   }
@@ -638,12 +647,12 @@ BuenaVentura Agronegocios
       }
       if (userIsComprador) {
         if (c == 4) {
-          input.setAttribute("onchange", "desactivarTasa(" + (newRowCnt - 2) + ")");
+          input.setAttribute("onchange", "desactivarTasa(" + c + ", " + (newRowCnt - 2) + ")");
         }
       }
       else {
         if (c == 6) {
-          input.setAttribute("onchange", "desactivarTasa(" + (newRowCnt - 2) + ")");
+          input.setAttribute("onchange", "desactivarTasa(" + c + ", " + (newRowCnt - 2) + ")");
         }
       }
 
@@ -1016,7 +1025,7 @@ BuenaVentura Agronegocios
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('list', 'datalist' + (c) + '.' + (rowCnt));
     ele.setAttribute('onclick', 'this.select();');
-    ele.setAttribute('onchange', 'desactivarTasa(' + rowCnt + ');');
+    ele.setAttribute('onchange', 'desactivarTasa(' + c + ', ' + rowCnt + ');');
     ele.setAttribute('placeholder', 'Tipo de pago');
     ele.setAttribute('autocomplete', 'off');
     var datalistPagos = document.createElement('datalist');
@@ -1082,16 +1091,16 @@ BuenaVentura Agronegocios
     td.appendChild(ele);
   }
 
-  function desactivarTasa(row) {
-    var inputPago = document.getElementById("input7." + row).value;
-    var datalistTasa = document.getElementById("input8." + row);
-    var inputTasa = document.getElementById("input8." + row);
-    if (inputPago.toLowerCase() == "contado") {
+  function desactivarTasa(c, row){
+    var inputPago = document.getElementById("input"+c+"."+row).value;
+    var datalistTasa = document.getElementById("input"+(c+1)+"."+row);
+    var inputTasa = document.getElementById("input"+(c+1)+"."+row);
+    if (inputPago.toLowerCase() =="contado") {
       inputTasa.disabled = true;
-      inputTasa.setAttribute("placeholder", "/");
-    } else if (inputTasa.disabled) {
+      inputTasa.setAttribute("placeholder","/");
+    }else if (inputTasa.disabled) {
       inputTasa.disabled = false;
-      inputTasa.setAttribute("placeholder", "Tasa");
+      inputTasa.setAttribute("placeholder","Tasa");
     }
   }
 

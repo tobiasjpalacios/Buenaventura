@@ -264,6 +264,8 @@ BuenaVentura Agronegocios
         input.val(edits.items[index][element]);
       }
     });
+    unsavedChanges = false;
+    console.log($("#save-" + index).removeClass("blinkSave"));
   }
 
   function resetForAccept(index) {
@@ -337,6 +339,12 @@ BuenaVentura Agronegocios
             }
           } else {
             errors = true || errors;
+            if (input.name == "tipo_pago") {
+              $(input).parent().addClass("invalid");
+            }
+            else {
+              $(input).addClass("invalid");
+            }
           }
           $(input).addClass("invalid");
           if (input.name == "tipo_pago") {

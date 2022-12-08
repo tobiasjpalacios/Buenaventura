@@ -33,6 +33,11 @@ b{
     text-align: left;
 }
 
+.titulito.art-num {
+    color: #459A33 !important;
+    font-weight: 600;
+}
+
 .subtitulo{
     text-align: justify;
     font-size: 15px;

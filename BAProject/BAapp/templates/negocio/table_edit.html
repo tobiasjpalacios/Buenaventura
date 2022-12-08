@@ -71,7 +71,7 @@
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" placeholder="Tasa" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|stringformat:'.2f' }}" placeholder="Tasa" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0">
@@ -98,8 +98,8 @@
             {% if not negocio.aprobado %}
               <tr id="extra">
                 <td class="show0">
-                    <input type="hidden" id='artValue'>
-                    <input type="text" name='articulo' id='artSearch' class="autocomplete" placeholder="Articulo">
+                  <input type="text" name='articulo' id='artSearch' list="artDatalist" placeholder="Articulo">
+                  <datalist id="artDatalist">
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">
