@@ -2,6 +2,7 @@
 {% block imports %}
 {% load static %}
 {% load auth_extras %}
+{% load getattribute %}
 {% endblock imports %}
 {% block style%}
 {% endblock style%}
@@ -39,17 +40,18 @@ BuenaVentura Agronegocios
                 <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
                     {% for comprobante in data %}
                     <tr>
+
                         {% for campo in campos %}
-                        <td class="ctr">{{comprobante.campo}}</td>
+                        <td class="ctr">{% getattribute comprobante campo %}</td>
                         {% endfor %}
-                        
-                        <td><a class="waves-effect waves-light no-shadows"href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">description</i></a></td>
+
+                        <td><a class="waves-effect waves-light no-shadows" href=""><i class="small material-icons" style="color: #4fad31">description</i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="col offset-l1 s12 l10">
+        <div class="col offset-l1 s12 l10" style="margin-top: 3%;">
             <a onclick="openModalSelecNegComprobante({{num}})" class="verTodos waves-effect waves-light btn no-shadows" > CARGAR </a>
         </div>
     </div>
