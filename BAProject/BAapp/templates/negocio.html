@@ -89,20 +89,6 @@ BuenaVentura Agronegocios
 </div>
 {% endif %}
 
-{% if not negocio.cancelado %}
-<div id="modalSend" class="modal">
-  <div class="modal-content">
-    <h4>Enviar propuesta</h4>
-    <p id="p1">Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?</p>
-    <p id="p2" style="display: none;"></p>
-  </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">CANCELAR</a>
-    <a onclick="submitProp()" class="modal-action modal-close waves-effect waves-green btn-flat">ENVIAR</a>
-  </div>
-</div>
-{% endif %}
-
 <div class="fixed-action-btn">
   <a class="btn-floating btn-large">
     <i class="large material-icons">menu</i>
@@ -501,23 +487,52 @@ BuenaVentura Agronegocios
       acc = [false];
     }
     var checker = arr => arr.every(Boolean);
-    var modalTitle = $("#modalSend .modal-content h4");
-    var modalBody = $("#modalSend .modal-content p#p1");
-    var modalBodyUnsaved = $("#modalSend .modal-content p#p2");
+    var icon, title, text;
     if (checker(acc)) {
-      modalTitle.text("Confirmar negocio");
-      modalBody.text("Estás a punto de confirmar el negocio. ¿Deseas continuar con la operación?");
+      icon = "success";
+      title = "Confirmar negocio";
+      text = "Estás a punto de confirmar el negocio.\n¿Deseas continuar con la operación?";
     }
     else if (count == 0) {
-      modalTitle.text("Cancelar negocio");
-      modalBody.text("Estás a punto de cancelar el negocio. ¿Deseas continuar con la operación?");
+      icon = "error";
+      title = "Cancelar negocio";
+      text = "Estás a punto de cancelar el negocio.\n¿Deseas continuar con la operación?";
     }
     else {
-      modalTitle.text("Enviar propuesta");
-      modalBody.text("Estás a punto de enviar una nueva propuesta. ¿Deseas continuar con la operación?");
+      icon = "warning";
+      title = "Enviar propuesta";
+      text = "Estás a punto de enviar una nueva propuesta.\n¿Deseas continuar con la operación?";
     }
-    modalBodyUnsaved.toggle(unsavedChanges);
-    modalBodyUnsaved.text("Tenés cambios sin guardar.");
+    if (unsavedChanges) {
+      swal({
+        title: "Cambios sin guardar",
+        text: "Revisá si algún botón de guardado parpadea,\nsi es así, guardá los cambios.\n¿Deseas continuar?",
+        buttons: {
+          cancel: "No",
+          confirm: "Si",
+        },
+        icon: "info"
+      }).then(okay => {
+        if (okay) openSwalForSubmit(icon, title, text);
+      });
+    }
+    else {
+      openSwalForSubmit(icon, title, text);
+    }
+  }
+
+  function openSwalForSubmit(icon, title, text) {
+    swal({
+      icon: icon,
+      title: title,
+      text: text,
+      buttons: {
+        cancel: "No",
+        confirm: "Si",
+      }
+    }).then(okay => {
+      if (okay) submitProp();
+    });
   }
 
   function submitProp() {
@@ -571,10 +586,15 @@ BuenaVentura Agronegocios
     console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + '\n' + errorFields[key]+'\n').replace(',','');
+      print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n').replace(',','');
     }
     if (errors) {
-      swal("Oops!", print_errors, "error");
+      swal({
+        title: "Oops!",
+        text: print_errors,
+        buttons: false,
+        icon: "error"
+      });
     }
     else {
       fetch("",{

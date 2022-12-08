@@ -282,3 +282,44 @@ textarea {
   color: white !important;
   font-weight: bold !important;
 }
+
+.swal-modal {
+  border-radius: 25px !important;
+}
+
+.swal-title {
+  text-align: center !important;
+  color: black !important;
+  font-size: 32px !important;
+  font-weight: 600 !important;
+  font-family: 'Montserrat' !important;
+}
+
+.swal-text {
+  text-align: center !important;
+  color: black !important;
+  font-size: 16px !important;
+  font-family: 'Montserrat' !important;
+  word-wrap: break-word !important;
+}
+
+.swal-footer {
+  text-align: center !important;
+}
+
+.swal-button {
+  width: 150px !important;
+  border-radius: 15px !important;
+}
+
+.swal-button.swal-button--cancel {
+  background-color: transparent !important;
+  color: #459A33 !important;
+  border: 1px solid #459A33 !important;
+  font-family: 'Montserrat' !important;
+}
+
+.swal-button.swal-button--confirm {
+  background-color: #459A33 !important;
+  font-family: 'Montserrat' !important;
+}

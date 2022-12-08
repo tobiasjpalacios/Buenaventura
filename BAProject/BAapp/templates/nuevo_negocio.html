@@ -122,7 +122,7 @@ BuenaVentura Agronegocios
 
         <div class="row col s12 center-align" id="divProp" style="display:none">
           <a class="green waves-effect waves-light boton btn"
-            onclick="showModal()">Realizar Propuesta</a>
+            onclick="showAlert()">Realizar Propuesta</a>
 
         </div>
       </div>
@@ -137,20 +137,6 @@ BuenaVentura Agronegocios
  <i class="material-icons">add</i>
 -->
   <br>
-
-
-  
-
-  <div id="modalSubmit" class="modal">
-    <div class="modal-content">
-      <h4>Advertencia!</h4>
-      <p>¿Desea realizar una Propuesta ?</p>
-    </div>
-    <div class="modal-footer">
-      <a onclick="submit()" class="modal-close waves-effect waves-green btn-flat"><i
-          class="material-icons">check</i></a>
-    </div>
-  </div>
 
 </body>
 
@@ -386,7 +372,7 @@ BuenaVentura Agronegocios
     var nom1 = document.createElement("a");
     nom1.setAttribute("value", " Informacion general");
     nom1.setAttribute("class", "  titulito col l5 m12 s12");
-    nom1.innerHTML = "Informacion General"
+    nom1.innerHTML = "Informacion General&ast;"
     nom1.style.color = "#459A33"
 
 
@@ -690,8 +676,18 @@ BuenaVentura Agronegocios
 
   }
 
-  function showModal() {
-    $('#modalSubmit').modal('open');
+  function showAlert() {
+    swal({
+      icon: "warning",
+      title: "Advertencia",
+      text: "¿Desea realizar una propuesta?",
+      buttons: {
+        cancel: "No",
+        confirm: "Si",
+      }
+    }).then(okay => {
+      if (okay) submit();
+    });
   };
 
   function validateData(rowCnt) {
@@ -918,7 +914,12 @@ BuenaVentura Agronegocios
       for (var i = 0; i < errors.length; i++) {
         print_errors = print_errors.concat('\n' + errors[i])
       }
-      swal("Oops!", print_errors, "error");
+      swal({
+        title: "Oops!",
+        text: print_errors,
+        buttons: false,
+        icon: "error"
+      });
       errors = [];
     }
   };
