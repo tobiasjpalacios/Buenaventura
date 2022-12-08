@@ -15,7 +15,7 @@
 </style>
 <div class="row history-tables" id="div-table-{{prop.id}}">
   <div class="circle-container col s3 {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}push-m6{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}push-m6{%endif%}">
-    <div class="circle {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}circle-right{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}circle-right{%endif%}" id="circle{{prop.id}}">
+    <div class="circle-neg {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}circle-right{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}circle-right{%endif%}" id="circle{{prop.id}}">
       <div class="circle-inner">
         <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
       </div>

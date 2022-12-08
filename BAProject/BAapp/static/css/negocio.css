@@ -467,7 +467,7 @@ table.table-nego tr td {
     height: fit-content;
 }
 
-.circle {
+.circle-neg {
     background-color: #F0F0F0;
     z-index: 55;
     position: relative;
@@ -481,16 +481,16 @@ table.table-nego tr td {
     border-bottom-right-radius: 0;
 }
 
-.circle.circle-right {
+.circle-neg.circle-right {
     transform: rotate(180deg);
     margin-right: -75.5px;
 }
 
-.circle.circle-right > .circle-inner > object {
+.circle-neg.circle-right > .circle-inner > object {
     transform: rotate(180deg);
 }
 
-.circle.table-edit {
+.circle-neg.table-edit {
     background-color: #FFFFFF !important;
     box-shadow: -10px 0 10px rgba(0, 67, 86, 0.08) !important;
 }
@@ -520,7 +520,7 @@ table.table-nego tr td {
     .card.table-nego {
         padding-left: 0;
     }
-    .circle {
+    .circle-neg {
         display: none;
     }
 }
