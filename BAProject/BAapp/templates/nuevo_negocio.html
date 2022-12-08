@@ -107,15 +107,14 @@ BuenaVentura Agronegocios
           </div>
         </div>
 
-        <!-- <div class="col s12">
+        <div class="col s12" id="obs_inp" style="margin-top:4%; display:none">
           <div class="col s12   left-align " style="border-bottom: 2px rgba(128, 128, 128, 0.801) solid;"><span
-              class="titulito center-align " id="observaciones"> Observaciones</span> </div>
-
-          <div style="margin-top: 4%;" class="row left-align col s10 offset-1 ">
-            <label for="inputObser"> Escriba aqui</label>
-            <input class="error" type="text" id="inputObser">
+              class="titulito center-align " id="observaciones">Observaciones</span> 
           </div>
-        </div> -->
+          <div class="row left-align col s12 ">
+            <input class="error" type="text" placeholder="Escriba aqui" id="inputObser">
+          </div>
+        </div>
 
 
 
@@ -249,9 +248,11 @@ BuenaVentura Agronegocios
 
   function hideSend() {
     var divS = document.getElementById("divProp");
+    var inpO = document.getElementById("obs_inp");
 
     if (rowCnt < 1) {
       divS.style.display = "none";
+      inpO.style.display = "none";
       document.getElementById("agr_art").classList.remove('btn-agr-change');
       document.getElementById("iconadd").style.display = "none";
       document.getElementById("div-agr-btn").style.paddingLeft = "";
@@ -259,6 +260,7 @@ BuenaVentura Agronegocios
       
     } else {
       divS.style.display = "block";
+      inpO.style.display = "block";
       document.getElementById("agr_art").classList.add('btn-agr-change');
       document.getElementById("iconadd").style.display = "";
       document.getElementById("agr_art").style.display = "flex";

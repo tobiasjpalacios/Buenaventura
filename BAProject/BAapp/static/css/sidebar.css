@@ -11,3 +11,8 @@ a{
         display: block;
     }
 }
+
+a.btn-flat{
+    background-color: #459A33!important;
+    border-radius: 15px;
+}

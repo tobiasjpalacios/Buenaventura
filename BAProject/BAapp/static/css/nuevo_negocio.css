@@ -54,6 +54,13 @@ input, select, textarea{
     color: #757474;
 }
 
+#inputObser::placeholder{
+    text-align: start;
+    color: #757474;
+    border-bottom: none;
+    box-shadow: none;
+}
+
 .principalselec{
     background-color: white;
     border-radius: 19px 19px 19px 19px !important;

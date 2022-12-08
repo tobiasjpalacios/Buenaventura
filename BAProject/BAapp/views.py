@@ -108,6 +108,22 @@ class Info_negocioView(View):
                 }   
             return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
 
+def comprobanteTipo(num):
+    options = {
+            '1': "FACTURA",
+            '2': "REMITO",
+            '3': "ORDEN DE COMPRA",
+            '4': "ORDEN DE PAGO",
+            '5': "CONSTANCIA DE RETENCION",
+            '6': "RECIBO",
+            '7': "CHEQUE",
+            '8': "CUENTA CORRIENTE",
+            '9': "FACTURA COMISION",
+            '10': "NOTA",
+            'default': "casi",
+        }
+    return options.get(num)
+
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
         moment_url = request.resolver_match.url_name
@@ -172,7 +188,8 @@ class ComprobantesView(View):
         camposNombres = camposNombres[2:largo]
         campos = campos[2:largo]
 
-        return render(request, 'comprobantes.html',{"num": num,"tipo": comprobanteTipo(num), "data":data, "camposNombres":camposNombres, "campos":campos})
+        tipo = comprobanteTipo(str(num))
+        return render(request, 'comprobantes.html',{"num": num,"tipo": tipo, "data":data, "camposNombres":camposNombres, "campos":campos})
 
 class MenuComprobantesView(View):
     def get(self, request, *args, **kwargs):
@@ -2197,23 +2214,6 @@ class PasswordsChangeView(PasswordChangeView):
 
     def get_success_url(self):
         return reverse('successPassword')
-
-def comprobanteTipo(num):
-    options = {
-            '1': "FACTURA",
-            '2': "REMITO",
-            '3': "ORDEN DE COMPRA",
-            '4': "ORDEN DE PAGO",
-            '5': "CONSTANCIA DE RETENCION",
-            '6': "RECIBO",
-            '7': "CHEQUE",
-            '8': "CUENTA CORRIENTE",
-            '9': "FACTURA COMISION",
-            '10': "NOTA",
-            'default': "casi",
-        }
-    return options.get(num)
-
 
 def selecNegComprobante(request, *args, **kwargs):
     if request.method == 'POST':
