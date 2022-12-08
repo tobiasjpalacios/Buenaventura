@@ -340,6 +340,7 @@ class Factura(models.Model):
 
     class Meta():
         default_related_name = "facturas"
+        
 
 class Remito(models.Model):
     #emisor proveedor

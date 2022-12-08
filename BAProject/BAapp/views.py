@@ -113,26 +113,54 @@ class ComprobantesView(View):
         moment_url = request.resolver_match.url_name
         if moment_url=="facturas":
             data = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+            campos = Factura._meta.get_fields()
         elif moment_url=="remitos":
             data = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+            campos = Remito._meta.get_fields()
         elif moment_url=="ordenesCompra":
             data = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = OrdenDeCompra._meta.get_fields()
         elif moment_url=="ordenesPagos":
             data = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = OrdenDePago._meta.get_fields()
         elif moment_url=="contancias":
             data = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = ConstanciaRentencion._meta.get_fields()
         elif moment_url=="recibos":
             data = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = Recibo._meta.get_fields()
         elif moment_url=="cheques":
             data = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = Cheque._meta.get_fields()
         elif moment_url=="cuentasCorrientes":
             data = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = CuentaCorriente._meta.get_fields()
         elif moment_url=="facturasComision":
             data = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = FacturaComision._meta.get_fields()
         elif moment_url=="notas":
             data = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = Nota._meta.get_fields()
+        else:
+            data = {}
+            campos = []
+            print("error: comprobante no valido")
 
-        return render(request, 'comprobantes.html',{"data":data})
+        camposNombres = []
+        for campo in campos:
+            split = campo.name.split("_")
+            try:
+                nombre = split[1]
+            except:
+                nombre = split[0]
+            
+            if(split[0] == "numero"):
+                nombre = split[0]
+            camposNombres.append(nombre)
+
+        camposNombres = camposNombres[2:(len(camposNombres)-1)]
+
+        return render(request, 'comprobantes.html',{"data":data, "campos":camposNombres})
 
 class MenuComprobantesView(View):
     def get(self, request, *args, **kwargs):
