@@ -31,7 +31,7 @@ BuenaVentura Agronegocios
             <table id="tableNegocios">
                 <thead>
                     <tr style="border-bottom: 1px solid grey;">
-                        {% for campo in campos %}
+                        {% for campo in camposNombres %}
                         <th>{{campo}}</th>
                         {% endfor %}
                     </tr>
@@ -43,12 +43,15 @@ BuenaVentura Agronegocios
                         {% for campo in campos %}
                         <td class="ctr">{{comprobante.campo}}</td>
                         {% endfor %}
-
+                        
                         <td><a class="waves-effect waves-light no-shadows"href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">description</i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div class="col offset-l1 s12 l10">
+            <a onclick="openModalSelecNegComprobante({{num}})" class="verTodos waves-effect waves-light btn no-shadows" > CARGAR </a>
         </div>
     </div>
 </body>

@@ -112,33 +112,43 @@ class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
         moment_url = request.resolver_match.url_name
         if moment_url=="facturas":
+            num = 1
             data = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
             campos = Factura._meta.get_fields()
         elif moment_url=="remitos":
+            num = 2
             data = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
             campos = Remito._meta.get_fields()
-        elif moment_url=="ordenesCompra":
+        elif moment_url=="ordenesCompras":
+            num = 3
             data = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
             campos = OrdenDeCompra._meta.get_fields()
         elif moment_url=="ordenesPagos":
+            num = 4
             data = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
             campos = OrdenDePago._meta.get_fields()
         elif moment_url=="contancias":
+            num = 5
             data = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
             campos = ConstanciaRentencion._meta.get_fields()
         elif moment_url=="recibos":
+            num = 6
             data = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
             campos = Recibo._meta.get_fields()
         elif moment_url=="cheques":
+            num = 7
             data = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
             campos = Cheque._meta.get_fields()
         elif moment_url=="cuentasCorrientes":
+            num = 8
             data = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
             campos = CuentaCorriente._meta.get_fields()
         elif moment_url=="facturasComision":
+            num = 9
             data = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
             campos = FacturaComision._meta.get_fields()
         elif moment_url=="notas":
+            num = 10
             data = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
             campos = Nota._meta.get_fields()
         else:
@@ -158,9 +168,11 @@ class ComprobantesView(View):
                 nombre = split[0]
             camposNombres.append(nombre)
 
-        camposNombres = camposNombres[2:(len(camposNombres)-1)]
+        largo = len(camposNombres)-1
+        camposNombres = camposNombres[2:largo]
+        campos = campos[2:largo]
 
-        return render(request, 'comprobantes.html',{"data":data, "campos":camposNombres})
+        return render(request, 'comprobantes.html',{"num": num, "data":data, "camposNombres":camposNombres, "campos":campos})
 
 class MenuComprobantesView(View):
     def get(self, request, *args, **kwargs):
@@ -527,7 +539,7 @@ def landing_page(request):
     
     context = {'loginSuccess' : loginSuccess}
     
-    return render(request, 'Principal.html', context)
+    return render(request, 'login.html', context)
 
 # ya no se usan creo
 
@@ -2202,6 +2214,22 @@ def comprobanteTipo(num):
         }
     return options.get(num)
  
+def comprobanteNum(num):
+    options = {
+            'Facturas': "1",
+            'Remitos': "2",
+            'Orden': "ORDEN DE COMPRA",
+            '4': "ORDEN DE PAGO",
+            '5': "CONSTANCIA DE RETENCION",
+            '6': "RECIBO",
+            '7': "CHEQUE",
+            '8': "CUENTA CORRIENTE",
+            '9': "FACTURA COMISION",
+            '10': "NOTA",
+            'default': "casi",
+        }
+    return options.get(num)
+
 def selecNegComprobante(request, *args, **kwargs):
     if request.method == 'POST':
         negocios = Negocio.objects.all().order_by('-timestamp')

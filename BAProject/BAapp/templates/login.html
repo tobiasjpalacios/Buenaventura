@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <!-- imports -->
+  <meta charset="utf-8">
+  <!--Import materialize.css-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/inicio.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
+
+  <!-- title -->
+  <title>
+    Buenaventura Negocios
+  </title>
+</head>
+
+<body>
+    
+  <div class="row">
+    <div class="col l4 offset-l4 centered">
+      <div class="whitedivStyle">
+      <div class="row">
+      <div class="col l12" style="text-align: center;">
+        <p class="titulo"><b>Inicio de sesión</b></p>
+        <p class="subtitulo"><b>Eres un nuevo usuario?  </b><b class="subtitulo verde">Crea una nueva cuenta</b></p>
+      </div>
+      <form action="{% url 'login' %}" method="POST" class="col s12">
+        {%csrf_token%}
+        <div class="row">
+          <div class="divinp center col s8 offset-s2">
+            <input placeholder="Correo electronico" id="user" name="username" type="text" required>
+          </div>
+            <div class="divinp center input-field col s8 offset-s2">
+              <input placeholder="Clave" id="password" name="password" type="password" class="validate" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <button type="submit" class="btning col s8 offset-s2 waves-effect waves-light btn-floating btn-large">Ingresar</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <a style = "color: #005221" href="#">¿No sos usuario?</a>
+              <br>
+              <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+
+    <script>
+      window.onload = function() {
+        loginSuccess = "{{ loginSuccess }}";
+        if (loginSuccess == "False") {
+          alert("El usuario o contraseña es incorrecto.");
+        }
+      }
+    </script>
+</html>
