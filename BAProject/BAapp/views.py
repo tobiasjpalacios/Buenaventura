@@ -173,25 +173,36 @@ class ComprobantesView(View):
             print("error: comprobante no valido")
 
         camposNombres = []
+        metaNombres = []
         for campo in campos:
+            # splits
             barsplit = campo.name.split("_")
+            dotsplit = str(campo).split(".")
+
+            # nombres de titulos
             try:
                 nombre = barsplit[1]
             except:
                 nombre = barsplit[0]
             
-            if(barsplit[0] == "numero"):
+            if(nombre == "numero"):
                 nombre = barsplit[0]
             camposNombres.append(nombre)
 
+            # metaNombres
+            try:    
+                metaNombres.append(dotsplit[2])
+            except: 
+                metaNombres.append(str(campo))
+            
 
         largo = len(camposNombres)-1
         camposNombres = camposNombres[2:largo]
+        metaNombres = metaNombres[2:largo]
 
         tipo = comprobanteTipo(str(num))
 
-
-        return render(request, 'comprobantes.html',{"num": num,"tipo": tipo, "data":data, "camposNombres":camposNombres, "campos":campos})
+        return render(request, 'comprobantes.html',{"num": num,"tipo": tipo, "data":data, "camposNombres":camposNombres, "campos":metaNombres})
 
 class MenuComprobantesView(View):
     def get(self, request, *args, **kwargs):

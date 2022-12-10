@@ -139,7 +139,7 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Media
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/'
 
 # SITE_ID (this is for getting full url in models)
 

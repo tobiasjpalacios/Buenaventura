@@ -45,7 +45,7 @@ BuenaVentura Agronegocios
                         <td class="ctr">{% getattribute comprobante campo %}</td>
                         {% endfor %}
 
-                        <td><a class="waves-effect waves-light no-shadows" href=""><i class="small material-icons" style="color: #4fad31">description</i></a></td>
+                        <td><a class="waves-effect waves-light no-shadows" href="{{comprobante.documento.url}}" target="_blank"><i class="small material-icons" style="color: #4fad31">description</i></a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
