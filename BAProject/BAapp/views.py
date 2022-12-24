@@ -399,7 +399,7 @@ def todosFiltro(request, tipo):
         else:
             id_prop = propuesta[0][0]
             envio = propuesta[0][1]
-            if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
+            if (request.user.clase == 'Comprador' or request.user.clase == 'Gerente'):
                 envio = not envio
             a.id_prop = id_prop
             a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
