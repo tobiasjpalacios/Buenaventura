@@ -8,7 +8,7 @@ BANDA_TOXICOLOGICA_CHOICES = (
 	('I', 'I'),
 	('II', 'II'),
 	('III', 'III'),
-	('VI', 'VI'),
+	('IV', 'IV'),
 	('LA', 'LA'),
 	('LB', 'LB'),
 )
