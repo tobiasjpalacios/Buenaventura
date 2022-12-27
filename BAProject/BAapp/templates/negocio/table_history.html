@@ -26,8 +26,8 @@
       <p class="prop-creator-name table-nego id="prop-creator-name-{{prop.id}}">
         {% if prop.envio_comprador %} 
         {{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }} 
-        {% else %} 
-        {{ negocio.vendedor.get_full_name }} 
+        {% else %}
+        {{ negocio.vendedor.get_full_name }} - {{ negocio.vendedor.empresa }} 
         {% endif %}
       </p>
       <p class="prop-date table-nego">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>

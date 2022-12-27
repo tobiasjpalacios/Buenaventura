@@ -149,11 +149,6 @@ table.striped>tbody>tr:nth-child(odd) {
     white-space: pre;
 }
 
-/* 
-div.row.history-tables {
-    min-width: 1600px;
-} */
-
 .menuZone {
     display: flex;
     justify-content: space-between!important;
@@ -173,6 +168,10 @@ div.row.history-tables {
 
 .card.history-card {
     padding: 14px;
+}
+
+.card.history-card.vista-cliente {
+    background-color: #d7d7d7 !important;
 }
 
 .card-action {
@@ -483,6 +482,10 @@ table.table-nego tr td {
     border-bottom-left-radius: 150px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.circle-neg.vista-cliente {
+    background-color: #d7d7d7 !important;
 }
 
 .circle-neg.circle-right {

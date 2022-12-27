@@ -153,6 +153,8 @@ function toggleClientView(n) {
     clientViewSM.hide();
     $("#form-table-div").hide();
     $("#send-prop-btn").attr('disabled', true);
+    $(".card.history-card").addClass("vista-cliente");
+    $(".circle-neg").addClass("vista-cliente");
 
     vistaCliente = true;
 
@@ -168,6 +170,8 @@ function toggleClientView(n) {
       $("#form-table-div").show();
     }
     $("#send-prop-btn").removeAttr('disabled');
+    $(".card.history-card").removeClass("vista-cliente");
+    $(".circle-neg").removeClass("vista-cliente");
 
     vistaCliente = false;
 
@@ -248,18 +252,6 @@ function allTDLinebreak() {
     }
   })
 }
-
-//
-
-setTimeout(function() {
-  $(".blink_text").fadeIn();
-}, 10000);
-
-$(window).on('load', function () {
-  $(".contain").fadeOut("fast", function() {
-    $(this).remove();
-  });
-});
 
 // table_edit
 
