@@ -44,9 +44,20 @@ input{
 }
 
 .subtitulo.verde{
+  font-family: Poppins;
+  font-style: Medium;
   color: #459A33;
 }
 
 p{
   margin: 3%;
+}
+
+body{
+    background-image: url(/static/images/fondo-login.png) !important;
+    background-size: cover;
+}
+
+.fondo{
+    background-image: none !important;
 }

@@ -2,8 +2,7 @@ html, body {
     overflow-x: scroll;
 }
 #inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
-    color: white !important;
-    font-weight: bold !important;
+    color: #706F6F !important;
 }
 #inputBuscadorNegocio {
     margin: 0px; 

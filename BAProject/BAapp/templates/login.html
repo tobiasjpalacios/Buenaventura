@@ -12,7 +12,6 @@ Inicio de sesión
 
 <head>
   <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static '/css/inicio.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
 </head>
 
@@ -24,7 +23,9 @@ Inicio de sesión
       <div class="row">
       <div class="col l12" style="text-align: center;">
         <p class="titulo"><b>Inicio de sesión</b></p>
-        <p class="subtitulo"><b>Eres un nuevo usuario?  </b><b class="subtitulo verde">Crea una nueva cuenta</b></p>
+        <p>
+          <span class="subtitulo"><b>Eres un nuevo usuario?  </b></span><span class="subtitulo verde"><b>Crea una nueva cuenta</b></span>
+        </p>
       </div>
       <form action="{% url 'login' %}" method="POST" class="col s12">
         {%csrf_token%}
