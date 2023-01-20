@@ -1,4 +1,7 @@
-
+body{
+  height: 100%;
+  background-color: #F5F5F5;
+}
 .clvP{
   display: flex; 
   justify-content: space-between; 
@@ -25,4 +28,63 @@
 
 a{
   color: white;
+}
+
+.blockSpace{
+  height: 60%;
+  margin-top: 3%;
+  transition: margin-top .1s;
+}
+
+.headBlock, .tableBlock, .footBlock {
+  box-shadow: 0px 4.76475px 47.6475px rgba(0, 67, 86, 0.08);
+}
+
+.blockSpace:hover{
+  margin-top: 0%;
+}
+
+.countNotis{
+  background: #FA7921;
+  box-shadow: 0px 3.66122px 36.6122px rgba(0, 67, 86, 0.08);
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  right: -5%;
+  top: -25%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.mycenter{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.opcion {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.notis-container {
+  width: 100%;
+  height: 70vh;
+}
+
+@media only screen and (max-width: 992px) {
+  .notis-container .blockSpace {
+    margin-bottom: 20vh;
+  }
+  .opcion {
+    font-size: 24px;
+  }
 }

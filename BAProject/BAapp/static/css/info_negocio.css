@@ -3,3 +3,21 @@
     font-weight:900; 
     color: rgb(88, 88, 88);
 }
+
+.menuZone{
+    display: flex;
+    justify-content: space-between!important;
+    width: 96%;
+}
+
+th{
+    padding: 5px 5px;
+}
+
+.col{
+    padding-left: 3%;
+}
+
+.space-info{
+    margin-top: 5%;
+}

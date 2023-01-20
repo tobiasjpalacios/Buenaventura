@@ -2,18 +2,29 @@
 <html lang="es">
 
   {% include "tempAux/loader.html" %}
-  
-  {% include 'header.html'%}
   {% load static %}
 
-<!--  barra lateral / sidebar -->
+<!-- navbar -->
+  
+{% include 'header.html'%}
+<head>
+  <!-- title -->
+  <title>
+    {% block title %}
+    {% endblock title %}
+  </title>
+</head>
+
+<!--  sidebar / page -->
 <div class="row">
+
   <!------- barra lateral de opciones --------->
-  <div class="col hide-on-small-only s12 l2 m3 vl" >
+  <div>
     {% include 'sideabar.html'%}
   </div>
 
-  <div class="col s12 l10 m9 fondo">
+  <!-- pagina actual -->
+  <div class="col s12 fondo">
     {% block body %}
     {% endblock body %}
   </div>

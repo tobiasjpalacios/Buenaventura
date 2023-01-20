@@ -1,0 +1,63 @@
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    opacity: 1; /* Firefox */
+    color: #0000008C;
+    text-align: start;
+  }
+
+div.centered {
+  position: absolute;
+  top: 50%;
+  transform: translate( 0%, -50%);
+}
+
+input{
+  background: #0000008C;
+  color:#0000008C;
+  background-color: #F5F5F5;
+  text-align: initial;
+  box-shadow: none!important;
+  border: none !important;
+}
+
+.divinp{
+  border-radius: 2em; 
+  background-color: #F5F5F5 ;
+  height:45px; 
+}
+
+.btning{
+  border-radius: 2em;
+  background-color: #459A33;
+}
+
+.titulo{
+  color: #000000B2;
+  font-family: Poppins;
+  font-style: Medium;
+  font-size: 44.02px;
+}
+
+.subtitulo{
+  font-family: Poppins;
+  font-style: Medium;
+  font-size: 15.06px;
+}
+
+.subtitulo.verde{
+  font-family: Poppins;
+  font-style: Medium;
+  color: #459A33;
+}
+
+p{
+  margin: 3%;
+}
+
+body{
+    background-image: url(/static/images/fondo-login.png) !important;
+    background-size: cover;
+}
+
+.fondo{
+    background-image: none !important;
+}

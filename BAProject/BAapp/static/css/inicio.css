@@ -1,0 +1,36 @@
+.bnt-mid{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    height: 70px;
+    width: 300px;
+    border-radius: 0.5em;
+    background-color: #005321 !important; 
+    font-size: 25px;
+    font-weight: 600;
+    text-transform: none !important;
+}
+
+@media only screen and (max-width: 792px) {
+    .bnt-mid {
+        height: 70px;
+        width: 200px;
+    }
+}
+
+.align-text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body{
+    background-image: url(/static/images/fondo-inicio.png) !important;
+    background-size: cover;
+}
+
+.fondo{
+    background-image: none !important;
+}

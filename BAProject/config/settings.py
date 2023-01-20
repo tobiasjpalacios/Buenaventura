@@ -36,8 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'crispy_forms',
+    'crispy_forms_materialize',
     'BAapp',
 ]
+
+# Default layout to use with "crispy_forms"
+CRISPY_TEMPLATE_PACK = 'materialize_css_forms'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
+            ]
         },
     },
 ]
@@ -135,7 +139,7 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Media
 
-MEDIA_URL = '/media/'
+MEDIA_URL = '/'
 
 # SITE_ID (this is for getting full url in models)
 

@@ -4,7 +4,7 @@
 {% load auth_extras %}
 {% endblock imports %}
 {% block title %}
-BuenaVentura Agronegocios
+Negocios
 {% endblock title %}
 {%block body%}
 
@@ -19,168 +19,167 @@ BuenaVentura Agronegocios
 
   <div class="row">
 
-    <div class="menuZone clv">
-      <div class="menu">
-        <div class="col-s2 h-bar circule">
-          <img src="{% static 'images/check.svg' %}" alt="Check icon" style="height: 40%;">
-        </div>
-        <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Negocios</h4>
-      </div>
+    <!-- titulo -->
+    <div class="menuZone clv" style="display: flex;">
+        <h4 class="tituloPagina">Negocios</h4>
     </div>
 
+    <!-- buscador -->
     <div class="row">
-      <div class="container">
-        <div class="input-field col s12 shearS" style="padding: 0rem;">
+      <div class="col s12">
+        <div class="input-field col s9 m4 whitedivStyle offset-m4 offset-s2" style="height: 50%; padding: 0rem; margin-top: 0;">
+          <i class="small material-icons shearG" style="position: relative; left: 10px;">search</i>
           <input id="inputBuscadorNegocio"
             placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text" autocomplete="off">
-          <i class="medium material-icons shear_circule" style="position: relative; left: 1px;">search</i>
         </div>
       </div>
     </div>
 
+    <div class="col s10 l10 offset-s1 offset-l1">
+      <!-- filtros -->
+      <nav id="navFiltro" class="whitedivStyle" style="height: 100px;">
+        <div class="nav-wrapper clv" style="width: 100%;">
+          <ul id="nav-mobile" class="col s12" style="display: flex; justify-content: space-between;">
+            <li>
+              <div class="input-field clv">
+                <select multiple id="selectVendedores">
+                  <option value="todos" selected>Cualquiera</option>
+                  {% for vendedor in todos_vendedores %}
+                  <option value={{vendedor.id}}>{{vendedor.get_full_name}}</option>
+                  {% endfor %}
+                </select>
+                <label class="for-input">Vendendor</label>
+              </div>
+            </li>
+            <li>
+              <div class="input-field clv">
+                <select multiple id="selectEstados">
+                  <option value="todos" selected> Todos </option>
+                  <option value="Confirmado">Confirmado</option>
+                  <option value="Cancelado">Cancelado</option>
+                  {% if request.user.clase != 'Proveedor' %}
+                  <option value="Recibido">Recibido</option>
+                  <option value="En Negociación">En Negociación</option>
+                  {% endif %}
+                </select>
+                <label class="for-input">Estado</label>
+              </div>
+            </li>
+            <li>
+              <div class="input-field clv">
+                <select id="selectTipo">
+                  <option value="todos" selected value> Todos </option>
+                  <option value="Venta">Venta</option>
+                  <option value="Consignacion">Consignacion</option>
+                </select>
+                <label class="for-input">Tipo de Negocio</label>
+              </div>
+            </li>
+            <li>
+              <div class="input-field clv">
+                <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde" autocomplete="off">
+              </div>
+            </li>
+            <li>
+              <div class="input-field clv">
+                <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta" autocomplete="off">
+              </div>
+            </li>
+            <li>
+              <div class="input-field clv">
+                <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
+              </div>
+            </li>
+            <li>
+              <div class="clv">
+                <a class="waves-effect waves-light btn col s12 no-shadows fltbtn"
+                  onclick="filtrar()">FILTRAR</a>
+              </div>
+            </li>
+            <li>
+              <div class="clv">
+                <a class="btn-floating waves-effect waves-dark no-shadows tooltipped" style="background-color: #00000007;"
+                  data-tooltip="Limpiar filtros" data-position="top" onclick="limpiarFiltros()">
+                  <i class="material-icons" style="color: red;">clear</i>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-
-    <nav id="navFiltro">
-      <div class="nav-wrapper clv" style="width: 100%;">
-        <ul id="nav-mobile" class="" style="display: flex; justify-content: space-between;">
-          <li>
-            <div class="input-field clv">
-              <select multiple id="selectVendedores">
-                <option value="todos" selected>Cualquiera</option>
-                {% for vendedor in todos_vendedores %}
-                <option value={{vendedor.id}}>{{vendedor.get_full_name}}</option>
-                {% endfor %}
-              </select>
-              <label class="for-input">Vendendor</label>
-            </div>
-          </li>
-          <li>
-            <div class="input-field clv">
-              <select multiple id="selectEstados">
-                <option value="todos" selected> Todos </option>
-                <option value="Confirmado">Confirmado</option>
-                <option value="Cancelado">Cancelado</option>
-                {% if request.user.clase != 'Proveedor' %}
-                <option value="Recibido">Recibido</option>
-                <option value="En Negociación">En Negociación</option>
-                {% endif %}
-              </select>
-              <label class="for-input">Estado</label>
-            </div>
-          </li>
-          <li>
-            <div class="input-field clv">
-              <select id="selectTipo">
-                <option value="todos" selected value> Todos </option>
-                <option value="Venta">Venta</option>
-                <option value="Consignacion">Consignacion</option>
-              </select>
-              <label class="for-input">Tipo de Negocio</label>
-            </div>
-          </li>
-          <li>
-            <div class="input-field clv">
-              <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde" autocomplete="off">
-            </div>
-          </li>
-          <li>
-            <div class="input-field clv">
-              <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta" autocomplete="off">
-            </div>
-          </li>
-          <li>
-            <div class="input-field clv">
-              <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
-            </div>
-          </li>
-          <li>
-            <div class="clv">
-              <a class="waves-effect waves-light btn col s12 no-shadows" style="background-color: #4fad31;"
-                onclick="filtrar()">filtrar</a>
-            </div>
-          </li>
-          <li>
-            <div class="clv">
-              <a class="btn-floating waves-effect waves-dark no-shadows tooltipped" style="background-color: #00000007;"
-                data-tooltip="Limpiar filtros" data-position="top" onclick="limpiarFiltros()">
-                <i class="material-icons" style="color: red;">clear</i>
-              </a>
-            </div>
-          </li>
-        </ul>
+      <div id="fixedForScroll">
+        <nav id="filtroFixed"></nav>
+        <table id="headerFixed"></table>
       </div>
-    </nav>
 
-    <div id="fixedForScroll">
-      <nav id="filtroFixed"></nav>
-      <table id="headerFixed"></table>
-    </div>
-
-    <div class="offset-s2" style="width: 100%; position: relative;">
-      <table id="tableNegocios">
-        <thead>
-          <tr style="border-bottom: 1px solid grey;">
-            <th>Fecha apertura</th>
-            <th>Fecha cierre</th>
-            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-            <th>Cliente </th>
-            {% endif %}
-            <th>Tipo Negocio</th>
-            <th>Vendedor</th>
-            {% if request.user.clase == 'Vendedor'%}
-            <th>Proveedores</th>
-            {% endif %}
-            <th>Código de Negocio</th>
-            <th class="center">Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
-          {% for negocio in todos_negocios %}
-          <tr class="ctr">
-            <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-            <td>{% if negocio.fecha_cierre is null %} 
-                    Sin Definir
-                {% else %}
-                    {{negocio.fecha_cierre|date:"M d, Y"}}
-                {% endif %}
-            </td>
-            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-            <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
-            </td>
-            {% endif %}
-            <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
-            <td>{{negocio.vendedor.get_full_name}}
-            </td>
-            {% if request.user.clase == 'Vendedor'%}
-              {% if negocio.fecha_cierre is not None %}
-              <td>
-              {% if negocio.proveedores %}
-                <div style="overflow-y: scroll; height: 150px;">
-                  <ol class="collection" start="1">
-                    {% for prov in negocio.proveedores %}
-                    <li class="collection-item">{{prov}}</li>
-                    {% endfor %}
-                  </ol>
-                </div>
-              {% else %}
-                N/E
+      <!-- tabla info -->
+      <div class="offset-s2 tabla-info" style="width: 100%; position: relative;">
+        <table id="tableNegocios">
+          <thead>
+            <tr style="border-bottom: 1px solid grey;">
+              <th>Fecha apertura</th>
+              <th>Fecha cierre</th>
+              {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
+              <th>Cliente </th>
               {% endif %}
+              <th>Tipo Negocio</th>
+              <th>Vendedor</th>
+              {% if request.user.clase == 'Vendedor'%}
+              <th>Proveedores</th>
+              {% endif %}
+              <th>Código de Negocio</th>
+              <th class="center">Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
+            {% for negocio in todos_negocios %}
+            <tr class="ctr">
+              <td>{{negocio.timestamp|date:"M d, Y"}}</td>
+              <td>{% if negocio.fecha_cierre is null %} 
+                      Sin Definir
+                  {% else %}
+                      {{negocio.fecha_cierre|date:"M d, Y"}}
+                  {% endif %}
               </td>
-              {% else %}
-              <td>Por Definir</td>
+              {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
+              <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
+              </td>
               {% endif %}
-            {% endif %}
-            <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-            <td class="green-text center">{{negocio.estado}}</td>
-            <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
-                href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
-          </tr>
-          {% endfor %}
-          <!-- esto es la lista de negocios-->
-        </tbody>
-      </table>
+              <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
+              <td>{{negocio.vendedor.get_full_name}}
+              </td>
+              {% if request.user.clase == 'Vendedor'%}
+                {% if negocio.fecha_cierre is not None %}
+                <td>
+                {% if negocio.proveedores %}
+                  <div style="overflow-y: scroll; height: 150px;">
+                    <ol class="collection" start="1">
+                      {% for prov in negocio.proveedores %}
+                      <li class="collection-item">{{prov}}</li>
+                      {% endfor %}
+                    </ol>
+                  </div>
+                {% else %}
+                  N/E
+                {% endif %}
+                </td>
+                {% else %}
+                <td>Por Definir</td>
+                {% endif %}
+              {% endif %}
+              <td><strong>{{negocio.get_id_de_neg}}</strong></td>
+              <td class="green-text center">{{negocio.estado}}</td>
+              <td><a class="waves-effect waves-light no-shadows"
+                  href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">search</i></a></td>
+            </tr>
+            {% endfor %}
+            <!-- esto es la lista de negocios-->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

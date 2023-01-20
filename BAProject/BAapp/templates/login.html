@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block imports %}
+{% load static %}
+{% load auth_extras %}
+{% endblock imports %}
+{% block style%}
+{% endblock style%}
+{% block title %}
+Inicio de sesión
+{% endblock title %}
+{%block body%}
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static '/css/pages.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}">
+</head>
+
+<body>
+    
+  <div class="row">
+    <div class="col l4 offset-l4 centered">
+      <div class="whitedivStyle">
+      <div class="row">
+      <div class="col l12" style="text-align: center;">
+        <p class="titulo"><b>Inicio de sesión</b></p>
+        <p>
+          <span class="subtitulo"><b>Eres un nuevo usuario?  </b></span><span class="subtitulo verde"><b>Crea una nueva cuenta</b></span>
+        </p>
+      </div>
+      <form action="{% url 'login' %}" method="POST" class="col s12">
+        {%csrf_token%}
+        <div class="row">
+          <div class="divinp center col s8 offset-s2">
+            <input placeholder="Correo electronico" id="user" name="username" type="text" required>
+          </div>
+            <div class="divinp center input-field col s8 offset-s2">
+              <input placeholder="Clave" id="password" name="password" type="password" class="validate" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <button type="submit" class="btning col s8 offset-s2 waves-effect waves-light btn-floating btn-large">Ingresar</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <a style = "color: #005221" href="#">¿No sos usuario?</a>
+              <br>
+              <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+
+<script>
+  window.onload = function() {
+    loginSuccess = "{{ loginSuccess }}";
+    if (loginSuccess == "False") {
+      alert("El usuario o contraseña es incorrecto.");
+    }
+  }
+</script>
+
+{%endblock body%}

@@ -48,6 +48,10 @@ def chat(request):
 
 # los nuevos views
 
+class Inicio(View):
+    def get(self, request, *args, **kwargs):
+        return render(request,'inicio.html')
+
 class NuevoNegocioView(View):
     def get(self, request, *args, **kwargs):
         return render(request,'nuevo_negocio.html')
@@ -104,33 +108,127 @@ class Info_negocioView(View):
                 }   
             return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
 
+def comprobanteTipo(num):
+    options = {
+            '1': "FACTURA",
+            '2': "REMITO",
+            '3': "ORDEN DE COMPRA",
+            '4': "ORDEN DE PAGO",
+            '5': "CONSTANCIA DE RETENCION",
+            '6': "RECIBO",
+            '7': "CHEQUE",
+            '8': "CUENTA CORRIENTE",
+            '9': "FACTURA COMISION",
+            '10': "NOTA",
+            'default': "casi",
+        }
+    return options.get(num)
+
 class ComprobantesView(View):
     def get(self, request, *args, **kwargs):
-        facturas = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
-        remitos = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
-        ordenesDeCompra = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        ordenesDePago = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        constancias = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        recibos = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        cheques = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
-        cuentasCorriente = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
-        facturasComision = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
-        notas = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+        moment_url = request.resolver_match.url_name
+        if moment_url=="facturas":
+            num = 1
+            data = Factura.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+            campos = Factura._meta.get_fields()
+        elif moment_url=="remitos":
+            num = 2
+            data = Remito.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(proveedor=request.user))
+            campos = Remito._meta.get_fields()
+        elif moment_url=="ordenesCompras":
+            num = 3
+            data = OrdenDeCompra.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = OrdenDeCompra._meta.get_fields()
+        elif moment_url=="ordenesPagos":
+            num = 4
+            data = OrdenDePago.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = OrdenDePago._meta.get_fields()
+        elif moment_url=="contancias":
+            num = 5
+            data = ConstanciaRentencion.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = ConstanciaRentencion._meta.get_fields()
+        elif moment_url=="recibos":
+            num = 6
+            data = Recibo.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = Recibo._meta.get_fields()
+        elif moment_url=="cheques":
+            num = 7
+            data = Cheque.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = Cheque._meta.get_fields()
+        elif moment_url=="cuentasCorrientes":
+            num = 8
+            data = CuentaCorriente.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = CuentaCorriente._meta.get_fields()
+        elif moment_url=="facturasComision":
+            num = 9
+            data = FacturaComision.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user) | Q(recibe_proveedor=request.user))
+            campos = FacturaComision._meta.get_fields()
+        elif moment_url=="notas":
+            num = 10
+            data = Nota.objects.filter(Q(negocio__comprador=request.user) | Q(negocio__vendedor=request.user))
+            campos = Nota._meta.get_fields()
+        else:
+            data = {}
+            campos = []
+            print("error: comprobante no valido")
 
-        comprobantes = {
-                    "facturas": facturas,
-                    "remitos": remitos,
-                    "ordenesDeCompra": ordenesDeCompra,
-                    "ordenesDePago": ordenesDePago,
-                    "constancias": constancias,
-                    "recibos": recibos,
-                    "cheques": cheques,
-                    "cuentasCorriente": cuentasCorriente,
-                    "facturasComision": facturasComision,
-                    "notas": notas,          
-                }
-        
-        return render(request, 'comprobantes.html',{"comprobantes":comprobantes})
+        camposNombres = []
+        metaNombres = []
+        for campo in campos:
+            # splits
+            barsplit = campo.name.split("_")
+            dotsplit = str(campo).split(".")
+
+            # nombres de titulos
+            try:
+                nombre = barsplit[1]
+            except:
+                nombre = barsplit[0]
+            
+            if(nombre == "numero"):
+                nombre = barsplit[0]
+            camposNombres.append(nombre)
+
+            # metaNombres
+            try:    
+                metaNombres.append(dotsplit[2])
+            except: 
+                metaNombres.append(str(campo))
+            
+
+        largo = len(camposNombres)-1
+        camposNombres = camposNombres[2:largo]
+        metaNombres = metaNombres[2:largo]
+
+        tipo = comprobanteTipo(str(num))
+
+        return render(request, 'comprobantes.html',{"num": num,"tipo": tipo, "data":data, "camposNombres":camposNombres, "campos":metaNombres})
+
+class MenuComprobantesView(View):
+    def get(self, request, *args, **kwargs):
+        lista_comprobantes = [{"nombre":"Facturas",
+                            "url": "facturas"},
+                        {"nombre":"Remitos",
+                            "url": "remitos"},
+                        {"nombre":"Orden de compra",
+                            "url": "ordenesCompras"},
+                        {"nombre":"Orden de pago",
+                            "url": "ordenesPagos"},
+                        {"nombre":"Constancia rentención",
+                            "url": "contancias"},
+                        {"nombre":"Recibo",
+                            "url": "recibos"},
+                        {"nombre":"Cheques",
+                            "url": "cheques"},
+                        {"nombre":"Cuentas corrientes",
+                            "url": "cuentasCorrientes"},
+                        {"nombre":"Factura comisiones",
+                            "url": "facturasComision"},
+                        {"nombre":"Nota",
+                            "url": "notas"}, 
+                        ]
+        return render(request, 'menu_comprobantes.html',{"lista_comprobantes":lista_comprobantes})
+
 
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
@@ -301,7 +399,7 @@ def todosFiltro(request, tipo):
         else:
             id_prop = propuesta[0][0]
             envio = propuesta[0][1]
-            if (grupo_activo == 'Compradores' or grupo_activo == 'Gerentes'):
+            if (request.user.clase == 'Comprador' or request.user.clase == 'Gerente'):
                 envio = not envio
             a.id_prop = id_prop
             a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
@@ -451,7 +549,7 @@ def check_user_group_after_login(request):
         'Logisticas': redirect('vistaLogistica')
     }
 
-    return redirect('notificaciones')
+    return redirect('inicio')
 
 def landing_page(request):
     if (request.user.is_authenticated):
@@ -471,7 +569,7 @@ def landing_page(request):
     
     context = {'loginSuccess' : loginSuccess}
     
-    return render(request, 'Principal.html', context)
+    return render(request, 'login.html', context)
 
 # ya no se usan creo
 
@@ -2130,22 +2228,6 @@ class PasswordsChangeView(PasswordChangeView):
     def get_success_url(self):
         return reverse('successPassword')
 
-def comprobanteTipo(num):
-    options = {
-            '1': "FACTURA",
-            '2': "REMITO",
-            '3': "ORDEN DE COMPRA",
-            '4': "ORDEN DE PAGO",
-            '5': "CONSTANCIA DE RETENCION",
-            '6': "RECIBO",
-            '7': "CHEQUE",
-            '8': "CUENTA CORRIENTE",
-            '9': "FACTURA COMISION",
-            '10': "NOTA",
-            'default': "casi",
-        }
-    return options.get(num)
- 
 def selecNegComprobante(request, *args, **kwargs):
     if request.method == 'POST':
         negocios = Negocio.objects.all().order_by('-timestamp')

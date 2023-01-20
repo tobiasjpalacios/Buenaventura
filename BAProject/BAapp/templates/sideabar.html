@@ -1,28 +1,112 @@
 {% block body%}
 
 {% load auth_extras %}
+
+
+{% load static %}
+
+{% if user.is_authenticated %}
+
+<link rel="stylesheet" type="text/css" href="{% static '/css/sidebar.css' %}">
+
+
 <body>
-    <div class="col s12 l2 m3 mysidebar vl pinned">
-        <ul class="section table-of-contents ">
-            <li><a href="{% url 'notificaciones'  %}">Notificaciones</a></li>
-            <li><a href="{% url 'presupuestos'  %}">Presupuestos</a></li>
-            <li><a href="{% url 'vencimientos'  %}">Vencimientos</a></li>
-            <li><a href="{% url 'logistica'  %}">Logistica</a></li>
-            <li><a href="{% url 'comprobantes'  %}">Comprobantes</a></li>
-            <li><a href="#">Mas Opciones </a></li>
-            {% if request.user.clase == "Vendedor" %}
-            <li><a class="gb_text" href="#" onclick="openModalAlerta()"> Enviar Alerta </a></li>
-            {% endif %}
-            {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
-            <li><a class="gb_text" href="{% url 'nuevo_negocio'  %}"> Nuevo Negocio </a></li>
-            {% endif %}
-            <li><a class="gb_text" href="{% url 'todos_negocios'  %}"> Negocios </a></li>
-        </ul>
+
+  <ul id="slide-out" class="sidenav" style="background-color:#459A33;">
+    <li><div style="display: inline-block"></div></li>
+    <li>
+      <a href="{% url 'notificaciones'  %}">
+        <i class="small material-icons iconbar" style="position: relative;">notifications_none</i>
+        Notificaciones
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'presupuestos'  %}">
+        <i class="material-icons small iconbar">monetization_on</i>
+        Presupuestos
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'vencimientos'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">access_alarm</i>
+        Vencimientos
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'logistica'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">local_shipping</i>
+        Logistica
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'menu_comprobantes'  %}">
+        <i class="small iconbar material-icons" style="position: relative;">folder</i>
+        Comprobantes
+      </a>
+    </li>
+    <li>
+      <a class="gb_text" href="{% url 'todos_negocios'  %}"> 
+        <i class="small iconbar material-icons" style="position: relative;">add</i>
+        Negocios 
+      </a>
+    </li>
+    {% if request.user.clase == "Vendedor" %}
+      <li>
+        <a class="gb_text" href="#" onclick="openModalAlerta()">
+          <i class="small iconbar material-icons" style="position: relative;">send</i>
+          Enviar Alerta 
+        </a>
+      </li>
+    {% endif %}
+    <div class="show-on-collapse">
+      {% if user.is_staff %}  
+      <li>
+        <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
+      </li>
+      {% endif %}
+      <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
+      {% if user.is_authenticated %}
+      <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat; cursor: pointer;">{{user.get_full_name|title}}</a></li>
+      <li><a  href="{% url 'logout' %}" style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
+      {% else %}
+      <li><a style="color: #ffffff; font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+      {% endif %}
     </div>
-</body>   
+    {% if request.user.clase == "Vendedor" or request.user.clase == "Comprador" %}
+      <br>
+      <li style=" display: flex; justify-content: center;">
+        <div class="btn-bv">
+          <a href="{% url 'nuevo_negocio'  %}"> Cotizá </a>
+        </div>
+      </li>
+    {% endif %}
+  </ul>
+  
+</body>
+
 <style>
+
+    .btn-bv{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        background: #005321;
+        border-radius: 15px;
+        width: 50%;
+        color: #fff;
+    }
+
+    .iconbar{
+        color: #ffffff !important;
+    }
+
+    .sidenav li>a {
+        color: #ffffff !important;
+    }
+
     .gb_text{
-        color: #4fad31 !important;
+        color: #459A33 !important;
         font-weight: bold !important;
     }
     .mysidebar{
@@ -39,6 +123,17 @@
 </style>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, options);
+  });
+
+$(document).ready(function(){
+  $('.sidenav').sidenav();
+  $('.sidenav').open();
+});
+
 function openModalAlerta(){
     $.ajax({
         type: 'POST',
@@ -223,5 +318,7 @@ function formAlertaLog(){
          
   };
 </script>
+
+{% endif %}
 
 {% endblock body %}

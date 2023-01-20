@@ -158,8 +158,7 @@ class TipoPago(models.Model):
     descripcion = models.CharField(max_length=100, null=True,blank=True)
 
     def __str__(self):
-        return 'Tipo de pago: {}'.format(
-            self.nombre)
+        return self.nombre
 
 class ItemPropuesta(models.Model):
     articulo = models.ForeignKey(
@@ -340,6 +339,7 @@ class Factura(models.Model):
 
     class Meta():
         default_related_name = "facturas"
+        
 
 class Remito(models.Model):
     #emisor proveedor

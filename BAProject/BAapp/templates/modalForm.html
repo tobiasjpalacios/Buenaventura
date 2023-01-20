@@ -1,14 +1,45 @@
+{% load crispy_forms_tags %}
 <style>
-  .fecha{
+  .fecha {
     background-color: black;
+  }
+  .file-field .btn {
+    height: 48px;
+    font-size: 16px;
+    border-radius: 1em;
+    box-shadow: none !important;
+    text-transform: none !important;
+    background-color: transparent !important;
+    border: 1px solid #459A33;
+    color: #459A33;
+    font-weight: 600;
+  }
+  .file-field .file-path-wrapper .file-path {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+  .file-field .file-path-wrapper .file-path:focus {
+    border-bottom: none !important;
+    box-shadow: none !important;
+  }
+  .file-field .file-path-wrapper .file-path::placeholder {
+    font-weight: 400;
+    color: #706F6F;
+    text-align: start;
+  }
+  input[type="submit"] {
+    height: 48px;
+    font-size: 16px;
+    border-radius: 1em;
+    box-shadow: none !important;
+    text-transform: none !important;
+    font-weight: 600;
   }
 </style>
 
 <div class="modal-content">
   <h4 class="center">{{tipo}}</h4>
   <div class="row">
-    <div class="right">  
-      </div>
       {% if tipo == "Cheque" %}
       <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formCheque' %}">
       {% elif tipo == "Factura" %}
@@ -30,10 +61,34 @@
       {% elif tipo == "Nota" %}
       <form class="col s12" enctype="multipart/form-data" method="POST" id="form" action="{% url 'formNota' %}">
       {% endif %}
-        {% csrf_token %}
-        {{form.as_p}}
-          
-        <input class="btn waves-effect waves-light no-shadows bv-green" type="submit" value="Guardar"/>
+        <div class="row">
+          {% csrf_token %}
+          {% for field in form %}
+            {% if field.name != "documento" %}            
+              {% if field.name == "observaciones" or forloop.counter0 == 0 %}
+                <div class="input-field col s12">
+                  {{ field | as_crispy_field }}
+                </div>
+              {% else %}
+                <div class="input-field col s4 {% if forloop.counter0|divisibleby:2 %}offset-s4{% endif %}">
+                  {{ field | as_crispy_field }}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          <div class="file-field input-field col s12">
+            <div class="btn col s7 m4">
+              <span>Seleccionar archivo</span>
+              <input type="file" name="documento" required>
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text" placeholder="Documento">
+            </div>
+          </div>
+        </div>
+        <div class="col s12">
+          <input class="btn waves-effect waves-light no-shadows bv-green col s4 offset-s4" type="submit" value="Guardar"/>
+        </div>
       </form> 
       </div>
     </div>

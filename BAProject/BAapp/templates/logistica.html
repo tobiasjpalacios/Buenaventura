@@ -6,7 +6,7 @@
 {% block style%}
 {% endblock style%}
 {% block title %}
-BuenaVentura Agronegocios
+Logística
 {% endblock title %}
 {%block body%}
 
@@ -21,50 +21,47 @@ BuenaVentura Agronegocios
     <div class="row" style="height: 100%;">
 
         <div class="menuZone clv">
-            <div class="menu">
-                <div class="col-s2 h-bar circule">
-                    <i class="medium material-icons" style="position: relative; color:#005221;">local_shipping</i>
-                </div>
-                <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Logistica</h4>
-            </div>
+            <h4 class="tituloPagina"> Logistica</h4>
         </div>
 
-        <div class="clv">
-            <table style="border-collapse: inherit !important" class="tabla_log">
-                <thead class="titulos">
-                    <tr>
-                        <th>Destinatario </th>
-                        <th>Empresa</th>
-                        <th>Destino</th>
-                        <th>Fecha de Entrega</th>
-                        <th>Estado</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="tableLogisticaR">
-                    {% for logistica in lista_logistica %}
-                    {% if logistica.estado == 'Atrasado' %}
-                    <tr class="red-text">
-                        {% elif logistica.estado == 'Entregado' %}
-                    <tr class="green-text">
-                        {% elif logistica.estado == 'En Tránsito' %}
-                    <tr class="ligthblue-text">
-                        {% else %}
-                    <tr class="grey-text">
-                        {% endif %}
-                        <td>{{logistica.destinatario}}</td>
-                        <td>{{logistica.empresa}}</td>
-                        <td>{{logistica.destino}}</td>
-                        <td>{{logistica.fecha}}</td>
-                        <th class="card-title">{{logistica.estado|upper}}</th>
-                        <td><a class="verTodos btn white-text no-shadows" href="{% url 'info_negocio' logistica.id_prop %}">
-                            ver detalles</a></td>
-                    </tr>
-                   
-                    {% endfor %}
-                   
-                </tbody>
-            </table>
+        <div class="col s10 offset-s1 offset-l2 l6 totalh">
+            <div class="tablelog">
+                <table style="border-collapse: inherit !important" class="tabla_log">
+                    <thead class="titulos">
+                        <tr>
+                            <th>Destinatario </th>
+                            <th>Empresa</th>
+                            <th>Destino</th>
+                            <th>Fecha de Entrega</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableLogisticaR">
+                        {% for logistica in lista_logistica %}
+                        {% if logistica.estado == 'Atrasado' %}
+                        <tr class="red-text">
+                            {% elif logistica.estado == 'Entregado' %}
+                        <tr class="green-text">
+                            {% elif logistica.estado == 'En Tránsito' %}
+                        <tr class="ligthblue-text">
+                            {% else %}
+                        <tr class="grey-text">
+                            {% endif %}
+                            <td>{{logistica.destinatario}}</td>
+                            <td>{{logistica.empresa}}</td>
+                            <td>{{logistica.destino}}</td>
+                            <td>{{logistica.fecha}}</td>
+                            <th class="card-title">{{logistica.estado|upper}}</th>
+                            <td><a class="verTodos btn white-text no-shadows" href="{% url 'info_negocio' logistica.id_prop %}">
+                                ver detalles</a></td>
+                        </tr>
+                    
+                        {% endfor %}
+                    
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

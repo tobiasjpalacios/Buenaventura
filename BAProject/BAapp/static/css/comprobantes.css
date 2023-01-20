@@ -7,3 +7,64 @@ table{
     height:50%;
     width: 100%;
 }
+
+.zonaBotones{
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.botonComprobante{
+    margin-left: 3%;
+    /* height: 20%; */
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .botonComprobante {
+        margin-left: 3%;
+        width: 77%;
+    }
+}
+
+.card{
+    /* width: 20%; */
+    border-radius: 25px;
+    transition: background-color .1s;
+    text-align: center;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.card i {
+    color: #459A33;
+}
+
+.card-content{
+    padding: 10px;
+}
+
+.card-content span {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+}
+
+.into_card{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.card:hover{
+    background-color: rgba(69, 154, 51, 0.21);
+}
+
+.modal-content .row {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+}

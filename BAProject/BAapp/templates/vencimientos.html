@@ -6,7 +6,7 @@
 {% block style%}
 {% endblock style%}
 {% block title %}
-BuenaVentura Agronegocios
+Vencimientos
 {% endblock title %}
 {%block body%}
 
@@ -30,115 +30,109 @@ BuenaVentura Agronegocios
 
   {% if request.user|has_no_group:"Logistica"%}
   <!-- Esto es el semaforo de vencimientos -->
-  <div class="row" style="height: 100%;">
+  <div class="row totalh" >
 
     <div class="menuZone clv">
-      <div class="menu">
-        <div class="col-s2 h-bar circule">
+        <!-- <div class="col-s2 h-bar circule">
           <i class="medium material-icons" style="position: relative; color:#005221;">access_alarm</i>
-        </div>
-        <h4 class="col l9 s9" style="margin:0; font-weight: 300;"> Vencimientos</h4>
-      </div>
+        </div>  -->
+        <h4 class="tituloPagina"> Vencimientos</h4>
     </div>
 
+      <div id="tablesSem" class="totalh">
 
-    <div class="clv">
+          <!-- atrasados -->
 
-      <div style="width: 100%;">
-        <div id="tablesSem">
-
-          <div class="col s4 l4 bloque-izquierdo clvP" style="background-color: rgba(238,29,35,255);">
-            <div class="titulos">
-              <span class="text-align center titulito white-text ">
-                Atrasados
-              </span>
+          <div class="col s12 l4 totalh"><div class="col s10 offset-s1 offset-l2 l9 totalh">
+            <div class="headVen rojo">
+              <div class="titulos">
+                <span class="text-align center titulito white-text ">
+                  Atrasados
+                </span>
+              </div>
+              
             </div>
-            <div class="nuevos_semaforo">
-              <b>{{vencidos|length}}</b>
-              <a>Nuevos</a>
+            <div class="tableVen">
+                <table>
+                  <tbody>
+                    {% for vence in vencidos%}
+                    <tr style="border-bottom: 0px;">
+                      <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                      <td><a href="{% url 'info_negocio' vence.id_propuesta %}"
+                          class="btn-floating btn-small waves-effect waves-light red no-shadows"><i
+                            class=" small material-icons ">search</i></a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
             </div>
-          </div>
+          </div></div>
 
-          <div class="col l4 s4 bloque-centro clvP" style="background-color: rgba(254,206,8,255)">
-            <div class="titulos">
-              <span class=" titulito white-text">
-                Próximos a Vencer
-              </span>
-            </div>
-            <div class="nuevos_semaforo">
-              <b>{{vencimiento_semanal|length}}</b>
-              <a>Nuevos</a>
-            </div>
-          </div>
 
-          <div class="col l4 s4 bloque-derecho clvP" style="background-color: rgba(76,184,72,255)">
-            <div class="titulos">
-              <span class="text-align center titulito white-text">
-                Vencimientos futuros
-              </span>
-            </div>
-            <div class="nuevos_semaforo">
-              <b>{{vencimiento_futuro|length}}</b>
-              <a>Nuevos</a>
-            </div>
-          </div>
 
-          <div class="col s4 tamaño" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5); ">
-            <div style="overflow-y: scroll; height: 550px;">
-              <table>
-                <tbody>
-                  {% for vence in vencidos%}
-                  <tr style="border-bottom: 0px;">
-                    <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
-                    <td><a href="{% url 'info_negocio' vence.id_propuesta %}"
-                        class="btn-floating btn-small waves-effect waves-light red no-shadows"><i
-                          class=" small material-icons ">search</i></a></td>
-                  </tr>
-                  {% endfor %}
+          <!-- proximos a vencer -->
 
-                </tbody>
-              </table>
+
+          <div class="col s12 l4 totalh"><div class="col s10 offset-s1 offset-l2 l9 totalh">
+            <div class="headVen amarillo">
+              <div class="titulos">
+                <span class=" titulito white-text">
+                  Próximos a Vencer
+                </span>
+              </div>
+              
             </div>
-
-          </div>
-          <div class="col s4 tamaño bloque-centro1" style="border-bottom: 2px solid rgb(128, 128, 128, 0.5);">
-            <div style="overflow-y: scroll; height: 550px;">
-              <table>
-                <tbody>
-                  {% for semanal in vencimiento_semanal %}
-                  <tr style="border-bottom: 0px; ">
-                    <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
-                    <td><a href="{% url 'info_negocio' semanal.id_propuesta %}"
-                        class="btn-floating btn-small waves-effect waves-light yellow no-shadows"><i
-                          class=" small material-icons ">search</i></a></td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <div class="tableVen">
+                <table>
+                  <tbody>
+                    {% for semanal in vencimiento_semanal %}
+                    <tr style="border-bottom: 0px; ">
+                      <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                      <td><a href="{% url 'info_negocio' semanal.id_propuesta %}"
+                          class="btn-floating btn-small waves-effect waves-light yellow no-shadows"><i
+                            class=" small material-icons ">search</i></a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
             </div>
+          </div></div>
 
-          </div>
-          <div class="col s4 tamaño" style="border-bottom:2px solid rgb(128, 128, 128, 0.5);">
-            <div style="overflow-y: scroll; height: 550px;">
-              <table>
-                <tbody>
-                  {% for futuro in vencimiento_futuro %}
-                  <tr style="border-bottom: 0px; ">
-                    <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
-                    <td><a href="{% url 'info_negocio' futuro.id_propuesta %}"
-                        class="btn-floating btn-small waves-effect waves-light green no-shadows"><i
-                          class=" small material-icons ">search</i></a></td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+          
+          
+          <!-- vencimientosd futuros -->
+          
+          <div class="col s12 l4 totalh"><div class="col s10 offset-s1 offset-l2 l9 totalh">
+            <div class="headVen verde">
+              <div class="titulos">
+                <span class="text-align center titulito white-text">
+                  Vencimientos futuros
+                </span>
+              </div>
+              <!-- <div class="nuevos_semaforo">    queda de muestra por ahora
+                <b>{{vencimiento_futuro|length}}</b>
+                <a>Nuevos</a>
+              </div> -->
             </div>
+            <div class="tableVen">
+                <table>
+                  <tbody>
+                    {% for futuro in vencimiento_futuro %}
+                    <tr style="border-bottom: 0px; ">
+                      <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
+                      <td><a href="{% url 'info_negocio' futuro.id_propuesta %}"
+                          class="btn-floating btn-small waves-effect waves-light green no-shadows"><i
+                            class=" small material-icons ">search</i></a></td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+          </div></div>
 
-          </div>
-          <div class="col s12 " style="height: 70px; border-top: 2px solid rgb(128, 128, 128, 0.5);"></div>
+          
         </div>
       </div>
-    </div>
   </div>
   {% endif %}
 </body>

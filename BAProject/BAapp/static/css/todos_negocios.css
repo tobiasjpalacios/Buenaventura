@@ -1,13 +1,12 @@
 html, body {
-    overflow-x: hidden;
+    overflow-x: scroll;
 }
 #inputBuscadorNegocio::placeholder { /* Firefox, Chrome, Opera */
-    color: white !important;
-    font-weight: bold !important;
+    color: #706F6F !important;
 }
 #inputBuscadorNegocio {
     margin: 0px; 
-    color: white !important;
+    color: #757474 !important;
     border-bottom: 0px solid #000; 
     box-shadow: 0 0px 0 0 #000; 
     border: #000; 
@@ -38,14 +37,13 @@ html, body {
     z-index: 999;
     background-color: #ebebeb !important;
 }
-#navFiltro {
-    background-color: #dfdfdf6b !important;
-}
+
 #fixedForScroll {
     position: fixed;
     display: none;
     z-index: 997;
 }
+
 label.for-input {
     color: rgb(110, 110, 110) !important;
     font-weight: 600;
@@ -65,4 +63,22 @@ span.date-text {
 
 input {
     border-bottom: 0px !important;
+}
+
+.fltbtn{
+    background-color: #4fad31;
+    border-radius: 2em;
+}
+
+.btn:hover{
+    background-color: #4fad31 !important;
+}
+
+@media only screen and (max-width: 1092px) {
+    #navFiltro {
+        min-width: 923px;
+    }
+    .tabla-info {
+        min-width: 923px;
+    }
 }

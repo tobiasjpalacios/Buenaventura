@@ -1,0 +1,18 @@
+a{
+    color: white!important;
+}
+
+.show-on-collapse {
+    display: none;
+}
+
+@media only screen and (max-width: 992px) {
+    .show-on-collapse {
+        display: block;
+    }
+}
+
+a.btn-flat{
+    background-color: #459A33!important;
+    border-radius: 15px;
+}

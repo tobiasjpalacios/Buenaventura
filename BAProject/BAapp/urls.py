@@ -48,6 +48,7 @@ urlpatterns = [
 
 
     #nuevas urls
+    path('inicio/', login_required(login_url='/', redirect_field_name='router')(Inicio.as_view()), name="inicio"),
     path('nuevo_negocio/', login_required(login_url='/', redirect_field_name='router')(NuevoNegocioView.as_view()), name="nuevo_negocio"),
     path('notificaciones/', login_required(login_url='/', redirect_field_name='router')(NotificacionesView.as_view()), name ="notificaciones"),
     path('presupuestos/', login_required(login_url='/', redirect_field_name='router')(PresupuestosView.as_view()), name="presupuestos"),
@@ -55,7 +56,20 @@ urlpatterns = [
     path('logistica/', login_required(login_url='/', redirect_field_name='router')(LogisticaView.as_view()), name ="logistica"),
     path('vencimientos/', login_required(login_url='/', redirect_field_name='router')(VencimientosView.as_view()), name ="vencimientos"),
     path('info_negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(Info_negocioView.as_view()), name ="info_negocio"),    
+    path('menu_comprobantes/', login_required(login_url='/', redirect_field_name='router')(MenuComprobantesView.as_view()), name ="menu_comprobantes"),
     path('comprobantes/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="comprobantes"),
+
+
+    path('facturas/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="facturas"),
+    path('remitos/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="remitos"),
+    path('ordenesCompras/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="ordenesCompras"),
+    path('ordenesPagos/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="ordenesPagos"),
+    path('contancias/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="contancias"),
+    path('recibos/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="recibos"),
+    path('cheques/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="cheques"),
+    path('cuentasCorrientes/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="cuentasCorrientes"),
+    path('facturasComision/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="facturasComision"),
+    path('notas/', login_required(login_url='/', redirect_field_name='router')(ComprobantesView.as_view()), name ="notas"),
 
 
 

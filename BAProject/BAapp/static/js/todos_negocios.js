@@ -128,27 +128,31 @@ $fixedHeader.css({
   width: filterWidth+"px"
 });
 
-$(window).bind("scroll", function() {
-  var offset = $(this).scrollTop();
+var screenWidth = $(window).width();
 
-  if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
-    $filterClone = $("#navFiltro > div").detach();
-    $fixedFilter = $("#filtroFixed").append($filterClone);
-
-    $.each($header.find('tr > th'), function(ind, val) {
-      var original_width = $(val).width();
-      $($fixedHeader.find('tr > th')[ind]).width(original_width);
-    });
-
-    $("#fixedForScroll").slideDown("fast");
-  }
-  else if (offset < tableOffset) {
-    var filterClone = $("#filtroFixed > div").detach();
-    $("#navFiltro").append(filterClone);
-
-    $("#fixedForScroll").slideUp("fast");
-  }
-});
+if (screenWidth > 992) {
+  $(window).bind("scroll", function() {
+    var offset = $(this).scrollTop();
+  
+    if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
+      $filterClone = $("#navFiltro > div").detach();
+      $fixedFilter = $("#filtroFixed").append($filterClone);
+  
+      $.each($header.find('tr > th'), function(ind, val) {
+        var original_width = $(val).width();
+        $($fixedHeader.find('tr > th')[ind]).width(original_width);
+      });
+  
+      $("#fixedForScroll").slideDown("fast");
+    }
+    else if (offset < tableOffset) {
+      var filterClone = $("#filtroFixed > div").detach();
+      $("#navFiltro").append(filterClone);
+  
+      $("#fixedForScroll").slideUp("fast");
+    }
+  });
+}
 
 // limpia filtros
 

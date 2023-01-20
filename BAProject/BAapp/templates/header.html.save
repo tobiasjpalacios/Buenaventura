@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <!-- imports -->
+  <meta charset="utf-8">
+  <!--Import materialize.css-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.min.css' %}" media="screen,projection"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style type="text/css">
+/*    html {
+    font-family: "Montseratt";
+  }*/
+  </style>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  {% block imports %}
+  
+  {% endblock imports %}
+
+  <!-- style -->
+  <style type="text/css">
+
+  {% block style %}
+  {% endblock style %}
+
+  </style>
+
+  <!-- title -->
+  <title>
+    {% block title %}
+    {% endblock title %}
+  </title>
+
+</head>
+
+<!-- navbar -->
+
+<body>
+  <div class="navbar-fixed" >
+    <nav class="no-shadows myhead row nav-wrapper">
+        <!-- izquierda -->
+        <!-- <a href="#" class="sidenav-trigger "><i class="material-icons">menu</i></a> -->
+        <a href="#" data-target="slide-out" class="sidenav-trigger" style="display: flex;"><i class="material-icons">menu</i></a>
+
+        <!-- medio -->
+        <a href="{% url 'home' %}" class="brand-logo center" style="height:100%">
+          <img height="100%"  style="position:relative;" src="{% static 'images/Buenaventura_header.png
+' %}">
+        </a>
+
+        <!-- derecha -->
+        <ul class="right hide-on-med-and-down">
+          {% if user.is_staff %}  
+          <li>
+          </li>
+          <li>
+            <a style="color: #ffffff; position:static; right :17%;font-family: 'Montserrat Bold', Montserrat;"href="{% url 'admin:index' %}">Administrar</a>
+          </li>
+          {% endif %}
+          <!-- aca en vez de title tendria que decir el tipo de cuenta que es -->
+          {% if user.is_authenticated %}
+          <li><a style="color: #ffffff; position:static; right :11%;font-family: 'Montserrat Bold', Montserrat;">{{user.get_full_name|title}}</a></li>
+          <li><a  href="{% url 'logout' %}" style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;">Cerrar Sesion</a></li>
+        
+          {% else %}
+          <li><a style="color: #ffffff; position:static; right :1%;font-family: 'Montserrat Bold', Montserrat;" class="modal-trigger" href="#modal1" > Iniciar Sesion</a></li>
+        
+          {% endif %}
+        </ul>
+    </nav>
+  </div>
+
+
+  <!--  sidenav -->
+  <ul  style="background-color: #459A33;" class="sidenav" id="mobile-demo"  >
+    {% if user.is_authenticated %}
+    <li><div class="user-view">
+      <div class="background">
+        <img src="{% static 'images/campos.jpg' %}">
+      </div>
+      <a ><img class="circle" src="{% static 'images/logo.png' %}"></a>
+      <div style=" background-color: rgba(25, 141, 45, 0.5); border-radius: 2em;" >
+        <div class="container">
+      <a href="#name"><span  class=" grey-text text-darken-1 name"> {{user.username|title}}</span></a>
+      <a href="#email"><span class="black-text   email">{{ user.get_full_name }}</span></a>
+      <a href="#email"><span class= "black-text email">{{ user.email }}</span></a>
+        
+      </div>
+    </div>
+    <div class="divider"></div>
+  </div></li>
+    <li><div class="divider"></div></li>
+    <li><a class=' btn waves-effect waves-light green modal-trigger'  href="{% url 'home' %}"  >Pagina de Inicio</a></li>
+    <li><a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'admin' %}">Administrar</a></li>
+    <li><a class='dropdown-trigger btn waves-effect waves-light green' href="{% url 'logout' %}">Cerrar Sesion</a></li>
+    <li><div class="divider"></div></li>
+    {% else %}
+    <li><div class="user-view">
+      <div class="background">
+        <img src="{% static 'images/campos.jpg' %}">
+      </div>
+      <a ><img class="circle" src="{% static 'images/logo.png' %}"></a> 
+  </div></li>
+
+    <li><a class=' btn waves-effect waves-light green modal-trigger'  href="#modal1">Iniciar Sesion</a></li>
+    <li><a class=' btn waves-effect waves-light green modal-trigger' >Quienes somos</a></li>
+    <li><a class=' btn waves-effect waves-light green modal-trigger' >Nuestros Socios</a></li>
+    <li><a class=' btn waves-effect waves-light green modal-trigger' >Nuestros Servicios</a></li>
+    </li>
+    {% endif %}
+  </ul>
+    {% block body %}
+    {% endblock body %}
+  <!--  modal de inicio de sesion  -->
+  <div style="top:0%; max-height: 80%; max-width: 70%" id="modal1" class="modal">
+    <header style="background-color: #005221; height:80px; color:#ffffff; "> <center><br><img   src="{% static 'images/Buenaventura_blanco.png' %}"></center> </header>
+    <div style="background-color: #459A33; "class="modal-content center">
+      <center><img width="100px" src="{% static 'images/BV_darkgreen.png' %}"></center>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat; font-size: 200%;height: 10px"><b>Bienvenido/a</b></p>
+      <p style="color:#ffffff; font-family: 'Montserrat Bold', Montserrat;font-size: 150%;">Ingresá a tu panel de control</p>
+
+      <div class="row">
+        <form action="{% url 'login' %}" method="POST"  class="col s12">
+          {%csrf_token%}
+          <div class="row">
+            <div style="border-radius: 2em; background-color: #ffffff ;height:45px;"class="center col s4 offset-s4">
+              <input style="color:#004e20; text-align: center;" placeholder="Usuario" id="user" name="username" type="text" >
+            </div>
+            <div style="border-radius: 2em; background-color: #ffffff ;height:45px; "class="center input-field col s4 offset-s4">
+              <input style="color:#004e20;text-align: center;" placeholder="Clave" id="password" name="password" type="password" class="validate">
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <button type="submit" class="waves-effect waves-light btn-floating btn-large" style="width:34% ;border-radius: 2em; background-color:#005221;"><i  class="small material-icons">arrow_forward</i></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="center">
+              <a style = "color: #005221" href="#">¿No sos usuario?</a>
+              <br>
+              <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!--  footer pagina  -->
+       
+  <script>
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
+    $('.modal').modal();
+  });
+
+  window.drf = {
+    csrfHeaderName: "{{csrf_header_name|default:'X-CSRFToken'}}",
+    csrfToken: "{% if request %}{{csrf_token}}{% endif %}"
+  };  // Generar Header y Token para Ajax
+</script>
+</body>
+</html>

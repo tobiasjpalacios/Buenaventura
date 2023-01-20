@@ -1,11 +1,18 @@
 {% load static %}
 <div class="row history-tables" id="form-table-div">
-  <div class="col s12 m9 push-m3">
-    <div class="prop-title">
-      <p class="prop-creator-name grey-text text-darken-3"><strong>Nueva propuesta</strong></p>
+  <div class="circle-container col s3">
+    <div class="circle-neg table-edit" id="circle0">
+      <div class="circle-inner">
+        <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
+      </div>
     </div>
-    <div class="card">
-      <div class="container__wrapper">
+  </div>
+  <div class="col s12 m9">
+    <div class="prop-title">
+      <p class="prop-creator-name table-nego table-edit"><strong>Nueva propuesta</strong></p>
+    </div>
+    <div class="card table-nego table-edit" id="card0">
+      <!-- <div class="container__wrapper">
         <div class="container__watermark">
           <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
         </div>
@@ -15,11 +22,11 @@
         <div class="container__watermark">
           <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
         </div>
-      </div>
+      </div> -->
       <div class="card-content dark-text">
         <div class="row">
-          <table {% if forloop.last %}id="form"{%endif%}>
-            <thead class="edit-thead">  
+          <table {% if forloop.last %}id="form"{%endif%} class="data-table table-nego">
+            <thead class="edit-thead table-nego">  
               <tr>
                 <th class="show0">Articulo</th>
                 <th class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Distribuidor</th>
@@ -42,7 +49,7 @@
                 {% if not request.user.clase == 'Comprador' %}
                 <td class="show0">
                   {% if item.proveedor == None %}
-                  <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off'>
+                  <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off' placeholder="Distribuidor" onkeyup="removeUpdate({{ forloop.counter0 }})">
                   <datalist id='distResults'>
                   {% for dist in distribuidores %}
                     <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
@@ -53,33 +60,33 @@
                   {% endif %}
                 </td>
                 {% endif %}
-                <td class="show0"><input type="number" name="cantidad" min="0" value="{{ item.cantidad|default_if_none:'' }}"></td>
-                <td class="show0"><input type="number" name="precio_venta" min="0" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min="0" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}"></td>
+                <td class="show0"><input type="number" name="cantidad" min="0" value="{{ item.cantidad|default_if_none:'' }}" placeholder="Cantidad" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="show0"><input type="number" name="precio_venta" min="0" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min="0" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
-                  <select name="tipo_pago" onchange="contadoTasa({{item.id}})" id="tp{{item.id}}">
+                  <select name="tipo_pago" onchange="contadoTasa({{item.id}}); removeUpdate({{ forloop.counter0 }})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
                   {% for tipo_pago in tipo_pagos %}
                     <option value="{{ tipo_pago.id }}" {% if tipo_pago.nombre == item.tipo_pago.nombre and item.tipo_pago != None %}selected{% endif %}>{{ tipo_pago.nombre }}</option>
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|default_if_none:''|stringformat:'.2f' }}"></td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}"></td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}"></td>
+                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|stringformat:'.2f' }}" placeholder="Tasa" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0">
-                  <input type="text" name="destino" value="{{item.destino}}"/>
+                  <input type="text" name="destino" value="{{item.destino}}" placeholder="Destino" onkeyup="removeUpdate({{ forloop.counter0 }})"/>
                 </td>
                 <td>
                   {% if not item.aceptado %}
                   <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept({{ forloop.counter0 }})"><i class="material-icons table-icons">done</i></a>
                   <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject({{ forloop.counter0 }})"><i class="material-icons table-icons">delete</i></a>
                   {% endif %}
-                  <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})"><i class="material-icons table-icons">save</i></a>
+                  <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update({{ forloop.counter0 }})" id="save-{{ forloop.counter0 }}"><i class="material-icons table-icons">save</i></a>
                   <a class="action-btn btn-small bv-blue btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar Ediciones" onclick="resetAll({{ forloop.counter0 }}, '{{ item.aceptado }}');"><i class="material-icons table-icons">undo</i></a>
                 </td>
                 <td>
-                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                  <a class="action-btn btn-floating btn waves-effect waves-green transparent no-shadows" id="btn-sm-1" onclick="showMore(0);"><i class="i1 material-icons table-icons" style="color: #459A33;">search</i></a>
                 </td>
               </tr>
               <script>
@@ -91,25 +98,23 @@
             {% if not negocio.aprobado %}
               <tr id="extra">
                 <td class="show0">
-                    <!-- <input type="hidden" id='artValue'> -->
-                    <input type="text" name='articulo' id='artSearch' list="artDatalist">
-                    <datalist id="artDatalist">
-                    </datalist>
+                  <input type="text" name='articulo' id='artSearch' list="artDatalist" placeholder="Articulo">
+                  <datalist id="artDatalist">
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
-                  <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off'>
+                  <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">
                   <datalist id='distResults'>
                   {% for dist in distribuidores %}
                     <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
                   {% endfor %}
                   </datalist>
                 </td>
-                <td class="show0"><input type="number" name="cantidad" min="0"></td>
+                <td class="show0"><input type="number" name="cantidad" min="0" placeholder="Cantidad"></td>
                 <td class="show0">
-                  <input type="number" name="precio_venta" step=".01" min="0">
+                  <input type="number" name="precio_venta" step=".01" min="0" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}">
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
-                  <input type="number" name="precio_compra" min="0" step=".01">
+                  <input type="number" name="precio_compra" min="0" step=".01" placeholder="Precio compra">
                 </td>
                 <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
@@ -120,16 +125,16 @@
                   </select>
                 </td>
                 <td class="not-show0">
-                  <input type="number" name="tasa" step=".01" id="tasAdd" min="0">
+                  <input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" placeholder="Tasa">
                 </td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago"></td>
-                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" placeholder="Fecha pago"></td>
+                <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" placeholder="Fecha entrega"></td>
                 <td class="not-show0">
-                  <input type="text" name="destino" value=""/>
+                  <input type="text" name="destino" placeholder="Destino"/>
                 </td>
                 <td><a class="action-btn no-shadow bv-dark-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Agregar" onclick="addArt()"><i class="material-icons">add</i></a></td>
                 <td>
-                  <a class="action-btn btn-small bv-gray btn-floating waves-effect waves-light" onclick="showMore(0);"><i class="i1 material-icons table-icons">search</i></a>
+                  <a class="action-btn btn-floating btn waves-effect waves-green transparent no-shadows" onclick="showMore(0);"><i class="i1 material-icons table-icons" style="color: #459A33;">search</i></a>
                 </td>
               </tr>
               {% endif %}
@@ -137,12 +142,12 @@
           </table>
         </div>
       </div>
-      <div class="card-action">
+      <div class="card-action table-nego">
         <span class="obser">Observaciones</span>
-        <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10">{{ prop.observaciones }}</textarea>
+        <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10" placeholder="No hay observaciones">{{ prop.observaciones }}</textarea>
         <br><br>
-          <a class="send-btn no-shadow bv-green waves-effect waves-light btn modal-trigger" id="send-prop-btn" href="#modalSend" onclick="beforeSubmit();" disabled><i class="material-icons right">send</i>Enviar</a>
-        </div>
+          <a class="send-btn no-shadow bv-green waves-effect waves-light btn" id="send-prop-btn" onclick="beforeSubmit();" disabled>Enviar</a>
+      </div>
     </div>
   </div>
 </div>
@@ -162,5 +167,8 @@
     for (var i in listProp) {
       toggleClientView(listProp[i]);
     }
+  });
+  $(window).on('load', function () {
+    vAlignCircle(0);
   });
 </script>

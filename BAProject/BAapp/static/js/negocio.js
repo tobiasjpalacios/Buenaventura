@@ -153,6 +153,8 @@ function toggleClientView(n) {
     clientViewSM.hide();
     $("#form-table-div").hide();
     $("#send-prop-btn").attr('disabled', true);
+    $(".card.history-card").addClass("vista-cliente");
+    $(".circle-neg").addClass("vista-cliente");
 
     vistaCliente = true;
 
@@ -168,6 +170,8 @@ function toggleClientView(n) {
       $("#form-table-div").show();
     }
     $("#send-prop-btn").removeAttr('disabled');
+    $(".card.history-card").removeClass("vista-cliente");
+    $(".circle-neg").removeClass("vista-cliente");
 
     vistaCliente = false;
 
@@ -214,21 +218,21 @@ function addTable() {
     }
 }
 
-$("#client-view-sw").change(function() {
+// $("#client-view-sw").change(function() {
 
-  $(".card").toggleClass("tableClientView");
-  $(".card-title").toggleClass("tableClientView");
-  $(".card-action").toggleClass("tableClientView");
-  $(".circle-container").toggle("display");
-  $(".data-table").toggleClass("tableClientView");
-  $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
-  $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
-  $(".w1").toggle("display");
-  $(".w2").toggle("display");
-  $(".w2-hide").toggle("display");
-  $(".w3").toggle("display");
+//   // $(".card").toggleClass("tableClientView");
+//   // $(".card-title").toggleClass("tableClientView");
+//   // $(".card-action").toggleClass("tableClientView");
+//   // $(".circle-container").toggle("display");
+//   // $(".data-table").toggleClass("tableClientView");
+//   // $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
+//   // $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
+//   // $(".w1").toggle("display");
+//   // $(".w2").toggle("display");
+//   // $(".w2-hide").toggle("display");
+//   // $(".w3").toggle("display");
   
-});
+// });
 
 function allTDLinebreak() {
   $("td:first-child").each(function() {
@@ -248,18 +252,6 @@ function allTDLinebreak() {
     }
   })
 }
-
-//
-
-setTimeout(function() {
-  $(".blink_text").fadeIn();
-}, 10000);
-
-$(window).on('load', function () {
-  $(".contain").fadeOut("fast", function() {
-    $(this).remove();
-  });
-});
 
 // table_edit
 
@@ -285,4 +277,12 @@ function resetIngredientesDatalist() {
       datalist.appendChild(option);
     }
   }
+}
+
+function vAlignCircle(n) {
+  var parentHeight = $("#card" + n).height();
+  var childHeight = $("#circle" + n).height();
+  var offset = childHeight / 4;
+  var marginTop = ((parentHeight - childHeight) / 2) + offset;
+  $("#circle" + n).css('margin-top', marginTop);
 }
