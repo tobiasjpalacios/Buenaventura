@@ -49,6 +49,18 @@ input{
   color: #459A33;
 }
 
+.subtitulo.verde:hover {
+  text-decoration: underline;
+}
+
+.forgot-pass {
+  color: #005221;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
+
 p{
   margin: 3%;
 }

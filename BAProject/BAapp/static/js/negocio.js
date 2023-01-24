@@ -33,6 +33,7 @@ $(document).ready(function(){
 var modifyWasClicked = false;
 
 function mScrollTo(id) {
+  console.log(id)
     var elementPosition = $(id).offset().top;
     var navHeight = $("nav").height();
 
@@ -161,13 +162,14 @@ function addTable() {
     $("#form-table-div").detach().appendTo("#table-destination");
     $("#form-table-div").show();
     modifyWasClicked = true;
+    vAlignCircle(0);
 }
 
-  function addTables(n, isBeforeFechaCierre) {
-    if (!isBeforeFechaCierre) {
-      $("#div-table-"+n).detach().appendTo("#table-destination");
-      $("#div-table-"+n).show();
-    }
+function addTables(n, isBeforeFechaCierre) {
+  if (!isBeforeFechaCierre) {
+    $("#div-table-"+n).detach().appendTo("#table-destination");
+    $("#div-table-"+n).show();
+  }
 }
 
 // $("#client-view-sw").change(function() {

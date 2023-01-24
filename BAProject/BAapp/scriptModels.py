@@ -175,13 +175,14 @@ def updateEstados(request):
     negocio = Negocio.objects.all()
 
     for neg in negocio:
-        prop = Propuesta.objects.filter(negocio=neg.id).last()
-        if neg.aprobado:
-            neg.estado = "CONFIRMADO"
-        elif neg.cancelado:
-            neg.estado = "CANCELADO"
-        elif prop.envio_comprador:
-            neg.estado = "RECIBIDO"
-        else:
-            neg.estado = "NEGOCIACION"
-        neg.save()
+        if not neg.estado:
+            prop = Propuesta.objects.filter(negocio=neg.id).last()
+            if neg.aprobado:
+                neg.estado = "CONFIRMADO"
+            elif neg.cancelado:
+                neg.estado = "CANCELADO"
+            elif prop.envio_comprador:
+                neg.estado = "RECIBIDO"
+            else:
+                neg.estado = "NEGOCIACION"
+            neg.save()

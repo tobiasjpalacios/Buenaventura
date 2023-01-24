@@ -55,11 +55,11 @@ Negocios
               <div class="input-field clv">
                 <select multiple id="selectEstados">
                   <option value="todos" selected> Todos </option>
-                  <option value="Confirmado">Confirmado</option>
-                  <option value="Cancelado">Cancelado</option>
+                  <option value="CONFIRMADO">Confirmado</option>
+                  <option value="CANCELADO">Cancelado</option>
                   {% if request.user.clase != 'Proveedor' %}
-                  <option value="Recibido">Recibido</option>
-                  <option value="En Negociación">En Negociación</option>
+                  <option value="RECIBIDO">Recibido</option>
+                  <option value="NEGOCIACION">En Negociación</option>
                   {% endif %}
                 </select>
                 <label class="for-input">Estado</label>
@@ -171,7 +171,7 @@ Negocios
                 {% endif %}
               {% endif %}
               <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-              <td class="green-text center">{{negocio.estado}}</td>
+              <td class="green-text center">{{negocio.get_estado_display }}</td>
               <td><a class="waves-effect waves-light no-shadows"
                   href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">search</i></a></td>
             </tr>

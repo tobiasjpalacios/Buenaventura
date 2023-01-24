@@ -56,28 +56,35 @@ Negociación {{ negocio.get_id_de_neg }}
 {% if not prop.items.count == 0 %}
 {% include "negocio/table_history.html" %}
 {% endif %}
-
+ 
+{% if not negocio.estado == "ESP_CONF" or not request.user.clase == "Comprador" %}
 {% if forloop.last %}
 {% include "negocio/table_edit.html" %}
+{% endif %}
 {% endif %}
 
 {% endfor %}
 
-{% if negocio.aprobado %}
-<div class="approved" id="approved">
-  <h2>Negocio confirmado ✓</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
-  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
-</div>
-{% endif %}
-{% if negocio.cancelado %}
+{% if negocio.estado == "CANCELADO" %}
 <div class="canceled" id="canceled">
   <h2>Negocio cancelado ✗</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+</div>
+{% endif %}
+{% if negocio.estado == "ESP_CONF" and request.user.clase == "Comprador" %}
+<div class="approved" id="approved">
+  <h2>Esperando confirmación del vendedor ◌</h2>
+  <p><strong>El vendedor está chequeando los datos. En cuanto lo haga, serás notificado vía e-mail.</strong></p>
 </div>
 {% endif %}
 
-{% if negocio.aprobado %}
+{% if negocio.estado == "CONFIRMADO" %}
+<div class="approved" id="approved">
+  <h2>Negocio confirmado ✓</h2>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
+</div>
+
 <div id="table-destination">
 
   <div class="materialert warning" id="infoAlert">
@@ -96,7 +103,7 @@ Negociación {{ negocio.get_id_de_neg }}
   <ul>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.propuestas.last.id %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
-    {% if negocio.aprobado %}
+    {% if negocio.estado == "CONFIRMADO" %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
     {% endif %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
@@ -132,42 +139,46 @@ Negociación {{ negocio.get_id_de_neg }}
 
   $(document).ready(function(){
     edits.new = {}
-
-    $.ajax({
-      type: "GET",
-      url: "{% url 'api_articulos' %}",
-      dataType: "json",
-      success: function(data) {      
-        arts_data = data;
-        articuloDatalist(); // agrega los articulos a la datalist de table_edit
-      }
-    });
-
-    // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
-    var elId;
-    "{% if not negocio.aprobado and not negocio.cancelado %}"
-    elId = "#form-table-div"
-    "{% elif negocio.aprobado and not negocio.cancelado %}"
-    elId = "#approved"
-    "{% elif not negocio.aprobado and negocio.cancelado %}"
-    elId = "#canceled"
-    "{% endif %}"
-    setTimeout(function() {
-        mScrollTo(elId);
-    }, 500);
-
-    listProp.push('0');
-
-    "{% if negocio.aprobado %}"
+    
+    "{% if negocio.estado == 'CONFIRMADO' %}"
     isAccepted = true;
     "{% endif %}"
-    "{% if negocio.cancelado %}"
+    "{% if negocio.estado == 'CANCELADO' %}"
     isCanceled = true;
     "{% endif %}"
 
     if (isAccepted || isCanceled) {
       $("#form-table-div").hide();
     }
+
+    if (!isAccepted) {
+      $.ajax({
+        type: "GET",
+        url: "{% url 'api_articulos' %}",
+        dataType: "json",
+        success: function(data) {      
+          arts_data = data;
+          articuloDatalist(); // agrega los articulos a la datalist de table_edit
+        }
+      });
+    }
+
+    // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
+    var elId;
+    "{% if negocio.estado == 'CONFIRMADO' or negocio.estado == 'ESP_CONF' and request.user.clase == 'Comprador' %}"
+    elId = "#approved"
+    "{% elif negocio.estado == 'CANCELADO' %}"
+    elId = "#canceled"
+    "{% else %}"
+    elId = "#form-table-div"
+    "{% endif %}"
+    if (elId) {
+      setTimeout(function() {
+          mScrollTo(elId);
+      }, 500);
+    }
+
+    listProp.push('0');
 
   });
 
@@ -244,6 +255,7 @@ Negociación {{ negocio.get_id_de_neg }}
     })
     lastForAccept.items[index] = edits.items[index]
     $('#send-prop-btn').removeAttr('disabled');
+    $('#conf-neg-btn').attr("disabled", 'disabled');
     propUpdated = true;
     unsavedChanges = false;
     console.log($("#save-" + index).removeClass("blinkSave"));
@@ -265,7 +277,7 @@ Negociación {{ negocio.get_id_de_neg }}
       }
     });
     unsavedChanges = false;
-    console.log($("#save-" + index).removeClass("blinkSave"));
+    // console.log($("#save-" + index).removeClass("blinkSave"));
   }
 
   function resetForAccept(index) {
@@ -457,7 +469,7 @@ Negociación {{ negocio.get_id_de_neg }}
     } 
   });
 
-  function beforeSubmit() {
+  function beforeSubmit(isSend) {
     var proc = {}
     var errors = false;
     var errorFields = [];
@@ -484,7 +496,7 @@ Negociación {{ negocio.get_id_de_neg }}
     }
     var checker = arr => arr.every(Boolean);
     var icon, title, text;
-    if (checker(acc)) {
+    if (checker(acc) && !isSend) {
       icon = "success";
       title = "Confirmar negocio";
       text = "Estás a punto de confirmar el negocio.\n¿Deseas continuar con la operación?";
@@ -509,15 +521,15 @@ Negociación {{ negocio.get_id_de_neg }}
         },
         icon: "info"
       }).then(okay => {
-        if (okay) openSwalForSubmit(icon, title, text);
+        if (okay) openSwalForSubmit(icon, title, text, isSend);
       });
     }
     else {
-      openSwalForSubmit(icon, title, text);
+      openSwalForSubmit(icon, title, text, isSend);
     }
   }
 
-  function openSwalForSubmit(icon, title, text) {
+  function openSwalForSubmit(icon, title, text, isSend) {
     swal({
       icon: icon,
       title: title,
@@ -527,14 +539,15 @@ Negociación {{ negocio.get_id_de_neg }}
         confirm: "Si",
       }
     }).then(okay => {
-      if (okay) submitProp();
+      if (okay) submitProp(isSend);
     });
   }
 
-  function submitProp() {
+  function submitProp(isSend) {
     var proc = {}
     var errors = false;
     var errorFields = {};
+    proc.issend = isSend;
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {

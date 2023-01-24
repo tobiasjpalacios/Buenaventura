@@ -33,7 +33,7 @@
             {% endif %}
         {% endif %}
         <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-        <td class="green-text center">{{negocio.estado}}</td>
+        <td class="green-text center">{{negocio.get_estado_display}}</td>
         <td><a class="btn-floating btn-small waves-effect waves-light red no-shadows"
                 href="{% url 'info_negocio' negocio.id_prop %}"><i class=" small material-icons ">search</i></a></td>
     </tr>
