@@ -1967,7 +1967,7 @@ class NegocioView(View):
                 negocio.estado = "CONFIRMADO"
                 negocio.fecha_cierre = datetime.now()
                 negocio.save()
-            elif not negocio.estado == "ESP_CONF":
+            elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
                 if envio_comprador:
                     negocio.estado = "ESP_CONF"
                 else:

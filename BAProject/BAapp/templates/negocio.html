@@ -497,7 +497,7 @@ Negociación {{ negocio.get_id_de_neg }}
     }
     var checker = arr => arr.every(Boolean);
     var icon, title, text;
-    if ( (checker(acc) && isSend && !esp_conf) || (checker(acc) && !isSend && esp_conf) ) {
+    if (checker(acc) && !userIsComprador && ((isSend && !esp_conf) || (!isSend && esp_conf))) {
       icon = "success";
       title = "Confirmar negocio";
       text = "Estás a punto de confirmar el negocio.\n¿Deseas continuar con la operación?";
