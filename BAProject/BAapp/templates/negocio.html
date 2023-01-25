@@ -473,6 +473,7 @@ Negociación {{ negocio.get_id_de_neg }}
     var proc = {}
     var errors = false;
     var errorFields = [];
+    var esp_conf = {% if negocio.estado == "ESP_CONF" %} true {% else %} false {% endif %}
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
@@ -496,7 +497,7 @@ Negociación {{ negocio.get_id_de_neg }}
     }
     var checker = arr => arr.every(Boolean);
     var icon, title, text;
-    if (checker(acc) && !isSend) {
+    if ( (checker(acc) && isSend && !esp_conf) || (checker(acc) && !isSend && esp_conf) ) {
       icon = "success";
       title = "Confirmar negocio";
       text = "Estás a punto de confirmar el negocio.\n¿Deseas continuar con la operación?";

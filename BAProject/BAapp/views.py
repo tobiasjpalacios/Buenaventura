@@ -1899,7 +1899,6 @@ class NegocioView(View):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
         isSend = bool(data["issend"])
-        print(isSend)
         completed = True
         observaciones = "No hay observaciones" if not data["observaciones"] else data["observaciones"]
         envio_comprador = request.user.clase == 'Comprador'
@@ -1964,12 +1963,17 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            if not negocio.estado == "CONFIRMADO":
+            if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
+                negocio.estado = "CONFIRMADO"
+                negocio.fecha_cierre = datetime.now()
+                negocio.save()
+            elif not negocio.estado == "ESP_CONF":
                 if envio_comprador:
                     negocio.estado = "ESP_CONF"
-                elif not envio_comprador and not isSend:
+                else:
                     negocio.estado = "CONFIRMADO"
                     negocio.fecha_cierre = datetime.now()
+                negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.estado = "CANCELADO"
@@ -2004,7 +2008,7 @@ class NegocioView(View):
             {pre_text} cancelado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.estado == "ESP_CONF":
+        elif negocio.estado == "ESP_CONF" and envio_comprador:
             titulo = f"{pre_titulo} actualizado. El cliente está esperando tu confirmación"
             texto = f"""
             {pre_text} actualizado.
@@ -2014,6 +2018,7 @@ class NegocioView(View):
         else:
             negocio_update = True
 
+        print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
             full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
@@ -2027,8 +2032,11 @@ class NegocioView(View):
                     negocio.estado = "RECIBIDO"
                 else:
                     negocio.estado = "NEGOCIACION"
+                negocio.save()
+            elif negocio.estado == "ESP_CONF" and not envio_comprador and isSend:
+                negocio.estado = "NEGOCIACION"
+                negocio.save()
                 
-        negocio.save()
         
         return render(request, 'negocio.html')
 
