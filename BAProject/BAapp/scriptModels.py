@@ -171,7 +171,7 @@ def loadModels(request):
     
     return HttpResponse("Creado")
 
-def updateEstados(request):
+def updateEstados():
     negocio = Negocio.objects.all()
 
     for neg in negocio:

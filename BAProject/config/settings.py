@@ -123,7 +123,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -147,12 +147,13 @@ SITE_ID = 1
 
 # When DEBUG is set to False
 
-if not DEBUG:
+# NOTE: comentado temporalmente para no enviar emails al pedo 
+# if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
     # Allowed hosts genera bad request 400
     # ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
 
-    EMAIL_BACKEND = 'django_ses.SESBackend'
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    # EMAIL_BACKEND = 'django_ses.SESBackend'
+    # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    # AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')

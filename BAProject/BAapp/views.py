@@ -13,6 +13,7 @@ from django.core import serializers
 from django.db import transaction
 from django.db.models import Q, Count
 from django.urls import reverse, resolve
+from django.utils import timezone
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
@@ -33,6 +34,8 @@ from functools import reduce
 from django.conf import settings
 from decimal import *
 
+# NOTE: temporal para guardar nuevos estados de negocios en la db
+updateEstados()
 
 User = settings.AUTH_USER_MODEL
 
@@ -50,8 +53,6 @@ def chat(request):
 
 class Inicio(View):
     def get(self, request, *args, **kwargs):
-        #NOTE: solo para actualizar campo estado en todos los negocios
-        updateEstados(request)
         return render(request,'inicio.html')
 
 class NuevoNegocioView(View):
@@ -1644,7 +1645,7 @@ def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
         negocio=negocio,
         observaciones=observacion,
-        timestamp=datetime.now(),
+        timestamp=timezone.now(),
         envio_comprador=isComprador,
         visto=isComprador,
         )    
@@ -1943,7 +1944,7 @@ class NegocioView(View):
             "finalizado" if completed else "actualizado"
         )
         user = None
-        if (prop.envio_comprador):
+        if prop.envio_comprador:
             user=negocio.comprador
         else:
             user=negocio.vendedor
@@ -1965,19 +1966,29 @@ class NegocioView(View):
         if all(acc) and not itemsProp.count() == 0:
             if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
                 negocio.estado = "CONFIRMADO"
-                negocio.fecha_cierre = datetime.now()
+                negocio.fecha_cierre = timezone.now()
                 negocio.save()
             elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
                 if envio_comprador:
                     negocio.estado = "ESP_CONF"
+                    titulo = "Negocio pendiente de confirmación"
+                    categoria = "Presupuesto"
+                    user = negocio.vendedor
+                    notif = Notificacion(
+                        titulo=titulo,
+                        categoria=categoria,
+                        hyperlink=reverse('negocio', args=[negocio.id,]),
+                        user=user
+                    )
+                    notif.save()
                 else:
                     negocio.estado = "CONFIRMADO"
-                    negocio.fecha_cierre = datetime.now()
+                    negocio.fecha_cierre = timezone.now()
                 negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.estado = "CANCELADO"
-            negocio.fecha_cierre = datetime.now()
+            negocio.fecha_cierre = timezone.now()
 
         # send email
 

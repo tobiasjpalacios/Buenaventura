@@ -535,3 +535,8 @@ table.table-nego tr td {
 .select-error.select-wrapper input.select-dropdown {
     border-bottom: 2px solid #F44336;
 }
+
+.contain.valign-wrapper .row {
+    margin: auto;
+    width: 5%;
+}
