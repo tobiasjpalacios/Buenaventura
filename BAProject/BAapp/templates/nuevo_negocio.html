@@ -165,7 +165,7 @@ Cotizar
   }
   var rowCnt = 0;
   var headers = (userIsComprador) ?
-    ["Ingrediente", "Empresa", "Cantidad", "Precio",
+    ["Ingrediente", "Cantidad", "Precio",
       "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"]
     : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad",
       "Precio venta", "Precio compra",
@@ -853,10 +853,6 @@ Cotizar
             input = 0;
             tmp_dict[headers[j]] = input;
           }
-          else if (headers[j] == "Empresa" && userIsComprador) {
-            input = null
-            tmp_dict[headers[j]] = input;
-          }
           else if (headers[j] == "Distribuidor" && !userIsComprador) {
             var inputValue = input.value;
             input = userIsComprador ? null : $('option[value="' + inputValue + '"]').attr('id');
@@ -938,10 +934,19 @@ Cotizar
 
     td.appendChild(ele);
     td.appendChild(datalistIng);
+    
+    var list_ingredientes = [];
     for (var i = 0; i < savings_data.length; i++) {
+      list_ingredientes.push(savings_data[i].ingrediente)
+    }
+    list_ingredientes = list_ingredientes.filter((elemento, index) => {
+      return list_ingredientes.indexOf(elemento) === index;
+    }); 
+
+    for (var i = 0; i < list_ingredientes.length; i++) {
       var optionIng = document.createElement('option');
-      optionIng.setAttribute('value', '' + savings_data[i].ingrediente);
-      all_ingredientes.push(savings_data[i].ingrediente); //to validate later
+      optionIng.setAttribute('value', '' + list_ingredientes[i]);
+      all_ingredientes.push(list_ingredientes[i]); //to validate later
       datalistIng.appendChild(optionIng);
 
     }

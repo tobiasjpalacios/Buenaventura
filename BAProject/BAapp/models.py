@@ -66,13 +66,17 @@ class Articulo(models.Model):
         "Empresa",
         on_delete=models.DO_NOTHING,
         null=True,
+        blank=True,
         related_name="articulos")
 
     class Meta:
         search_fields = ('marca','ingrediente','concentracion')
 
     def __str__(self):
-        return '{} {}'.format(self.ingrediente, self.empresa.nombre_comercial)
+        if self.empresa != None:
+            return '{} {}'.format(self.ingrediente, self.empresa.nombre_comercial)
+        else:
+            return self.ingrediente
 
 
 class Negocio(models.Model):
