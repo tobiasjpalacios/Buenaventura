@@ -48,12 +48,11 @@ Negociación {{ negocio.get_id_de_neg }}
 <div class="menuZone clv">
     <h4 class="tituloPagina">Negociación</h4>
     <strong style="font-size: 30px; font-weight: 900; color: #459A33; margin-left: 20px;" class="text-darken-3">{{negocio.get_id_de_neg}}</strong>
-</div> 
-
+</div>
 
 {% for prop in propuestas %}
 
-{% if not prop.items.count == 0 %}
+{% if items_count %}
 {% include "negocio/table_history.html" %}
 {% endif %}
  
@@ -158,7 +157,10 @@ Negociación {{ negocio.get_id_de_neg }}
         dataType: "json",
         success: function(data) {      
           arts_data = data;
-          articuloDatalist(); // agrega los articulos a la datalist de table_edit
+          items_count = {{items_count}}
+          for (i = 0; i <= items_count; i++) {
+            articuloDatalist(i); // agrega los articulos a la datalist de table_edit
+          }
         }
       });
     }
@@ -179,6 +181,10 @@ Negociación {{ negocio.get_id_de_neg }}
     }
 
     listProp.push('0');
+
+    if (!userIsComprador) {
+      editable_fields.push("articulo");
+    }
 
   });
 
@@ -244,9 +250,12 @@ Negociación {{ negocio.get_id_de_neg }}
               edits.items[index][element] = parseInt(input.value)
             }
           }
-          else if (input.name == "distribuidor"){
+          else if (input.name == "distribuidor") {
             var opt = $("#distResults [value='"+input.value+"']");
             edits.items[index]["proveedor"] = opt.data('value');
+          }
+          else if (!userIsComprador && input.name == "articulo") {
+            edits.items[index][element] = getArtId(index+1);
           } else {
             edits.items[index][element] = input.value
           }
@@ -258,7 +267,7 @@ Negociación {{ negocio.get_id_de_neg }}
     $('#conf-neg-btn').attr("disabled", 'disabled');
     propUpdated = true;
     unsavedChanges = false;
-    console.log($("#save-" + index).removeClass("blinkSave"));
+    $("#save-" + index).removeClass("blinkSave");
   }
 
   function resetAll(index, aceptado){
@@ -272,12 +281,16 @@ Negociación {{ negocio.get_id_de_neg }}
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change();
       }
+      else if (!userIsComprador && element == "articulo") {
+        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
+        input.val(artName);
+      }
       else {
         input.val(edits.items[index][element]);
       }
     });
     unsavedChanges = false;
-    // console.log($("#save-" + index).removeClass("blinkSave"));
+    $("#save-" + index).removeClass("blinkSave");
   }
 
   function resetForAccept(index) {
@@ -288,6 +301,10 @@ Negociación {{ negocio.get_id_de_neg }}
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change()
+      }
+      else if (!userIsComprador && element == "articulo") {
+        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
+        input.val(artName);
       }
       else if (element == "distribuidor") {
         // do nothing
@@ -314,7 +331,7 @@ Negociación {{ negocio.get_id_de_neg }}
     });
     if (unsavedChanges) {
       $($("#form")[0].rows[index+1]).css('background-color', '');
-      console.log($("#save-" + index).addClass("blinkSave"));
+      $("#save-" + index).addClass("blinkSave");
     }
   }
 
@@ -335,8 +352,7 @@ Negociación {{ negocio.get_id_de_neg }}
       if (element != "divisa") {
         input = $($("#extra").find('[name="'+element+'"]'))[0];
       }
-      var artSearchInput = $("#artSearch").val();
-      var artId = parseInt($('#artDatalist option[value="' + artSearchInput +'"]').attr("id"));
+      var artId = getArtId(0);
       if (input != null) {
         if (!input.value) {
           if (userIsComprador) {

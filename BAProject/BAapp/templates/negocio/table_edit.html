@@ -45,7 +45,14 @@
             <tbody>
             {% for item in prop.items.all %}
               <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %}>
-                <td class="show0">{{ item.articulo|default_if_none:'' }}</td>
+                <td class="show0">
+                  {% if not request.user.clase == 'Comprador' %}
+                  <input type="text" name='articulo' id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" onkeyup="removeUpdate({{ forloop.counter0 }})" onfocus="">
+                  <datalist id="artDatalist{{ forloop.counter }}"></datalist>
+                  {% else %}
+                  {{ item.articulo|default_if_none:'' }}
+                  {% endif %}
+                </td>
                 {% if not request.user.clase == 'Comprador' %}
                 <td class="show0">
                   {% if item.proveedor == None %}
@@ -98,8 +105,8 @@
             {% if not negocio.estado == "CONFIRMADO" and not negocio.estado == "ESP_CONF" %}
               <tr id="extra">
                 <td class="show0">
-                  <input type="text" name='articulo' id='artSearch' list="artDatalist" placeholder="Articulo">
-                  <datalist id="artDatalist">
+                  <input type="text" name='articulo' id='artSearch0' list="artDatalist0" placeholder="Articulo">
+                  <datalist id="artDatalist0">
                 </td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">
                   <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">

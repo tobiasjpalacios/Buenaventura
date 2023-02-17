@@ -1892,7 +1892,8 @@ class NegocioView(View):
             'tasas': TASA_CHOICES,
             "distribuidores": MyUser.objects.filter(clase='Proveedor'),
             "tipo_pagos": TipoPago.objects.all(),
-            "arts": Articulo.objects.all()
+            "arts": Articulo.objects.all(),
+            "items_count": ItemPropuesta.objects.filter(propuesta=data).count()
         }
         return render(request, 'negocio.html', context)
 

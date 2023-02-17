@@ -21,8 +21,6 @@ $(document).ready(function(){
         }
     })
 
-    allTDLinebreak();
-
     // var btn_sm_1 = document.getElementById('btn-sm-1');
     
     // $(btn_sm_1).each(function () {
@@ -209,8 +207,8 @@ function allTDLinebreak() {
 
 // table_edit
 
-function articuloDatalist() {
-  var artDatalist = document.getElementById("artDatalist");
+function articuloDatalist(n) {
+  var artDatalist = document.getElementById("artDatalist"+n);
   for (var i = 0; i < arts_data.length; i++) {
     var option = document.createElement('option');
     option.setAttribute('value',''+arts_data[i].ingrediente + ' ' + arts_data[i].empresa__nombre_comercial);
@@ -219,10 +217,10 @@ function articuloDatalist() {
   }
 }
 
-function resetIngredientesDatalist() {
-  var input = document.getElementById("artSearch").value;
+function resetIngredientesDatalist(n) {
+  var input = document.getElementById("artSearch"+n).value;
   if (!isEmpty(input)) {
-    var datalist = document.getElementById("artDatalist");
+    var datalist = document.getElementById("artDatalist"+n);
     datalist.innerHTML = " ";
     for (var i = 0; i < arts_data.length; i++) {
       var option = document.createElement('option');
@@ -239,4 +237,10 @@ function vAlignCircle(n) {
   var offset = childHeight / 4;
   var marginTop = ((parentHeight - childHeight) / 2) + offset;
   $("#circle" + n).css('margin-top', marginTop);
+}
+
+function getArtId(n) {
+  var artSearchInput = $("#artSearch"+n).val();
+  var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
+  return artId;
 }
