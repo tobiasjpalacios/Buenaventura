@@ -217,6 +217,26 @@ function articuloDatalist(n) {
   }
 }
 
+function articuloDatalistCliente() {
+  var artDatalist = document.getElementById("artDatalist0");
+  var last_item = arts_data[0].ingrediente;
+  var option = document.createElement('option');
+  option.setAttribute('value',''+arts_data[0].ingrediente);
+  option.setAttribute('id',''+arts_data[0].id);
+  artDatalist.appendChild(option);   
+  for (var i = 1; i < arts_data.length; i++) {
+    var curr_item = arts_data[i].ingrediente;
+    console.log(curr_item, last_item);
+    if (last_item != curr_item) {
+      option = document.createElement('option');
+      option.setAttribute('value',''+arts_data[i].ingrediente);
+      option.setAttribute('id',''+arts_data[i].id);
+      artDatalist.appendChild(option);
+      last_item = arts_data[i].ingrediente;
+    }
+  }
+}
+
 function resetIngredientesDatalist(n) {
   var input = document.getElementById("artSearch"+n).value;
   if (!isEmpty(input)) {

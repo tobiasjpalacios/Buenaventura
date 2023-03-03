@@ -1920,8 +1920,12 @@ class NegocioView(View):
                     value = item[key]
                     if key == "proveedor" and value == None:
                         setattr(tmp, key, None)
-                    if f.is_relation:
-                        if not (key == "proveedor" and value == None):
+                    if f.is_relation and not (key == "proveedor" and value == None):
+                        if envio_comprador and key == "articulo":
+                            ingrediente_articulo = Articulo.objects.get(pk=value).ingrediente
+                            articulo_tmp = Articulo.objects.filter(ingrediente=ingrediente_articulo, empresa=None).first()
+                            tmp.articulo = articulo_tmp
+                        else:
                             obj = get_object_or_404(
                                 f.related_model,
                                 pk=value

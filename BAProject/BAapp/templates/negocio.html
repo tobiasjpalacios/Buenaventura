@@ -118,6 +118,10 @@ Negociación {{ negocio.get_id_de_neg }}
   var propUpdated = false;
   var arts_data;
   var unsavedChanges = false;
+  var userIsComprador = false;
+  "{% if request.user.clase == 'Comprador' %}"
+  userIsComprador = true;
+  "{% endif %}"
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -155,12 +159,17 @@ Negociación {{ negocio.get_id_de_neg }}
         type: "GET",
         url: "{% url 'api_articulos' %}",
         dataType: "json",
-        success: function(data) {      
+        success: function(data) {    
           arts_data = data;
-          items_count = {{items_count}}
-          for (i = 0; i <= items_count; i++) {
-            articuloDatalist(i); // agrega los articulos a la datalist de table_edit
-          }
+          if (userIsComprador) {
+            articuloDatalistCliente();
+          } 
+          else {
+            items_count = {{items_count}}
+            for (i = 0; i <= items_count; i++) {
+              articuloDatalist(i); // agrega los articulos a la datalist de table_edit
+            }
+          } 
         }
       });
     }
@@ -187,12 +196,6 @@ Negociación {{ negocio.get_id_de_neg }}
     }
 
   });
-
-
-  var userIsComprador = false;
-  "{% if request.user.clase == 'Comprador' %}"
-  userIsComprador = true;
-  "{% endif %}"
 
   if (userIsComprador) {
     $(".customerHide").hide();
@@ -436,7 +439,7 @@ Negociación {{ negocio.get_id_de_neg }}
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td class=\"show0\">"+$("#artSearch")[0].value+"</td>\
+    <td class=\"show0\">"+$("#artSearch0")[0].value+"</td>\
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
