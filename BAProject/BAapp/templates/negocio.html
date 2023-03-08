@@ -359,7 +359,7 @@ Negociación {{ negocio.get_id_de_neg }}
       if (input != null) {
         if (!input.value) {
           if (userIsComprador) {
-            if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+            if (!(input.name == "distribuidor" || input.name == "precio_compra" || input.name == "cantidad")) {
               errors = true || errors;
               if (input.name == "tipo_pago") {
                 $(input).parent().addClass("invalid");
@@ -382,7 +382,7 @@ Negociación {{ negocio.get_id_de_neg }}
             input.parentElement.classList.add("select-error");
           }
         } else {
-          errors = false || errors
+          errors = false
           $(input).removeClass("invalid");
         }
         if (element === "distribuidor") {
@@ -408,6 +408,7 @@ Negociación {{ negocio.get_id_de_neg }}
             if (userIsComprador) {
               n["proveedor"] = null;
               n["precio_compra"] = 0;
+              n["cantidad"] = 1;
             }
           }
         }
@@ -443,10 +444,10 @@ Negociación {{ negocio.get_id_de_neg }}
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\"1\" step=\"1\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\" disabled></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
     <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
@@ -471,13 +472,13 @@ Negociación {{ negocio.get_id_de_neg }}
       input.removeClass(["invalid"])
     })
     $('select').formSelect();
-    $("#artSearch").val("");
+    $("#artSearch0").val("");
     counter = counter + 1;
     contadoTasa(rowId);
     contadoTasa('Add');
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
-    allTDLinebreak();
+    // allTDLinebreak();
   }
 
   var obsOriginalValue = $("#observaciones").val();
