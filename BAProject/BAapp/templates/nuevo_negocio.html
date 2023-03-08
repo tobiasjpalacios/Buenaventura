@@ -160,12 +160,20 @@ Cotizar
 
   function start_datepicker() {
     $('.datepicker').datepicker({
-      format: 'dd/mm/yyyy',
+        format: 'dd/mm/yyyy',
+        showClearBtn: true,
+        i18n: {
+          months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+          monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+          weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+          weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+          weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+      }
     });
   }
   var rowCnt = 0;
   var headers = (userIsComprador) ?
-    ["Ingrediente", "Empresa", "Cantidad", "Precio",
+    ["Ingrediente", "Cantidad", "Precio",
       "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"]
     : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad",
       "Precio venta", "Precio compra",
@@ -274,7 +282,7 @@ Cotizar
 
   function addRow() {
     hideSend();
-    var general = (userIsComprador) ? ["Ingrediente", "Empresa", "Cantidad"] : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad"];
+    var general = (userIsComprador) ? ["Ingrediente", "Cantidad"] : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad"];
     var pago = (userIsComprador) ? ["Precio", "Tipo de pago", "Tasa", "Fecha de pago"] : ["Precio venta", "Precio compra", "Tipo de pago", "Tasa", "Fecha de pago"];
     var logistica = ["Fecha de entrega", "Destino"];
 
@@ -442,7 +450,7 @@ Cotizar
     thread.appendChild(br2);
 
     var headers = (userIsComprador) ?
-      ["Ingrediente", "Empresa", "Cantidad", "Precio",
+      ["Ingrediente", "Cantidad", "Precio",
         "Tipo de pago", "Tasa", "Fecha de pago", "Fecha de entrega", "Destino"]
       : ["Ingrediente", "Empresa", "Distribuidor", "Cantidad",
         "Precio venta", "Precio compra",
@@ -450,30 +458,28 @@ Cotizar
 
     //console.log(headers);
 
+
     if (userIsComprador) {
       for (var c = 0; c < headers.length; c++) {
         if (c == 0) {
           var th = document.getElementById("th_Ingrediente" + rowCnt);
           input_ingrediente(c, th)
         } else if (c == 1) {
-          var th = document.getElementById("th_Empresa" + rowCnt);
-          input_empresa(c, th);
-        } else if (c == 2) {
           var th = document.getElementById("th_Cantidad" + rowCnt);
           input_cantidad(c, th);
-        } else if (c == 4) {
+        } else if (c == 3) {
           var th = document.getElementById("th_Tipo de pago" + rowCnt);
           input_tipoPago(c, th);
-        } else if (c == 5) {
+        } else if (c == 4) {
           var th = document.getElementById("th_Tasa" + rowCnt);
           input_tasa(c, th);
-        } else if (c == 6) {
+        } else if (c == 5) {
           var th = document.getElementById("th_Fecha de pago" + rowCnt);
           input_fechaPago(c, th);
-        } else if (c == 7) {
+        } else if (c == 6) {
           var th = document.getElementById("th_Fecha de entrega" + rowCnt);
           input_fechaEntrega(c, th);
-        } else if (c == 8) {
+        } else if (c == 7) {
           var th = document.getElementById("th_Destino" + rowCnt);
           input_destino(c, th);
         } else {
@@ -642,7 +648,7 @@ Cotizar
       if (input.hasAttribute("list")) {
         input.setAttribute("list", "datalist" + c + '.' + (newRowCnt - 2));
       }
-      if (c == 0) {
+      if (c == 0 && !userIsComprador) {
         input.setAttribute("onchange", "refreshEmpresa(" + (newRowCnt - 2) + ")");
       }
       if (userIsComprador) {
@@ -706,7 +712,7 @@ Cotizar
     }
     for (var i = 0; i < rowCnt; i++) {
       var boolIng = false;
-      var boolMar = false;
+      var boolMar = userIsComprador? true : false;
       var boolCant = false;
       for (var j = 0; j < headers.length; j++) {
         var input = document.getElementById('input' + j + '.' + i + '');
@@ -730,8 +736,8 @@ Cotizar
               input.style.borderColor = '#CF0029';
             }
           }
-        } else if (j == 1) {
-          if (input.value === null || input.value.match(/^ *$/) !== null) {
+        } else if (!userIsComprador && j == 1) {
+          if (!userIsComprador && input.value === null || input.value.match(/^ *$/) !== null) {
             boolMar = false;
             var error = "La empresa no puede estar vacia, si no requiere una en específico seleccione NINGUNA";
             if (errors.indexOf(error) < 0) {
@@ -742,12 +748,13 @@ Cotizar
             if (all_empresas.indexOf(input.value) > -1) {
               boolMar = true;
             } else {
-              boolMar = false;
-              var error = "La empresa no está dentro de las opciones permitidas";
-              if (errors.indexOf(error) < 0) {
-                errors.push(error);
-              }
-              input.style.borderColor = '#CF0029';
+                boolMar = false;
+                var error = "La empresa no está dentro de las opciones permitidas";
+                if (errors.indexOf(error) < 0) {
+                  errors.push(error);
+                }
+                input.style.borderColor = '#CF0029';
+              
             }
           }
         } else if (!userIsComprador && j == 2) {
@@ -761,7 +768,7 @@ Cotizar
             }
             input.style.borderColor = '#CF0029';
           }
-        } else if ((!userIsComprador && j == 3) || (userIsComprador && j == 2)) {
+        } else if ((!userIsComprador && j == 3) || (userIsComprador && j == 1)) {
           if (input.value === null || input.value.match(/^ *$/) !== null) {
             boolCant = false;
             var error = "La cantidad no puede estar vacia";
@@ -781,7 +788,7 @@ Cotizar
               input.style.borderColor = '#CF0029';
             }
           }
-        } else if ((!userIsComprador && j == 4) || (userIsComprador && j == 3)) {
+        } else if ((!userIsComprador && j == 4) || (userIsComprador && j == 2)) {
           if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
             isValidated = true;
           } else {
@@ -800,7 +807,7 @@ Cotizar
             }
             input.style.borderColor = '#CF0029';
           }
-        } else if ((!userIsComprador && j == 6) || (userIsComprador && j == 4)) {
+        } else if ((!userIsComprador && j == 6) || (userIsComprador && j == 3)) {
           if (all_tipoPago.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
             isValidated = true;
           } else {
@@ -811,7 +818,7 @@ Cotizar
             }
             input.style.borderColor = '#CF0029';
           }
-        } else if ((!userIsComprador && j == 7) || (userIsComprador && j == 5)) {
+        } else if ((!userIsComprador && j == 7) || (userIsComprador && j == 4)) {
           if (input.value === null || input.value == '/' || input.value >= 0) {
             isValidated = true;
           } else {
@@ -838,6 +845,7 @@ Cotizar
       if (userIsComprador) {
         headers.push("Precio compra");
         headers.push("Distribuidor");
+        headers.push("Empresa");
       }
       for (var i in headers) {
         if (userIsComprador && headers[i] == "Precio") {
@@ -923,7 +931,9 @@ Cotizar
     ele.setAttribute('type', 'text');
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('list', 'datalist' + (c) + '.' + rowCnt);
-    ele.setAttribute('onchange', 'refreshEmpresa("' + rowCnt + '")');
+    if(!userIsComprador){
+      ele.setAttribute('onchange', 'refreshEmpresa("' + rowCnt + '")');
+    }
     ele.setAttribute('onclick', 'this.select();');
     ele.setAttribute('placeholder', 'Ingrediente');
     ele.setAttribute('autocomplete', 'off');
@@ -932,10 +942,19 @@ Cotizar
 
     td.appendChild(ele);
     td.appendChild(datalistIng);
+    
+    var list_ingredientes = [];
     for (var i = 0; i < savings_data.length; i++) {
+      list_ingredientes.push(savings_data[i].ingrediente)
+    }
+    list_ingredientes = list_ingredientes.filter((elemento, index) => {
+      return list_ingredientes.indexOf(elemento) === index;
+    }); 
+
+    for (var i = 0; i < list_ingredientes.length; i++) {
       var optionIng = document.createElement('option');
-      optionIng.setAttribute('value', '' + savings_data[i].ingrediente);
-      all_ingredientes.push(savings_data[i].ingrediente); //to validate later
+      optionIng.setAttribute('value', '' + list_ingredientes[i]);
+      all_ingredientes.push(list_ingredientes[i]); //to validate later
       datalistIng.appendChild(optionIng);
 
     }

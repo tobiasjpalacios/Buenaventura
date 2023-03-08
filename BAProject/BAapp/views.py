@@ -2146,7 +2146,7 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            empresa_nombre = actual.get("Empresa")
+            # empresa_nombre = actual.get("Empresa")
             ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
@@ -2160,8 +2160,12 @@ class APIArticulos(View):
                 tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
-            empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
-            articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+            if not actual.get("Empresa"):
+                empresa = None
+                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+            else:
+                empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
+                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:

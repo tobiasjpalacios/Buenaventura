@@ -3,60 +3,12 @@ $(document).ready(function(){
         format: 'dd/mm/yyyy',
         showClearBtn: true,
         i18n: {
-            weekdaysAbbrev: ['D','L','M','X','J','V','S'],
-            months:	
-            [
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
-            ],
-            monthsShort:
-            [
-            'En',
-            'Feb',
-            'Mar',
-            'Abr',
-            'May',
-            'Jun',
-            'Jul',
-            'Ago',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dic'
-            ],
-            weekdays:
-            [
-            'Domingo',
-            'Lunes',
-            'Martes',
-            'Miercoles',
-            'Jueves',
-            'Viernes',
-            'Sábado'
-            ],
-            weekdaysShort:
-            [
-            'Dom',
-            'Lun',
-            'Mar',
-            'Mié',
-            'Jue',
-            'Vie',
-            'Sáb'
-            ],
-            cancel: 'Cancelar',
-            clear: 'Limpiar'
-        }
+          months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+          monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+          weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+          weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+          weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+      }
     });
     $('.tooltipped').tooltip();
     $('select').formSelect();
