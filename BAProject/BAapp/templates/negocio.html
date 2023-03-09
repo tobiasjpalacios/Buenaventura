@@ -143,6 +143,8 @@ Negociación {{ negocio.get_id_de_neg }}
   $(document).ready(function(){
     edits.new = {}
 
+    $(":input[type='number']").focus(function() { $(this).select(); } );
+
     edits.items.forEach((element, index) => {
       edits.items[index].isNew = false;
     });
@@ -597,14 +599,19 @@ Negociación {{ negocio.get_id_de_neg }}
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k) && k != "isNew") {
             var v = element[k];
-            k = k == "precio_venta" ? "precio" : k; 
+            k = k == "precio_venta" ? "precio" : k;
             var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"
-            if (!v) {
+            if ((!v && k != "articulo" && !userIsComprador) || (!v && userIsComprador)) {
               if (!(userIsComprador && ((k == "precio_compra") || (k == "proveedor")))) {
                 listOfErrors.push(errorDesc)
                 errorFields[artName] = listOfErrors;
                 errors = true;
               }
+            }
+            else if (!userIsComprador && !v && k == "articulo") {
+              errorDesc = "Hay campos de artículos vacíos o sin empresas\n seleccionadas. Por favor, chequea cuales son\n y corregilos.\n";
+              errorFields["Otros errores"] = errorDesc;
+              errors = true;
             }
           }
         }
@@ -616,8 +623,8 @@ Negociación {{ negocio.get_id_de_neg }}
         }
       }
     })
-    console.log(errorFields)
-    console.log(proc);
+    // console.log(errorFields)
+    // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
       print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n').replace(',','');
@@ -626,7 +633,9 @@ Negociación {{ negocio.get_id_de_neg }}
       swal({
         title: "Oops!",
         text: print_errors,
-        buttons: false,
+        buttons: {
+          deny: "Ok",
+        },
         icon: "error"
       });
     }

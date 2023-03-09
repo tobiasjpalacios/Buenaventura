@@ -207,8 +207,6 @@ function allTDLinebreak() {
 
 // table_edit
 
-// #TODO: hacer obligatorio que el vendedor elija articulo con empresa
-
 function articuloDatalist(n) {
   var artDatalist = document.getElementById("artDatalist"+n);
   for (var i = 0; i < arts_data.length; i++) {
