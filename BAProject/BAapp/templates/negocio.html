@@ -142,6 +142,10 @@ Negociación {{ negocio.get_id_de_neg }}
 
   $(document).ready(function(){
     edits.new = {}
+
+    edits.items.forEach((element, index) => {
+      edits.items[index].isNew = false;
+    });
     
     "{% if negocio.estado == 'CONFIRMADO' %}"
     isAccepted = true;
@@ -382,7 +386,7 @@ Negociación {{ negocio.get_id_de_neg }}
             input.parentElement.classList.add("select-error");
           }
         } else {
-          errors = false
+          errors = false || errors
           $(input).removeClass("invalid");
         }
         if (element === "distribuidor") {
@@ -405,6 +409,7 @@ Negociación {{ negocio.get_id_de_neg }}
             n["fecha_real_pago"] = null;
             n["fecha_salida_entrega"] = null;
             n["divisa"] = "USD";
+            n["isNew"] = true;
             if (userIsComprador) {
               n["proveedor"] = null;
               n["precio_compra"] = 0;
@@ -591,7 +596,7 @@ Negociación {{ negocio.get_id_de_neg }}
           "{% endfor %}"
         }
         if (!(jQuery.inArray(k, elems) != -1)) {
-          if (element.hasOwnProperty(k)) {
+          if (element.hasOwnProperty(k) && k != "isNew") {
             var v = element[k];
             k = k == "precio_venta" ? "precio" : k; 
             var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"

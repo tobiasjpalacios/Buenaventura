@@ -67,6 +67,7 @@
                   {% endif %}
                 </td>
                 {% endif %}
+                #TODO : deshabilitar cantidad cuando es cliente y empresa None
                 <td class="show0"><input type="number" name="cantidad" min="1" step="1" value="{{ item.cantidad|default_if_none:'' }}" placeholder="Cantidad" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="show0"><input type="number" name="precio_venta" min=".01" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min=".01" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>

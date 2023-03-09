@@ -31,7 +31,7 @@ $(document).ready(function(){
 var modifyWasClicked = false;
 
 function mScrollTo(id) {
-  console.log(id)
+  // console.log(id)
     var elementPosition = $(id).offset().top;
     var navHeight = $("nav").height();
 
@@ -226,7 +226,7 @@ function articuloDatalistCliente() {
   artDatalist.appendChild(option);   
   for (var i = 1; i < arts_data.length; i++) {
     var curr_item = arts_data[i].ingrediente;
-    console.log(curr_item, last_item);
+    // console.log(curr_item, last_item);
     if (last_item != curr_item) {
       option = document.createElement('option');
       option.setAttribute('value',''+arts_data[i].ingrediente);

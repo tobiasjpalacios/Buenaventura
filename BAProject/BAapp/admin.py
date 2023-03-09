@@ -39,6 +39,7 @@ class ItemPropuestaInline(admin.TabularInline):
 
 class PropuestaAdmin(admin.ModelAdmin):
     inlines = (ItemPropuestaInline,)
+    ordering = ["-pk"]
 
 class ArticuloAdmin(admin.ModelAdmin):
     # inlines = (ItemPropuestaInline,)

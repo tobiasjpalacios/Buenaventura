@@ -1915,33 +1915,33 @@ class NegocioView(View):
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
                     key = f.name
-                    if key=="propuesta" or key=="id":
-                        continue
-                    value = item[key]
-                    if key == "proveedor" and value == None:
-                        setattr(tmp, key, None)
-                    if f.is_relation and not (key == "proveedor" and value == None):
-                        if key == "articulo" and envio_comprador:
-                            art = Articulo.objects.get(pk=value)
-                            try:
-                                obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
-                            except:
-                                obj = art
-                                obj.pk = None
-                                obj.empresa = None
-                                obj.save()
+                    if key != "isNew":
+                        is_new = item["isNew"]
+                        if key=="propuesta" or key=="id":
+                            continue
+                        value = item[key]
+                        if key == "proveedor" and value == None:
+                            setattr(tmp, key, None)
+                        if f.is_relation and not (key == "proveedor" and value == None):
+                            if key == "articulo" and envio_comprador and is_new:
+                                art = Articulo.objects.get(pk=value)
+                                try:
+                                    obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
+                                except:
+                                    obj = Articulo(ingrediente=art.ingrediente, empresa=None)
+                                    obj.save()
+                            else:
+                                obj = get_object_or_404(
+                                    f.related_model,
+                                    pk=value
+                                )
+                            setattr(tmp, key, obj)
                         else:
-                            obj = get_object_or_404(
-                                f.related_model,
-                                pk=value
+                            setattr(
+                                tmp, 
+                                key, 
+                                value
                             )
-                        setattr(tmp, key, obj)
-                    else:
-                        setattr(
-                            tmp, 
-                            key, 
-                            value
-                        )
                 tmp.propuesta = prop
                 tmp.save()
                 completed &= tmp.aceptado
