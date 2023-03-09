@@ -413,7 +413,6 @@ Negociación {{ negocio.get_id_de_neg }}
             if (userIsComprador) {
               n["proveedor"] = null;
               n["precio_compra"] = 0;
-              n["cantidad"] = 1;
             }
           }
         }
@@ -449,7 +448,7 @@ Negociación {{ negocio.get_id_de_neg }}
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\"1\" step=\"1\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\" disabled></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\"1\" step=\"1\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\

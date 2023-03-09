@@ -1636,7 +1636,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     recipient_list = [negocio.vendedor.email, negocio.comprador.email]
     context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
 
-    email_response = email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+    email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
 
     return negocio
     
@@ -2165,7 +2165,7 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            # empresa_nombre = actual.get("Empresa")
+            empresa_nombre = actual.get("Empresa")
             ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
@@ -2179,12 +2179,16 @@ class APIArticulos(View):
                 tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
-            if not actual.get("Empresa"):
+            if not empresa_nombre:
                 empresa = None
-                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+                try:
+                    articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
+                except:
+                    articulo = Articulo(ingrediente=ingrediente, empresa=empresa)
+                    articulo.save()
             else:
                 empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
-                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+                articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:
