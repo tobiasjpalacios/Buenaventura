@@ -50,7 +50,9 @@
                   <input type="text" name='articulo' id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" onkeyup="removeUpdate({{ forloop.counter0 }})" onfocus="">
                   <datalist id="artDatalist{{ forloop.counter }}"></datalist>
                   {% else %}
+                  <span id="artName{{ forloop.counter }}">
                   {{ item.articulo|default_if_none:'' }}
+                  </span>
                   {% endif %}
                 </td>
                 {% if not request.user.clase == 'Comprador' %}

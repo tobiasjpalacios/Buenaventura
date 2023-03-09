@@ -586,16 +586,9 @@ Negociación {{ negocio.get_id_de_neg }}
     var artName = "";
     var listOfErrors = []
     var listOfElems = []
-    proc.items.forEach(element => {
+    proc.items.forEach((element, c) => {
+      artName = !userIsComprador ? $(":input[id='artSearch"+(c+1)+"']").val() : $("span#artName"+(c+1)).text().trim();
       for (k in element) {
-        if (k == "articulo") {
-          "{% for art in arts %}"
-            var artId = parseInt("{{art.id}}");
-            if (artId == element[k]) {
-              artName = "{{art}}";
-            }
-          "{% endfor %}"
-        }
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k) && k != "isNew") {
             var v = element[k];
@@ -627,7 +620,8 @@ Negociación {{ negocio.get_id_de_neg }}
     // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n').replace(',','');
+      print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n');
+      print_errors = print_errors.replace(',','');
     }
     if (errors) {
       swal({
