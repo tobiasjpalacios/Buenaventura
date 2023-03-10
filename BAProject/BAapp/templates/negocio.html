@@ -446,7 +446,7 @@ Negociación {{ negocio.get_id_de_neg }}
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td class=\"show0\">"+$("#artSearch0")[0].value+"</td>\
+    <td class=\"show0\"><span id=\"artName"+(table.rows.length-2)+"\">"+$("#artSearch0")[0].value+"</span></td>\
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
@@ -484,6 +484,7 @@ Negociación {{ negocio.get_id_de_neg }}
     contadoTasa('Add');
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
+    $(":input[type='number']").focus(function() { $(this).select(); } );
     // allTDLinebreak();
   }
 
@@ -587,7 +588,9 @@ Negociación {{ negocio.get_id_de_neg }}
     var listOfErrors = []
     var listOfElems = []
     proc.items.forEach((element, c) => {
-      artName = !userIsComprador ? $(":input[id='artSearch"+(c+1)+"']").val() : $("span#artName"+(c+1)).text().trim();
+      var art_search_val = $(":input[id='artSearch"+(c+1)+"']").val();
+      var art_name_val = $("span#artName"+(c+1)).text().trim();
+      artName = art_search_val ? art_search_val : art_name_val;
       for (k in element) {
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k) && k != "isNew") {
@@ -620,8 +623,7 @@ Negociación {{ negocio.get_id_de_neg }}
     // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n');
-      print_errors = print_errors.replace(',','');
+      print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
       swal({
