@@ -252,12 +252,7 @@ Negociación {{ negocio.get_id_de_neg }}
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
         if (input != null) {
           if (input.type == "number"){
-            if (input.name == "precio_venta" || input.name == "precio_compra") {
-              edits.items[index][element] = parseFloat(input.value)
-            }
-            else {
-              edits.items[index][element] = parseInt(input.value)
-            }
+            edits.items[index][element] = parseFloat(input.value)
           }
           else if (input.name == "distribuidor") {
             var opt = $("#distResults [value='"+input.value+"']");
@@ -397,12 +392,7 @@ Negociación {{ negocio.get_id_de_neg }}
           n[element] = opt.data('value');
         } else {
           if (input.type == "number" || input.type == "hidden") {
-            if (input.name == "precio_venta" || input.name == "precio_compra" || input.name == "tasa") {
-              n[element] = parseFloat(input.value);
-            }
-            else {
-              n[element] = parseInt(input.value);
-            }
+            n[element] = parseFloat(input.value);
           } else {
             n[element] = input.value;
             n["articulo"] = artId;
@@ -450,13 +440,13 @@ Negociación {{ negocio.get_id_de_neg }}
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\"1\" step=\"1\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\

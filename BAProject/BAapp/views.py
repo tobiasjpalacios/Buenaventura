@@ -1937,6 +1937,7 @@ class NegocioView(View):
                                 )
                             setattr(tmp, key, obj)
                         else:
+                            print(tmp, key, value)
                             setattr(
                                 tmp, 
                                 key, 

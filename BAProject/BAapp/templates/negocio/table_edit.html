@@ -69,9 +69,9 @@
                   {% endif %}
                 </td>
                 {% endif %}
-                <td class="show0"><input type="number" name="cantidad" min="1" step="1" value="{{ item.cantidad|default_if_none:'' }}" placeholder="Cantidad" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
-                <td class="show0"><input type="number" name="precio_venta" min=".01" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
-                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min=".01" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="show0"><input type="number" name="cantidad" min=".01" step=".01" value="{{ item.cantidad|default_if_none:''|stringformat:'.2f' }}" placeholder="Cantidad" onchange="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="show0"><input type="number" name="precio_venta" min=".01" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onchange="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}"><input type="number" name="precio_compra" min=".01" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" onchange="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">
                   <select name="tipo_pago" onchange="contadoTasa({{item.id}}); removeUpdate({{ forloop.counter0 }})" id="tp{{item.id}}">
                     <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
@@ -80,7 +80,7 @@
                   {% endfor %}
                   </select>
                 </td>
-                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|stringformat:'.2f' }}" placeholder="Tasa" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
+                <td class="not-show0"><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|stringformat:'.2f' }}" placeholder="Tasa" onchange="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0"><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" onkeyup="removeUpdate({{ forloop.counter0 }})"></td>
                 <td class="not-show0">
@@ -118,7 +118,7 @@
                   {% endfor %}
                   </datalist>
                 </td>
-                <td class="show0"><input type="number" name="cantidad" min="1" placeholder="Cantidad"></td>
+                <td class="show0"><input type="number" name="cantidad" min=".01" step=".01" placeholder="Cantidad"></td>
                 <td class="show0">
                   <input type="number" name="precio_venta" step=".01" min=".01" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}">
                 </td>

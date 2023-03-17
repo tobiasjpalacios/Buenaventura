@@ -188,7 +188,7 @@ class ItemPropuesta(models.Model):
         related_name="items",
         on_delete=models.CASCADE
     )
-    cantidad = models.IntegerField(
+    cantidad = models.FloatField(
         null=True, 
         blank=True
     )
