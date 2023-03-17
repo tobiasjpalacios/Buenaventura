@@ -1007,7 +1007,9 @@ Cotizar
 
   function input_cantidad(c, td) {
     var ele = document.createElement('input');
-    ele.setAttribute('type', 'text');
+    ele.setAttribute('type', 'number');
+    ele.setAttribute('min', '.01');
+    ele.setAttribute('step', '.01');
     ele.setAttribute('size', '4');
 
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);

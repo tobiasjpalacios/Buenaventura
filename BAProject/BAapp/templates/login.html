@@ -24,7 +24,7 @@ Inicio de sesión
       <div class="col l12" style="text-align: center;">
         <p class="titulo"><b>Inicio de sesión</b></p>
         <p>
-          <span class="subtitulo"><b>Eres un nuevo usuario?  </b></span><span class="subtitulo verde"><b>Crea una nueva cuenta</b></span>
+          <span class="subtitulo"><b>¿Eres un nuevo usuario?  </b></span><a href="#" class="subtitulo verde"><b>Crea una nueva cuenta</b></a>
         </p>
       </div>
       <form action="{% url 'login' %}" method="POST" class="col s12">
@@ -44,9 +44,7 @@ Inicio de sesión
           </div>
           <div class="row">
             <div class="center">
-              <a style = "color: #005221" href="#">¿No sos usuario?</a>
-              <br>
-              <a style = "color: #005221" href="#">¿Olvidaste tu contraseña?</a>
+              <a class="forgot-pass" href="#">¿Olvidaste tu contraseña?</a>
             </div>
           </div>
         </form>

@@ -107,6 +107,13 @@ class Negocio(models.Model):
     )
     aprobado = models.BooleanField(default=False)
     cancelado = models.BooleanField(default=False)
+    estado = models.CharField(
+        max_length=22,
+        choices=ESTADO_DE_NEGOCIO_CHOICES,
+        blank=True,
+        null=True,
+        default=None 
+    )
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
@@ -181,7 +188,7 @@ class ItemPropuesta(models.Model):
         related_name="items",
         on_delete=models.CASCADE
     )
-    cantidad = models.IntegerField(
+    cantidad = models.FloatField(
         null=True, 
         blank=True
     )

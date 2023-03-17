@@ -147,12 +147,13 @@ SITE_ID = 1
 
 # When DEBUG is set to False
 
-if not DEBUG:
+# NOTE: comentado temporalmente para no enviar emails al pedo 
+# if not DEBUG:
     # SECURE_SSL_REDIRECT = True
 
     # Allowed hosts genera bad request 400
     # ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
 
-    EMAIL_BACKEND = 'django_ses.SESBackend'
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    # EMAIL_BACKEND = 'django_ses.SESBackend'
+    # AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    # AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')

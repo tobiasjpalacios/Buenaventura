@@ -82,6 +82,14 @@ TIPO_DE_NEGOCIO_CHOICES = (
 	("CS","Consignacion"),
 )
 
+ESTADO_DE_NEGOCIO_CHOICES = (
+	("RECIBIDO","Recibido"),
+	("NEGOCIACION","En Negociación"),
+	("ESP_CONF","Esperando confirmación"),
+	("CONFIRMADO","Confirmado"),
+	("CANCELADO","Cancelado"),
+)
+
 TIPO_NOTA = (
 	("CR","Credito"),
 	("DV","Débito"),

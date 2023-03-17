@@ -48,36 +48,42 @@ Negociación {{ negocio.get_id_de_neg }}
 <div class="menuZone clv">
     <h4 class="tituloPagina">Negociación</h4>
     <strong style="font-size: 30px; font-weight: 900; color: #459A33; margin-left: 20px;" class="text-darken-3">{{negocio.get_id_de_neg}}</strong>
-</div> 
-
+</div>
 
 {% for prop in propuestas %}
 
-{% if not prop.items.count == 0 %}
+{% if items_count %}
 {% include "negocio/table_history.html" %}
 {% endif %}
-
+ 
+{% if not negocio.estado == "ESP_CONF" or not request.user.clase == "Comprador" %}
 {% if forloop.last %}
 {% include "negocio/table_edit.html" %}
+{% endif %}
 {% endif %}
 
 {% endfor %}
 
-{% if negocio.aprobado %}
-<div class="approved" id="approved">
-  <h2>Negocio confirmado ✓</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
-  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
-</div>
-{% endif %}
-{% if negocio.cancelado %}
+{% if negocio.estado == "CANCELADO" %}
 <div class="canceled" id="canceled">
   <h2>Negocio cancelado ✗</h2>
-  <p><strong>Negocio cerrado: {{negocio.fecha_cierre.date}} a las {{negocio.fecha_cierre.time}}</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+</div>
+{% endif %}
+{% if negocio.estado == "ESP_CONF" and request.user.clase == "Comprador" %}
+<div class="approved" id="approved">
+  <h2>Esperando confirmación del vendedor ◌</h2>
+  <p><strong>El vendedor está chequeando los datos. En cuanto lo haga, serás notificado vía e-mail.</strong></p>
 </div>
 {% endif %}
 
-{% if negocio.aprobado %}
+{% if negocio.estado == "CONFIRMADO" %}
+<div class="approved" id="approved">
+  <h2>Negocio confirmado ✓</h2>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
+</div>
+
 <div id="table-destination">
 
   <div class="materialert warning" id="infoAlert">
@@ -96,7 +102,7 @@ Negociación {{ negocio.get_id_de_neg }}
   <ul>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.propuestas.last.id %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
-    {% if negocio.aprobado %}
+    {% if negocio.estado == "CONFIRMADO" %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
     {% endif %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
@@ -112,6 +118,10 @@ Negociación {{ negocio.get_id_de_neg }}
   var propUpdated = false;
   var arts_data;
   var unsavedChanges = false;
+  var userIsComprador = false;
+  "{% if request.user.clase == 'Comprador' %}"
+  userIsComprador = true;
+  "{% endif %}"
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -133,35 +143,16 @@ Negociación {{ negocio.get_id_de_neg }}
   $(document).ready(function(){
     edits.new = {}
 
-    $.ajax({
-      type: "GET",
-      url: "{% url 'api_articulos' %}",
-      dataType: "json",
-      success: function(data) {      
-        arts_data = data;
-        articuloDatalist(); // agrega los articulos a la datalist de table_edit
-      }
+    $(":input[type='number']").focus(function() { $(this).select(); } );
+
+    edits.items.forEach((element, index) => {
+      edits.items[index].isNew = false;
     });
-
-    // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
-    var elId;
-    "{% if not negocio.aprobado and not negocio.cancelado %}"
-    elId = "#form-table-div"
-    "{% elif negocio.aprobado and not negocio.cancelado %}"
-    elId = "#approved"
-    "{% elif not negocio.aprobado and negocio.cancelado %}"
-    elId = "#canceled"
-    "{% endif %}"
-    setTimeout(function() {
-        mScrollTo(elId);
-    }, 500);
-
-    listProp.push('0');
-
-    "{% if negocio.aprobado %}"
+    
+    "{% if negocio.estado == 'CONFIRMADO' %}"
     isAccepted = true;
     "{% endif %}"
-    "{% if negocio.cancelado %}"
+    "{% if negocio.estado == 'CANCELADO' %}"
     isCanceled = true;
     "{% endif %}"
 
@@ -169,13 +160,48 @@ Negociación {{ negocio.get_id_de_neg }}
       $("#form-table-div").hide();
     }
 
+    if (!isAccepted) {
+      $.ajax({
+        type: "GET",
+        url: "{% url 'api_articulos' %}",
+        dataType: "json",
+        success: function(data) {    
+          arts_data = data;
+          if (userIsComprador) {
+            articuloDatalistCliente();
+          } 
+          else {
+            items_count = {{items_count}}
+            for (i = 0; i <= items_count; i++) {
+              articuloDatalist(i); // agrega los articulos a la datalist de table_edit
+            }
+          } 
+        }
+      });
+    }
+
+    // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
+    var elId;
+    "{% if negocio.estado == 'CONFIRMADO' or negocio.estado == 'ESP_CONF' and request.user.clase == 'Comprador' %}"
+    elId = "#approved"
+    "{% elif negocio.estado == 'CANCELADO' %}"
+    elId = "#canceled"
+    "{% else %}"
+    elId = "#form-table-div"
+    "{% endif %}"
+    if (elId) {
+      setTimeout(function() {
+          mScrollTo(elId);
+      }, 500);
+    }
+
+    listProp.push('0');
+
+    if (!userIsComprador) {
+      editable_fields.push("articulo");
+    }
+
   });
-
-
-  var userIsComprador = false;
-  "{% if request.user.clase == 'Comprador' %}"
-  userIsComprador = true;
-  "{% endif %}"
 
   if (userIsComprador) {
     $(".customerHide").hide();
@@ -226,16 +252,14 @@ Negociación {{ negocio.get_id_de_neg }}
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
         if (input != null) {
           if (input.type == "number"){
-            if (input.name == "precio_venta" || input.name == "precio_compra") {
-              edits.items[index][element] = parseFloat(input.value)
-            }
-            else {
-              edits.items[index][element] = parseInt(input.value)
-            }
+            edits.items[index][element] = parseFloat(input.value)
           }
-          else if (input.name == "distribuidor"){
+          else if (input.name == "distribuidor") {
             var opt = $("#distResults [value='"+input.value+"']");
             edits.items[index]["proveedor"] = opt.data('value');
+          }
+          else if (!userIsComprador && input.name == "articulo") {
+            edits.items[index][element] = getArtId(index+1);
           } else {
             edits.items[index][element] = input.value
           }
@@ -244,9 +268,10 @@ Negociación {{ negocio.get_id_de_neg }}
     })
     lastForAccept.items[index] = edits.items[index]
     $('#send-prop-btn').removeAttr('disabled');
+    $('#conf-neg-btn').attr("disabled", 'disabled');
     propUpdated = true;
     unsavedChanges = false;
-    console.log($("#save-" + index).removeClass("blinkSave"));
+    $("#save-" + index).removeClass("blinkSave");
   }
 
   function resetAll(index, aceptado){
@@ -260,12 +285,16 @@ Negociación {{ negocio.get_id_de_neg }}
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change();
       }
+      else if (!userIsComprador && element == "articulo") {
+        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
+        input.val(artName);
+      }
       else {
         input.val(edits.items[index][element]);
       }
     });
     unsavedChanges = false;
-    console.log($("#save-" + index).removeClass("blinkSave"));
+    $("#save-" + index).removeClass("blinkSave");
   }
 
   function resetForAccept(index) {
@@ -276,6 +305,10 @@ Negociación {{ negocio.get_id_de_neg }}
       var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
       if (element == "tipo_pago" || element == "tasa") {
         input.val(edits.items[index][element]).change()
+      }
+      else if (!userIsComprador && element == "articulo") {
+        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
+        input.val(artName);
       }
       else if (element == "distribuidor") {
         // do nothing
@@ -302,7 +335,7 @@ Negociación {{ negocio.get_id_de_neg }}
     });
     if (unsavedChanges) {
       $($("#form")[0].rows[index+1]).css('background-color', '');
-      console.log($("#save-" + index).addClass("blinkSave"));
+      $("#save-" + index).addClass("blinkSave");
     }
   }
 
@@ -323,12 +356,11 @@ Negociación {{ negocio.get_id_de_neg }}
       if (element != "divisa") {
         input = $($("#extra").find('[name="'+element+'"]'))[0];
       }
-      var artSearchInput = $("#artSearch").val();
-      var artId = parseInt($('#artDatalist option[value="' + artSearchInput +'"]').attr("id"));
+      var artId = getArtId(0);
       if (input != null) {
         if (!input.value) {
           if (userIsComprador) {
-            if (!(input.name == "distribuidor" || input.name == "precio_compra")) {
+            if (!(input.name == "distribuidor" || input.name == "precio_compra" || input.name == "cantidad")) {
               errors = true || errors;
               if (input.name == "tipo_pago") {
                 $(input).parent().addClass("invalid");
@@ -360,12 +392,7 @@ Negociación {{ negocio.get_id_de_neg }}
           n[element] = opt.data('value');
         } else {
           if (input.type == "number" || input.type == "hidden") {
-            if (input.name == "precio_venta" || input.name == "precio_compra" || input.name == "tasa") {
-              n[element] = parseFloat(input.value);
-            }
-            else {
-              n[element] = parseInt(input.value);
-            }
+            n[element] = parseFloat(input.value);
           } else {
             n[element] = input.value;
             n["articulo"] = artId;
@@ -374,6 +401,7 @@ Negociación {{ negocio.get_id_de_neg }}
             n["fecha_real_pago"] = null;
             n["fecha_salida_entrega"] = null;
             n["divisa"] = "USD";
+            n["isNew"] = true;
             if (userIsComprador) {
               n["proveedor"] = null;
               n["precio_compra"] = 0;
@@ -408,17 +436,17 @@ Negociación {{ negocio.get_id_de_neg }}
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td class=\"show0\">"+$("#artSearch")[0].value+"</td>\
+    <td class=\"show0\"><span id=\"artName"+(table.rows.length-2)+"\">"+$("#artSearch0")[0].value+"</span></td>\
     {% if not request.user.clase == 'Comprador' %}\
     <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
@@ -440,13 +468,14 @@ Negociación {{ negocio.get_id_de_neg }}
       input.removeClass(["invalid"])
     })
     $('select').formSelect();
-    $("#artSearch").val("");
+    $("#artSearch0").val("");
     counter = counter + 1;
     contadoTasa(rowId);
     contadoTasa('Add');
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
-    allTDLinebreak();
+    $(":input[type='number']").focus(function() { $(this).select(); } );
+    // allTDLinebreak();
   }
 
   var obsOriginalValue = $("#observaciones").val();
@@ -457,10 +486,11 @@ Negociación {{ negocio.get_id_de_neg }}
     } 
   });
 
-  function beforeSubmit() {
+  function beforeSubmit(isSend) {
     var proc = {}
     var errors = false;
     var errorFields = [];
+    var esp_conf = {% if negocio.estado == "ESP_CONF" %} true {% else %} false {% endif %}
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
@@ -484,7 +514,7 @@ Negociación {{ negocio.get_id_de_neg }}
     }
     var checker = arr => arr.every(Boolean);
     var icon, title, text;
-    if (checker(acc)) {
+    if (checker(acc) && !userIsComprador && ((isSend && !esp_conf) || (!isSend && esp_conf))) {
       icon = "success";
       title = "Confirmar negocio";
       text = "Estás a punto de confirmar el negocio.\n¿Deseas continuar con la operación?";
@@ -509,15 +539,15 @@ Negociación {{ negocio.get_id_de_neg }}
         },
         icon: "info"
       }).then(okay => {
-        if (okay) openSwalForSubmit(icon, title, text);
+        if (okay) openSwalForSubmit(icon, title, text, isSend);
       });
     }
     else {
-      openSwalForSubmit(icon, title, text);
+      openSwalForSubmit(icon, title, text, isSend);
     }
   }
 
-  function openSwalForSubmit(icon, title, text) {
+  function openSwalForSubmit(icon, title, text, isSend) {
     swal({
       icon: icon,
       title: title,
@@ -527,14 +557,15 @@ Negociación {{ negocio.get_id_de_neg }}
         confirm: "Si",
       }
     }).then(okay => {
-      if (okay) submitProp();
+      if (okay) submitProp(isSend);
     });
   }
 
-  function submitProp() {
+  function submitProp(isSend) {
     var proc = {}
     var errors = false;
     var errorFields = {};
+    proc.issend = isSend;
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
@@ -546,27 +577,27 @@ Negociación {{ negocio.get_id_de_neg }}
     var artName = "";
     var listOfErrors = []
     var listOfElems = []
-    proc.items.forEach(element => {
+    proc.items.forEach((element, c) => {
+      var art_search_val = $(":input[id='artSearch"+(c+1)+"']").val();
+      var art_name_val = $("span#artName"+(c+1)).text().trim();
+      artName = art_search_val ? art_search_val : art_name_val;
       for (k in element) {
-        if (k == "articulo") {
-          "{% for art in arts %}"
-            var artId = parseInt("{{art.id}}");
-            if (artId == element[k]) {
-              artName = "{{art}}";
-            }
-          "{% endfor %}"
-        }
         if (!(jQuery.inArray(k, elems) != -1)) {
-          if (element.hasOwnProperty(k)) {
+          if (element.hasOwnProperty(k) && k != "isNew") {
             var v = element[k];
-            k = k == "precio_venta" ? "precio" : k; 
+            k = k == "precio_venta" ? "precio" : k;
             var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"
-            if (!v) {
+            if ((!v && k != "articulo" && !userIsComprador) || (!v && userIsComprador)) {
               if (!(userIsComprador && ((k == "precio_compra") || (k == "proveedor")))) {
                 listOfErrors.push(errorDesc)
                 errorFields[artName] = listOfErrors;
                 errors = true;
               }
+            }
+            else if (!userIsComprador && !v && k == "articulo") {
+              errorDesc = "Hay campos de artículos vacíos o sin empresas\n seleccionadas. Por favor, chequea cuales son\n y corregilos.\n";
+              errorFields["Otros errores"] = errorDesc;
+              errors = true;
             }
           }
         }
@@ -578,17 +609,19 @@ Negociación {{ negocio.get_id_de_neg }}
         }
       }
     })
-    console.log(errorFields)
-    console.log(proc);
+    // console.log(errorFields)
+    // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      print_errors = print_errors.concat(key + ':\n' + errorFields[key]+'\n').replace(',','');
+      print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
       swal({
         title: "Oops!",
         text: print_errors,
-        buttons: false,
+        buttons: {
+          deny: "Ok",
+        },
         icon: "error"
       });
     }

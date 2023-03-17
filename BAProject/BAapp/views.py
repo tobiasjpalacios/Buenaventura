@@ -13,6 +13,7 @@ from django.core import serializers
 from django.db import transaction
 from django.db.models import Q, Count
 from django.urls import reverse, resolve
+from django.utils import timezone
 from django.utils.dateparse import parse_date
 from .forms import *
 from .models import *
@@ -33,6 +34,8 @@ from functools import reduce
 from django.conf import settings
 from decimal import *
 
+# NOTE: temporal para guardar nuevos estados de negocios en la db
+updateEstados()
 
 User = settings.AUTH_USER_MODEL
 
@@ -73,7 +76,6 @@ class Info_negocioView(View):
             envio = propuesta.envio_comprador
             if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
                 envio = not envio
-            resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
             items = None
             persona = request.user
             if (grupo_activo == 'Logistica'):
@@ -106,7 +108,7 @@ class Info_negocioView(View):
                     "facturasComision": facturasComision,
                     "notas": notas,          
                 }   
-            return render (request, 'info_negocio.html', {'negocio':negocio,'resultado':resultado, 'items':list(items), "comprobantes":comprobantes,})
+            return render (request, 'info_negocio.html', {'negocio':negocio, 'items':list(items), "comprobantes":comprobantes,})
 
 def comprobanteTipo(num):
     options = {
@@ -284,7 +286,7 @@ class VencimientosView(View):
 
 class LogisticaView(View):
     def get(self, request, *args, **kwargs):
-        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())    
+        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, estado="CONFIRMADO").values_list('id', flat=True).order_by('-timestamp').distinct())    
         lnl = listaNL(request, negociosCerrConf)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
 
@@ -300,12 +302,7 @@ def detalleNotis(request):
             return render (request, 'modalnotis.html')
         else:
             id_prop = propuesta[0][0]
-            envio = propuesta[0][1]
             negocio.id_prop = id_prop
-            grupo_activo = request.user.clase
-            if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
-                envio = not envio
-            negocio.estado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
             return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
     return render (request, 'modalnotis.html')
 
@@ -402,7 +399,6 @@ def todosFiltro(request, tipo):
             if (request.user.clase == 'Comprador' or request.user.clase == 'Gerente'):
                 envio = not envio
             a.id_prop = id_prop
-            a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
     for b in todos_negocios:        
         if (b.estado == estado):
             b.proveedores = getProveedoresNegocio(b)
@@ -452,9 +448,7 @@ def filtrarNegocios(request):
                     pass
                 else:
                     id_prop = propuesta[0][0]
-                    envio = propuesta[0][1]
                     a.id_prop = id_prop
-                    a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
             for b in todos_negocios:
                 if (b.estado in estado):
                     listaEstado.append(b.id)
@@ -497,9 +491,8 @@ def filtrarNegocios(request):
                 pass
             else:
                 id_prop = propuesta[0][0]
-                envio = propuesta[0][1]
                 a.id_prop = id_prop
-                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
+                a.estado = estadoNegocio(a)
         grupo_activo = request.user.clase
         if (grupo_activo == 'Vendedor'):
             for a in todos_los_negocios:
@@ -714,16 +707,8 @@ def vendedor(request):
     return render(request, 'vendedor.html', {'lista_vencimiento':lvn,'lista_logistica_noti':lln,'lista_presupuestos':lpn,'lista_logistica':lnl,'vencimiento_futuro':lista_futuros,'vencimiento_semanal':lista_semanas,'vencidos':lista_vencidos,'presupuestos_recibidos':list(lnr),'presupuestos_negociando':list(lnp),'negocios_cerrados_confirmados':list(lnc),'negocios_cerrados_no_confirmados':list(lnnc)})
 
 
-def estadoNegocio(fecha_cierre, aprobado, envio):
-    if (fecha_cierre is None):
-        if (envio):
-            return "Recibido"
-        else:
-            return "En Negociación"
-    else:
-        if (aprobado):
-            return "Confirmado"
-    return "Cancelado"
+def estadoNegocio(negocio):
+    return negocio.estado
 
 def getNegociosToList(negocio):
     lista_negocios = []
@@ -736,7 +721,6 @@ def getNegociosToList(negocio):
                 id_prop = propuesta[0][0]
                 envio = propuesta[0][1]
                 a.id_prop = id_prop
-                a.estado = estadoNegocio(a.fecha_cierre, a.aprobado, envio)
                 lista_negocios.append(a)
     return lista_negocios
 
@@ -753,10 +737,7 @@ def detalleNegocio(request):
         propuesta = Propuesta.objects.get(id=idProp)
         negocio = Negocio.objects.get(id=propuesta.negocio.id)
         grupo_activo = request.user.clase
-        envio = propuesta.envio_comprador
-        if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
-            envio = not envio
-        resultado = estadoNegocio(negocio.fecha_cierre, negocio.aprobado, envio)
+        resultado = estadoNegocio(negocio)
         items = None
         persona = request.user
         if (grupo_activo == 'Logistica'):
@@ -1629,7 +1610,8 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         created_by = request.user.get_full_name()
         negocio = Negocio(
             comprador = comprador_obj,
-            vendedor = vendedor_obj
+            vendedor = vendedor_obj,
+            estado = "RECIBIDO"
             )
         negocio.save()
     else:
@@ -1638,7 +1620,8 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         created_by = request.user.get_full_name()
         negocio = Negocio(
             comprador = comprador_obj,
-            vendedor = vendedor_obj
+            vendedor = vendedor_obj,
+            estado = "NEGOCIACION"
             )
         negocio.save()
 
@@ -1653,7 +1636,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     recipient_list = [negocio.vendedor.email, negocio.comprador.email]
     context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
 
-    email_response = email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+    email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
 
     return negocio
     
@@ -1662,7 +1645,7 @@ def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
         negocio=negocio,
         observaciones=observacion,
-        timestamp=datetime.now(),
+        timestamp=timezone.now(),
         envio_comprador=isComprador,
         visto=isComprador,
         )    
@@ -1909,45 +1892,57 @@ class NegocioView(View):
             'tasas': TASA_CHOICES,
             "distribuidores": MyUser.objects.filter(clase='Proveedor'),
             "tipo_pagos": TipoPago.objects.all(),
-            "arts": Articulo.objects.all()
+            "arts": Articulo.objects.all(),
+            "items_count": ItemPropuesta.objects.filter(propuesta=data).count()
         }
         return render(request, 'negocio.html', context)
 
     def post(self, request, *args, **kwargs):
         negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
         data = json.loads(request.body)
+        isSend = bool(data["issend"])
         completed = True
         observaciones = "No hay observaciones" if not data["observaciones"] else data["observaciones"]
-        res = None
+        envio_comprador = request.user.clase == 'Comprador'
         with transaction.atomic():
             prop = Propuesta(
                 negocio=negocio,
                 observaciones=data["observaciones"],
-                envio_comprador=request.user.clase == 'Comprador'
+                envio_comprador=envio_comprador
             )
             prop.save()
             for item in data["items"]:
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
                     key = f.name
-                    if key=="propuesta" or key=="id":
-                        continue
-                    value = item[key]
-                    if key == "proveedor" and value == None:
-                        setattr(tmp, key, None)
-                    if f.is_relation:
-                        if not (key == "proveedor" and value == None):
-                            obj = get_object_or_404(
-                                f.related_model,
-                                pk=value
-                            )
+                    if key != "isNew":
+                        is_new = item["isNew"]
+                        if key=="propuesta" or key=="id":
+                            continue
+                        value = item[key]
+                        if key == "proveedor" and value == None:
+                            setattr(tmp, key, None)
+                        if f.is_relation and not (key == "proveedor" and value == None):
+                            if key == "articulo" and envio_comprador and is_new:
+                                art = Articulo.objects.get(pk=value)
+                                try:
+                                    obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
+                                except:
+                                    obj = Articulo(ingrediente=art.ingrediente, empresa=None)
+                                    obj.save()
+                            else:
+                                obj = get_object_or_404(
+                                    f.related_model,
+                                    pk=value
+                                )
                             setattr(tmp, key, obj)
-                    else:
-                        setattr(
-                            tmp, 
-                            key, 
-                            value
-                        )
+                        else:
+                            print(tmp, key, value)
+                            setattr(
+                                tmp, 
+                                key, 
+                                value
+                            )
                 tmp.propuesta = prop
                 tmp.save()
                 completed &= tmp.aceptado
@@ -1960,7 +1955,7 @@ class NegocioView(View):
             "finalizado" if completed else "actualizado"
         )
         user = None
-        if (prop.envio_comprador):
+        if prop.envio_comprador:
             user=negocio.comprador
         else:
             user=negocio.vendedor
@@ -1980,20 +1975,35 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            if not negocio.aprobado:
-                negocio.aprobado = True
-                negocio.fecha_cierre = datetime.now()
+            if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
+                negocio.estado = "CONFIRMADO"
+                negocio.fecha_cierre = timezone.now()
+                negocio.save()
+            elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
+                if envio_comprador:
+                    negocio.estado = "ESP_CONF"
+                    titulo = "Negocio pendiente de confirmación"
+                    categoria = "Presupuesto"
+                    user = negocio.vendedor
+                    notif = Notificacion(
+                        titulo=titulo,
+                        categoria=categoria,
+                        hyperlink=reverse('negocio', args=[negocio.id,]),
+                        user=user
+                    )
+                    notif.save()
+                else:
+                    negocio.estado = "CONFIRMADO"
+                    negocio.fecha_cierre = timezone.now()
                 negocio.save()
 
         if len(data.get('items')) == 0:
-            negocio.cancelado = True
-            negocio.fecha_cierre = datetime.now()
-            negocio.save()
+            negocio.estado = "CANCELADO"
+            negocio.fecha_cierre = timezone.now()
 
         # send email
 
         formatted_fecha_cierre = ""
-        color = ""
         texto = ""
         negocio_update = False
 
@@ -2008,39 +2018,49 @@ class NegocioView(View):
         pos_text = "Hacé click en el botón de abajo para ver el historial de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
-        if negocio.aprobado:
-            titulo = f"{pre_titulo} aprobado"
+        if negocio.estado == "CONFIRMADO":
+            titulo = f"{pre_titulo} confirmado"
             texto = f"""
-            {pre_text} aprobado. {pos_cierre_text}
+            {pre_text} confirmado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.cancelado:
+        elif negocio.estado == "CANCELADO":
             titulo = f"{pre_titulo} cancelado"
             texto = f"""
             {pre_text} cancelado. {pos_cierre_text}
             {pos_text}
             """
+        elif negocio.estado == "ESP_CONF" and envio_comprador:
+            titulo = f"{pre_titulo} actualizado. El cliente está esperando tu confirmación"
+            texto = f"""
+            {pre_text} actualizado.
+            Hacé click en el botón de abajo para ver el historial de la negociación y confirmar el
+            negocio en caso haber concluido la negocación.
+            """
         else:
             negocio_update = True
 
-
-        full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
-        recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-        context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
+        print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
+            full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+            recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
+            context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
             email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
             print(email_response)
+        else:
+            if not negocio.estado == "ESP_CONF":
+                if envio_comprador:
+                    negocio.estado = "RECIBIDO"
+                else:
+                    negocio.estado = "NEGOCIACION"
+                negocio.save()
+            elif negocio.estado == "ESP_CONF" and not envio_comprador and isSend:
+                negocio.estado = "NEGOCIACION"
+                negocio.save()
+                
         
-        res = render(request, 'negocio.html')
-        
-        #NOTE: acá tengo pensado mostrar un mensaje en el template que me diga si el envío del mail dió error
-        # if email_response == 1:
-        #     res = render(request, 'negocio.html')
-        # else:
-        #     res = render(request, 'negocio.html', {'email_error' : True, 'email_error_response' : email_response})
-
-        return res
+        return render(request, 'negocio.html')
 
 class ListEmpresaView(View):
     def get(self, request, *args, **kwargs):
@@ -2146,7 +2166,7 @@ class APIArticulos(View):
         data = recieved.get("data")
         for i in range(len(data)):
             actual = data[i]
-            # empresa_nombre = actual.get("Empresa")
+            empresa_nombre = actual.get("Empresa")
             ingrediente = actual.get("Ingrediente")
             distribuidor = actual.get("Distribuidor")
             domicilio = actual.get("Destino")
@@ -2160,12 +2180,16 @@ class APIArticulos(View):
                 tasa = Decimal(actual.get("Tasa"))
             # tasa = get_from_tuple(TASA_CHOICES,tasa_tmp)
 
-            if not actual.get("Empresa"):
+            if not empresa_nombre:
                 empresa = None
-                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+                try:
+                    articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
+                except:
+                    articulo = Articulo(ingrediente=ingrediente, empresa=empresa)
+                    articulo.save()
             else:
                 empresa = Empresa.objects.get(nombre_comercial=empresa_nombre)
-                articulo = Articulo.objects.filter(ingrediente=ingrediente, empresa=empresa).first()
+                articulo = Articulo.objects.get(ingrediente=ingrediente, empresa=empresa)
             # try:
             #     domicilio = Domicilio.objects.get(direccion=domicilio_str)
             # except ObjectDoesNotExist:

@@ -21,7 +21,7 @@ $(document).ready(function() {
       ],
       monthsShort:
       [
-        'En',
+        'Ene',
         'Feb',
         'Mar',
         'Abr',

@@ -69,7 +69,7 @@
             </thead>
             <tbody class="card-content">
             {% for item in prop.items.all %}
-              <tr {% if item.aceptado %}class="green white-text"{% endif %}>
+              <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %}>
                 <td class="show{{prop.id}}">{{ item.articulo }}</td>
                 {% if not request.user.clase == 'Comprador' %}
                 <td class="show{{prop.id}} clientViewSM">{{ item.proveedor.get_full_name|default:'N/E' }}</td>
@@ -148,7 +148,7 @@
   
 </script>
 
-{% if negocio.aprobado %}
+{% if negocio.estado == "CONFIRMADO" %}
 <script>
   $(document).ready(function () {
     var isBeforeFechaCierre = false;

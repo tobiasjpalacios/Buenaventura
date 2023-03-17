@@ -44,7 +44,7 @@
                       <td>{{negocio.comprador.empresa.razon_social}}</td>
                       <td>{{negocio.comprador.get_full_name}}</td>
                       <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-                      <td>{{negocio.estado}}</td>
+                      <td>{{negocio.get_estado_display}}</td>
                       <td><a class="btn-floating btn waves-effect waves-light transparent no-shadows" href="{% url 'info_negocio' negocio.id_prop %}"><i class="material-icons" style="color: #459A33;">search</i></a></td>
                   </tr>
             </tbody>
