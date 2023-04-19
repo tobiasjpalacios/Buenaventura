@@ -23,9 +23,4 @@ class Migration(migrations.Migration):
             name='categoria_iva',
             field=models.CharField(blank=True, choices=[('MO', 'Monotributo'), ('RI', 'Responsable Inscripto'), ('EX', 'Exento'), ('RIM', 'Responsable Inscripto M'), ('CF', 'Consumidor Final')], max_length=25, null=True),
         ),
-        migrations.AlterField(
-            model_name='negocio',
-            name='estado',
-            field=models.CharField(blank=True, choices=[('RECIBIDO', 'Recibido'), ('NEGOCIACION', 'En Negociación'), ('ESP_CONF', 'Esperando confirmación'), ('CONFIRMADO', 'Confirmado'), ('CANCELADO', 'Cancelado')], default=None, max_length=22, null=True),
-        ),
     ]
