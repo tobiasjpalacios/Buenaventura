@@ -10,11 +10,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='negocio',
-            name='estado',
-            field=models.CharField(blank=True, choices=[('NEGOCIACION', 'En Negociación'), ('ESP_CONF', 'Esperando confirmación'), ('CONFIRMADO', 'Confirmado'), ('CANCELADO', 'Cancelado')], default=None, max_length=22, null=True),
-        ),
         migrations.AlterField(
             model_name='empresa',
             name='categoria_iva',

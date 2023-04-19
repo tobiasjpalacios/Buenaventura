@@ -10,14 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='empresa',
-            name='categoria_iva',
-            field=models.CharField(blank=True, choices=[('RI', 'Responsable Inscripto'), ('EX', 'Exento'), ('CF', 'Consumidor Final'), ('MO', 'Monotributo'), ('RIM', 'Responsable Inscripto M')], max_length=25, null=True),
-        ),
-        migrations.AlterField(
-            model_name='itempropuesta',
-            name='cantidad',
-            field=models.FloatField(blank=True, null=True),
-        ),
+        migrations.AddField(
+            model_name='negocio',
+            name='estado',
+            field=models.CharField(blank=True, choices=[('RECIBIDO', 'Recibido'), ('NEGOCIACION', 'En Negociación'), ('ESP_CONF', 'Esperando confirmación'), ('CONFIRMADO', 'Confirmado'), ('CANCELADO', 'Cancelado')], default=None, max_length=22, null=True),
+            ),
+        # ALTER TABLE BAapp_negocio ADD COLUMN estado VARCHAR(22) DEFAULT NULL COMMENT 'Estado del negocio' AFTER id;
     ]
