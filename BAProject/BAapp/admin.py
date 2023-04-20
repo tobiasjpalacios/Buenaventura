@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import *
+from django.db.models import Q
 
-
+from django.db.models import Count, F, When, Case
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.contrib import admin, messages
@@ -31,6 +32,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.admin import UserAdmin
 from django.shortcuts import redirect
 from datetime import datetime
+from django.contrib import messages
 
 
 class ItemPropuestaInline(admin.TabularInline):
@@ -230,7 +232,7 @@ class MyUserAdmin(UserAdmin):
             'form_url': form_url,
             'form': form,
             'is_popup': (IS_POPUP_VAR in request.POST or
-                         IS_POPUP_VAR in request.GET),
+                            IS_POPUP_VAR in request.GET),
             'add': True,
             'change': False,
             'has_delete_permission': False,
@@ -274,6 +276,109 @@ class EmpresaAdmin(admin.ModelAdmin):
     search_fields = ['razon_social','nombre_comercial','cuit', ]
     ordering = ["nombre_comercial"]
 
+class ItemPropuestaAdmin(admin.ModelAdmin):
+    list_display = (
+        "articulo",
+        "proveedor",
+        "propuesta",
+        "cantidad",
+        "precio_venta",
+        "precio_compra",
+        "divisa",
+        "destino",
+        "fecha_entrega",
+        "aceptado",
+        "pagado",
+        "fecha_pago",
+        "tipo_pago",
+    )
+    search_fields = (
+        "articulo__marca",
+        "articulo__modelo",
+        "propuesta__solicitud__cliente__email",
+        "propuesta__solicitud__id",
+        "proveedor__email",
+    )
+
+    actions = ["eliminar_duplicados_y_actualizar", "duplicar_item"]
+
+    def eliminar_duplicados_y_actualizar(self, request, queryset):
+        for item in queryset:
+            # Obtener todos los items duplicados
+            duplicados = ItemPropuesta.objects.filter(
+                articulo=item.articulo,
+                proveedor=item.proveedor,
+                propuesta=item.propuesta,
+                cantidad=item.cantidad,
+                precio_venta=item.precio_venta,
+                precio_compra=item.precio_compra,
+                fecha_entrega=item.fecha_entrega,
+                aceptado=item.aceptado,
+                pagado=item.pagado,
+                fecha_pago=item.fecha_pago,
+                fecha_real_pago=item.fecha_real_pago,
+                tipo_pago=item.tipo_pago,
+                tasa=item.tasa,
+                fecha_salida_entrega=item.fecha_salida_entrega,
+                fecha_real_entrega=item.fecha_real_entrega, 
+                divisa=item.divisa,
+                destino=item.destino,
+            ).exclude(id=item.id)
+
+            # Si existen duplicados
+            if duplicados.exists():
+                # Eliminar todos los duplicados
+                duplicados.delete()
+
+                # Actualizar los elementos que referencian a los duplicados eliminados
+                actualizaciones = ItemPropuesta.objects.filter(
+                    Q(articulo=item.articulo)
+                    & Q(proveedor=item.proveedor)
+                    & Q(propuesta=item.propuesta)
+                    & Q(divisa=item.divisa)
+                    & Q(destino=item.destino)
+                    & ~Q(id=item.id)
+                )
+                actualizaciones.update(id=item.id)
+
+        self.message_user(
+            request, f"Se han eliminado los duplicados y actualizado los elementos."
+        )
+    
+    def duplicar_item(self, request, queryset):
+        for item in queryset:
+            nuevo_item = ItemPropuesta(
+                articulo=item.articulo,
+                proveedor=item.proveedor,
+                propuesta=item.propuesta,
+                cantidad=item.cantidad,
+                precio_venta=item.precio_venta,
+                precio_compra=item.precio_compra,
+                divisa=item.divisa,
+                destino=item.destino,
+                fecha_entrega=item.fecha_entrega,
+                aceptado=item.aceptado,
+                pagado=item.pagado,
+                fecha_pago=item.fecha_pago,
+                fecha_real_pago=item.fecha_real_pago,
+                tipo_pago=item.tipo_pago,
+                tasa=item.tasa,
+                fecha_salida_entrega=item.fecha_salida_entrega,
+                fecha_real_entrega=item.fecha_real_entrega,
+            )
+            nuevo_item.save()
+        self.message_user(request, "Los items se han duplicado correctamente.")
+    duplicar_item.short_description = "Duplicar Item Seleccionado(s)"
+
+
+    eliminar_duplicados_y_actualizar.short_description = (
+        "Eliminar duplicados y actualizar elementos seleccionados"
+    )
+    
+
+admin.site.register(ItemPropuesta, ItemPropuestaAdmin)
+
+
 admin.site.unregister(Group)
 admin.site.register(MyUser, MyUserAdmin)
 
@@ -282,9 +387,7 @@ admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Presupuesto)
 admin.site.register(Propuesta, PropuestaAdmin)
 admin.site.register(Empresa, EmpresaAdmin)
-
 admin.site.register(Retencion)
-admin.site.register(ItemPropuesta)
 admin.site.register(Financiacion)
 admin.site.register(Negocio, NegocioAdmin)
 admin.site.register(TipoPago)
