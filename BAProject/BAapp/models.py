@@ -20,8 +20,8 @@ from django.contrib.auth.models import Group, Permission
 class Empresa(models.Model):
     objects = SearchManager()
     razon_social = models.CharField(max_length=50, unique=True)
-    nombre_comercial = models.CharField(max_length=50, blank=True, null=True)
-    cuit = models.CharField(max_length=14, blank=True, null=True)
+    nombre_comercial = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    cuit = models.CharField(max_length=14, blank=True, null=True, unique=True)
     ingresos_brutos = models.CharField(max_length=255, blank=True, null=True)
     fecha_exclusion = models.DateField(null=True, blank=True)
     categoria_iva = models.CharField(
