@@ -33,18 +33,18 @@
       <p class="prop-date table-nego">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
     </div>
     <div class="card history-card table-nego {% if not prop.envio_comprador and request.user.clase == 'Comprador' %}card-right{% elif prop.envio_comprador and request.user.clase == 'Vendedor' %}card-right{%endif%}" id="card{{prop.id}}">
-      <!-- <div class="container__wrapper">
+      <div class="container__wrapper" style="display: none;">
         <div class="container__watermark">
-          <img class="w1" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+          <img class="w1" src="{% static 'images/logo-BV-vista-cliente.svg' %}" height="270px" alt="watermark">
         </div>
-        <div class="container__watermark">
+        <!-- <div class="container__watermark">
           <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
           <img class="w2-hide" style="display: none;" src="{% static 'images/bv-green-bg.png' %}" height="200px" alt="watermark">
         </div>
         <div class="container__watermark">
           <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
-        </div>
-      </div> -->
+        </div> -->
+      </div>
       <div class="dark-text">
         <div class="row">
           <table class="data-table table-nego">

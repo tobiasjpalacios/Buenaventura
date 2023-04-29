@@ -106,6 +106,7 @@ function toggleClientView(n) {
     $("#send-prop-btn").attr('disabled', true);
     $(".card.history-card").addClass("vista-cliente");
     $(".circle-neg").addClass("vista-cliente");
+    $(".container__wrapper").show();
 
     vistaCliente = true;
 
@@ -123,6 +124,7 @@ function toggleClientView(n) {
     $("#send-prop-btn").removeAttr('disabled');
     $(".card.history-card").removeClass("vista-cliente");
     $(".circle-neg").removeClass("vista-cliente");
+    $(".container__wrapper").hide();
 
     vistaCliente = false;
 
