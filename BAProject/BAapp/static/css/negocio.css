@@ -171,7 +171,8 @@ table.striped>tbody>tr:nth-child(odd) {
 }
 
 .card.history-card.vista-cliente {
-    background-color: #d7d7d7 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0px 4px 15px rgba(0, 83, 33, 0.35) !important;
 }
 
 .card-action {
@@ -245,7 +246,7 @@ span.obser {
 
 .container__watermark>img {
     margin: 70px;
-    opacity: 0.6;
+    opacity: 0.8;
     user-select: none;
 }
 
@@ -405,7 +406,7 @@ span.obser {
     padding-left: 60px;
     padding-right: 14px;
     background-color: #F0F0F0 !important;
-    box-shadow: 0px 5px 50px rgba(0, 67, 86, 0.08) !important;
+    box-shadow: 0px 4px 15px rgba(0, 67, 86, 0.08) !important;
 }
 
 .card.table-nego.table-edit {
@@ -482,10 +483,12 @@ table.table-nego tr td {
     border-bottom-left-radius: 150px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    box-shadow: -8px 0px 7px rgba(0 67 86 / 10%);
 }
 
 .circle-neg.vista-cliente {
-    background-color: #d7d7d7 !important;
+    background-color: #ffffff !important;
+    box-shadow: -8px 0px 7px rgb(0 83 33 / 15%) !important;
 }
 
 .circle-neg.circle-right {
@@ -499,7 +502,6 @@ table.table-nego tr td {
 
 .circle-neg.table-edit {
     background-color: #FFFFFF !important;
-    box-shadow: -10px 0 10px rgba(0, 67, 86, 0.08) !important;
 }
 
 .circle-inner {
