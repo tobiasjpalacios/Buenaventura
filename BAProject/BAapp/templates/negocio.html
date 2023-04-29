@@ -189,11 +189,16 @@ Negociación {{ negocio.get_id_de_neg }}
     "{% else %}"
     elId = "#form-table-div"
     "{% endif %}"
-    if (elId) {
-      setTimeout(function() {
-          mScrollTo(elId);
-      }, 500);
-    }
+    setTimeout(function() {
+        if (window.location.hash) {
+          var hash = window.location.hash.substring(1);
+          var target = $("#div-table-" + hash);
+          if (target.length) {
+            elId = "#" + target.attr('id');
+          }
+        }
+        mScrollTo(elId);
+    }, 800);
 
     listProp.push('0');
 
