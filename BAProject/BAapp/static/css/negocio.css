@@ -542,3 +542,11 @@ table.table-nego tr td {
     margin: auto;
     width: 5%;
 }
+
+.copy-btn {
+    border-radius: 8px !important;
+    width: fit-content;
+    text-transform: none;
+    background-color: transparent !important;
+    color: #838383 !important;
+}

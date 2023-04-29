@@ -102,6 +102,7 @@
       <div class="card-action table-nego">
         <span class="obser">Observaciones</span>
         <p>{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
+        <a class="copy-btn no-shadow waves-effect waves-dark btn tooltipped" data-position="top" data-tooltip="Copiar URL del elemento" onclick="copyIdToClipboard(window.location.href.split('#')[0], {{prop.id}});"><i class="material-icons right">content_copy</i>Copiar</a>
       </div>
     </div>
   </div>
