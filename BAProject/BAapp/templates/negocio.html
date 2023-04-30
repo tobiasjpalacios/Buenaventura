@@ -146,6 +146,7 @@ Negociación {{ negocio.get_id_de_neg }}
     $(":input[type='number']").focus(function() { $(this).select(); } );
 
     edits.items.forEach((element, index) => {
+      last.items[index].isNew = false;
       edits.items[index].isNew = false;
     });
     
