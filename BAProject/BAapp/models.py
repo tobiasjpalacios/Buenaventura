@@ -645,7 +645,8 @@ def set_perms(sender, instance, created, **kwargs):
 
 
 # mandar email cada vez que se crea una notificacion (a excepcion de nuevos presupuestos y nuevos negocios)
-@receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
+# NOTE: comentado temporalmente
+# @receiver(post_save, sender=Notificacion, dispatch_uid="send_email_notification")
 def send_email_notification(sender, instance, **kwargs):
     if instance.titulo is not None and "Presupuesto" not in instance.titulo:
         if instance.descripcion is not None:
@@ -670,4 +671,5 @@ def send_email_notification(sender, instance, **kwargs):
         email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
 
 post_save.connect(set_perms, sender = MyUser)
-post_save.connect(send_email_notification, sender = Notificacion)
+# NOTE: comentado temporalmente
+# post_save.connect(send_email_notification, sender = Notificacion)
