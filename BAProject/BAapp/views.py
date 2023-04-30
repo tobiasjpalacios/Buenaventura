@@ -62,7 +62,7 @@ class NuevoNegocioView(View):
 class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
         grupo_activo = request.user.clase
-        negocio = getNegociosByClase(request,grupo_activo,1)
+        negocio = getNegociosByClase(request, grupo_activo, 1)
         vendedor = MyUser.objects.filter(clase='Vendedor')
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
