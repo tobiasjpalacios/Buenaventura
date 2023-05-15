@@ -34,7 +34,16 @@
                 <th class="show0">{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
                 <th class="show0 {% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Precio compra</th>
                 <th class="{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}">Tipo pago</th>
-                <th class="not-show0">Tasa</th>
+                <th class="not-show0">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    Tasa     
+                    {% if request.user.clase == 'Vendedor' %}
+                    <a class="tooltipped" data-position="top" data-tooltip="Asignando 0 se mostrara 'Sin determinar'" >
+                      <i class="Tiny material-icons iconbar" style="margin-left:5px; position: relative; color: #459A33!important;">lightbulb_outline</i>
+                    </a>
+                    {% endif %}
+                  </div>
+                </th>
                 <th class="not-show0">Fecha pago</th>
                 <th class="not-show0">Fecha entrega</th>
                 <th class="not-show0">Destino</th>
