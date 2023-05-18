@@ -26,7 +26,9 @@ Inf. de negocio {{ negocio.get_id_de_neg }}
         <!-- titulo -->
         <div class="menuZone clv" style="display: flex;">
             <h4 class="tituloPagina">Información del negocio</h4>
+            {% if request.user == negocio.comprador or request.user == negocio.vendedor %}
             <a class="verTodos waves-effect waves-light btn no-shadows" href="{% url 'negocio' pk=negocio.id %}"> Negociación </a>
+            {% endif %}
         </div> 
 
 
