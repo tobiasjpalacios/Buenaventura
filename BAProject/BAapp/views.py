@@ -62,7 +62,7 @@ class NuevoNegocioView(View):
 class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
         grupo_activo = request.user.clase
-        negocio = getNegociosByClase(request,grupo_activo,1)
+        negocio = getNegociosByClase(request, grupo_activo, 1)
         vendedor = MyUser.objects.filter(clase='Vendedor')
         return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
 
@@ -1604,8 +1604,9 @@ def descarga_db_excel(request):
 
 def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     created_by = None
+    vendedor_obj = MyUser.objects.get(email=vendedor)
+    comprador_obj = MyUser.objects.get(email=comprador)
     if isComprador:
-        vendedor_obj = MyUser.objects.get(email=vendedor)
         comprador_obj = request.user
         created_by = request.user.get_full_name()
         negocio = Negocio(
@@ -1615,7 +1616,6 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
             )
         negocio.save()
     else:
-        comprador_obj = MyUser.objects.get(email=comprador)
         vendedor_obj = request.user
         created_by = request.user.get_full_name()
         negocio = Negocio(
@@ -1625,18 +1625,24 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
             )
         negocio.save()
 
-    subject = "Se creó un nuevo negocio"
-    texto = f"""
-    El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
-    Hacé click en el botón de abajo para ver el nuevo negocio.
-    """
-    protocol = "http://"
-    domain = Site.objects.get_current().domain
-    full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id,])
-    recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-    context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
+    # NOTE: se manda email de confirmacion solo para usuario Cliente Cliente o CLIENTE . a pedido del cliente
+    nombre_vendedor = vendedor_obj.get_full_name().lower()
+    nombre_comprador = comprador_obj.get_full_name().lower()
+    match_vendedor = nombre_vendedor == "cliente cliente" or nombre_vendedor == "cliente ."
+    match_comprador = nombre_comprador == "cliente cliente" or nombre_comprador == "cliente ."
+    if match_vendedor or match_comprador:
+        subject = "Se creó un nuevo negocio"
+        texto = f"""
+        El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
+        Hacé click en el botón de abajo para ver el nuevo negocio.
+        """
+        protocol = "http://"
+        domain = Site.objects.get_current().domain
+        full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id,])
+        recipient_list = [negocio.vendedor.email, negocio.comprador.email]
+        context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
 
-    email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
 
     return negocio
     
@@ -1915,34 +1921,32 @@ class NegocioView(View):
                 tmp = ItemPropuesta()
                 for f in tmp._meta.get_fields():
                     key = f.name
-                    if key != "isNew":
-                        is_new = item["isNew"]
-                        if key=="propuesta" or key=="id":
-                            continue
-                        value = item[key]
-                        if key == "proveedor" and value == None:
-                            setattr(tmp, key, None)
-                        if f.is_relation and not (key == "proveedor" and value == None):
-                            if key == "articulo" and envio_comprador and is_new:
-                                art = Articulo.objects.get(pk=value)
-                                try:
-                                    obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
-                                except:
-                                    obj = Articulo(ingrediente=art.ingrediente, empresa=None)
-                                    obj.save()
-                            else:
-                                obj = get_object_or_404(
-                                    f.related_model,
-                                    pk=value
-                                )
-                            setattr(tmp, key, obj)
+                    if key=="propuesta" or key=="id" or key == "isNew":
+                        continue
+                    is_new = item["isNew"]
+                    value = item[key]
+                    if key == "proveedor" and value == None:
+                        setattr(tmp, key, None)
+                    if f.is_relation and not (key == "proveedor" and value == None):
+                        if key == "articulo" and envio_comprador and is_new:
+                            art = Articulo.objects.get(pk=value)
+                            try:
+                                obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
+                            except:
+                                obj = Articulo(ingrediente=art.ingrediente, empresa=None)
+                                obj.save()
                         else:
-                            print(tmp, key, value)
-                            setattr(
-                                tmp, 
-                                key, 
-                                value
+                            obj = get_object_or_404(
+                                f.related_model,
+                                pk=value
                             )
+                        setattr(tmp, key, obj)
+                    else:
+                        setattr(
+                            tmp, 
+                            key, 
+                            value
+                        )
                 tmp.propuesta = prop
                 tmp.save()
                 completed &= tmp.aceptado
@@ -2040,14 +2044,19 @@ class NegocioView(View):
         else:
             negocio_update = True
 
-        print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
+        # print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
-            full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
-            recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
-            context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
-            email_response = email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-            print(email_response)
+            # NOTE: se manda email de confirmacion solo para usuario Cliente Cliente o CLIENTE . a pedido del cliente
+            nombre_vendedor = negocio.vendedor.get_full_name().lower()
+            nombre_comprador = negocio.comprador.get_full_name().lower()
+            match_vendedor = nombre_vendedor == "cliente cliente" or nombre_vendedor == "cliente ."
+            match_comprador = nombre_comprador == "cliente cliente" or nombre_comprador == "cliente ."
+            if match_vendedor or match_comprador:
+                full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+                recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
+                context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
+                email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
         else:
             if not negocio.estado == "ESP_CONF":
                 if envio_comprador:
@@ -2060,7 +2069,7 @@ class NegocioView(View):
                 negocio.save()
                 
         
-        return render(request, 'negocio.html')
+        return redirect(reverse('negocio', kwargs={'pk': negocio.pk}))
 
 class ListEmpresaView(View):
     def get(self, request, *args, **kwargs):

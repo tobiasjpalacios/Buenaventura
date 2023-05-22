@@ -31,13 +31,13 @@ $(document).ready(function(){
 var modifyWasClicked = false;
 
 function mScrollTo(id) {
-  // console.log(id)
-    var elementPosition = $(id).offset().top;
-    var navHeight = $("nav").height();
+  // console.log($(id));
+  var elementPosition = $(id).offset().top;
+  var navHeight = $("nav").height();
 
-    $('html,body').animate({
-      scrollTop: elementPosition - navHeight - 100
-    }, 700);
+  $('html,body').animate({
+    scrollTop: elementPosition - navHeight - 100
+  }, 700);
 }
 
 $("#btnScrollTop").on('click', function() {
@@ -106,6 +106,8 @@ function toggleClientView(n) {
     $("#send-prop-btn").attr('disabled', true);
     $(".card.history-card").addClass("vista-cliente");
     $(".circle-neg").addClass("vista-cliente");
+    $(".container__wrapper").show();
+    $(".copy-btn").hide();
 
     vistaCliente = true;
 
@@ -123,6 +125,8 @@ function toggleClientView(n) {
     $("#send-prop-btn").removeAttr('disabled');
     $(".card.history-card").removeClass("vista-cliente");
     $(".circle-neg").removeClass("vista-cliente");
+    $(".container__wrapper").hide();
+    $(".copy-btn").show();
 
     vistaCliente = false;
 
@@ -265,4 +269,13 @@ function getArtId(n) {
   var artSearchInput = $("#artSearch"+n).val();
   var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
   return artId;
+}
+
+function copyIdToClipboard(url, n) {
+  var text = url + "#" + n;
+  navigator.clipboard.writeText(text).then(function() {
+    M.toast({html: "Copiado al portapapeles"});
+  } , function() {
+    M.toast({html: "Error al copiar al portapapeles"});
+  })
 }
