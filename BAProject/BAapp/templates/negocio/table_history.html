@@ -1,6 +1,6 @@
 {% load static %}
 <div class="container">
-  <div class="row" style="margin-bottom: 0;">
+  <div class="row" style="margin-bottom: 0;" id="div-table-{{prop.id}}">
     <div class="col s6 {% if prop.envio_comprador %} pull-s2 {% else %} push-s1 {% endif %} prop-creator-name" 
           data-comprador="{{ negocio.comprador.get_full_name }} - {{ negocio.comprador.empresa }}" 
           data-vendedor="{{ negocio.vendedor.get_full_name }} - {{ negocio.vendedor.empresa }}"
@@ -13,13 +13,30 @@
       {% endif %}
       </p>
     </div>
-    <div class="col s6 {% if prop.envio_comprador %} pull-s1 {% else %} push-s2 {% endif %} prop-date">
+    <div class="col s6 {% if prop.envio_comprador %} pull-s2 {% else %} push-s1 {% endif %} prop-date">
       <p style="margin-bottom: 0;">{{ prop.timestamp|date:"d/m/Y    H:i" }} hs</p>
     </div>
   </div>
   <div class="row">
-    <div class="col s11 {% if prop.envio_comprador %} pull-s2 {% else %} push-s1 {% endif %}">
+    <div class="col s12 {% if prop.envio_comprador %} pull-s2 {% else %} push-s1 {% endif %}">
       <div class="card history-card">
+        <div class="container__wrapper" style="display: none;">
+          <div class="container__watermark">
+            <img class="w1" src="{% static 'images/logo-BV-vista-cliente.svg' %}" height="270px" alt="watermark">
+          </div>
+          <!-- <div class="container__watermark">
+            <img class="w2" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+            <img class="w2-hide" style="display: none;" src="{% static 'images/bv-green-bg.png' %}" height="200px" alt="watermark">
+          </div>
+          <div class="container__watermark">
+            <img class="w3" src="{% static 'images/logo-16.png' %}" height="180px" alt="watermark">
+          </div> -->
+        </div>
+        <div class="circle-neg-container {% if prop.envio_comprador %} comprador {% else %} vendedor {% endif %}" id="circle-neg{{prop.id}}">
+          <div class="circle-neg history">
+            <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
+          </div>
+        </div>
         <div class="card-content">
           <div class="responsive-table history">
             <table class="responsive-table" data-isShowMore="false">
@@ -36,9 +53,9 @@
                   {% endif %}
                   <th class="clientView">Tipo pago</th>
                   <th class="clientView">Tasa</th>
+                  <th class="clientView">Fecha entrega</th>
                   <th>Fecha pago</th>
                   <th class="clientView">Destino</th>
-                  <th class="clientView">Fecha entrega</th>
                   <th class="ignore">Ver más</th>
                 </tr>
               </thead>
@@ -62,8 +79,8 @@
                       {{item.tasa}}
                     {% endif %}
                   </td>
-                  <td>{{ item.fecha_pago|default:"Sin definir" }}</td>
                   <td class="clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
+                  <td>{{ item.fecha_pago|default:"Sin definir" }}</td>
                   <td class="clientView">{{ item.destino|default:"Sin definir" }}</td>
                   <td class="ignore">
                     <a class="action-btn btn-floating btn waves-effect waves-green transparent no-shadows show-more-btn"><i class="material-icons table-icons" style="color: #459A33;">search</i></a>
@@ -76,30 +93,15 @@
           <div class="card-action table-nego">
             <span class="obser">Observaciones</span>
             <div class="obser-text">
-              <p class="col s12">{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
+              <p class="">{{ prop.observaciones|default_if_none:'No hay observaciones'|default:'No hay observaciones' }}</p>
             </div>
             <a class="copy-btn no-shadow waves-effect waves-dark btn tooltipped" data-position="top" data-tooltip="Copiar URL del elemento" onclick="copyIdToClipboard(window.location.href.split('#')[0], '{{prop.id}}');"><i class="material-icons right">content_copy</i>Copiar</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="col s1 circle-neg-container {% if prop.envio_comprador %} pull-s3 {% else %} pull-s9 {% endif %}" id="circle-neg{{prop.id}}">
-      <div class="circle-neg history {% if prop.envio_comprador %} comprador {% else %} vendedor {% endif %}">
-        <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
-      </div>
-    </div>
   </div>
 </div>
-<script>  
-  $(document).ready(function() {
-    listProp.push("{{prop.id}}");
-  });
-
-  $(window).on('load', function () {
-    vAlignCircle("{{prop.id}}");
-  });
-  
-</script>
 
 {% if negocio.estado == "CONFIRMADO" %}
 <script>

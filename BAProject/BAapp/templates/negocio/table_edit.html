@@ -8,18 +8,27 @@
     </div>
   </div>
   <div class="row">
-    <div class="col s11 push-s1">
+    <div class="col s12 push-s1">
       <div class="card table-edit" id="card0">
+        <div class="circle-neg-container edit" id="circle-neg{{prop.id}}">
+          <div class="circle-neg">
+            <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
+          </div>
+        </div>
         <div class="card-content">
           <div class="responsive-table edit">
             <table class="responsive-table" data-isShowMore="false" id="form">
               <thead class="edit-thead">
                 <tr>
                   <th>Articulo</th>
-                  <th class="{% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Distribuidor</th>
+                  {% if not request.user.clase == 'Comprador' %}
+                  <th>Distribuidor</th>
+                  {% endif %}
                   <th>Cantidad</th>
                   <th>{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}</th>
-                  <th class="{% if request.user.clase == 'Comprador' %}customerHide{% endif %}">Precio compra</th>
+                  {% if not request.user.clase == 'Comprador' %}
+                  <th>Precio compra</th>
+                  {% endif %}
                   <th>Tipo pago</th>
                   <th>
                     <div style="display: flex; align-items: center; justify-content: center;">
@@ -67,7 +76,9 @@
                     {% endif %}
                     <td><input type="number" name="cantidad" min=".01" step=".01" value="{{ item.cantidad|default_if_none:''|stringformat:'.2f' }}" placeholder="Cantidad" onchange="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td><input type="number" name="precio_venta" min=".01" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onchange="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    {% if not request.user.clase == 'Comprador' %}
                     <td><input type="number" name="precio_compra" min=".01" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" onchange="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    {% endif %}
                     <td>
                       <select name="tipo_pago" onchange="contadoTasa('{{item.id}}'); removeUpdate('{{ forloop.counter0 }}')" id="tp{{item.id}}">
                         <option value="" {% if item.tipo_pago == None %}selected{% endif %} disabled>Elija tipo pago</option>
@@ -106,6 +117,7 @@
                       <input type="text" name='articulo' id='artSearch0' list="artDatalist0" placeholder="Articulo">
                       <datalist id="artDatalist0">
                     </td>
+                    {% if not request.user.clase == 'Comprador' %}
                     <td>
                       <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">
                       <datalist id='distResults'>
@@ -114,13 +126,16 @@
                       {% endfor %}
                       </datalist>
                     </td>
+                    {% endif %}
                     <td><input type="number" name="cantidad" min=".01" step=".01" placeholder="Cantidad"></td>
                     <td>
                       <input type="number" name="precio_venta" step=".01" min=".01" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}">
                     </td>
+                    {% if not request.user.clase == 'Comprador' %}
                     <td>
                       <input type="number" name="precio_compra" min=".01" step=".01" placeholder="Precio compra">
                     </td>
+                    {% endif %}
                     <td>
                       <select name="tipo_pago" onchange="contadoTasa('Add')" id="tpAdd">
                         <option value="" selected disabled>Elija tipo pago</option>
@@ -156,11 +171,6 @@
             {% endif %}
           </div>
         </div>
-      </div>
-    </div>
-    <div class="col s1 pull-s9 circle-neg-container" id="circle-neg0">
-      <div class="circle-neg edit vendedor">
-        <object data="{% static 'images/Logo-BV-sfondo-bg.svg' %}" type="image/svg+xml"></object>
       </div>
     </div>
   </div>

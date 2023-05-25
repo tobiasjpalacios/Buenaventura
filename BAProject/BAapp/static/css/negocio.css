@@ -1,5 +1,5 @@
 html, body {
-    overflow-x: visible;
+    overflow-x: hidden;
 }
 
 body {
@@ -403,6 +403,7 @@ span.obser {
 
 .card.table-edit {
     background-color: #FFFFFF !important;
+    padding-left: 50px !important;
 }
 
 .card.card-right {
@@ -433,6 +434,7 @@ span.obser {
 .card-action > .obser-text {
     color: #323232 !important;
     font-size: 14px;
+    padding: .8rem 0 .8rem 0;
     overflow: hidden;
 }
 
@@ -450,7 +452,22 @@ table tr td {
 }
 
 .circle-neg-container {
-    z-index: 1;
+    z-index: -1;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+.circle-neg-container.vendedor {
+    right: 51.7%;
+}
+
+.circle-neg-container.comprador {
+    left: 51.7%;
 }
 
 .circle-neg {
@@ -463,8 +480,13 @@ table tr td {
     background-color: #f0f0f0;
 }
 
-.circle-neg.edit {
+.circle-neg-container.edit {
+    right: 51.7%;
+}
+
+.circle-neg-container.edit .circle-neg {
     background-color: #ffffff;
+    box-shadow: -15px 0px 18px -15px rgba(0, 0, 0, 0.3);
 }
 
 .circle-neg object {
@@ -473,13 +495,11 @@ table tr td {
     object-fit: cover;
 }
 
-.circle-neg.comprador {
-    margin-left: 250px;
+.circle-neg-container.comprador  .circle-neg {
     box-shadow: 15px 0px 18px -15px rgba(0, 0, 0, 0.3);
 }
 
-.circle-neg.vendedor {
-    margin-left: -170px;
+.circle-neg-container.vendedor .circle-neg {
     box-shadow: -15px 0px 18px -15px rgba(0, 0, 0, 0.3);
 }
 
@@ -487,11 +507,11 @@ table tr td {
     background-color: #ffffff;
 }
 
-.circle-neg.vendedor.vista-cliente {
+.circle-neg-container.vendedor .circle-neg.vista-cliente {
     box-shadow: -15px 0px 18px -15px rgba(0, 83, 33, 0.35);
 }
 
-.circle-neg.comprador.vista-cliente {
+.circle-neg-container.comprador .circle-neg.vista-cliente {
     box-shadow: 15px 0px 18px -15px rgba(0, 83, 33, 0.35);
 }
   
@@ -502,12 +522,6 @@ table tr td {
 @keyframes blinker {
     50% {
         opacity: 0;
-    }
-}
-
-@media screen and (max-width: 1280px) {
-    .circle-neg {
-        display: none;
     }
 }
 
@@ -530,12 +544,6 @@ table tr td {
 
 .hide-column {
     display: none;
-}
-
-@media only screen and (min-width: 992px) {
-    .card {
-        min-width: 1280px !important;
-    }
 }
 
 @media only screen and (max-width: 992px) {
@@ -564,5 +572,8 @@ table tr td {
     .card {
         min-width: auto;
         padding: 10px !important;
+    }
+    .circle-neg-container {
+        display: none;
     }
 }

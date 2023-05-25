@@ -50,10 +50,6 @@ $(document).ready(function(){
     toggleClientView();
   });
 });
-  
-$(window).on('load', function() {
-  vAlignCircle(0);
-});
 
 var modifyWasClicked = false;
 
@@ -133,7 +129,7 @@ function toggleClientView() {
       var $headerCells = $table.find('thead tr th');
       var $dataCells = $table.find('tbody tr td');
       var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
-      var $parent = $(this).parents('.col.s11');
+      var $parent = $(this).parents('.col.s12');
       var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
       var $propDate = $(this).parents('.container').find('.prop-date');
       var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
@@ -141,14 +137,12 @@ function toggleClientView() {
 
       if (isThisComprador) {
         $propCreatorName.toggleClass("pull-s2 push-s1");
-        $propDate.toggleClass("pull-s1 push-s2");
-        $circleNeg.toggleClass("pull-s3 pull-s9");
-        $circleNeg.find('.circle-neg').toggleClass("comprador vendedor");
+        $propDate.toggleClass("pull-s2 push-s1");
+        $circleNeg.toggleClass("comprador vendedor");
         $parent.toggleClass("pull-s2 push-s1");
       }
 
-      $table.data('isShowMore', false);
-      $propCreatorName.text($propCreatorName.data("comprador"));
+      $propCreatorName.find('p').text($propCreatorName.data("comprador"));
   
       $headerCells.each(function() {
         var $cell = $(this);
@@ -189,22 +183,21 @@ function toggleClientView() {
       var $headerCells = $table.find('thead tr th');
       var $dataCells = $table.find('tbody tr td');
       var columnCount = $headerCells.length;
-      var $parent = $(this).parents('.col.s11');
+      var $parent = $(this).parents('.col.s12');
       var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
       var $propDate = $(this).parents('.container').find('.prop-date');
       var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
       var isThisComprador = $propCreatorName.data('iscomprador');
       
       if (isThisComprador) {
-        $propCreatorName.text($propCreatorName.data("comprador"));
+        $propCreatorName.find('p').text($propCreatorName.data("comprador"));
         $propCreatorName.toggleClass("pull-s2 push-s1");
-        $propDate.toggleClass("pull-s1 push-s2");
-        $circleNeg.toggleClass("pull-s3 pull-s9");
-        $circleNeg.find('.circle-neg').toggleClass("comprador vendedor");
+        $propDate.toggleClass("pull-s2 push-s1");
+        $circleNeg.toggleClass("comprador vendedor");
         $parent.toggleClass("pull-s2 push-s1");
       }
       else {
-        $propCreatorName.text($propCreatorName.data("vendedor"));
+        $propCreatorName.find('p').text($propCreatorName.data("vendedor"));
       }
   
       $headerCells.each(function(index) {
@@ -264,7 +257,6 @@ function addTable() {
     $("#form-table-div").detach().appendTo("#table-destination");
     $("#form-table-div").show();
     modifyWasClicked = true;
-    vAlignCircle(0);
 }
 
 function addTables(n, isBeforeFechaCierre) {
@@ -355,15 +347,6 @@ function resetIngredientesDatalist(n) {
       datalist.appendChild(option);
     }
   }
-}
-
-function vAlignCircle(n) {
-  var $child = $("#circle-neg" + n);
-  var $parent = $child.parent().find("div .card");
-  var parentHeight = $parent.height();
-  var childHeight = $child.height();
-  var marginTop = (parentHeight - childHeight) / 2;
-  $child.css('margin-top', marginTop);
 }
 
 function getArtId(n) {

@@ -140,7 +140,6 @@ Negociación {{ negocio.get_id_de_neg }}
     "observaciones"
   ]
   var headers = []
-  var listProp = [];
 
   $(document).ready(function(){
     edits.new = {}
@@ -192,18 +191,16 @@ Negociación {{ negocio.get_id_de_neg }}
     "{% else %}"
     elId = "#form-table-div"
     "{% endif %}"
-    // setTimeout(function() {
-    //     if (window.location.hash) {
-    //       var hash = window.location.hash.substring(1);
-    //       var target = $("#div-table-" + hash);
-    //       if (target.length) {
-    //         elId = "#" + target.attr('id');
-    //       }
-    //     }
-    //     mScrollTo(elId);
-    // }, 800);
-
-    listProp.push('0');
+    setTimeout(function() {
+        if (window.location.hash) {
+          var hash = window.location.hash.substring(1);
+          var target = $("#div-table-" + hash);
+          if (target.length) {
+            elId = "#" + target.attr('id');
+          }
+        }
+        mScrollTo(elId);
+    }, 800);
 
     if (!userIsComprador) {
       editable_fields.push("articulo");
@@ -218,6 +215,7 @@ Negociación {{ negocio.get_id_de_neg }}
   var lastForAccept = last;
 
   function accept(index){
+    index = parseInt(index);
     console.log("accept")
     if (!userIsComprador) {
       var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0]
@@ -234,6 +232,7 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function reject(index){
+    index = parseInt(index);
     console.log("rejected")
     resetAll(index, "False")
     $($("#form")[0].rows[index+1]).css('background-color', '#EE8A8A');
@@ -243,6 +242,7 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function update(index){
+    index = parseInt(index);
     console.log("update");
     if (!userIsComprador && edits.items[index].proveedor == null) {
       var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0];
@@ -283,6 +283,7 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function resetAll(index, aceptado){
+    index = parseInt(index);
     console.log("resetAll");
     if (aceptado == "False") {
       $($("#form")[0].rows[index+1]).css('background-color', '');
@@ -306,6 +307,7 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function resetForAccept(index) {
+    index = parseInt(index);
     console.log("resetForAccept");
     $($("#form")[0].rows[index+1]).css('background-color', '');
     edits.items[index] = Object.assign({},lastForAccept.items[index]);
@@ -325,9 +327,12 @@ Negociación {{ negocio.get_id_de_neg }}
         input.val(edits.items[index][element])
       }
     });
+    unsavedChanges = false;
+    $("#save-" + index).removeClass("blinkSave");
   }
 
   function removeUpdate(index) {
+    index = parseInt(index);
     editable_fields.forEach(element => {
       if (element != "observaciones") {
         var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
