@@ -573,7 +573,14 @@ table tr td {
         min-width: auto;
         padding: 10px !important;
     }
+    .card.table-edit {
+        padding: 10px !important;
+    }
     .circle-neg-container {
         display: none;
+    }
+    .approved,
+    .canceled {
+        margin: 0;
     }
 }
