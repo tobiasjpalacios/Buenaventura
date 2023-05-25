@@ -355,79 +355,100 @@ Negociación {{ negocio.get_id_de_neg }}
   var counter = 0;
 
   function addArt(){
-    var n = {}, errors=false;
+    var n = {}; 
+    var errors = false;
     var rowId = "NewRow"+counter
+    
     console.log("addArt");
-    headers.push("divisa");
-    headers.forEach(element => {
-      if (userIsComprador) {
-        if (element == "precio") {
-          element = "precio_venta";
-        }
+
+    // default values
+    n["aceptado"] = false;
+    n["pagado"] = false;
+    n["fecha_real_entrega"] = null;
+    n["fecha_real_pago"] = null;
+    n["fecha_salida_entrega"] = null;
+    n["divisa"] = 'USD';
+    n["isNew"] = true;
+    n["proveedor"] = null;
+    
+    headers.every(element => {
+      if (errors) {
+        return false;
       }
+
+      if (userIsComprador && element == "precio") {
+        element = "precio_venta";
+      }
+
       var input = null;
+      
       if (element != "divisa") {
         input = $($("#extra").find('[name="'+element+'"]'))[0];
       }
+
+      var $this = $(input);
       var artId = getArtId(0);
-      if (input != null) {
-        if (!input.value) {
-          if (userIsComprador) {
-            if (!(input.name == "distribuidor" || input.name == "precio_compra" || input.name == "cantidad")) {
-              errors = true || errors;
-              if (input.name == "tipo_pago") {
-                $(input).parent().addClass("invalid");
-              }
-              else {
-                $(input).addClass("invalid");
-              }
-            }
-          } else {
-            errors = true || errors;
-            if (input.name == "tipo_pago") {
-              $(input).parent().addClass("invalid");
-            }
-            else {
-              $(input).addClass("invalid");
-            }
-          }
-          $(input).addClass("invalid");
-          if (input.name == "tipo_pago") {
-            input.parentElement.classList.add("select-error");
-          }
-        } else {
-          errors = false || errors
-          $(input).removeClass("invalid");
+      var inputValue = $this.val();
+
+      $this.removeClass('invalid');
+
+      if (["articulo", "distribuidor"].indexOf(element) !== -1) { // index 0..1
+        var datalistId = $this.attr('list');
+        var datalistOptions = $('#' + datalistId + ' option').map(function() {
+          return this.value;
+        }).get();
+
+        if (datalistOptions.indexOf(inputValue) === -1) {
+          errors = true;
+          $this.addClass('invalid');
         }
-        if (element === "distribuidor") {
-          element = "proveedor";
-          var opt = $("#distResults [value='"+input.value+"']");
-          n[element] = opt.data('value');
-        } else {
-          if (input.type == "number" || input.type == "hidden") {
-            n[element] = parseFloat(input.value);
-          } else {
-            n[element] = input.value;
-            n["articulo"] = artId;
-            n["pagado"] = false;
-            n["fecha_real_entrega"] = null;
-            n["fecha_real_pago"] = null;
-            n["fecha_salida_entrega"] = null;
-            n["divisa"] = "USD";
-            n["isNew"] = true;
-            if (userIsComprador) {
-              n["proveedor"] = null;
-              n["precio_compra"] = 0;
-            }
-          }
+
+        if (element == "articulo") {
+          n[element] = artId;
+        }
+        else if (element == "distribuidor") {
+          var opt = $("#distResults [value='"+inputValue+"']");
+          var dist = opt.data('value');
+          n["proveedor"] = dist;
         }
       }
+      else if (["cantidad", "precio_venta", "precio_compra"].indexOf(element) !== -1) { // index 2..4
+        if (inputValue === '0' || inputValue === '') {
+          errors = true;
+          $this.addClass('invalid');
+        }
+
+        if (userIsComprador && element == "precio_venta") {
+          n["precio_venta"] = parseFloat(inputValue);
+          n["precio_compra"] = 0;
+        }
+        else {
+          n[element] = parseFloat(inputValue);
+        }
+      }
+      else if (element == "tipo_pago") { // index 5
+        var selectedVal = $this.find(':selected').val();
+        if (selectedVal === '') {
+          errors = true;
+          $this.parent().addClass('invalid');
+        }
+        n[element] = selectedVal;
+      }
+      else { // index 6..9
+        if (inputValue === '') {
+          errors = true;
+          $this.addClass('invalid');
+        }
+        n[element] = element == "tasa" ? parseFloat(inputValue) : inputValue;
+      }
+
+      return true;
     })
+
     if (errors){
       return;
     }
-    n.aceptado = false;
-
+ 
     edits.items.push(n);
 
     var tipo_pago = "";

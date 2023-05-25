@@ -52,7 +52,7 @@
                   <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %}>
                     <td>
                       {% if not request.user.clase == 'Comprador' %}
-                      <input type="text" name='articulo' id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" onkeyup="removeUpdate('{{ forloop.counter0 }}')" onfocus="">
+                      <input class="art-search" type="text" name='articulo' id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" onkeyup="removeUpdate('{{ forloop.counter0 }}')">
                       <datalist id="artDatalist{{ forloop.counter }}"></datalist>
                       {% else %}
                       <span id="artName{{ forloop.counter }}">
@@ -63,7 +63,7 @@
                     {% if not request.user.clase == 'Comprador' %}
                     <td>
                       {% if item.proveedor == None %}
-                      <input type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off' placeholder="Distribuidor" onkeyup="removeUpdate('{{ forloop.counter0 }}')">
+                      <input class="dist-search" type='text' name='distribuidor' id='distSearch{{ forloop.counter0 }}' list='distResults' autocomplete='off' placeholder="Distribuidor" onkeyup="removeUpdate('{{ forloop.counter0 }}')">
                       <datalist id='distResults'>
                       {% for dist in distribuidores %}
                         <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
@@ -88,8 +88,8 @@
                       </select>
                     </td>
                     <td><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" value="{{ item.tasa|stringformat:'.2f' }}" placeholder="Tasa" onchange="removeUpdate('{{ forloop.counter0 }}')"></td>
-                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td>
                       <input type="text" name="destino" value="{{item.destino}}" placeholder="Destino" onkeyup="removeUpdate('{{ forloop.counter0 }}')"/>
                     </td>
@@ -114,12 +114,12 @@
                 {% if not negocio.estado == "CONFIRMADO" and not negocio.estado == "ESP_CONF" %}
                   <tr id="extra">
                     <td>
-                      <input type="text" name='articulo' id='artSearch0' list="artDatalist0" placeholder="Articulo">
+                      <input class="art-search" type="text" name='articulo' id='artSearch0' list="artDatalist0" placeholder="Articulo">
                       <datalist id="artDatalist0">
                     </td>
                     {% if not request.user.clase == 'Comprador' %}
                     <td>
-                      <input type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">
+                      <input class="dist-search" type='text' name='distribuidor' id='distSearch' list='distResults' autocomplete='off' placeholder="Distribuidor">
                       <datalist id='distResults'>
                       {% for dist in distribuidores %}
                         <option data-value="{{ dist.id }}" value="{{ dist.get_full_name }}"></option>
@@ -147,8 +147,8 @@
                     <td>
                       <input type="number" name="tasa" step=".01" id="tasAdd" min="0" placeholder="Tasa">
                     </td>
-                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" placeholder="Fecha pago"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" placeholder="Fecha entrega"></td>
+                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" placeholder="Fecha pago"></td>
                     <td>
                       <input type="text" name="destino" placeholder="Destino"/>
                     </td>

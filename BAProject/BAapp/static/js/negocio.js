@@ -17,7 +17,11 @@ $(document).ready(function(){
   });
   $("#form thead tr th").each(function(index){
       if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
-          headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
+          var header = $(this).text().toLowerCase().replace(/\s+/g, '_')
+          if (["_tasa_lightbulb_outline_", "_tasa_"].indexOf(header) !== -1) { // rancio
+            header = 'tasa';
+          }
+          headers.push(header);
       }
   })
 
@@ -49,6 +53,10 @@ $(document).ready(function(){
   $("#client-view-sw").change(function() {
     toggleClientView();
   });
+
+  $(".art-search").on('input', function() {
+    isArtSearchValid($(this));
+  });
 });
 
 var modifyWasClicked = false;
@@ -74,6 +82,16 @@ $('html,body').animate({
     scrollTop: $(document).height()
 }, 700);
 });
+
+function isArtSearchValid($this) {
+  var userInput = $this.val();
+  if (optionsArtsDatalist.indexOf(userInput) === -1) {
+    $this.addClass('invalid');
+  }
+  else {
+    $this.removeClass('invalid');
+  }
+}
 
 function showMore($this) {
   var $table = $this.parents('.responsive-table').find('table');
@@ -266,22 +284,6 @@ function addTables(n, isBeforeFechaCierre) {
   }
 }
 
-// $("#client-view-sw").change(function() {
-
-//   // $(".card").toggleClass("tableClientView");
-//   // $(".card-title").toggleClass("tableClientView");
-//   // $(".card-action").toggleClass("tableClientView");
-//   // $(".circle-container").toggle("display");
-//   // $(".data-table").toggleClass("tableClientView");
-//   // $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
-//   // $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
-//   // $(".w1").toggle("display");
-//   // $(".w2").toggle("display");
-//   // $(".w2-hide").toggle("display");
-//   // $(".w3").toggle("display");
-  
-// });
-
 function allTDLinebreak() {
   $("td:first-child").each(function() {
     var elem = $(this);
@@ -303,6 +305,8 @@ function allTDLinebreak() {
 
 // table_edit
 
+var optionsArtsDatalist;
+
 function articuloDatalist(n) {
   var artDatalist = document.getElementById("artDatalist"+n);
   for (var i = 0; i < arts_data.length; i++) {
@@ -312,6 +316,11 @@ function articuloDatalist(n) {
       option.setAttribute('id',''+arts_data[i].id);
       artDatalist.appendChild(option);        
     }
+  }
+  if (!n) {
+    optionsArtsDatalist = $(artDatalist).find('option').map(function() {
+      return this.value;
+    }).get()
   }
 }
 
@@ -351,6 +360,12 @@ function resetIngredientesDatalist(n) {
 
 function getArtId(n) {
   var artSearchInput = $("#artSearch"+n).val();
+  var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
+  return artId;
+}
+
+function getDistId(n) {
+  var artSearchInput = $("#distSearch"+n).val();
   var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
   return artId;
 }
