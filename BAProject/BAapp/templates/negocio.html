@@ -118,10 +118,12 @@ Negociación {{ negocio.get_id_de_neg }}
   var propUpdated = false;
   var arts_data;
   var unsavedChanges = false;
+  var showColumns = 5;
   var userIsComprador = false;
   "{% if request.user.clase == 'Comprador' %}"
   userIsComprador = true;
   "{% endif %}"
+  showColumns = userIsComprador ? 3 : showColumns;
 
   var last = {{ last | safe }};
   var edits = $.extend(deep=true, {}, last);
@@ -190,16 +192,16 @@ Negociación {{ negocio.get_id_de_neg }}
     "{% else %}"
     elId = "#form-table-div"
     "{% endif %}"
-    setTimeout(function() {
-        if (window.location.hash) {
-          var hash = window.location.hash.substring(1);
-          var target = $("#div-table-" + hash);
-          if (target.length) {
-            elId = "#" + target.attr('id');
-          }
-        }
-        mScrollTo(elId);
-    }, 800);
+    // setTimeout(function() {
+    //     if (window.location.hash) {
+    //       var hash = window.location.hash.substring(1);
+    //       var target = $("#div-table-" + hash);
+    //       if (target.length) {
+    //         elId = "#" + target.attr('id');
+    //       }
+    //     }
+    //     mScrollTo(elId);
+    // }, 800);
 
     listProp.push('0');
 
@@ -431,10 +433,6 @@ Negociación {{ negocio.get_id_de_neg }}
     }
     "{% endfor %}"
 
-    if (sm) {
-      showMore(0);
-    }
-
     if (tipo_pago.toLowerCase() == "contado") {
       n.tasa = 0;
     }
@@ -442,26 +440,26 @@ Negociación {{ negocio.get_id_de_neg }}
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td class=\"show0\"><span id=\"artName"+(table.rows.length-2)+"\">"+$("#artSearch0")[0].value+"</span></td>\
+    <td><span id=\"artName"+(table.rows.length-2)+"\">"+$("#artSearch0")[0].value+"</span></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\">"+$("#distSearch")[0].value+"</td>\
+    <td>"+$("#distSearch")[0].value+"</td>\
     {% endif %}\
-    <td class=\"show0\"><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td class=\"show0\"><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
-    <td class=\"{% if request.user.clase == 'Comprador' %}show0{% elif request.user.clase == 'Vendedor' %}not-show0{%endif%}\"><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td class=\"not-show0\"><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td class=\"not-show0\"><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td>\
+    <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td class=\"ignore-op\">\
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
       <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\" id=\"save-"+(table.rows.length-3)+"\"><i class=\"material-icons table-icons\">save</i></a>\
     </td>\
-    <td>\
-      <a class=\"action-btn btn-floating btn waves-effect waves-green transparent no-shadows\" onclick=\"showMore(0);\"><i class=\"i1 material-icons table-icons\" style=\"color: #459A33;\">search</i></a>\
+    <td class=\"ignore\">\
+      <a class=\"action-btn btn-floating btn waves-effect waves-green transparent no-shadows\"><i class=\"i1 material-icons table-icons\" style=\"color: #459A33;\">search</i></a>\
     </td>\
     ";
     $('select').formSelect();
@@ -482,6 +480,21 @@ Negociación {{ negocio.get_id_de_neg }}
     propUpdated = true;
     $(":input[type='number']").focus(function() { $(this).select(); } );
     // allTDLinebreak();
+    var $row = $(row);
+    var $cell = $row.find('td:not(.ignore, .ignore-op)');
+    var colCount = $cell.length;
+    $cell.each(function(index) {
+      if (index % colCount < showColumns) {
+        $(this).addClass('hide-column');
+      }
+    });
+    showMore($('.add-art'));
+    var $showMoreBtn = $row.find('.ignore a');
+    $showMoreBtn.click(function(e) {
+      e.preventDefault();
+      
+      showMore($(this));
+    });
   }
 
   var obsOriginalValue = $("#observaciones").val();

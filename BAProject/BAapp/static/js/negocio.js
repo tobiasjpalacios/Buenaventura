@@ -1,31 +1,58 @@
 $(document).ready(function(){
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        showClearBtn: true,
-        i18n: {
-          months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-          monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
-          weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-          weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-          weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+  $('.datepicker').datepicker({
+      format: 'dd/mm/yyyy',
+      showClearBtn: true,
+      i18n: {
+        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+        weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+        weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+        weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+    }
+  });
+  $('.tooltipped').tooltip();
+  $('select').formSelect();
+  $('.fixed-action-btn').floatingActionButton({
+  hoverEnabled: true
+  });
+  $("#form thead tr th").each(function(index){
+      if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
+          headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
       }
-    });
-    $('.tooltipped').tooltip();
-    $('select').formSelect();
-    $('.fixed-action-btn').floatingActionButton({
-    hoverEnabled: true
-    });
-    $("#form thead tr th").each(function(index){
-        if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
-            headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
-        }
+  })
+
+  $('.responsive-table').each(function() {
+    var $table = $(this).find('table');
+    var $headerCells = $table.find('thead tr th:not(.ignore, .ignore-op)');
+    var $dataCells = $table.find('tbody tr td:not(.ignore, .ignore-op)');
+    var columnCount = $headerCells.length;
+
+    $headerCells.each(function(index) {
+      if (index % columnCount >= showColumns) {
+        $(this).addClass('hide-column');
+      }
     })
 
-    // var btn_sm_1 = document.getElementById('btn-sm-1');
+    $dataCells.each(function(index) {
+      if (index % columnCount >= showColumns) {
+        $(this).addClass('hide-column');
+      }
+    })
+  });
+
+  $('.show-more-btn').click(function(e) {
+    e.preventDefault();
     
-    // $(btn_sm_1).each(function () {
-    //   $('[id="' + this.id + '"]:gt(0)').remove();
-    // });
+    showMore($(this));
+  });
+
+  $("#client-view-sw").change(function() {
+    toggleClientView();
+  });
+});
+  
+$(window).on('load', function() {
+  vAlignCircle(0);
 });
 
 var modifyWasClicked = false;
@@ -52,6 +79,25 @@ $('html,body').animate({
 }, 700);
 });
 
+function showMore($this) {
+  var $table = $this.parents('.responsive-table').find('table');
+  var $headerCells = $table.find('thead tr th:not(.ignore, .ignore-op)');
+  var $dataCells = $table.find('tbody tr td:not(.ignore, .ignore-op)');
+  var isShowMore = $table.data('isShowMore');
+
+  $headerCells.each(function() {
+    var $cell = $(this);
+    $cell.toggleClass('hide-column');
+  })
+
+  $dataCells.each(function() {
+    var $cell = $(this);
+    $cell.toggleClass('hide-column');
+  })
+
+  $table.data('isShowMore', !isShowMore)
+}
+
 function contadoTasa(aggId) {
     var tipo_pago = document.getElementById("tp"+aggId);
     var tasa = document.getElementById("tas"+aggId);
@@ -68,40 +114,13 @@ function contadoTasa(aggId) {
     }
 }
 
-var sm = false
-
-function showMore(n) {
-
-    var tdShow = $("td.show"+n);
-    var thShow = $("th.show"+n);
-    var tdNotShow = $("td.not-show"+n);
-    var thNotShow = $("th.not-show"+n);
-    // var iAnim = $("i.i"+n+"");
-
-    thShow.toggleClass("show"+n+" not-show"+n);
-    tdShow.toggleClass("show"+n+" not-show"+n);
-    tdNotShow.toggleClass("not-show"+n+" show"+n);
-    thNotShow.toggleClass("not-show"+n+" show"+n);
-    // iAnim.toggleClass("rotate");
-
-    if (n==0) {
-      sm = !sm
-    }
-
-}
-
 // funcion vista cliente
 var vistaCliente = false;
 
-function toggleClientView(n) {
+function toggleClientView() {
 
-  var clientView = $(".clientView");
-  var clientViewSM = $(".clientViewSM");
+  if ($("#client-view-sw").is(":checked")) {
 
-  if($("#client-view-sw").is(":checked")) {
-
-    clientView.show();
-    clientViewSM.hide();
     $("#form-table-div").hide();
     $("#send-prop-btn").attr('disabled', true);
     $(".card.history-card").addClass("vista-cliente");
@@ -109,13 +128,50 @@ function toggleClientView(n) {
     $(".container__wrapper").show();
     $(".copy-btn").hide();
 
+    $('.responsive-table.history').each(function() {
+      var $table = $(this).find('table');
+      var $headerCells = $table.find('thead tr th');
+      var $dataCells = $table.find('tbody tr td');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $parent = $(this).parents('.col.s11');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $propDate = $(this).parents('.container').find('.prop-date');
+      var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
+      var isThisComprador = $propCreatorName.data('iscomprador');
+
+      if (isThisComprador) {
+        $propCreatorName.toggleClass("pull-s2 push-s1");
+        $propDate.toggleClass("pull-s1 push-s2");
+        $circleNeg.toggleClass("pull-s3 pull-s9");
+        $circleNeg.find('.circle-neg').toggleClass("comprador vendedor");
+        $parent.toggleClass("pull-s2 push-s1");
+      }
+
+      $table.data('isShowMore', false);
+      $propCreatorName.text($propCreatorName.data("comprador"));
+  
+      $headerCells.each(function() {
+        var $cell = $(this);
+        $cell.removeClass('hide-column');
+        if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
+          $cell.addClass('hide-column');
+        }
+      })
+  
+      $dataCells.each(function() {
+        var $cell = $(this);
+        $cell.removeClass('hide-column');
+        if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
+          $cell.addClass('hide-column');
+        }
+      })
+    });
+
     vistaCliente = true;
 
   }
   else {
 
-    clientView.css('display', '');
-    clientViewSM.show();
     if (modifyWasClicked) {
       $("#form-table-div").show();
     }
@@ -127,6 +183,50 @@ function toggleClientView(n) {
     $(".circle-neg").removeClass("vista-cliente");
     $(".container__wrapper").hide();
     $(".copy-btn").show();
+
+    $('.responsive-table.history').each(function() {
+      var $table = $(this).find('table');
+      var $headerCells = $table.find('thead tr th');
+      var $dataCells = $table.find('tbody tr td');
+      var columnCount = $headerCells.length;
+      var $parent = $(this).parents('.col.s11');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $propDate = $(this).parents('.container').find('.prop-date');
+      var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
+      var isThisComprador = $propCreatorName.data('iscomprador');
+      
+      if (isThisComprador) {
+        $propCreatorName.text($propCreatorName.data("comprador"));
+        $propCreatorName.toggleClass("pull-s2 push-s1");
+        $propDate.toggleClass("pull-s1 push-s2");
+        $circleNeg.toggleClass("pull-s3 pull-s9");
+        $circleNeg.find('.circle-neg').toggleClass("comprador vendedor");
+        $parent.toggleClass("pull-s2 push-s1");
+      }
+      else {
+        $propCreatorName.text($propCreatorName.data("vendedor"));
+      }
+  
+      $headerCells.each(function(index) {
+        var $cell = $(this);
+        if (index % columnCount >= showColumns) {
+          $cell.addClass('hide-column');
+          if ($cell.hasClass('ignore')) {
+            $cell.removeClass('hide-column');
+          }
+        }
+      })
+  
+      $dataCells.each(function(index) {
+        var $cell = $(this);
+        if (index % columnCount >= showColumns) {
+          $cell.addClass('hide-column');
+          if ($cell.hasClass('ignore')) {
+            $cell.removeClass('hide-column');
+          }
+        }
+      })
+    });
 
     vistaCliente = false;
 
@@ -258,11 +358,12 @@ function resetIngredientesDatalist(n) {
 }
 
 function vAlignCircle(n) {
-  var parentHeight = $("#card" + n).height();
-  var childHeight = $("#circle" + n).height();
-  var offset = childHeight / 4;
-  var marginTop = ((parentHeight - childHeight) / 2) + offset;
-  $("#circle" + n).css('margin-top', marginTop);
+  var $child = $("#circle-neg" + n);
+  var $parent = $child.parent().find("div .card");
+  var parentHeight = $parent.height();
+  var childHeight = $child.height();
+  var marginTop = (parentHeight - childHeight) / 2;
+  $child.css('margin-top', marginTop);
 }
 
 function getArtId(n) {
