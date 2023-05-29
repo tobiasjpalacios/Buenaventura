@@ -13,17 +13,8 @@ html, body {
     border-radius: 2em;
     text-align: center;
 }
-#idDeNeg {
-    width: 80px;
+#fechaDesde, #fechaHasta, #idDeNeg {
     border-bottom: 1px solid #9e9e9e !important;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-#fechaDesde, #fechaHasta {
-    width: 150px;
-    border-bottom: 1px solid #9e9e9e !important;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 #fechaDesde::placeholder, #fechaHasta::placeholder, #idDeNeg::placeholder { /* Firefox, Chrome, Opera */
     color: #999;
@@ -42,6 +33,15 @@ html, body {
     position: fixed;
     display: none;
     z-index: 997;
+}
+
+#navFiltro {
+    height: 100px;
+}
+
+#nav-mobile {
+    display: flex; 
+    justify-content: space-between;
 }
 
 label.for-input {
@@ -74,11 +74,28 @@ input {
     background-color: #4fad31 !important;
 }
 
-@media only screen and (max-width: 1092px) {
+.col .row {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media only screen and (max-width: 992px) {
     #navFiltro {
-        min-width: 923px;
+        height: auto;
+    }
+    #nav-mobile {
+        display: block;
+    }
+    #nav-mobile li {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
     .tabla-info {
-        min-width: 923px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    html,
+    body {
+        overflow-x: hidden;
     }
 }

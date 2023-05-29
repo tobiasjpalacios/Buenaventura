@@ -27,20 +27,19 @@ Negocios
     <!-- buscador -->
     <div class="row">
       <div class="col s12">
-        <div class="input-field col s9 m4 whitedivStyle offset-m4 offset-s2" style="height: 50%; padding: 0rem; margin-top: 0;">
+        <div class="input-field col s12 l4 offset-l4 whitedivStyle" style="height: 50%; padding: 0rem; margin-top: 0;">
           <i class="small material-icons shearG" style="position: relative; left: 10px;">search</i>
           <input id="inputBuscadorNegocio"
             placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text" autocomplete="off">
         </div>
       </div>
-    </div>
 
-    <div class="col s10 l10 offset-s1 offset-l1">
+      <div class="col s12">
       <!-- filtros -->
-      <nav id="navFiltro" class="whitedivStyle" style="height: 100px;">
-        <div class="nav-wrapper clv" style="width: 100%;">
-          <ul id="nav-mobile" class="col s12" style="display: flex; justify-content: space-between;">
-            <li>
+      <nav id="navFiltro" class="whitedivStyle">
+        <div class="nav-wrapper clv">
+          <ul id="nav-mobile" class="col s12">
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select multiple id="selectVendedores">
                   <option value="todos" selected>Cualquiera</option>
@@ -51,7 +50,7 @@ Negocios
                 <label class="for-input">Vendendor</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select multiple id="selectEstados">
                   <option value="todos" selected> Todos </option>
@@ -65,7 +64,7 @@ Negocios
                 <label class="for-input">Estado</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select id="selectTipo">
                   <option value="todos" selected value> Todos </option>
@@ -75,28 +74,28 @@ Negocios
                 <label class="for-input">Tipo de Negocio</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="clv">
                 <a class="waves-effect waves-light btn col s12 no-shadows fltbtn"
                   onclick="filtrar()">FILTRAR</a>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="clv">
                 <a class="btn-floating waves-effect waves-dark no-shadows tooltipped" style="background-color: #00000007;"
                   data-tooltip="Limpiar filtros" data-position="top" onclick="limpiarFiltros()">
@@ -114,7 +113,7 @@ Negocios
       </div>
 
       <!-- tabla info -->
-      <div class="offset-s2 tabla-info" style="width: 100%; position: relative;">
+      <div class="tabla-info" style="position: relative;">
         <table id="tableNegocios">
           <thead>
             <tr style="border-bottom: 1px solid grey;">
@@ -179,6 +178,7 @@ Negocios
             <!-- esto es la lista de negocios-->
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   </div>
