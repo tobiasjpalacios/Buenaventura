@@ -57,6 +57,10 @@ $(document).ready(function(){
   $(".art-search").on('input', function() {
     isArtSearchValid($(this));
   });
+
+  $(".dist-search").on('input', function() {
+    isDistSearchValid($(this));
+  })
 });
 
 var modifyWasClicked = false;
@@ -86,6 +90,24 @@ $('html,body').animate({
 function isArtSearchValid($this) {
   var userInput = $this.val();
   if (optionsArtsDatalist.indexOf(userInput) === -1) {
+    $this.addClass('invalid');
+  }
+  else {
+    $this.removeClass('invalid');
+  }
+}
+
+var optionsDistDatalist;
+
+function isDistSearchValid($this) {
+  var userInput = $this.val()
+  if (!optionsDistDatalist) {
+    optionsDistDatalist = $this.parent().find('datalist option').map(function() {
+      return this.value;
+    }).get();
+  }
+
+  if (optionsDistDatalist.indexOf(userInput) === -1) {
     $this.addClass('invalid');
   }
   else {

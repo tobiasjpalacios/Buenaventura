@@ -208,148 +208,157 @@ Negociación {{ negocio.get_id_de_neg }}
 
   });
 
-  if (userIsComprador) {
-    $(".customerHide").hide();
-  }
-  
-  var lastForAccept = last;
-
   function accept(index){
+    console.log("accept");
     index = parseInt(index);
-    console.log("accept")
-    if (!userIsComprador) {
-      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0]
-      if (edits.items[index].proveedor == null) {
-        $(input).addClass("invalid");
-        return;
-      }
+    var $tr = $($("#form")[0].rows[index+1]);
+    if ($tr.data('issaved')) {
+      edits.items[index].aceptado = true;
+      $tr.css('background-color', '#4CB8484A');
+      $('#send-prop-btn').removeAttr('disabled');
+      propUpdated = true;
     }
-    resetForAccept(index)
-    edits.items[index].aceptado = true;
-    $($("#form")[0].rows[index+1]).css('background-color', '#4CB8484A');
-    $('#send-prop-btn').removeAttr('disabled');
-    propUpdated = true;
   }
 
   function reject(index){
     index = parseInt(index);
     console.log("rejected")
-    resetAll(index, "False")
     $($("#form")[0].rows[index+1]).css('background-color', '#EE8A8A');
     edits.items[index]={};
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
+    $("#accept-" + index).addClass("disabled");
   }
 
   function update(index){
-    index = parseInt(index);
     console.log("update");
-    if (!userIsComprador && edits.items[index].proveedor == null) {
-      var input = $($("#form")[0].rows[index+1]).find('[name="distribuidor"]')[0];
-      if (input.value == "") {
-        $(input).addClass("invalid");
-        return;
+    index = parseInt(index);
+    
+    var isValid = true;
+    var $tr = $($("#form")[0].rows[index+1]);
+
+    editable_fields.every(element => {
+      if (!isValid) {
+        return false;
       }
-      else {
-        $(input).removeClass("invalid");
+
+      if (["precio_compra", "distribuidor"].indexOf(element) !== -1 && userIsComprador) {
+        return true;
       }
-    }
-    $($("#form")[0].rows[index+1]).css('background-color', '#FDDA77');
-    editable_fields.forEach(element => {
+
       if (element != "observaciones") {
-        var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
-        if (input != null) {
-          if (input.type == "number"){
-            edits.items[index][element] = parseFloat(input.value)
+        var input = $tr.find('[name="'+element+'"]')[0];
+        var $input = $(input);
+        var inputValue = $input.val();
+
+        if ($input.data('updateignore')) {
+          return true;
+        }
+
+        if (element == "tipo_pago" && $input.data('newrowselect')) {
+          inputValue = $input.find(':selected').val();
+        }
+
+        $input.removeClass('invalid');
+
+        if (!userIsComprador && element == "distribuidor") {
+          if (!inputValue || optionsDistDatalist.indexOf(inputValue) === -1) {
+            isValid = false;
+            $input.addClass('invalid');
           }
-          else if (input.name == "distribuidor") {
-            var opt = $("#distResults [value='"+input.value+"']");
+          else {
+            var opt = $("#distResults [value='"+inputValue+"']");
             edits.items[index]["proveedor"] = opt.data('value');
           }
-          else if (!userIsComprador && input.name == "articulo") {
+        }
+        else if (input.type == "number"){
+          inputValue = parseFloat(inputValue);
+
+          if (!inputValue && element != "tasa") {
+            isValid = false;
+            $input.addClass('invalid');
+          }
+          else {
+            edits.items[index][element] = inputValue
+          }
+        }
+        else if (!userIsComprador && element == "articulo") {
+          if (!inputValue || optionsArtsDatalist.indexOf(inputValue) === -1) {
+            isValid = false;
+            $input.addClass('invalid');
+          }
+          else {
             edits.items[index][element] = getArtId(index+1);
-          } else {
-            edits.items[index][element] = input.value
+          }
+        } else {
+          if (!inputValue) {
+            isValid = false;
+            $input.addClass('invalid');
+          }
+          else {
+            edits.items[index][element] = inputValue
           }
         }
       }
+
+      return true;
     })
-    lastForAccept.items[index] = edits.items[index]
+
+    if (!isValid) {
+      return;
+    }
+
     $('#send-prop-btn').removeAttr('disabled');
     $('#conf-neg-btn').attr("disabled", 'disabled');
     propUpdated = true;
     unsavedChanges = false;
     $("#save-" + index).removeClass("blinkSave");
+    $("#accept-" + index).removeClass("disabled");
+    $tr.css('background-color', '#FDDA77');
+    $tr.data('issaved', true);
   }
 
-  function resetAll(index, aceptado){
-    index = parseInt(index);
+  function resetAll(index){
     console.log("resetAll");
-    if (aceptado == "False") {
-      $($("#form")[0].rows[index+1]).css('background-color', '');
-    }
-    edits.items[index] = Object.assign({},last.items[index]);
+    index = parseInt(index);
+
+    var $tr = $($("#form")[0].rows[index+1]);
+
+    edits.items[index] = Object.assign({}, last.items[index]);
+
     editable_fields.forEach(element => {
-      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]');
-      if (element == "tipo_pago" || element == "tasa") {
+      var input = $tr.find('[name="'+element+'"]');
+      if (element == "tipo_pago") {
         input.val(edits.items[index][element]).change();
       }
       else if (!userIsComprador && element == "articulo") {
-        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
-        input.val(artName);
+        if (optionsArtsDatalist.indexOf(input.value) !== -1) {
+          var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
+          input.val(artName);
+        }
       }
       else {
         input.val(edits.items[index][element]);
       }
     });
-    unsavedChanges = false;
-    $("#save-" + index).removeClass("blinkSave");
-  }
 
-  function resetForAccept(index) {
-    index = parseInt(index);
-    console.log("resetForAccept");
-    $($("#form")[0].rows[index+1]).css('background-color', '');
-    edits.items[index] = Object.assign({},lastForAccept.items[index]);
-    editable_fields.forEach(element => {
-      var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')
-      if (element == "tipo_pago" || element == "tasa") {
-        input.val(edits.items[index][element]).change()
-      }
-      else if (!userIsComprador && element == "articulo") {
-        var artName = $('#artDatalist'+(index+1)+' option[id="' + edits.items[index][element] +'"]').attr("value");
-        input.val(artName);
-      }
-      else if (element == "distribuidor") {
-        // do nothing
-      }
-      else {
-        input.val(edits.items[index][element])
-      }
-    });
     unsavedChanges = false;
-    $("#save-" + index).removeClass("blinkSave");
+    edits.items[index].aceptado = false;
+    $tr.css('background-color', '');
+    $tr.data('issaved', false);
+    $("#accept-" + index).addClass("disabled");
   }
 
   function removeUpdate(index) {
     index = parseInt(index);
-    editable_fields.forEach(element => {
-      if (element != "observaciones") {
-        var input = $($("#form")[0].rows[index+1]).find('[name="'+element+'"]')[0]
-        if (input != null) {
-          var inputValue = input.value;
-          var updatedElementValue = lastForAccept.items[index][element];
-          if (element == "tasa") {
-            updatedElementValue = parseFloat(lastForAccept.items[index][element])
-          }
-          unsavedChanges = (inputValue == updatedElementValue) || unsavedChanges;
-        }
-      }
-    });
-    if (unsavedChanges) {
-      $($("#form")[0].rows[index+1]).css('background-color', '');
-      $("#save-" + index).addClass("blinkSave");
-    }
+
+    var $tr = $($("#form")[0].rows[index+1]);
+    
+    edits.items[index].aceptado = false;
+    $tr.css('background-color', '');
+    $tr.data('issaved', false);
+    $("#save-" + index).addClass("blinkSave");
+    $("#accept-" + index).addClass("disabled");
   }
 
   var counter = 0;
@@ -466,23 +475,23 @@ Negociación {{ negocio.get_id_de_neg }}
     var table = $("#form")[0]
     var row = table.insertRow(table.rows.length-1)
     row.innerHTML = "\
-    <td><span id=\"artName"+(table.rows.length-2)+"\">"+$("#artSearch0")[0].value+"</span></td>\
+    <td><span id=\"artName"+(table.rows.length-2)+"\" name=\"articulo\" data-updateignore=\"true\">"+$("#artSearch0")[0].value+"</span></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td>"+$("#distSearch")[0].value+"</td>\
+    <td><span name=\"distribuidor\" data-updateignore=\"true\">"+$("#distSearch")[0].value+"</span></td>\
     {% endif %}\
-    <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
-    <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" onchange=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" data-newrowselect=\"true\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
+    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"ignore-op\">\
-      <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject("+(table.rows.length-3)+")\"><i class=\"material-icons table-icons\">delete</i></a>\
-      <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update("+(table.rows.length-3)+")\" id=\"save-"+(table.rows.length-3)+"\"><i class=\"material-icons table-icons\">save</i></a>\
+      <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject('"+(table.rows.length-3)+"')\"><i class=\"material-icons table-icons\">delete</i></a>\
+      <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update('"+(table.rows.length-3)+"')\" id=\"save-"+(table.rows.length-3)+"\"><i class=\"material-icons table-icons\">save</i></a>\
     </td>\
     <td class=\"ignore\">\
       <a class=\"action-btn btn-floating btn waves-effect waves-green transparent no-shadows\"><i class=\"i1 material-icons table-icons\" style=\"color: #459A33;\">search</i></a>\
@@ -514,6 +523,7 @@ Negociación {{ negocio.get_id_de_neg }}
         $(this).addClass('hide-column');
       }
     });
+    $row.attr('data-issaved', false)
     showMore($('.add-art'));
     var $showMoreBtn = $row.find('.ignore a');
     $showMoreBtn.click(function(e) {
