@@ -59,10 +59,18 @@ class NuevoNegocioView(View):
 
 class TodoseNegociosView(View):
     def get(self, request, *args, **kwargs):
-        grupo_activo = request.user.clase
-        negocio = getNegociosByClase(request, grupo_activo, 1)
-        vendedor = MyUser.objects.filter(clase='Vendedor')
-        return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocio), 'todos_vendedores':vendedor})  
+        vendedores = todos_negocios_vendedor_query(request.user)
+        return render(request, 'todos_los_negocios.html', {'todos_vendedores':vendedores})
+    
+def todos_negocios_vendedor_query(user):
+    negocios = Negocio.objects.filter(comprador=user)
+    lista_vendedores = []
+    for negocio in negocios:
+        vendedor_pk = negocio.vendedor.pk
+        if vendedor_pk not in set(lista_vendedores):
+            lista_vendedores.append(vendedor_pk)
+    vendedores = MyUser.objects.filter(pk__in=lista_vendedores)
+    return vendedores
 
 class Info_negocioView(View): 
     def get(self, request, *args, **kwargs):

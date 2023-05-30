@@ -134,50 +134,7 @@ Negocios
           </thead>
 
           <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
-            {% for negocio in todos_negocios %}
-            <tr class="ctr">
-              <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-              <td>{% if negocio.fecha_cierre is null %} 
-                      Sin Definir
-                  {% else %}
-                      {{negocio.fecha_cierre|date:"M d, Y"}}
-                  {% endif %}
-              </td>
-              {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-              <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
-              </td>
-              {% endif %}
-              <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
-              <td>{{negocio.vendedor.get_full_name}}
-              </td>
-              {% if request.user.clase == 'Vendedor'%}
-                {% if negocio.estado == 'CONFIRMADO' %}
-                <td>
-                {% if negocio.proveedores %}
-                  <div style="overflow-y: scroll; height: 150px;">
-                    <ol class="collection" start="1">
-                      {% for prov in negocio.proveedores %}
-                      <li class="collection-item">{{prov}}</li>
-                      {% endfor %}
-                    </ol>
-                  </div>
-                {% else %}
-                  N/E
-                {% endif %}
-                </td>
-                {% elif negocio.estado == 'CANCELADO' %}
-                <td>N/E</td>
-                {% else %}
-                <td>Por Definir</td>
-                {% endif %}
-              {% endif %}
-              <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-              <td class="green-text center">{{negocio.get_estado_display }}</td>
-              <td><a class="waves-effect waves-light no-shadows"
-                  href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">search</i></a></td>
-            </tr>
-            {% endfor %}
-            <!-- esto es la lista de negocios-->
+            
           </tbody>
         </table>
       </div>
