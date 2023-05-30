@@ -418,7 +418,7 @@ def filtrarNegocios(request):
     if request.user.is_staff:
         filters = Q()
     else:
-        filters = Q(vendedor__pk=request.user.pk) or Q(comprador__pk=request.user.pk)
+        filters = Q(vendedor=request.user) | Q(comprador=request.user)
 
     if vendedores != 'todos':
         list_vendedores_str = ast.literal_eval(vendedores)
@@ -442,7 +442,7 @@ def filtrarNegocios(request):
     todos_los_negocios = Negocio.objects.filter(filters).annotate(
         id_prop=Value(1, output_field=IntegerField()),
         proveedores=Value([], output_field=JSONField())
-        )
+        ).order_by('-timestamp')
 
     for neg in todos_los_negocios:
         try:
