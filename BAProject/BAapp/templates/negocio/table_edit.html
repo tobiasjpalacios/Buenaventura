@@ -49,7 +49,7 @@
               </thead>
               <tbody>
                 {% for item in prop.items.all %}
-                  <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %} data-issaved="true">
+                  <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %} data-issaved="false">
                     <td>
                       {% if not request.user.clase == 'Comprador' %}
                       <input class="art-search" type="text" name="articulo" id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" oninput="removeUpdate('{{ forloop.counter0 }}')">
@@ -97,7 +97,7 @@
                     </td>
                     <td class="ignore-op">
                       {% if not item.aceptado %}
-                      <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Aceptar" onclick="accept('{{ forloop.counter0 }}')" id="accept-{{ forloop.counter0 }}"><i class="material-icons table-icons">done</i></a>
+                      <a class="action-btn btn-small bv-green btn-floating waves-effect waves-light tooltipped disabled" data-position="top" data-tooltip="Aceptar" onclick="accept('{{ forloop.counter0 }}')" id="accept-{{ forloop.counter0 }}"><i class="material-icons table-icons">done</i></a>
                       <a class="action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Eliminar" onclick="reject('{{ forloop.counter0 }}')"><i class="material-icons table-icons">delete</i></a>
                       {% endif %}
                       <a class="action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped" data-position="top" data-tooltip="Guardar Ediciones" onclick="update('{{ forloop.counter0 }}')" id="save-{{ forloop.counter0 }}"><i class="material-icons table-icons">save</i></a>

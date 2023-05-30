@@ -97,6 +97,9 @@ class Negocio(models.Model):
     timestamp = models.DateTimeField(
         auto_now_add=True
     )
+    last_modified = models.DateTimeField(
+        auto_now=True
+    )
     fecha_cierre = models.DateTimeField(
         null=True, 
         blank=True

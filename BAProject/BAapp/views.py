@@ -35,9 +35,6 @@ from functools import reduce
 from django.conf import settings
 from decimal import *
 
-# NOTE: temporal para guardar nuevos estados de negocios en la db
-updateEstados()
-
 User = settings.AUTH_USER_MODEL
 
 def cuentas(request):
@@ -317,7 +314,7 @@ def getNegociosByClase(request, user_clase, tipo):
         if (tipo == 2):
             negocio = Negocio.objects.all().values_list('id', flat=True)
         else:
-            negocios = Negocio.objects.all().order_by('-timestamp')
+            negocios = Negocio.objects.all().order_by('-last_modified', '-timestamp')
             negocio = getNegociosToList(negocios)
             for a in negocio:
                 a.proveedores = getProveedoresNegocio(a)
@@ -325,23 +322,23 @@ def getNegociosByClase(request, user_clase, tipo):
     # Comprador
     elif (user_clase == 'Comprador'):
         if (tipo == 2):
-            negocio = Negocio.objects.filter(comprador=request.user).order_by('-timestamp').values_list('id', flat=True)
+            negocio = Negocio.objects.filter(comprador=request.user).order_by('-last_modified', '-timestamp').values_list('id', flat=True)
         else:
-            negocios = Negocio.objects.filter(comprador=request.user).order_by('-timestamp')
+            negocios = Negocio.objects.filter(comprador=request.user).order_by('-last_modified', '-timestamp')
             negocio = getNegociosToList(negocios)
     
     # Gerente
     elif (user_clase == 'Gerente'):
         mi_gerente = request.user
         if (tipo == 2):
-            negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp').values_list('id', flat=True)
+            negocio = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-last_modified', '-timestamp').values_list('id', flat=True)
         else:
-            negocios = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-timestamp')
+            negocios = Negocio.objects.filter(comprador__empresa__id=mi_gerente.empresa.id).order_by('-last_modified', '-timestamp')
             negocio = getNegociosToList(negocios)
 
     # proveedor
     elif (user_clase == 'Proveedor'):
-        negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-timestamp')
+        negocios = Negocio.objects.filter(fecha_cierre__isnull=False).order_by('-last_modified', '-timestamp')
         lista_ids = []
         for a in negocios:
             empleadoP = Proveedor.objects.get(persona=request.user)
@@ -352,12 +349,12 @@ def getNegociosByClase(request, user_clase, tipo):
         if (tipo == 2):
             negocio = lista_ids
         else:
-            negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-timestamp')
+            negocios = Negocio.objects.filter(id__in=lista_ids).order_by('-last_modified', '-timestamp')
             negocio = getNegociosToList(negocios)
 
     # administrador
     elif (user_clase == 'Administrador'):
-        negocios = Negocio.objects.filter(comprador__empresa=reques.user.empresa).order_by('-timestamp')
+        negocios = Negocio.objects.filter(comprador__empresa=reques.user.empresa).order_by('-last_modified', '-timestamp')
         lista_ids = []
         for a in negocios:
             empleadoA = request.user
@@ -442,7 +439,7 @@ def filtrarNegocios(request):
     todos_los_negocios = Negocio.objects.filter(filters).annotate(
         id_prop=Value(1, output_field=IntegerField()),
         proveedores=Value([], output_field=JSONField())
-        ).order_by('-timestamp')
+        ).order_by('-last_modified', '-timestamp')
 
     for neg in todos_los_negocios:
         try:
@@ -480,7 +477,7 @@ def getProveedoresNegocio(negocio):
         for b in items:
             if (b.proveedor and b.proveedor.id not in id_proveedores):
                 id_proveedores.append(b.proveedor.id)
-                prov = b.proveedor.apellido + " " + b.proveedor.nombre  
+                prov = b.proveedor.get_full_name()
                 proveedores.append(prov)
     return proveedores
 
