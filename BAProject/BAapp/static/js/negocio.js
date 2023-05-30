@@ -339,7 +339,7 @@ function articuloDatalist(n) {
       artDatalist.appendChild(option);        
     }
   }
-  if (!n) {
+  if (!n || isAccepted) {
     optionsArtsDatalist = $(artDatalist).find('option').map(function() {
       return this.value;
     }).get()

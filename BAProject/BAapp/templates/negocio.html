@@ -158,11 +158,7 @@ Negociación {{ negocio.get_id_de_neg }}
     isCanceled = true;
     "{% endif %}"
 
-    if (isAccepted || isCanceled) {
-      $("#form-table-div").hide();
-    }
-
-    if (!isAccepted) {
+    if (!isCanceled) {
       $.ajax({
         type: "GET",
         url: "{% url 'api_articulos' %}",
@@ -175,6 +171,9 @@ Negociación {{ negocio.get_id_de_neg }}
           else {
             items_count = {{items_count}}
             for (i = 0; i <= items_count; i++) {
+              if (isAccepted) {
+                i++;
+              }
               articuloDatalist(i); // agrega los articulos a la datalist de table_edit
             }
           } 
@@ -204,6 +203,10 @@ Negociación {{ negocio.get_id_de_neg }}
 
     if (!userIsComprador) {
       editable_fields.push("articulo");
+    }
+
+    if (isAccepted || isCanceled) {
+      $("#form-table-div").hide();
     }
 
   });
