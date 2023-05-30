@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.forms import inlineformset_factory
 from django.core import serializers
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q, Value, IntegerField, JSONField
 from django.urls import reverse, resolve
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -30,6 +30,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from .utils.email_send import email_send
 from django.contrib.sites.models import Site
 import operator
+import ast
 from functools import reduce
 from django.conf import settings
 from decimal import *
@@ -407,103 +408,68 @@ def todosFiltro(request, tipo):
     return render(request, 'todos_los_negocios.html', {'todos_negocios':list(negocioAux), 'todos_vendedores':vendedores})
 
 def filtrarNegocios(request):
-    data = []
-    if (request.method == 'POST'):
-        vendedor = request.POST['vendedor']
-        estado = request.POST['estado']
-        tipo = request.POST['tipo']
-        tipoFecha = request.POST['tipoFecha']
-        fechaD = request.POST['fechaDesde']
-        fechaH = request.POST['fechaHasta']
-        idDeNeg = request.POST['idDeNeg']
-        error = False
-        listaVendedor = []
-        grupo_activo = request.user.clase
-        negocios_permitidos = getNegociosByClase(request,grupo_activo,2)
-        if (vendedor == "todos"):
-            listaVendedor = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
-        else:
-            lista_ids = []
-            id_carga = "" 
-            ourid2 = vendedor.replace('"', '')
-            for a in ourid2:
-                if (a == '['):
-                    pass
-                elif (a == ']'):
-                    lista_ids.append(int(id_carga))
-                elif (a != ','):
-                    id_carga += str(a)
-                else:
-                    lista_ids.append(int(id_carga))
-                    id_carga = ""    
-            listaVendedor = Negocio.objects.filter(vendedor__id__in = lista_ids,id__in=negocios_permitidos).values_list('id', flat=True)
-        listaEstado = []
-        if (estado == "todos"):
-            listaEstado = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)            
-        else:
-            todos_negocios = Negocio.objects.filter(id__in=negocios_permitidos)
-            for a in todos_negocios:
-                propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-                if (not propuesta):
-                    pass
-                else:
-                    id_prop = propuesta[0][0]
-                    a.id_prop = id_prop
-            for b in todos_negocios:
-                if (b.estado in estado):
-                    listaEstado.append(b.id)
-        listaTipo = []
-        if (tipo == "todos"):
-            listaTipo = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
-        else:
-            listaTipo = Negocio.objects.filter(tipo_de_negocio = get_from_tuple(TIPO_DE_NEGOCIO_CHOICES, tipo),id__in=negocios_permitidos).values_list('id', flat=True)
-        listaFecha = []
-        if (int(tipoFecha) == 0):
-            listaFecha = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
-        else:
-            fechaD = datetime.strptime(fechaD, "%d/%m/%Y")
-            fechaH = datetime.strptime(fechaH, "%d/%m/%Y")
-            # filtra las fechas correctamente pero no se cual es la diferencia entre tipoFecha 1 y 2
-            if (int(tipoFecha) == 1):
-                listaFecha = Negocio.objects.filter(timestamp__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
-            else:
-                listaFecha = Negocio.objects.filter(fecha_cierre__date__range=(fechaD, fechaH),id__in=negocios_permitidos).values_list('id', flat=True)
-        listaIdDeNeg = []
-        if idDeNeg is not None:
-            if not idDeNeg or int(idDeNeg) <= 0:
-                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos).values_list('id', flat=True)
-            else:
-                idDeNeg = int(idDeNeg) - 1999
-                listaIdDeNeg = Negocio.objects.filter(id__in=negocios_permitidos, id=idDeNeg).values_list('id', flat=True)
-        listaVendedor = getIdsQuery(listaVendedor)
-        listaEstado = getIdsQuery(listaEstado)
-        listaTipo = getIdsQuery(listaTipo)         
-        listaFecha = getIdsQuery(listaFecha)
-        listaIdDeNeg = getIdsQuery(listaIdDeNeg)
-        listaNeg = set(listaVendedor).intersection(listaEstado)
-        listaNeg2 = set(listaNeg).intersection(listaTipo)
-        listaNeg3 = set(listaNeg2).intersection(listaFecha)
-        listaNeg4 = set(listaNeg3).intersection(listaIdDeNeg)
-        todos_los_negocios = Negocio.objects.filter(id__in=list(listaNeg4)).order_by('-timestamp')
-        for a in todos_los_negocios:
-            propuesta = list(Propuesta.objects.filter(negocio__id = a.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-            if (not propuesta):
-                pass
-            else:
-                id_prop = propuesta[0][0]
-                a.id_prop = id_prop
-                a.estado = estadoNegocio(a)
-        grupo_activo = request.user.clase
-        if (grupo_activo == 'Vendedor'):
-            for a in todos_los_negocios:
-                a.proveedores = getProveedoresNegocio(a)
-    return render(request,'tempAux/tableNegociosFiltros.html',{'todos_negocios':todos_los_negocios} )
-    
-def getIdsQuery(lista):
-    listaId = []
-    for a in lista:
-        listaId.append(a)
-    return listaId
+    vendedores = request.POST['vendedor']
+    estados = request.POST['estado']
+    tipo = request.POST['tipo']
+    fecha_desde = request.POST['fechaDesde']
+    fecha_hasta = request.POST['fechaHasta']
+    idDeNeg = request.POST['idDeNeg']
+
+    if request.user.is_staff:
+        filters = Q()
+    else:
+        filters = Q(vendedor__pk=request.user.pk) or Q(comprador__pk=request.user.pk)
+
+    if vendedores != 'todos':
+        list_vendedores_str = ast.literal_eval(vendedores)
+        list_vendedores = [int(item) for item in list_vendedores_str]
+        filters &= Q(vendedor__pk__in=list_vendedores)
+    if estados != 'todos':
+        list_estados = ast.literal_eval(estados)
+        filters &= Q(estado__in=list_estados)
+    if tipo != 'todos':
+        filters &= Q(tipo_de_negocio=tipo)
+    if fecha_desde:
+        fecha_format = parse_date(fecha_desde)
+        filters &= Q(timestamp__gte=fecha_format)
+    if fecha_hasta:
+        fecha_format = parse_date(fecha_hasta)
+        filters &= Q(timestamp__lte=fecha_format)
+    if idDeNeg:
+        id_de_neg = int(idDeNeg) - 1999
+        filters &= Q(pk=id_de_neg)
+
+    todos_los_negocios = Negocio.objects.filter(filters).annotate(
+        id_prop=Value(1, output_field=IntegerField()),
+        proveedores=Value([], output_field=JSONField())
+        )
+
+    for neg in todos_los_negocios:
+        try:
+            prop = Propuesta.objects.filter(negocio=neg).last()
+            neg.id_prop = prop.id
+
+            if neg.estado == "CONFIRMADO":
+                item_prop_list = ItemPropuesta.objects.filter(propuesta=prop)
+                neg.proveedores = populate_proveedores(item_prop_list)
+        except AttributeError:
+            print(f"El negocio {neg.get_id_de_neg()} no posee propuestas")
+
+    return render(request, 'tempAux/tableNegociosFiltros.html', {'todos_negocios':todos_los_negocios})
+
+def parse_date(date):
+    formatted_date = timezone.datetime.strptime(date, '%d/%m/%Y').date()
+    aware_date = timezone.make_aware(timezone.datetime.combine(formatted_date, timezone.datetime.min.time()))
+    return aware_date
+
+def populate_proveedores(item_prop_query):
+    proveedores = []
+    for item in item_prop_query:
+        prov_name = item.proveedor.get_full_name()
+        if prov_name not in set(proveedores):
+            proveedores.append(prov_name)
+
+    return proveedores
 
 def getProveedoresNegocio(negocio):
     proveedores = []

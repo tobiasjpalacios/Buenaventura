@@ -160,10 +160,12 @@ function limpiarFiltros() {
   var $idDeNeg = $("#idDeNeg"); 
   var $fechaDesde = $("#fechaDesde");
   var $fechaHasta = $("#fechaHasta");
+  var $inputBuscador = $("#inputBuscadorNegocio");
 
   $idDeNeg.val("");
   $fechaDesde.val("");
   $fechaHasta.val("");
+  $inputBuscador.val("");
 
   $("#selectVendedores option[value='todos']").prop('selected', true).change();
   $("#selectEstados option[value='todos']").prop('selected', true).change();

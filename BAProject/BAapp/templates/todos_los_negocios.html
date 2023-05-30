@@ -86,7 +86,7 @@ Negocios
             </li>
             <li class="col s12 m6 l4">
               <div class="input-field clv">
-                <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
+                <input type="number" maxlength="255" min="2000" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
               </div>
             </li>
             <li class="col s12 m6 l4">
@@ -151,7 +151,7 @@ Negocios
               <td>{{negocio.vendedor.get_full_name}}
               </td>
               {% if request.user.clase == 'Vendedor'%}
-                {% if negocio.fecha_cierre is not None %}
+                {% if negocio.estado == 'CONFIRMADO' %}
                 <td>
                 {% if negocio.proveedores %}
                   <div style="overflow-y: scroll; height: 150px;">
@@ -165,6 +165,8 @@ Negocios
                   N/E
                 {% endif %}
                 </td>
+                {% elif negocio.estado == 'CANCELADO' %}
+                <td>N/E</td>
                 {% else %}
                 <td>Por Definir</td>
                 {% endif %}
@@ -244,27 +246,19 @@ Negocios
         estado = "todos";
     };
     var tipo = $('#selectTipo').val();    
-    var tipoFecha = 1;
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
-    if (fechaDesde == "" && fechaHasta == "") {
-      tipoFecha = 0;
-    }
-    else if (fechaDesde != "" && fechaHasta == "") {
-      M.toast({html: 'Error! "Fecha Hasta" no puede estar en blanco.'});
-      errores = 1;
-    }
-    else if (fechaDesde == "" && fechaHasta != "") {
-      M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
-      errores = 1;
-    }
     var idDeNeg = $('#idDeNeg').val();
+    if (idDeNeg && idDeNeg < 2000){
+        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 2000.'});
+        errores = 1;
+    }
     if (errores == 0){
       $.ajax({
           url: "{% url 'filtrarNegocios' %}",
           type: 'POST',
           data: {'vendedor':vendedor,'estado':estado,'tipo':tipo,'idDeNeg':idDeNeg,
-              'tipoFecha':tipoFecha,'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
+              'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
               csrfmiddlewaretoken: '{{ csrf_token }}'},
           success: function(data){ 
             $('#infoTabla').html(data);
