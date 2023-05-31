@@ -364,6 +364,10 @@ function articuloDatalistCliente() {
       last_item = arts_data[i].ingrediente;
     }
   }
+
+  optionsArtsDatalist = $(artDatalist).find('option').map(function() {
+    return this.value;
+  }).get()
 }
 
 function resetIngredientesDatalist(n) {
