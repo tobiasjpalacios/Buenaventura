@@ -7,6 +7,9 @@ class Command(BaseCommand):
         negocios = Negocio.objects.all()
         
         for negocio in negocios:
-            propuesta = Propuesta.objects.filter(negocio=negocio).last()
-            negocio.last_modified = propuesta.timestamp
-            negocio.save()
+            try:
+                propuesta = Propuesta.objects.filter(negocio=negocio).last()
+                negocio.last_modified = propuesta.timestamp
+                negocio.save()
+            except AttributeError:
+                print(f"Error en el negocio {negocio.get_id_de_neg()}. ¿No tiene propuestas?")

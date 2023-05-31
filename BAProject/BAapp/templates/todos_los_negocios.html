@@ -86,7 +86,7 @@ Negocios
             </li>
             <li class="col s12 m6 l4">
               <div class="input-field clv">
-                <input type="number" maxlength="255" min="2000" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
+                <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
               </div>
             </li>
             <li class="col s12 m6 l4">
@@ -206,8 +206,8 @@ Negocios
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
     var idDeNeg = $('#idDeNeg').val();
-    if (idDeNeg && idDeNeg < 2000){
-        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 2000.'});
+    if (idDeNeg && idDeNeg < 1){
+        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 1.'});
         errores = 1;
     }
     if (errores == 0){

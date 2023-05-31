@@ -441,7 +441,7 @@ def filtrarNegocios(request):
         fecha_format = parse_date(fecha_hasta)
         filters &= Q(timestamp__lte=fecha_format)
     if idDeNeg:
-        id_de_neg = int(idDeNeg) - 1999
+        id_de_neg = int(idDeNeg)
         filters &= Q(pk=id_de_neg)
 
     todos_los_negocios = Negocio.objects.filter(filters).annotate(
