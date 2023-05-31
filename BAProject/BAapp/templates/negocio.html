@@ -517,7 +517,6 @@ Negociación {{ negocio.get_id_de_neg }}
     $('#send-prop-btn').removeAttr('disabled');
     propUpdated = true;
     $(":input[type='number']").focus(function() { $(this).select(); } );
-    // allTDLinebreak();
     var $row = $(row);
     var $cell = $row.find('td:not(.ignore, .ignore-op)');
     var colCount = $cell.length;

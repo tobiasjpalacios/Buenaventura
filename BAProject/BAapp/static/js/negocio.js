@@ -61,6 +61,14 @@ $(document).ready(function(){
   $(".dist-search").on('input', function() {
     isDistSearchValid($(this));
   })
+
+  $('.responsive-table.history tbody tr').each(function() {
+    var $this = $(this);
+    var $art = $this.find('td:first-child');
+    var $dist = $this.find('td:nth-child(2)');
+    lineBreak($art);
+    lineBreak($dist);
+  });
 });
 
 var modifyWasClicked = false;
@@ -306,23 +314,23 @@ function addTables(n, isBeforeFechaCierre) {
   }
 }
 
-function allTDLinebreak() {
-  $("td:first-child").each(function() {
-    var elem = $(this);
-    var text = elem.text();
-    if (!(elem.parent().attr('id') == 'extra')) {
-      var textArray = text.split(" ");
-      var i = 1;
-      for (word in textArray) {
-        if (i % 4 == 0) {
-          textArray[word] = textArray[word] + "<br/>";
-        }
-        i++;
-      }
-      text = textArray.join(" ");
-      elem.html(text);
+function lineBreak($this) {
+  var text = $this.text();
+  var words = text.split(" ");
+  var formattedText = "";
+
+  $.each(words, function(index, word) {
+    formattedText += word;
+
+    if ((index + 1) % 3 == 0) {
+      formattedText += "<br>";
     }
-  })
+    else {
+      formattedText += " ";
+    }
+  });
+
+  $this.html(formattedText);
 }
 
 // table_edit

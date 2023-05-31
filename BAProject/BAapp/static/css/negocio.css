@@ -584,3 +584,10 @@ table tr td {
         margin: 0;
     }
 }
+
+@media only screen and (max-width: 1800px) {
+    .responsive-table {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
