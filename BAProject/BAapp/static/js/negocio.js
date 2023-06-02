@@ -1,31 +1,74 @@
 $(document).ready(function(){
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        showClearBtn: true,
-        i18n: {
-          months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-          monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
-          weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-          weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-          weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+  $('.datepicker').datepicker({
+      format: 'dd/mm/yyyy',
+      showClearBtn: true,
+      i18n: {
+        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Dic"],
+        weekdays: ["Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+        weekdaysShort: ["Dom","Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+        weekdaysAbbrev: ["D","L", "M", "M", "J", "V", "S"]
+    }
+  });
+  $('.tooltipped').tooltip();
+  $('select').formSelect();
+  $('.fixed-action-btn').floatingActionButton({
+  hoverEnabled: true
+  });
+  $("#form thead tr th").each(function(index){
+      if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
+          var header = $(this).text().toLowerCase().replace(/\s+/g, '_')
+          if (["_tasa_lightbulb_outline_", "_tasa_"].indexOf(header) !== -1) { // rancio
+            header = 'tasa';
+          }
+          headers.push(header);
       }
-    });
-    $('.tooltipped').tooltip();
-    $('select').formSelect();
-    $('.fixed-action-btn').floatingActionButton({
-    hoverEnabled: true
-    });
-    $("#form thead tr th").each(function(index){
-        if ($(this).text() != "Operaciones" && $(this).text() != "Ver más"){
-            headers.push($(this).text().toLowerCase().replace(/\s+/g, '_'));
-        }
+  })
+
+  $('.responsive-table').each(function() {
+    var $table = $(this).find('table');
+    var $headerCells = $table.find('thead tr th:not(.ignore, .ignore-op)');
+    var $dataCells = $table.find('tbody tr td:not(.ignore, .ignore-op)');
+    var columnCount = $headerCells.length;
+
+    $headerCells.each(function(index) {
+      if (index % columnCount >= showColumns) {
+        $(this).addClass('hide-column');
+      }
     })
 
-    // var btn_sm_1 = document.getElementById('btn-sm-1');
+    $dataCells.each(function(index) {
+      if (index % columnCount >= showColumns) {
+        $(this).addClass('hide-column');
+      }
+    })
+  });
+
+  $('.show-more-btn').click(function(e) {
+    e.preventDefault();
     
-    // $(btn_sm_1).each(function () {
-    //   $('[id="' + this.id + '"]:gt(0)').remove();
-    // });
+    showMore($(this));
+  });
+
+  $("#client-view-sw").change(function() {
+    toggleClientView();
+  });
+
+  $(".art-search").on('input', function() {
+    isArtSearchValid($(this));
+  });
+
+  $(".dist-search").on('input', function() {
+    isDistSearchValid($(this));
+  })
+
+  $('.responsive-table.history tbody tr').each(function() {
+    var $this = $(this);
+    var $art = $this.find('td:first-child');
+    var $dist = $this.find('td:nth-child(2)');
+    lineBreak($art);
+    lineBreak($dist);
+  });
 });
 
 var modifyWasClicked = false;
@@ -52,6 +95,53 @@ $('html,body').animate({
 }, 700);
 });
 
+function isArtSearchValid($this) {
+  var userInput = $this.val();
+  if (optionsArtsDatalist.indexOf(userInput) === -1) {
+    $this.addClass('invalid');
+  }
+  else {
+    $this.removeClass('invalid');
+  }
+}
+
+var optionsDistDatalist;
+
+function isDistSearchValid($this) {
+  var userInput = $this.val()
+  if (!optionsDistDatalist) {
+    optionsDistDatalist = $this.parent().find('datalist option').map(function() {
+      return this.value;
+    }).get();
+  }
+
+  if (optionsDistDatalist.indexOf(userInput) === -1) {
+    $this.addClass('invalid');
+  }
+  else {
+    $this.removeClass('invalid');
+  }
+}
+
+function showMore($this) {
+  var $table = $this.parents('.responsive-table').find('table');
+  var $headerCells = $table.find('thead tr th:not(.ignore, .ignore-op)');
+  var $dataCells = $table.find('tbody tr td:not(.ignore, .ignore-op)');
+  var isShowMore = $table.data('isShowMore');
+
+  $headerCells.each(function() {
+    var $cell = $(this);
+    $cell.toggleClass('hide-column');
+  })
+
+  $dataCells.each(function() {
+    var $cell = $(this);
+    $cell.toggleClass('hide-column');
+  })
+
+  $table.data('isShowMore', !isShowMore)
+}
+
 function contadoTasa(aggId) {
     var tipo_pago = document.getElementById("tp"+aggId);
     var tasa = document.getElementById("tas"+aggId);
@@ -68,40 +158,13 @@ function contadoTasa(aggId) {
     }
 }
 
-var sm = false
-
-function showMore(n) {
-
-    var tdShow = $("td.show"+n);
-    var thShow = $("th.show"+n);
-    var tdNotShow = $("td.not-show"+n);
-    var thNotShow = $("th.not-show"+n);
-    // var iAnim = $("i.i"+n+"");
-
-    thShow.toggleClass("show"+n+" not-show"+n);
-    tdShow.toggleClass("show"+n+" not-show"+n);
-    tdNotShow.toggleClass("not-show"+n+" show"+n);
-    thNotShow.toggleClass("not-show"+n+" show"+n);
-    // iAnim.toggleClass("rotate");
-
-    if (n==0) {
-      sm = !sm
-    }
-
-}
-
 // funcion vista cliente
 var vistaCliente = false;
 
-function toggleClientView(n) {
+function toggleClientView() {
 
-  var clientView = $(".clientView");
-  var clientViewSM = $(".clientViewSM");
+  if ($("#client-view-sw").is(":checked")) {
 
-  if($("#client-view-sw").is(":checked")) {
-
-    clientView.show();
-    clientViewSM.hide();
     $("#form-table-div").hide();
     $("#send-prop-btn").attr('disabled', true);
     $(".card.history-card").addClass("vista-cliente");
@@ -109,13 +172,48 @@ function toggleClientView(n) {
     $(".container__wrapper").show();
     $(".copy-btn").hide();
 
+    $('.responsive-table.history').each(function() {
+      var $table = $(this).find('table');
+      var $headerCells = $table.find('thead tr th');
+      var $dataCells = $table.find('tbody tr td');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $parent = $(this).parents('.col.s12');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $propDate = $(this).parents('.container').find('.prop-date');
+      var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
+      var isThisComprador = $propCreatorName.data('iscomprador');
+
+      if (isThisComprador) {
+        $propCreatorName.toggleClass("pull-s2 push-s1");
+        $propDate.toggleClass("pull-s2 push-s1");
+        $circleNeg.toggleClass("comprador vendedor");
+        $parent.toggleClass("pull-s2 push-s1");
+      }
+
+      $propCreatorName.find('p').text($propCreatorName.data("comprador"));
+  
+      $headerCells.each(function() {
+        var $cell = $(this);
+        $cell.removeClass('hide-column');
+        if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
+          $cell.addClass('hide-column');
+        }
+      })
+  
+      $dataCells.each(function() {
+        var $cell = $(this);
+        $cell.removeClass('hide-column');
+        if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
+          $cell.addClass('hide-column');
+        }
+      })
+    });
+
     vistaCliente = true;
 
   }
   else {
 
-    clientView.css('display', '');
-    clientViewSM.show();
     if (modifyWasClicked) {
       $("#form-table-div").show();
     }
@@ -127,6 +225,49 @@ function toggleClientView(n) {
     $(".circle-neg").removeClass("vista-cliente");
     $(".container__wrapper").hide();
     $(".copy-btn").show();
+
+    $('.responsive-table.history').each(function() {
+      var $table = $(this).find('table');
+      var $headerCells = $table.find('thead tr th');
+      var $dataCells = $table.find('tbody tr td');
+      var columnCount = $headerCells.length;
+      var $parent = $(this).parents('.col.s12');
+      var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
+      var $propDate = $(this).parents('.container').find('.prop-date');
+      var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
+      var isThisComprador = $propCreatorName.data('iscomprador');
+      
+      if (isThisComprador) {
+        $propCreatorName.find('p').text($propCreatorName.data("comprador"));
+        $propCreatorName.toggleClass("pull-s2 push-s1");
+        $propDate.toggleClass("pull-s2 push-s1");
+        $circleNeg.toggleClass("comprador vendedor");
+        $parent.toggleClass("pull-s2 push-s1");
+      }
+      else {
+        $propCreatorName.find('p').text($propCreatorName.data("vendedor"));
+      }
+  
+      $headerCells.each(function(index) {
+        var $cell = $(this);
+        if (index % columnCount >= showColumns) {
+          $cell.addClass('hide-column');
+          if ($cell.hasClass('ignore')) {
+            $cell.removeClass('hide-column');
+          }
+        }
+      })
+  
+      $dataCells.each(function(index) {
+        var $cell = $(this);
+        if (index % columnCount >= showColumns) {
+          $cell.addClass('hide-column');
+          if ($cell.hasClass('ignore')) {
+            $cell.removeClass('hide-column');
+          }
+        }
+      })
+    });
 
     vistaCliente = false;
 
@@ -164,7 +305,6 @@ function addTable() {
     $("#form-table-div").detach().appendTo("#table-destination");
     $("#form-table-div").show();
     modifyWasClicked = true;
-    vAlignCircle(0);
 }
 
 function addTables(n, isBeforeFechaCierre) {
@@ -174,42 +314,28 @@ function addTables(n, isBeforeFechaCierre) {
   }
 }
 
-// $("#client-view-sw").change(function() {
+function lineBreak($this) {
+  var text = $this.text();
+  var words = text.split(" ");
+  var formattedText = "";
 
-//   // $(".card").toggleClass("tableClientView");
-//   // $(".card-title").toggleClass("tableClientView");
-//   // $(".card-action").toggleClass("tableClientView");
-//   // $(".circle-container").toggle("display");
-//   // $(".data-table").toggleClass("tableClientView");
-//   // $(".prop-creator-name").toggleClass("tableClientView grey-text text-darken-3");
-//   // $(".prop-date").toggleClass("tableClientView grey-text text-darken-4");
-//   // $(".w1").toggle("display");
-//   // $(".w2").toggle("display");
-//   // $(".w2-hide").toggle("display");
-//   // $(".w3").toggle("display");
-  
-// });
+  $.each(words, function(index, word) {
+    formattedText += word;
 
-function allTDLinebreak() {
-  $("td:first-child").each(function() {
-    var elem = $(this);
-    var text = elem.text();
-    if (!(elem.parent().attr('id') == 'extra')) {
-      var textArray = text.split(" ");
-      var i = 1;
-      for (word in textArray) {
-        if (i % 4 == 0) {
-          textArray[word] = textArray[word] + "<br/>";
-        }
-        i++;
-      }
-      text = textArray.join(" ");
-      elem.html(text);
+    if ((index + 1) % 3 == 0) {
+      formattedText += "<br>";
     }
-  })
+    else {
+      formattedText += " ";
+    }
+  });
+
+  $this.html(formattedText);
 }
 
 // table_edit
+
+var optionsArtsDatalist;
 
 function articuloDatalist(n) {
   var artDatalist = document.getElementById("artDatalist"+n);
@@ -220,6 +346,11 @@ function articuloDatalist(n) {
       option.setAttribute('id',''+arts_data[i].id);
       artDatalist.appendChild(option);        
     }
+  }
+  if (!n || isAccepted) {
+    optionsArtsDatalist = $(artDatalist).find('option').map(function() {
+      return this.value;
+    }).get()
   }
 }
 
@@ -241,6 +372,10 @@ function articuloDatalistCliente() {
       last_item = arts_data[i].ingrediente;
     }
   }
+
+  optionsArtsDatalist = $(artDatalist).find('option').map(function() {
+    return this.value;
+  }).get()
 }
 
 function resetIngredientesDatalist(n) {
@@ -257,16 +392,14 @@ function resetIngredientesDatalist(n) {
   }
 }
 
-function vAlignCircle(n) {
-  var parentHeight = $("#card" + n).height();
-  var childHeight = $("#circle" + n).height();
-  var offset = childHeight / 4;
-  var marginTop = ((parentHeight - childHeight) / 2) + offset;
-  $("#circle" + n).css('margin-top', marginTop);
-}
-
 function getArtId(n) {
   var artSearchInput = $("#artSearch"+n).val();
+  var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
+  return artId;
+}
+
+function getDistId(n) {
+  var artSearchInput = $("#distSearch"+n).val();
   var artId = parseInt($('#artDatalist'+n+' option[value="' + artSearchInput +'"]').attr("id"));
   return artId;
 }

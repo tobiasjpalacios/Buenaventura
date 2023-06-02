@@ -148,10 +148,7 @@ SITE_ID = 1
 # When DEBUG is set to False
 
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-
-    # Allowed hosts genera bad request 400
-    ALLOWED_HOSTS = ["bvagro.com.ar", "clientes.bvagro.com.ar"]
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     EMAIL_BACKEND = 'django_ses.SESBackend'
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')

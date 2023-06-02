@@ -11,10 +11,10 @@
         {% if request.user.clase == "Vendedor" or  request.user.clase == "Comprador" or request.user.clase == "Gerente"%}
                     <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}</td>
                     {% endif %}
-        <td>{{negocio.get_tipo_de_negocio_display|title}}</td>
+        <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
         <td>{{negocio.vendedor.get_full_name}}</td>
         {% if request.user.clase == "Vendedor"%}
-            {% if negocio.fecha_cierre is not None %}
+            {% if negocio.estado == "CONFIRMADO" %}
                 <td> 
                 {% if negocio.proveedores %}
                     <div style="overflow-y: scroll; height: 150px;" >
@@ -28,6 +28,8 @@
                     N/E
                 {% endif %}
                 </td>
+            {% elif negocio.estado == 'CANCELADO' %}
+                <td>N/E</td>
             {% else %}
                 <td>Por Definir</td>
             {% endif %}

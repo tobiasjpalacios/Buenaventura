@@ -26,6 +26,7 @@ $(document).ready(function(){
 
   $('input#input_text, textarea#textarea2').characterCounter();
 
+  filtrar();
 });
 
 function searchBuscadorNegocio(){ 
@@ -130,29 +131,29 @@ $fixedHeader.css({
 
 var screenWidth = $(window).width();
 
-if (screenWidth > 992) {
-  $(window).bind("scroll", function() {
-    var offset = $(this).scrollTop();
+// if (screenWidth > 992) {
+//   $(window).bind("scroll", function() {
+//     var offset = $(this).scrollTop();
   
-    if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
-      $filterClone = $("#navFiltro > div").detach();
-      $fixedFilter = $("#filtroFixed").append($filterClone);
+//     if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
+//       $filterClone = $("#navFiltro > div").detach();
+//       $fixedFilter = $("#filtroFixed").append($filterClone);
   
-      $.each($header.find('tr > th'), function(ind, val) {
-        var original_width = $(val).width();
-        $($fixedHeader.find('tr > th')[ind]).width(original_width);
-      });
+//       $.each($header.find('tr > th'), function(ind, val) {
+//         var original_width = $(val).width();
+//         $($fixedHeader.find('tr > th')[ind]).width(original_width);
+//       });
   
-      $("#fixedForScroll").slideDown("fast");
-    }
-    else if (offset < tableOffset) {
-      var filterClone = $("#filtroFixed > div").detach();
-      $("#navFiltro").append(filterClone);
+//       $("#fixedForScroll").slideDown("fast");
+//     }
+//     else if (offset < tableOffset) {
+//       var filterClone = $("#filtroFixed > div").detach();
+//       $("#navFiltro").append(filterClone);
   
-      $("#fixedForScroll").slideUp("fast");
-    }
-  });
-}
+//       $("#fixedForScroll").slideUp("fast");
+//     }
+//   });
+// }
 
 // limpia filtros
 
@@ -160,10 +161,12 @@ function limpiarFiltros() {
   var $idDeNeg = $("#idDeNeg"); 
   var $fechaDesde = $("#fechaDesde");
   var $fechaHasta = $("#fechaHasta");
+  var $inputBuscador = $("#inputBuscadorNegocio");
 
   $idDeNeg.val("");
   $fechaDesde.val("");
   $fechaHasta.val("");
+  $inputBuscador.val("");
 
   $("#selectVendedores option[value='todos']").prop('selected', true).change();
   $("#selectEstados option[value='todos']").prop('selected', true).change();

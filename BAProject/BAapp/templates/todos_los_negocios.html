@@ -27,20 +27,19 @@ Negocios
     <!-- buscador -->
     <div class="row">
       <div class="col s12">
-        <div class="input-field col s9 m4 whitedivStyle offset-m4 offset-s2" style="height: 50%; padding: 0rem; margin-top: 0;">
+        <div class="input-field col s12 l4 offset-l4 whitedivStyle" style="height: 50%; padding: 0rem; margin-top: 0;">
           <i class="small material-icons shearG" style="position: relative; left: 10px;">search</i>
           <input id="inputBuscadorNegocio"
             placeholder="Buscar Negocio" onkeyup="searchBuscadorNegocio()" type="text" autocomplete="off">
         </div>
       </div>
-    </div>
 
-    <div class="col s10 l10 offset-s1 offset-l1">
+      <div class="col s12">
       <!-- filtros -->
-      <nav id="navFiltro" class="whitedivStyle" style="height: 100px;">
-        <div class="nav-wrapper clv" style="width: 100%;">
-          <ul id="nav-mobile" class="col s12" style="display: flex; justify-content: space-between;">
-            <li>
+      <nav id="navFiltro" class="whitedivStyle">
+        <div class="nav-wrapper clv">
+          <ul id="nav-mobile" class="col s12">
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select multiple id="selectVendedores">
                   <option value="todos" selected>Cualquiera</option>
@@ -51,7 +50,7 @@ Negocios
                 <label class="for-input">Vendendor</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select multiple id="selectEstados">
                   <option value="todos" selected> Todos </option>
@@ -65,7 +64,7 @@ Negocios
                 <label class="for-input">Estado</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <select id="selectTipo">
                   <option value="todos" selected value> Todos </option>
@@ -75,28 +74,28 @@ Negocios
                 <label class="for-input">Tipo de Negocio</label>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="text" class="datepicker" id="fechaDesde" name="fechaDesde" placeholder="Fecha Desde" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="text" class="datepicker" id="fechaHasta" name="fechaHasta" placeholder="Fecha Hasta" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="input-field clv">
                 <input type="number" maxlength="255" min="1" placeholder="BVi-" name="idDeNeg" id="idDeNeg" autocomplete="off">
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="clv">
                 <a class="waves-effect waves-light btn col s12 no-shadows fltbtn"
                   onclick="filtrar()">FILTRAR</a>
               </div>
             </li>
-            <li>
+            <li class="col s12 m6 l4">
               <div class="clv">
                 <a class="btn-floating waves-effect waves-dark no-shadows tooltipped" style="background-color: #00000007;"
                   data-tooltip="Limpiar filtros" data-position="top" onclick="limpiarFiltros()">
@@ -114,7 +113,7 @@ Negocios
       </div>
 
       <!-- tabla info -->
-      <div class="offset-s2 tabla-info" style="width: 100%; position: relative;">
+      <div class="tabla-info" style="position: relative;">
         <table id="tableNegocios">
           <thead>
             <tr style="border-bottom: 1px solid grey;">
@@ -135,50 +134,10 @@ Negocios
           </thead>
 
           <tbody id="infoTabla" style="height: 100px; overflow-y: auto;overflow-x: hidden;">
-            {% for negocio in todos_negocios %}
-            <tr class="ctr">
-              <td>{{negocio.timestamp|date:"M d, Y"}}</td>
-              <td>{% if negocio.fecha_cierre is null %} 
-                      Sin Definir
-                  {% else %}
-                      {{negocio.fecha_cierre|date:"M d, Y"}}
-                  {% endif %}
-              </td>
-              {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-              <td>{{negocio.comprador.get_full_name}} para {{negocio.comprador.empresa.razon_social|title}}
-              </td>
-              {% endif %}
-              <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
-              <td>{{negocio.vendedor.get_full_name}}
-              </td>
-              {% if request.user.clase == 'Vendedor'%}
-                {% if negocio.fecha_cierre is not None %}
-                <td>
-                {% if negocio.proveedores %}
-                  <div style="overflow-y: scroll; height: 150px;">
-                    <ol class="collection" start="1">
-                      {% for prov in negocio.proveedores %}
-                      <li class="collection-item">{{prov}}</li>
-                      {% endfor %}
-                    </ol>
-                  </div>
-                {% else %}
-                  N/E
-                {% endif %}
-                </td>
-                {% else %}
-                <td>Por Definir</td>
-                {% endif %}
-              {% endif %}
-              <td><strong>{{negocio.get_id_de_neg}}</strong></td>
-              <td class="green-text center">{{negocio.get_estado_display }}</td>
-              <td><a class="waves-effect waves-light no-shadows"
-                  href="{% url 'info_negocio' negocio.id_prop %}"><i class="small material-icons" style="color: #4fad31">search</i></a></td>
-            </tr>
-            {% endfor %}
-            <!-- esto es la lista de negocios-->
+            
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   </div>
@@ -244,27 +203,19 @@ Negocios
         estado = "todos";
     };
     var tipo = $('#selectTipo').val();    
-    var tipoFecha = 1;
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
-    if (fechaDesde == "" && fechaHasta == "") {
-      tipoFecha = 0;
-    }
-    else if (fechaDesde != "" && fechaHasta == "") {
-      M.toast({html: 'Error! "Fecha Hasta" no puede estar en blanco.'});
-      errores = 1;
-    }
-    else if (fechaDesde == "" && fechaHasta != "") {
-      M.toast({html: 'Error! "Fecha Desde" no puede estar en blanco.'});
-      errores = 1;
-    }
     var idDeNeg = $('#idDeNeg').val();
+    if (idDeNeg && idDeNeg < 1){
+        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 1.'});
+        errores = 1;
+    }
     if (errores == 0){
       $.ajax({
           url: "{% url 'filtrarNegocios' %}",
           type: 'POST',
           data: {'vendedor':vendedor,'estado':estado,'tipo':tipo,'idDeNeg':idDeNeg,
-              'tipoFecha':tipoFecha,'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
+              'fechaDesde':fechaDesde, 'fechaHasta':fechaHasta,
               csrfmiddlewaretoken: '{{ csrf_token }}'},
           success: function(data){ 
             $('#infoTabla').html(data);

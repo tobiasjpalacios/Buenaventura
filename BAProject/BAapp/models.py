@@ -97,6 +97,9 @@ class Negocio(models.Model):
     timestamp = models.DateTimeField(
         auto_now_add=True
     )
+    last_modified = models.DateTimeField(
+        auto_now=True
+    )
     fecha_cierre = models.DateTimeField(
         null=True, 
         blank=True
@@ -119,7 +122,7 @@ class Negocio(models.Model):
         return "Negocio: {}".format(self.timestamp)
 
     def get_id_de_neg(self):
-        return f"BVi-{self.pk + 1999}"
+        return f"BVi-{self.pk}"
 
 
 class Propuesta(models.Model):

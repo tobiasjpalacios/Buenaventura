@@ -39,7 +39,11 @@ class ItemPropuestaInline(admin.TabularInline):
 
 class PropuestaAdmin(admin.ModelAdmin):
     inlines = (ItemPropuestaInline,)
+    list_display  = ('id','codigo_de_negocio')
     ordering = ["-pk"]
+
+    def codigo_de_negocio(self, instance):
+        return instance.negocio.get_id_de_neg()
 
 class ArticuloAdmin(admin.ModelAdmin):
     # inlines = (ItemPropuestaInline,)
@@ -52,7 +56,7 @@ class FacturaAdmin(admin.ModelAdmin):
     list_display  = ('fecha_emision','documento')
 
 class NegocioAdmin(admin.ModelAdmin):
-    list_display = ('codigo_de_negocio', 'fecha_cierre')
+    list_display = ('codigo_de_negocio', 'fecha_cierre', 'last_modified')
 
     def codigo_de_negocio(self, instance):
         return instance.get_id_de_neg()

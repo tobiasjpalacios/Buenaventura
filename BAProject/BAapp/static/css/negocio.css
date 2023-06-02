@@ -1,5 +1,5 @@
 html, body {
-    overflow-x: visible;
+    overflow-x: hidden;
 }
 
 body {
@@ -134,19 +134,17 @@ table.striped>tbody>tr:nth-child(odd) {
 }
 
 .prop-creator-name {
-    font-size: 26px;
-    font-weight: 500;
-    margin: 0;
-    padding: 0;
-    display: inline;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #459A33!important;
+    text-align: start !important;
 }
 
 .prop-date {
-    font-size: 20px;
-    margin: 0;
-    padding: 0;
-    display: inline;
-    white-space: pre;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #459A33!important;
+    text-align: end;
 }
 
 .menuZone {
@@ -162,12 +160,12 @@ table.striped>tbody>tr:nth-child(odd) {
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;
-    min-width: 925px;
     z-index: 1;
+    padding: 24px !important;
 }
 
-.card.history-card {
-    padding: 14px;
+.card-content {
+    padding: 0px !important;
 }
 
 .card.history-card.vista-cliente {
@@ -208,7 +206,7 @@ div.row>table>thead>tr {
 div.row>table>tbody>tr,
 input,
 textarea,
-div.card-action>p {
+div.card-action>.obser-text {
     color: #717275;
     font-weight: 500;
 }
@@ -396,125 +394,127 @@ span.obser {
     white-space: pre;
 }
 
-.card-title {
-    font-size: 15px!important;
-}
-
 /* estilos vista cliente */
 
-.card.table-nego {
-    padding-left: 60px;
-    padding-right: 14px;
+.card {
     background-color: #F0F0F0 !important;
     box-shadow: 0px 4px 15px rgba(0, 67, 86, 0.08) !important;
 }
 
-.card.table-nego.table-edit {
+.card.table-edit {
     background-color: #FFFFFF !important;
+    padding-left: 50px !important;
 }
 
-.card.table-nego.card-right {
+.card.card-right {
     padding-right: 60px;
     padding-left: 14px;
 }
 
-.card-title.table-nego > tr {
+.card-thead {
+    font-size: 15px!important;
+}
+
+.card-thead > tr {
     z-index: 1;
     color: #459A33 !important;
     font-size: 15px !important;
 }
 
-.card-action.table-nego {
+.card-action {
     border-top: 1px solid #459A33!important;
     margin-top: 40px!important;
 }
 
-.card-action.table-nego > span.obser {
+.card-action > span.obser {
     color: #459A33!important;
     font-size: 15px !important;
 }
 
-.card-action.table-nego > p {
+.card-action > .obser-text {
+    color: #323232 !important;
+    font-size: 14px;
+    padding: .8rem 0 .8rem 0;
+    overflow: hidden;
+}
+
+table tr td {
     color: #323232 !important;
     font-size: 14px;
 }
 
-table.table-nego tr td {
-    color: #323232 !important;
-    font-size: 14px;
+.prop-creator-name.table-edit {
+    font-size: 25px !important;
 }
 
-.prop-creator-name.table-nego {
-    font-size: 15px;
-    font-weight: 600;
+.edit-thead tr th {
     color: #459A33!important;
 }
 
-.prop-creator-name.table-nego.table-edit {
-    font-size: 25px;
+.circle-neg-container {
+    z-index: -1;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
 }
 
-.prop-date.table-nego {
-    font-size: 15px;
-    font-weight: 600;
-    margin-right: 20px;
-    float: right;
-    color: #459A33!important;
+.circle-neg-container.vendedor {
+    right: 51.7%;
 }
 
-.edit-thead.table-nego tr th {
-    color: #459A33!important;
-}
-
-.circle-container {
-    width: fit-content;
-    height: fit-content;
+.circle-neg-container.comprador {
+    left: 51.7%;
 }
 
 .circle-neg {
-    background-color: #F0F0F0;
-    z-index: 55;
-    position: relative;
-    margin-right: -25.5px;
-    width: 78px;
-    height: 150px;
-    float: right;
-    border-top-left-radius: 150px;
-    border-bottom-left-radius: 150px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    box-shadow: -8px 0px 7px rgba(0 67 86 / 10%);
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+}
+
+.circle-neg.history {
+    background-color: #f0f0f0;
+}
+
+.circle-neg-container.edit {
+    right: 51.7%;
+}
+
+.circle-neg-container.edit .circle-neg {
+    background-color: #ffffff;
+    box-shadow: -15px 0px 18px -15px rgba(0, 0, 0, 0.3);
+}
+
+.circle-neg object {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.circle-neg-container.comprador  .circle-neg {
+    box-shadow: 15px 0px 18px -15px rgba(0, 0, 0, 0.3);
+}
+
+.circle-neg-container.vendedor .circle-neg {
+    box-shadow: -15px 0px 18px -15px rgba(0, 0, 0, 0.3);
 }
 
 .circle-neg.vista-cliente {
-    background-color: #ffffff !important;
-    box-shadow: -8px 0px 7px rgb(0 83 33 / 15%) !important;
+    background-color: #ffffff;
 }
 
-.circle-neg.circle-right {
-    transform: rotate(180deg);
-    margin-right: -75.5px;
+.circle-neg-container.vendedor .circle-neg.vista-cliente {
+    box-shadow: -15px 0px 18px -15px rgba(0, 83, 33, 0.35);
 }
 
-.circle-neg.circle-right > .circle-inner > object {
-    transform: rotate(180deg);
+.circle-neg-container.comprador .circle-neg.vista-cliente {
+    box-shadow: 15px 0px 18px -15px rgba(0, 83, 33, 0.35);
 }
-
-.circle-neg.table-edit {
-    background-color: #FFFFFF !important;
-}
-
-.circle-inner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.circle-inner > object {
-    margin-left: 60px;
-}
-
+  
 .blinkSave {
     animation: blinker 2s linear infinite !important;
 }
@@ -522,15 +522,6 @@ table.table-nego tr td {
 @keyframes blinker {
     50% {
         opacity: 0;
-    }
-}
-
-@media screen and (max-width: 620px) {
-    .card.table-nego {
-        padding-left: 0;
-    }
-    .circle-neg {
-        display: none;
     }
 }
 
@@ -549,4 +540,54 @@ table.table-nego tr td {
     text-transform: none;
     background-color: transparent !important;
     color: #838383 !important;
+}
+
+.hide-column {
+    display: none;
+}
+
+@media only screen and (max-width: 992px) {
+    .ignore {
+        display: none !important;
+    }
+    .push-s1, .push-s2 {
+        left: 0 !important;
+    }
+    .pull-s1, .pull-s2 {
+        right: 0 !important;
+    }
+    td,
+    th {
+        width: auto !important;
+        white-space: normal !important;
+        padding: 15px 5px !important;
+    }
+    .card.table-edit > div > .responsive-table thead th,
+    .card.table-edit > div > .responsive-table tbody td {
+        height: 6rem !important;
+    }
+    .btn {
+        width: auto !important;
+    }
+    .card {
+        min-width: auto;
+        padding: 10px !important;
+    }
+    .card.table-edit {
+        padding: 10px !important;
+    }
+    .circle-neg-container {
+        display: none;
+    }
+    .approved,
+    .canceled {
+        margin: 0;
+    }
+}
+
+@media only screen and (max-width: 1800px) {
+    .responsive-table {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
 }
