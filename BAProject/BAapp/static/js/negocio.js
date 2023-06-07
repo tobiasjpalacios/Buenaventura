@@ -176,6 +176,7 @@ function toggleClientView() {
       var $table = $(this).find('table');
       var $headerCells = $table.find('thead tr th');
       var $dataCells = $table.find('tbody tr td');
+      var columnCount = $headerCells.length;
       var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
       var $parent = $(this).parents('.col.s12');
       var $propCreatorName = $(this).parents('.container').find('.prop-creator-name');
@@ -194,16 +195,33 @@ function toggleClientView() {
   
       $headerCells.each(function() {
         var $cell = $(this);
+        
         $cell.removeClass('hide-column');
+        
         if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
           $cell.addClass('hide-column');
         }
+        
+        if ($cell.html().toLowerCase() == "distribuidor" || $cell.html().toLowerCase() == "precio compra") {
+          $cell.addClass('hide-column');
+        }
+
+        if ($cell.html().toLowerCase() == "precio venta") {
+          $cell.html("Precio");
+        }
       })
   
-      $dataCells.each(function() {
+      $dataCells.each(function(index) {
         var $cell = $(this);
+        var $headerCell = $headerCells.eq(index % columnCount);
+
         $cell.removeClass('hide-column');
+        
         if ($cell.hasClass('ignore') && !$cell.hasClass('hide-column')) {
+          $cell.addClass('hide-column');
+        }
+
+        if ($headerCell.html().toLowerCase() == "distribuidor" || $headerCell.html().toLowerCase() == "precio compra") {
           $cell.addClass('hide-column');
         }
       })
@@ -250,21 +268,36 @@ function toggleClientView() {
   
       $headerCells.each(function(index) {
         var $cell = $(this);
+        
         if (index % columnCount >= showColumns) {
           $cell.addClass('hide-column');
           if ($cell.hasClass('ignore')) {
             $cell.removeClass('hide-column');
           }
         }
+
+        if ($cell.html().toLowerCase() == "distribuidor" || $cell.html().toLowerCase() == "precio compra") {
+          $cell.removeClass('hide-column');
+        }
+
+        if ($cell.html().toLowerCase() == "precio") {
+          $cell.html("Precio venta");
+        }
       })
   
       $dataCells.each(function(index) {
         var $cell = $(this);
+        var $headerCell = $headerCells.eq(index % columnCount);
+        
         if (index % columnCount >= showColumns) {
           $cell.addClass('hide-column');
           if ($cell.hasClass('ignore')) {
             $cell.removeClass('hide-column');
           }
+        }
+
+        if ($headerCell.html().toLowerCase() == "distribuidor" || $headerCell.html().toLowerCase() == "precio compra") {
+          $cell.removeClass('hide-column');
         }
       })
     });
