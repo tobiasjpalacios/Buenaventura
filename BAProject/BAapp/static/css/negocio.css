@@ -546,6 +546,10 @@ table tr td {
     display: none;
 }
 
+.hide-column-responsive {
+    display: none !important;
+}
+
 @media only screen and (max-width: 992px) {
     .ignore {
         display: none !important;
