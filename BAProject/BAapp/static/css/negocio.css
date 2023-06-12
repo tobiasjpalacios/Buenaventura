@@ -353,12 +353,12 @@ span.obser {
 
 .switch-container {
     position: fixed;
-    z-index: 99;
-    left: 0;
-    bottom: 0;
+    z-index: 997;
+    left: 23px;
+    bottom: 23px;
+    margin-bottom: 0;
     background-color: #005321;
     padding: 20px;
-    margin: 10px;
     border-radius: .5rem;
     opacity: .1;
     transition: opacity .2s;
@@ -586,6 +586,10 @@ table tr td {
     .approved,
     .canceled {
         margin: 0;
+    }
+    .responsive-vista-cliente {
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }
 

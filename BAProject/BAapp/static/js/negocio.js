@@ -69,6 +69,25 @@ $(document).ready(function(){
     lineBreak($art);
     lineBreak($dist);
   });
+
+  var lastScrollTop = 0;
+  var $actionButton = $('.fixed-action-btn');
+  var $switchContainer = $('.switch-container');
+
+  $(window).scroll(function() {
+    var scrollTop = $(this).scrollTop();
+
+    if (scrollTop < lastScrollTop) {
+      $actionButton.removeClass('hidden').fadeIn();
+      $switchContainer.removeClass('hidden').fadeIn();
+    }
+    else {
+      $actionButton.fadeOut().addClass('hidden');
+      $switchContainer.fadeOut().addClass('hidden');
+    }
+
+    lastScrollTop = scrollTop;
+  });
 });
 
 var modifyWasClicked = false;
@@ -184,6 +203,8 @@ function toggleClientView() {
       var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
       var isThisComprador = $propCreatorName.data('iscomprador');
 
+      $table.toggleClass("responsive-table responsive-vista-cliente");
+
       if (isThisComprador) {
         $propCreatorName.toggleClass("pull-s2 push-s1");
         $propDate.toggleClass("pull-s2 push-s1");
@@ -254,6 +275,8 @@ function toggleClientView() {
       var $propDate = $(this).parents('.container').find('.prop-date');
       var $circleNeg = $(this).parents('.container').find('.circle-neg-container');
       var isThisComprador = $propCreatorName.data('iscomprador');
+
+      $table.toggleClass("responsive-table responsive-vista-cliente");
       
       if (isThisComprador) {
         $propCreatorName.find('p').text($propCreatorName.data("comprador"));
