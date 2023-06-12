@@ -14,6 +14,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseU
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.models import Permission
+from django.core.exceptions import ValidationError
 
 class Empresa(models.Model):
     objects = SearchManager()
@@ -75,6 +76,13 @@ class Articulo(models.Model):
             return '{} {}'.format(self.ingrediente, self.empresa.nombre_comercial)
         else:
             return self.ingrediente
+    
+    def clean(self):
+        articulos = Articulo.objects.all()
+
+        for articulo in articulos:
+            if articulo.ingrediente == self.ingrediente and articulo.empresa == self.empresa:
+                raise ValidationError(f'La empresa {self.empresa} ya posee el ingrediente {self.ingrediente}')
 
 
 class Negocio(models.Model):
