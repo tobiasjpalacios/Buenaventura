@@ -463,11 +463,11 @@ table tr td {
 }
 
 .circle-neg-container.vendedor {
-    right: 51.7%;
+    right: 50%;
 }
 
 .circle-neg-container.comprador {
-    left: 51.7%;
+    left: 50%;
 }
 
 .circle-neg {
@@ -481,7 +481,7 @@ table tr td {
 }
 
 .circle-neg-container.edit {
-    right: 51.7%;
+    right: 50%;
 }
 
 .circle-neg-container.edit .circle-neg {
