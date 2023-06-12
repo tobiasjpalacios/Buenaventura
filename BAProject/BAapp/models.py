@@ -682,7 +682,7 @@ signals.post_save.connect(set_perms, sender = MyUser)
 def negocio_create_id_de_neg(sender, instance, created, *args, **kwargs):
     if created:
         with transaction.atomic():
-            id_de_neg = 1
+            id_de_neg = 2000
             
             negocios = Negocio.objects.all().order_by('-id')
             last_negocio = negocios[1]
