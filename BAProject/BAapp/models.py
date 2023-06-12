@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
-from django.contrib import admin
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
 from .utils.email_send import email_send
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.db.models import signals
+from django.dispatch import dispatcher
 from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site
-from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, AbstractBaseUser, BaseUserManager
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Permission
 
 class Empresa(models.Model):
     objects = SearchManager()
@@ -117,12 +115,15 @@ class Negocio(models.Model):
         null=True,
         default=None 
     )
+    id_de_neg = models.IntegerField(
+        default=1
+    )
 
     def __str__(self):
         return "Negocio: {}".format(self.timestamp)
 
     def get_id_de_neg(self):
-        return f"BVi-{self.pk}"
+        return f"BVi-{self.id_de_neg}"
 
 
 class Propuesta(models.Model):
@@ -673,6 +674,24 @@ def send_email_notification(sender, instance, **kwargs):
 
         email_send(subject, to, 'email/notificacion.txt', 'email/notificacion.html', context)
 
-post_save.connect(set_perms, sender = MyUser)
+signals.post_save.connect(set_perms, sender = MyUser)
 # NOTE: comentado temporalmente
 # post_save.connect(send_email_notification, sender = Notificacion)
+
+
+def negocio_create_id_de_neg(sender, instance, created, *args, **kwargs):
+    if created:
+        with transaction.atomic():
+            id_de_neg = 1
+            
+            negocios = Negocio.objects.all().order_by('-id')
+            last_negocio = negocios[1]
+            
+            if last_negocio:
+                id_de_neg = last_negocio.id_de_neg + 1
+            
+            instance.id_de_neg = id_de_neg
+            instance.save(update_fields=["id_de_neg"])
+
+
+signals.post_save.connect(negocio_create_id_de_neg, sender = Negocio)

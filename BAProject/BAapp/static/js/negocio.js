@@ -203,7 +203,7 @@ function toggleClientView() {
         }
         
         if ($cell.html().toLowerCase() == "distribuidor" || $cell.html().toLowerCase() == "precio compra") {
-          $cell.addClass('hide-column');
+          $cell.addClass('hide-column-responsive');
         }
 
         if ($cell.html().toLowerCase() == "precio venta") {
@@ -222,7 +222,7 @@ function toggleClientView() {
         }
 
         if ($headerCell.html().toLowerCase() == "distribuidor" || $headerCell.html().toLowerCase() == "precio compra") {
-          $cell.addClass('hide-column');
+          $cell.addClass('hide-column-responsive');
         }
       })
     });
@@ -277,7 +277,7 @@ function toggleClientView() {
         }
 
         if ($cell.html().toLowerCase() == "distribuidor" || $cell.html().toLowerCase() == "precio compra") {
-          $cell.removeClass('hide-column');
+          $cell.removeClass('hide-column-responsive');
         }
 
         if ($cell.html().toLowerCase() == "precio") {
@@ -297,7 +297,7 @@ function toggleClientView() {
         }
 
         if ($headerCell.html().toLowerCase() == "distribuidor" || $headerCell.html().toLowerCase() == "precio compra") {
-          $cell.removeClass('hide-column');
+          $cell.removeClass('hide-column-responsive');
         }
       })
     });

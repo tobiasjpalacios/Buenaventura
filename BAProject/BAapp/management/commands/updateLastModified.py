@@ -10,6 +10,6 @@ class Command(BaseCommand):
             try:
                 propuesta = Propuesta.objects.filter(negocio=negocio).last()
                 negocio.last_modified = propuesta.timestamp
-                negocio.save()
+                negocio.save(update_fields=["last_modified"])
             except AttributeError:
                 print(f"Error en el negocio {negocio.get_id_de_neg()}. ¿No tiene propuestas?")

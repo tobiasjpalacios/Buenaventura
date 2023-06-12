@@ -9,7 +9,7 @@ class Command(BaseCommand):
             subject = "Test"
             message = "Testeando mailing"
             from_email = f'"Buenaventura Agronegocios" <{settings.DEFAULT_FROM_EMAIL}>'
-            to_email = input("Email: ")
+            to_email = input("Enter email: ")
             recipient = [to_email]
             send_mail(subject, message, from_email, recipient)
         except Exception as e:
