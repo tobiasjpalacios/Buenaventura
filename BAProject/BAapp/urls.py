@@ -94,7 +94,7 @@ urlpatterns = [
     path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
 
     #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
-    path('negocio/<int:pk>', login_required(login_url='/', redirect_field_name='router')(NegocioView.as_view()), name="negocio"),
+    path('negocio/<int:id_de_neg>', login_required(login_url='/', redirect_field_name='router')(NegocioView.as_view()), name="negocio"),
     path('negocio/', login_required(login_url='/', redirect_field_name='router')(NegocioView.as_view()), name="crear_negocio"),
 
     path('empresas/', ListEmpresaView.as_view(), name = "mostrar_empresas"),

@@ -442,7 +442,7 @@ def filtrarNegocios(request):
         filters &= Q(timestamp__lte=fecha_format)
     if idDeNeg:
         id_de_neg = int(idDeNeg)
-        filters &= Q(pk=id_de_neg)
+        filters &= Q(id_de_neg=id_de_neg)
 
     todos_los_negocios = Negocio.objects.filter(filters).annotate(
         id_prop=Value(1, output_field=IntegerField()),
@@ -1838,7 +1838,7 @@ class PropuestaView(View):
 
 class NegocioView(View):
     def get(self, request, *args, **kwargs):
-        negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
+        negocio = get_object_or_404(Negocio, id_de_neg=kwargs["id_de_neg"])
 
         if not negocio.vendedor == request.user and not negocio.comprador == request.user:
             return redirect('home')
@@ -2214,7 +2214,7 @@ class APIArticulos(View):
                 fecha_pago=actual.get("Fecha de pago"),
                 fecha_entrega=actual.get("Fecha de entrega"),)
             item.save()
-        return JsonResponse(negocio.pk, safe=False)
+        return JsonResponse(negocio.id_de_neg, safe=False)
 
 def getPagos(request):
     tipo_pago = TipoPago.objects.all().values("nombre")

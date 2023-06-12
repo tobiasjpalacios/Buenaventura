@@ -17,4 +17,4 @@ class Command(BaseCommand):
                     neg.estado = "RECIBIDO"
                 else:
                     neg.estado = "NEGOCIACION"
-                neg.save()
+                neg.save(update_fields=["estado"])
