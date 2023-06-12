@@ -57,6 +57,7 @@ class FacturaAdmin(admin.ModelAdmin):
 
 class NegocioAdmin(admin.ModelAdmin):
     list_display = ('codigo_de_negocio', 'fecha_cierre', 'last_modified')
+    exclude = ('id_de_neg',)
 
     def codigo_de_negocio(self, instance):
         return instance.get_id_de_neg()
