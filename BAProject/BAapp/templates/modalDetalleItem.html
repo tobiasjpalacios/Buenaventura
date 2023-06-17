@@ -1,4 +1,5 @@
 {% load static %}
+{% load formatfloat %}
 {% load auth_extras %}
 <div class="modal-content">
     <div class="row" > 
@@ -69,12 +70,12 @@
     </thead>
     <tbody>
       <tr>
-        <td>{{item.cantidad}}</td>
+        <td>{% formatfloat item.cantidad %}</td>
         {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
-          <td>${{item.precio_venta}} </td>
+          <td>${% formatfloat item.precio_venta %} </td>
         {% endif %}
         {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
-          <td>${{item.precio_compra}} </td>
+          <td>${% formatfloat item.precio_compra %} </td>
         {% endif %}
         {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%} 
           <td>{{item.divisa}}</td>

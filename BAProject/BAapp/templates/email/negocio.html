@@ -1,4 +1,5 @@
 {% load multiply %}
+{% load formatfloat %}
 <!DOCTYPE HTML
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
@@ -926,7 +927,7 @@
                                                                 <p style="font-size: 14px; line-height: 140%;">${% multiply art.precio_venta art.cantidad %}</p>
                                                                 <br>
                                                                 <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Precio unitario:</strong> ${{ art.precio_venta }} x {{ art.cantidad }} u.
+                                                                    <strong>Precio unitario:</strong> ${% formatfloat art.precio_venta %} x {% formatfloat art.cantidad %} u.
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">
                                                                     <strong>Tipo de pago:</strong> {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %}
