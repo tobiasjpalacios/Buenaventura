@@ -65,11 +65,12 @@ p{
   margin: 3%;
 }
 
-body{
-    background-image: url(/static/images/fondo-login.png) !important;
+body {
+    background-image: url(/static/images/fondo-login-low-res.jpg);
     background-size: cover;
+    transition: background-image .8s ease;
 }
 
-.fondo{
+.fondo {
     background-image: none !important;
 }

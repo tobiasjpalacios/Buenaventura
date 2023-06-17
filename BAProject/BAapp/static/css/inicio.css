@@ -26,11 +26,12 @@
     align-items: center;
 }
 
-body{
-    background-image: url(/static/images/fondo-inicio.png) !important;
+body {
+    background-image: url(/static/images/fondo-inicio-low-res.jpg);
     background-size: cover;
+    transition: background-image .8s ease;
 }
 
-.fondo{
+.fondo {
     background-image: none !important;
 }

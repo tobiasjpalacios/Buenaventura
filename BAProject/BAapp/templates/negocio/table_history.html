@@ -1,4 +1,5 @@
 {% load static %}
+{% load formatfloat %}
 <div class="container">
   <div class="row" style="margin-bottom: 0;" id="div-table-{{prop.id}}">
     <div class="col s6 {% if prop.envio_comprador %} pull-s2 {% else %} push-s1 {% endif %} prop-creator-name" 
@@ -66,10 +67,10 @@
                   {% if not request.user.clase == 'Comprador' %}
                   <td class="clientView">{{ item.proveedor.get_full_name|default:'N/E' }}</td>
                   {% endif %}
-                  <td>{{ item.cantidad }}</td>
-                  <td>{{ item.precio_venta }}</td>
+                  <td>{% formatfloat item.cantidad %}</td>
+                  <td>{% formatfloat item.precio_venta %}</td>
                   {% if not request.user.clase == 'Comprador' %}
-                  <td class="clientView">{{ item.precio_compra|default_if_none:"0,0" }}</td>
+                  <td class="clientView">{% formatfloat item.precio_compra %}</td>
                   {% endif %}
                   <td class="clientView">{{ item.tipo_pago.nombre|default:"Sin definir" }}</td>
                   <td class="clientView">

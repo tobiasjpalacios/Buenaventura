@@ -1,4 +1,5 @@
 {% load static %}
+{% load formatfloat %}
 <div class="container" id="form-table-div">
   <div class="row" style="margin-bottom: 0;">
     <div class="col s6 push-s1 prop-creator-name table-edit">
@@ -76,10 +77,10 @@
                       {% endif %}
                     </td>
                     {% endif %}
-                    <td><input type="number" name="cantidad" min=".01" step=".01" value="{{ item.cantidad|default_if_none:''|stringformat:'.2f' }}" placeholder="Cantidad" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
-                    <td><input type="number" name="precio_venta" min=".01" step=".01" value="{{ item.precio_venta|default_if_none:''|stringformat:'.2f' }}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input type="number" name="cantidad" min=".01" step=".01" value="{% formatfloat item.cantidad %}" placeholder="Cantidad" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input type="number" name="precio_venta" min=".01" step=".01" value="{% formatfloat item.precio_venta %}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
                     {% if not request.user.clase == 'Comprador' %}
-                    <td><input type="number" name="precio_compra" min=".01" step=".01" value="{{ item.precio_compra|default_if_none:''|stringformat:'.2f' }}" placeholder="Precio compra" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input type="number" name="precio_compra" min=".01" step=".01" value="{% formatfloat item.precio_compra %}" placeholder="Precio compra" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
                     {% endif %}
                     <td>
                       <select name="tipo_pago" onchange="contadoTasa('{{item.id}}'); removeUpdate('{{ forloop.counter0 }}')" id="tp{{item.id}}">

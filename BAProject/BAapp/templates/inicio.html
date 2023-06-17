@@ -20,6 +20,13 @@ BuenaVentura Agronegocios
     <a class="bnt-mid btn align-text white-text no-shadows" href="{% url 'nuevo_negocio' %}"> Cotizá </a>
 </body>
 
+<img id="bg-image" src="{% static 'images/fondo-inicio.png' %}" style="display: none;" alt="none">
+
 <script>
+    $(window).on('load', function() {
+        var bgImageElement = $('#bg-image');
+        addBg(bgImageElement.attr('src'));
+        bgImageElement.remove();
+    })
 </script>
 {% endblock body %}
