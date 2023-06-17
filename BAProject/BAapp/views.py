@@ -516,18 +516,25 @@ def check_user_group_after_login(request):
     return redirect('inicio')
 
 def landing_page(request):
-    if (request.user.is_authenticated):
-        return (check_user_group_after_login(request))
+    if request.user.is_authenticated:
+        return redirect('inicio')
+    
 
     loginSuccess = True
 
-    if request.method == 'POST':
+    if request.POST:
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('router')
+
+            next_url = request.POST['next']
+            print(next_url)
+            if next_url:
+                return redirect(next_url)
+
+            return redirect('inicio')
         else:
             loginSuccess = False
     

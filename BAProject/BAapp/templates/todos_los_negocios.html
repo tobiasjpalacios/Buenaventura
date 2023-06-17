@@ -137,6 +137,9 @@ Negocios
             
           </tbody>
         </table>
+        <center>
+          <h6 id="table-loading">Cargando...</h6>
+        </center>
       </div>
       </div>
     </div>
@@ -219,6 +222,7 @@ Negocios
               csrfmiddlewaretoken: '{{ csrf_token }}'},
           success: function(data){ 
             $('#infoTabla').html(data);
+            $('#table-loading').remove();
           },
           error: function (data) {
               console.log(data)
