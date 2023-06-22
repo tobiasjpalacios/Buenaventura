@@ -132,9 +132,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# me tira server error cuando debug es false y no logro solucionarlo
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 # Login
 
-LOGIN_REDIRECT_URL = 'router'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Media

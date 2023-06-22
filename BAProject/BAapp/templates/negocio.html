@@ -30,7 +30,7 @@ Negociación {{ negocio.get_id_de_neg }}
   <button type="button" class="close-alert" onclick="closeAlert('#clienteAlert');">×</button>
 </div>
 
-<div class="switch-container">
+<div class="switch-container hidden">
   <div class="switch">
     <label>
       Vista normal
@@ -95,7 +95,7 @@ Negociación {{ negocio.get_id_de_neg }}
 </div>
 {% endif %}
 
-<div class="fixed-action-btn">
+<div class="fixed-action-btn hidden">
   <a class="btn-floating btn-large">
     <i class="large material-icons">menu</i>
   </a>
@@ -281,6 +281,10 @@ Negociación {{ negocio.get_id_de_neg }}
             isValid = false;
             $input.addClass('invalid');
           }
+          else if (inputValue && element == "tasa" && inputValue > 100) {
+            isValid = false;
+            $input.addClass('invalid');
+          }
           else {
             edits.items[index][element] = inputValue
           }
@@ -451,6 +455,10 @@ Negociación {{ negocio.get_id_de_neg }}
           errors = true;
           $this.addClass('invalid');
         }
+        else if (inputValue && element == "tasa" && inputValue > 100) {
+          errors = true;
+          $this.addClass('invalid');
+        }
         n[element] = element == "tasa" ? parseFloat(inputValue) : inputValue;
       }
 
@@ -488,7 +496,7 @@ Negociación {{ negocio.get_id_de_neg }}
     <td><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" data-newrowselect=\"true\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" value=\""+n.tasa+"\" placeholder=\"Tasa\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" min=\"0\" max=\"100\" value=\""+n.tasa+"\" placeholder=\"Tasa\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\

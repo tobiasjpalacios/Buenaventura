@@ -516,18 +516,25 @@ def check_user_group_after_login(request):
     return redirect('inicio')
 
 def landing_page(request):
-    if (request.user.is_authenticated):
-        return (check_user_group_after_login(request))
+    if request.user.is_authenticated:
+        return redirect('inicio')
+    
 
     loginSuccess = True
 
-    if request.method == 'POST':
+    if request.POST:
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('router')
+
+            next_url = request.POST['next']
+            print(next_url)
+            if next_url:
+                return redirect(next_url)
+
+            return redirect('inicio')
         else:
             loginSuccess = False
     
@@ -1875,7 +1882,7 @@ class NegocioView(View):
         return render(request, 'negocio.html', context)
 
     def post(self, request, *args, **kwargs):
-        negocio = get_object_or_404(Negocio, pk=kwargs["pk"])
+        negocio = get_object_or_404(Negocio, id_de_neg=kwargs["id_de_neg"])
         data = json.loads(request.body)
         isSend = bool(data["issend"])
         completed = True
@@ -2040,7 +2047,7 @@ class NegocioView(View):
                 negocio.save()
                 
         
-        return redirect(reverse('negocio', kwargs={'pk': negocio.pk}))
+        return redirect(reverse('negocio', kwargs={'id_de_neg': negocio.id_de_neg}))
 
 class ListEmpresaView(View):
     def get(self, request, *args, **kwargs):

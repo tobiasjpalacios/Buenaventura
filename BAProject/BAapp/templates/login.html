@@ -47,21 +47,28 @@ Inicio de sesión
               <a class="forgot-pass" href="#">¿Olvidaste tu contraseña?</a>
             </div>
           </div>
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
         </form>
       </div>
     </div>
   </div>
 </div>
 </div>
+
+<img id="bg-image" src="{% static 'images/fondo-login.png' %}" style="display: none;" alt="none">
+
 </body>
 
 <script>
-  window.onload = function() {
+  $(window).on('load', function() {
+    var bgImageElement = $('#bg-image');
+    addBg(bgImageElement.attr('src'));
+    bgImageElement.remove();
     loginSuccess = "{{ loginSuccess }}";
     if (loginSuccess == "False") {
       alert("El usuario o contraseña es incorrecto.");
     }
-  }
+  })
 </script>
 
 {%endblock body%}

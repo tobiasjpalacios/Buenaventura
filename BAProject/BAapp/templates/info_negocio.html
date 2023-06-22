@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block imports %}
 {% load static %}
+{% load formatfloat %}
 {% load auth_extras %}
 {% endblock imports %}
 {% block style%}
@@ -82,8 +83,10 @@ Inf. de negocio {{ negocio.get_id_de_neg }}
                             <th>Distribuidor</th>
                             {% endif %}
                             <th>Cantidad</th>
-                            {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
+                            {% if request.user.clase == 'Vendedor'%}
                             <th>Precio Venta</th>
+                            {% elif request.user.clase == 'Comprador' or request.user.clase == 'Gerente' %}
+                            <th>Precio</th>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <th>Precio Compra</th>
@@ -103,12 +106,12 @@ Inf. de negocio {{ negocio.get_id_de_neg }}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <td>{{item.proveedor.get_full_name|default:'N/E'}}</td>
                             {% endif %}
-                            <td>{{item.cantidad}}</td>
+                            <td>{% formatfloat item.cantidad %}</td>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-                            <td>${{item.precio_venta}}</td>
+                            <td>${% formatfloat item.precio_venta %}</td>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
-                            <td>${{item.precio_compra}}</td>
+                            <td>${% formatfloat item.precio_compra %}</td>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
                             {% comment %} <td>{{item.divisa}}</td> {% endcomment %}

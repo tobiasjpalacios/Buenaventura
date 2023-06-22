@@ -1,5 +1,6 @@
 <!------ Modal negocio  ---------->
 {% load auth_extras %}
+{% load formatfloat %}
 <style>
   .titulito{
      font-size: 30px;
@@ -54,8 +55,8 @@
                       </label>
                   </td>
                   <td>{{item.articulo.ingrediente}}</td>
-                  <td>{{item.cantidad}}</td>
-                  <td>${{item.precio_venta}}</td>
+                  <td>{% formatfloat item.cantidad %}</td>
+                  <td>${% formatfloat item.precio_venta %}</td>
                   <td>{{item.fecha_pago}}</td>
                   <td>{{item.estado}}</td>
                   <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>

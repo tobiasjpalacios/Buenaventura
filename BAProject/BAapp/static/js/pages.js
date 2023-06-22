@@ -67,8 +67,13 @@ function showChangeEstados(){
   $("#confirmarChgEstSem").show();
 };
 
-$(window).on('load', function () {
+$(document).ready(function () {
   $(".contain").fadeOut("fast", function() {
     $(this).remove();
   });
 });
+
+function addBg(url) {
+  var body = $("body");
+  body.css('background-image', 'url('+ url +')');
+}

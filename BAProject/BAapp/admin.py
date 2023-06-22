@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http.request import HttpRequest
 from .models import *
 
 
@@ -97,7 +98,6 @@ class MyUserCreationForm(forms.ModelForm):
         return user
     
 class MyUserAdmin(UserAdmin):
-    list_display = ('email', 'active', 'admin')
     add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
     fieldsets = (
@@ -126,9 +126,9 @@ class MyUserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = MyUserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ('email', 'is_staff')
+    list_display = ('email', 'empresa', 'is_staff')
     list_filter = ('is_active',)
-    search_fields = ('email',)
+    search_fields = ('email', 'empresa__razon_social', 'empresa__nombre_comercial')
     ordering = ('email',)
 
 
@@ -273,11 +273,23 @@ class MyUserAdmin(UserAdmin):
             request.POST['_continue'] = 1
         return super().response_add(request, obj, post_url_continue)
 
+
+class UsuarioEmpresaInline(admin.TabularInline):
+    model = MyUser
+    fields = ('email', 'is_staff')
+    readonly_fields = ('email', 'is_staff')
+    can_delete = False
+    show_change_link = True
+
+    def has_add_permission(self, request, obj):
+        return False
+
 class EmpresaAdmin(admin.ModelAdmin):
     list_display = ('razon_social', 'nombre_comercial', 'cuit','categoria_iva')
     list_filter = ('categoria_iva',)
     search_fields = ['razon_social','nombre_comercial','cuit', ]
     ordering = ["nombre_comercial"]
+    inlines = [UsuarioEmpresaInline]
 
 admin.site.unregister(Group)
 admin.site.register(MyUser, MyUserAdmin)
