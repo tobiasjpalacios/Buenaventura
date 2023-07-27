@@ -491,14 +491,9 @@ def getProveedoresNegocio(negocio):
 
 def testeo(request):
 
-    neg = Negocio.objects.all()
+    titulo = request.GET.get('titulo')
 
-    context = {
-        'negAp': neg.filter(aprobado=True),
-        'negNoAp': neg.filter(aprobado=False)
-    }
-
-    return render(request, 'testeo.html', context)
+    return render(request, 'email/negocio.html', {'titulo':titulo})
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -1038,7 +1033,7 @@ def sendAlertaModal(request):
                     titulo=titulo,
                     descripcion = descri,
                     categoria=categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id,]),
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
                     user=user)
                 notif.save()
             elif (ourid2[a] != ","):
@@ -1050,7 +1045,7 @@ def sendAlertaModal(request):
                     titulo=titulo,
                     descripcion = descri,
                     categoria=categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id,]),
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
                     user=user)
                 notif.save()
                 id_carga = ""
@@ -1161,7 +1156,7 @@ def sendAlertaLog(request):
             titulo=titulo,
             descripcion = descri,
             categoria=categoria,
-            hyperlink=reverse('negocio', args=[negocio.id,]),
+            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
             user=user)
         notif.save()
         data = {
@@ -1358,7 +1353,7 @@ def createAlertaNV(request):
             titulo=titulo,
             descripcion = descri,
             categoria=text_categoria,
-            hyperlink=reverse('negocio', args=[negocio.id,]),
+            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
             user=negocio.vendedor.persona.user
         )
         notif.save()
@@ -1415,7 +1410,7 @@ def setFechaPagoReal(request):
                     titulo="Pago de Artículos",
                     descripcion = "Se ha registrado el pago de uno/s articulo/s.",
                     categoria=text_categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id,]),
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
                     user=user
                 )
                 notif.save()
@@ -1426,7 +1421,7 @@ def setFechaPagoReal(request):
                     titulo=titulo,
                     descripcion = descri,
                     categoria=text_categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id,]),
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
                     user=user
                 )
                 notif.save()
@@ -1603,11 +1598,11 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
             )
         negocio.save()
 
-    # NOTE: se manda email de confirmacion solo para usuario Cliente Cliente o CLIENTE . a pedido del cliente
-    nombre_vendedor = vendedor_obj.get_full_name().lower()
-    nombre_comprador = comprador_obj.get_full_name().lower()
-    match_vendedor = nombre_vendedor == "cliente cliente" or nombre_vendedor == "cliente ."
-    match_comprador = nombre_comprador == "cliente cliente" or nombre_comprador == "cliente ."
+    # NOTE: se manda email de confirmacion solo para usuario TEMP_TO_EMAIL a pedido del cliente
+    email_vendedor = vendedor_obj.email
+    email_comprador = comprador_obj.email
+    match_vendedor = email_vendedor == settings.TEMP_TO_EMAIL
+    match_comprador = email_comprador == settings.TEMP_TO_EMAIL
     if match_vendedor or match_comprador:
         subject = "Se creó un nuevo negocio"
         texto = f"""
@@ -1616,7 +1611,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         """
         protocol = "http://"
         domain = Site.objects.get_current().domain
-        full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id,])
+        full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id_de_neg,])
         recipient_list = [negocio.vendedor.email, negocio.comprador.email]
         context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
 
@@ -1944,7 +1939,7 @@ class NegocioView(View):
         notif = Notificacion(
             titulo=titulo,
             categoria=categoria,
-            hyperlink=reverse('negocio', args=[negocio.id,]),
+            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
             user=user
         )
         notif.save()
@@ -1970,7 +1965,7 @@ class NegocioView(View):
                     notif = Notificacion(
                         titulo=titulo,
                         categoria=categoria,
-                        hyperlink=reverse('negocio', args=[negocio.id,]),
+                        hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
                         user=user
                     )
                     notif.save()
@@ -2025,13 +2020,13 @@ class NegocioView(View):
         # print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
-            # NOTE: se manda email de confirmacion solo para usuario Cliente Cliente o CLIENTE . a pedido del cliente
-            nombre_vendedor = negocio.vendedor.get_full_name().lower()
-            nombre_comprador = negocio.comprador.get_full_name().lower()
-            match_vendedor = nombre_vendedor == "cliente cliente" or nombre_vendedor == "cliente ."
-            match_comprador = nombre_comprador == "cliente cliente" or nombre_comprador == "cliente ."
+            # NOTE: se manda email de confirmacion solo para usuario TEMP_TO_EMAIL a pedido del cliente
+            email_vendedor = negocio.vendedor.email
+            email_comprador = negocio.comprador.email
+            match_vendedor = email_vendedor == settings.TEMP_TO_EMAIL
+            match_comprador = email_comprador == settings.TEMP_TO_EMAIL
             if match_vendedor or match_comprador:
-                full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id,]))
+                full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
                 recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
                 context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
                 email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)

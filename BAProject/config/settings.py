@@ -21,6 +21,16 @@ ALLOWED_HOSTS = ['*']
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
 
+EMAILJS_API_KEY = os.environ.get('EMAILJS_API_KEY')
+
+EMAILJS_SERVICE_ID = os.environ.get('EMAILJS_SERVICE_ID')
+
+EMAILJS_TEMPLATE_ID = os.environ.get('EMAILJS_TEMPLATE_ID')
+
+EMAILJS_USER_ID = os.environ.get('EMAILJS_USER_ID')
+
+TEMP_TO_EMAIL = os.environ.get('TEMP_TO_EMAIL')
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTH_USER_MODEL = 'BAapp.MyUser'
@@ -151,7 +161,4 @@ SITE_ID = 1
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-    EMAIL_BACKEND = 'django_ses.SESBackend'
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    
