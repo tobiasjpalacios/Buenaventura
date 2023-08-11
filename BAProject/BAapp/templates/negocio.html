@@ -366,6 +366,45 @@ Negociación {{ negocio.get_id_de_neg }}
     $tr.data('issaved', false);
     $("#save-" + index).addClass("blinkSave");
     $("#accept-" + index).addClass("disabled");
+    unsavedChanges = true;
+  }
+
+  function copyLastRow() {
+    var table = $("#form")[0]
+    var index = table.rows.length - 3;
+    var inputsList = ['tipo_pago', 'tasa', 'fecha_entrega', 'fecha_pago', 'destino'];
+
+    var $trLast = $(table.rows[index+1]);
+    var $trCurr = $(table.rows[index+2]);
+    $.each(inputsList, function(index, name) {
+      var elementLast = $trLast.find('[name='+ name +']');
+      var elementCurr = $trCurr.find('[name='+ name +']');
+
+      elementCurr.val(elementLast.val());
+
+      if (elementLast.prop('tagName') == 'SELECT') {
+        var selectedText = $('#' + elementLast.prop('id') + ' option:selected').text();
+        $('#' + elementCurr.prop('id') + ' option').each(function() {
+          if ($(this).text() == selectedText) {
+            $(this).prop('selected', true);
+            contadoTasa('Add');
+            return false;
+          }
+        });
+      }
+      else if (elementLast.prop('class')?.includes('datepicker')) {
+        var dateString = elementLast.val();
+        var parts = dateString.split('/');
+
+        var day = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1;
+        var year = parseInt(parts[2], 10);
+
+        var newDate = new Date(year, month, day);
+
+        elementCurr.datepicker("setDate", newDate);
+      }
+    });
   }
 
   var counter = 0;
@@ -497,8 +536,8 @@ Negociación {{ negocio.get_id_de_neg }}
     {% endif %}\
     <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" data-newrowselect=\"true\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
     <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" min=\"0\" max=\"100\" value=\""+n.tasa+"\" placeholder=\"Tasa\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"ignore-op\">\
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject('"+(table.rows.length-3)+"')\"><i class=\"material-icons table-icons\">delete</i></a>\
