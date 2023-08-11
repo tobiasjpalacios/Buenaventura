@@ -75,9 +75,10 @@ def todos_negocios_vendedor_query(user):
 class Info_negocioView(View): 
     def get(self, request, *args, **kwargs):
         if ("pk" in kwargs):
-            idProp = kwargs["pk"]
-            propuesta = Propuesta.objects.get(pk=kwargs["pk"])
-            negocio = Negocio.objects.get(id=propuesta.negocio.id)
+            idNeg = kwargs["pk"]
+            negocio = Negocio.objects.get(id_de_neg=idNeg)
+            propuesta = Propuesta.objects.filter(negocio=negocio).first()
+            idProp = propuesta.id
             grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
             if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
@@ -932,7 +933,7 @@ def listaNL(request,negocioFilter):
                     'fecha':fecha,
                     'destinatario': comprador,
                     'destino': destino,
-                    'id_prop':id_prop,
+                    'id_de_neg':negocio.id_de_neg,
                     'empresa':negocio.comprador.empresa.razon_social,
                     'estado':estado
                 }
@@ -1293,7 +1294,7 @@ def semaforoVencimiento(negocioFilter):
                     lista = {
                         'fecha':fecha_p,
                         'comprador': comprador,
-                        'id_propuesta': id_propuesta,
+                        'id_de_neg': negocio.id_de_neg,
                         'empresa':negocio.comprador.empresa.razon_social
                     }
                     lista_vencidos.append(lista)
@@ -1301,7 +1302,7 @@ def semaforoVencimiento(negocioFilter):
                     lista = {
                         'fecha':fecha_p,
                         'comprador': comprador,
-                        'id_propuesta': id_propuesta,
+                        'id_de_neg': negocio.id_de_neg,
                         'empresa':negocio.comprador.empresa.razon_social
                     }
                     lista_semanas.append(lista)
@@ -1309,7 +1310,7 @@ def semaforoVencimiento(negocioFilter):
                     lista = {
                         'fecha':fecha_p,
                         'comprador': comprador,
-                        'id_propuesta': id_propuesta,
+                        'id_de_neg': negocio.id_de_neg,
                         'empresa':negocio.comprador.empresa.razon_social
                     }
                     lista_futuros.append(lista)
@@ -1516,7 +1517,7 @@ def listasNA(negocioFilter, tipo):
                     'comprador': comprador,
                     'empresa':(negocio.comprador.empresa.razon_social),
                     'visto': valor_visto,
-                    'id_prop': id_prop
+                    'id_de_neg': negocio.id_de_neg
                 }
                 lista_negocios.append(lista)
             else:

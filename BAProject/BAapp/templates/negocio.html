@@ -100,7 +100,7 @@ Negociación {{ negocio.get_id_de_neg }}
     <i class="large material-icons">menu</i>
   </a>
   <ul>
-    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.propuestas.last.id %}"><i class="material-icons">arrow_back</i></a></li>
+    <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.id_de_neg %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
     {% if negocio.estado == "CONFIRMADO" %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>

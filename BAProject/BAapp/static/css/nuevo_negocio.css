@@ -85,6 +85,7 @@ input, select, textarea{
 .boton {
     border-radius: 1em;
     width: fit-content;
+    margin: 10px;
 }
 
 .iconito {

@@ -200,7 +200,7 @@ def sheet_writer():
     art_sheet = wb.active
     art_sheet.title = "articulos"
     art_fields = _get_actual_fields(Articulo)
-    print(art_fields)
+    # print(art_fields)
     _write_header(art_sheet, art_fields, False)
 
     emp_sheet = wb.create_sheet(title="empresas")
