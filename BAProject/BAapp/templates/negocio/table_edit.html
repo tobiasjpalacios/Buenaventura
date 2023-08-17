@@ -34,7 +34,7 @@
                   <th>Tipo pago</th>
                   <th>
                     <div style="display: flex; align-items: center; justify-content: center;">
-                      Tasa     
+                      Tasa Mensual
                       {% if request.user.clase == 'Vendedor' %}
                       <a class="tooltipped" data-position="top" data-tooltip="Asignando 0 se mostrara 'Sin determinar'" >
                         <i class="Tiny material-icons iconbar" style="margin-left:5px; position: relative; color: #459A33!important;">lightbulb_outline</i>
@@ -91,7 +91,7 @@
                       {% endfor %}
                       </select>
                     </td>
-                    <td><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" max="100" value="{% decimaltofloat item.tasa %}" placeholder="Tasa" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" max="100" value="{% decimaltofloat item.tasa %}" placeholder="Tasa Mensual" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" oninput="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td>
@@ -149,7 +149,7 @@
                       </select>
                     </td>
                     <td>
-                      <input type="number" name="tasa" step=".01" id="tasAdd" min="0" max="100" placeholder="Tasa">
+                      <input type="number" name="tasa" step=".01" id="tasAdd" min="0" max="100" placeholder="Tasa Mensual">
                     </td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" placeholder="Fecha entrega"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" placeholder="Fecha pago"></td>

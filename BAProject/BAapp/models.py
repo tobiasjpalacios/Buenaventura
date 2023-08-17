@@ -261,7 +261,8 @@ class ItemPropuesta(models.Model):
                         MinValueValidator(0)],
                 default=1,
                 blank=True,
-                null=True
+                null=True,
+                verbose_name='Tasa Mensual'
             )
 
     fecha_salida_entrega = models.DateTimeField(

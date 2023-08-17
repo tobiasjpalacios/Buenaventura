@@ -440,7 +440,7 @@ Cotizar
     for (var i = 0; i < pago.length; i++) {
       var th2 = document.createElement("th");
       th2.setAttribute("id", "th_" + pago[i] + rowCnt);
-      th2.innerHTML = pago[i];
+      th2.innerHTML = pago[i] == "Tasa" ? "Tasa Mensual" : pago[i];
       tr2.appendChild(th2);
     }
 
@@ -1147,7 +1147,7 @@ Cotizar
 
 
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
-    ele.setAttribute('placeholder', 'Tasa');
+    ele.setAttribute('placeholder', 'Tasa Mensual');
     ele.setAttribute('autocomplete', 'off');
     ele.setAttribute('data-copy', 'copy');
 
@@ -1201,7 +1201,7 @@ Cotizar
       inputTasa.setAttribute("placeholder","/");
     }else if (inputTasa.disabled) {
       inputTasa.disabled = false;
-      inputTasa.setAttribute("placeholder","Tasa");
+      inputTasa.setAttribute("placeholder","Tasa Mensual");
     }
   }
 

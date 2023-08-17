@@ -47,7 +47,7 @@ $(document).ready(function(){
   $('.show-more-btn').click(function(e) {
     e.preventDefault();
     
-    showMore($(this));
+    showMore($(this), false);
   });
 
   $("#client-view-sw").change(function() {
@@ -142,12 +142,16 @@ function isDistSearchValid($this) {
   }
 }
 
-function showMore($this) {
+function showMore($this, isAddArt) {
   var $table = $this.parents('.responsive-table').find('table');
   var $headerCells = $table.find('thead tr th:not(.ignore, .ignore-op)');
   var $dataCells = $table.find('tbody tr td:not(.ignore, .ignore-op)');
   var isShowMore = $table.data('isShowMore');
 
+  if (isAddArt && !isShowMore) {
+    return;
+  }
+  
   $headerCells.each(function() {
     var $cell = $(this);
     $cell.toggleClass('hide-column');
