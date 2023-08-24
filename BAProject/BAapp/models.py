@@ -261,7 +261,8 @@ class ItemPropuesta(models.Model):
                         MinValueValidator(0)],
                 default=1,
                 blank=True,
-                null=True
+                null=True,
+                verbose_name='Tasa Mensual'
             )
 
     fecha_salida_entrega = models.DateTimeField(
@@ -674,7 +675,7 @@ def send_email_notification(sender, instance, **kwargs):
         categoria = f"{instance.categoria}".lower()
         # agrega "s" al final a categoria en caso de ser vencimientos o presupuestos
         categoria = categoria + "s" if instance.categoria != "Logistica" else categoria
-        protocol = "http://"
+        protocol = "https://"
         domain = Site.objects.get_current().domain
         url =  protocol + domain + reverse(categoria)
         to = [instance.user.email]
@@ -693,11 +694,13 @@ def negocio_create_id_de_neg(sender, instance, created, *args, **kwargs):
             id_de_neg = 2000
             
             negocios = Negocio.objects.all().order_by('-id')
-            last_negocio = negocios[1]
             
-            if last_negocio:
+            try:
+                last_negocio = negocios[1]
                 id_de_neg = last_negocio.id_de_neg + 1
-            
+            except IndexError:
+                pass
+
             instance.id_de_neg = id_de_neg
             instance.save(update_fields=["id_de_neg"])
 

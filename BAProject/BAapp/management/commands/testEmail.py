@@ -1,16 +1,10 @@
 from django.core.management.base import BaseCommand
-from django.core.mail import send_mail
-from django.conf import settings
+from BAapp.utils.email_send import email_send
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        try:
-            subject = "Test"
-            message = "Testeando mailing"
-            from_email = f'"Buenaventura Agronegocios" <{settings.DEFAULT_FROM_EMAIL}>'
-            to_email = input("Enter email: ")
-            recipient = [to_email]
-            send_mail(subject, message, from_email, recipient)
-        except Exception as e:
-            print(e)
+        subject = "Test"
+        to_email = input("Enter email(s): ")
+        recipient = list(to_email.split(','))
+        email_send(subject, recipient, "", "", {})

@@ -53,7 +53,7 @@
                   <th class="clientView">Precio compra</th>
                   {% endif %}
                   <th class="clientView">Tipo pago</th>
-                  <th class="clientView">Tasa</th>
+                  <th class="clientView">Tasa Mensual</th>
                   <th class="clientView">Fecha entrega</th>
                   <th>Fecha pago</th>
                   <th class="clientView">Destino</th>
@@ -75,7 +75,7 @@
                   <td class="clientView">{{ item.tipo_pago.nombre|default:"Sin definir" }}</td>
                   <td class="clientView">
                     {% if item.tasa == 0 %}
-                      Sin definir
+                      Sin determinar
                     {% else %}
                       {{item.tasa}}
                     {% endif %}

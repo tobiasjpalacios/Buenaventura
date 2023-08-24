@@ -100,7 +100,7 @@ Cotizar
         <br>
 
         <div class="row">
-          <div class="col s12 center-align" id="div-agr-btn" style="padding-left: 10%;">
+          <div class="col s12 center-align" id="div-agr-btn">
             <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila"
               onclick="addRow()" >
               <i id="iconadd"class="material-icons small" style="display: none;">add</i>
@@ -264,17 +264,23 @@ Cotizar
       divS.style.display = "none";
       inpO.style.display = "none";
       document.getElementById("agr_art").classList.remove('btn-agr-change');
-      document.getElementById("iconadd").style.display = "none";
-      document.getElementById("div-agr-btn").style.paddingLeft = "";
+      document.getElementById("agr_art").classList.remove('col');
+      document.getElementById("agr_art").classList.remove('m4');
+      document.getElementById("agr_art").classList.remove('l3');
       document.getElementById("agr_art").style.display = "";
-      
+      document.getElementById("iconadd").style.display = "none";
+      document.getElementById("div-agr-btn").style = "";
     } else {
       divS.style.display = "block";
       inpO.style.display = "block";
       document.getElementById("agr_art").classList.add('btn-agr-change');
-      document.getElementById("iconadd").style.display = "";
+      document.getElementById("agr_art").classList.add('col');
+      document.getElementById("agr_art").classList.add('m4');
+      document.getElementById("agr_art").classList.add('l3');
       document.getElementById("agr_art").style.display = "flex";
+      document.getElementById("iconadd").style.display = "";
       document.getElementById("div-agr-btn").style.paddingLeft = "10%";
+      document.getElementById("div-agr-btn").style.paddingRight = "10%";
     }
   };
 
@@ -434,7 +440,7 @@ Cotizar
     for (var i = 0; i < pago.length; i++) {
       var th2 = document.createElement("th");
       th2.setAttribute("id", "th_" + pago[i] + rowCnt);
-      th2.innerHTML = pago[i];
+      th2.innerHTML = pago[i] == "Tasa" ? "Tasa Mensual" : pago[i];
       tr2.appendChild(th2);
     }
 
@@ -554,6 +560,71 @@ Cotizar
     //       } 
     //   });
     // }
+
+    if (rowCnt <= 1 || document.getElementById('copy-btn'))
+      return;
+
+    var divAgrBtn = document.getElementById('div-agr-btn');
+    
+    var copyBtn = document.createElement('a');
+    copyBtn.setAttribute('id', 'copy-btn');
+    copyBtn.setAttribute('class', 'boton green waves-effect waves-light btn tooltipped btn-agr-change col m4 l3')
+    copyBtn.setAttribute('onclick', 'copyLastRow();')
+
+    var copyIElement = document.createElement('i');
+    copyIElement.setAttribute('class', 'material-icons small');
+    copyIElement.textContent = 'content_copy';
+
+    var copySpan = document.createElement('span');
+    copySpan.textContent = 'Copiar datos'
+
+    copyBtn.appendChild(copyIElement)
+    copyBtn.appendChild(copySpan)
+
+    divAgrBtn.appendChild(copyBtn);
+  }
+
+  function copyLastRow() {
+    if (rowCnt <= 1)
+      return;
+
+    var indexLastRow = rowCnt - 2;
+    var indexCurrentRow = rowCnt - 1;
+    var thElements = $('#thread' + indexLastRow).find('th');
+    var onlyInclude = ["#th_Tipo\\ de\\ pago", "#th_Tasa", "#th_Fecha\\ de\\ pago", "#th_Fecha\\ de\\ entrega", "#th_Destino"];
+    var onlyIncludeLast = [];
+    var onlyIncludeCurrent = [];
+    
+    $.each(onlyInclude, function(index, element) {
+      onlyIncludeLast.push(element+indexLastRow);
+      onlyIncludeCurrent.push(element+indexCurrentRow);
+    });
+
+    $.each(onlyIncludeLast, function(index, element) {
+      var inputLast = $(element).find('input[data-copy="copy"]');
+      var inputCurr = $(onlyIncludeCurrent[index]).find('input[data-copy="copy"]');
+      
+      inputCurr.val(inputLast.val());
+
+      if (element.includes("#th_Tipo") && inputLast.val() == 'CONTADO') {
+        var c = inputCurr.attr('id').match(/\d+/)[0];
+        desactivarTasa(parseInt(c), indexCurrentRow);
+      }
+      else if (inputCurr.attr('class')?.includes('datepicker')) {
+        var dateString = inputLast.val();
+        var parts = dateString.split('/');
+
+        var day = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10) - 1;
+        var year = parseInt(parts[2], 10);
+
+        var newDate = new Date(year, month, day);
+
+        inputCurr.datepicker("setDate", newDate);
+      }
+    });
+
+    M.toast({html: "Datos del artículo n°" + (rowCnt - 1) + " copiados al artículo n°" + rowCnt});
   }
 
   function closeDiv(divName) {
@@ -599,6 +670,10 @@ Cotizar
     hideSend();
     reduceCounter(artRow);
     M.toast({ html: 'Articulo eliminado.' });
+    if (rowCnt <= 1) {
+      var copyBtn = document.getElementById('copy-btn');
+      copyBtn.parentNode.removeChild(copyBtn);
+    }
   }
 
   function reduceCounter(artRow) {
@@ -1049,6 +1124,7 @@ Cotizar
     ele.setAttribute('onchange', 'desactivarTasa(' + c + ', ' + rowCnt + ');');
     ele.setAttribute('placeholder', 'Tipo de pago');
     ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('data-copy', 'copy');
     var datalistPagos = document.createElement('datalist');
     datalistPagos.setAttribute('id', 'datalist' + (c) + '.' + rowCnt);
 
@@ -1071,8 +1147,9 @@ Cotizar
 
 
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
-    ele.setAttribute('placeholder', 'Tasa');
+    ele.setAttribute('placeholder', 'Tasa Mensual');
     ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('data-copy', 'copy');
 
     td.appendChild(ele);
   }
@@ -1085,6 +1162,7 @@ Cotizar
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('placeholder', 'Seleccione Fecha');
     ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('data-copy', 'copy');
     td.appendChild(ele);
     start_datepicker();
   }
@@ -1097,6 +1175,7 @@ Cotizar
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('placeholder', 'Seleccione Fecha');
     ele.setAttribute('autocomplete', 'off');
+    ele.setAttribute('data-copy', 'copy');
     td.appendChild(ele);
     start_datepicker();
   }
@@ -1109,6 +1188,7 @@ Cotizar
     ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
     ele.setAttribute('autocomplete', 'off');
     ele.setAttribute('placeholder', "Destino");
+    ele.setAttribute('data-copy', 'copy');
     td.appendChild(ele);
   }
 
@@ -1121,7 +1201,7 @@ Cotizar
       inputTasa.setAttribute("placeholder","/");
     }else if (inputTasa.disabled) {
       inputTasa.disabled = false;
-      inputTasa.setAttribute("placeholder","Tasa");
+      inputTasa.setAttribute("placeholder","Tasa Mensual");
     }
   }
 
