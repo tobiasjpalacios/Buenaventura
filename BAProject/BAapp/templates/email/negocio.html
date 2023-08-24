@@ -465,7 +465,7 @@
                                                                         <div>
                                                                             <div><strong><u>Identificador de
                                                                                         negocio:</u>
-                                                                                    {{ prop.negocio.get_id_de_neg }}</strong></div>
+                                                                                    {{ negocio.get_id_de_neg }}</strong></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -591,7 +591,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if prop.negocio.estado == "CONFIRMADO" %}
+                    {% if negocio.estado == "CONFIRMADO" %}
                     <div class="u-row-container" style="padding: 0px;background-color: transparent;">
                         <div class="u-row"
                             style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
@@ -691,13 +691,13 @@
                                                             <div class="v-text-align"
                                                                 style="line-height: 180%; text-align: left; word-wrap: break-word;">
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ prop.negocio.vendedor.get_full_name }}
+                                                                    {{ negocio.vendedor.get_full_name }}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ prop.negocio.vendedor.get_razon_social }}
+                                                                    {{ negocio.vendedor.get_razon_social }}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ prop.negocio.vendedor.empresa.domicilio_fiscal }}
+                                                                    {{ negocio.vendedor.empresa.domicilio_fiscal }}
                                                                 </p>
                                                             </div>
 
@@ -750,7 +750,7 @@
                                                                 <p style="font-size: 14px; line-height: 180%;">Articulos
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 180%;">Tasas
-                                                                    aplicadas&ast;</p>
+                                                                    aplicadas*</p>
                                                                 <p style="font-size: 14px; line-height: 180%;"> </p>
                                                                 <p style="font-size: 14px; line-height: 180%;"><span
                                                                         style="font-size: 20px; line-height: 36px;"><strong>Total</strong></span>
@@ -765,7 +765,7 @@
                                                             <div class="v-text-align"
                                                                 style="line-height: 180%; text-align: left; word-wrap: break-word;">
                                                                 <p style="font-size: 14px; line-height: 180%;">${{ prop.calcularPrecio }}</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">+${{ prop.calcularTasa }}</p>
+                                                                <p style="font-size: 14px; line-height: 180%;">+${% formatfloat prop.calcularTasa %}</p>
                                                                 <p style="font-size: 14px; line-height: 180%;"> </p>
                                                                 <p style="font-size: 14px; line-height: 180%;"><span
                                                                         style="font-size: 20px; line-height: 36px;"><strong>${{ prop.calcularTotal }}</strong></span>
@@ -787,7 +787,7 @@
 
                                                             <div class="v-text-align"
                                                                 style="text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px"><small>&ast;Ver detalles en
+                                                                <p style="font-size: 14px"><small>*Ver detalles en
                                                                         productos aceptados</small></p>
                                                             </div>
                                                     </tr>
@@ -931,7 +931,7 @@
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">
                                                                     <strong>Tipo de pago:</strong> {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %}
-                                                                    (tasa {{ art.tasa }}%)
+                                                                    (tasa mensual del {{ art.tasa }}%)
                                                                     {% endif %}
                                                                 </p>
                                                                 <p style="font-size: 14px; line-height: 140%;">

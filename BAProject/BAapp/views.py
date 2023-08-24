@@ -1607,14 +1607,15 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
     if match_vendedor or match_comprador:
         subject = "Se creó un nuevo negocio"
         texto = f"""
-        El nuevo negocio tiene identificador BVi-{negocio.id} y fue creado por {created_by}.
+        El nuevo negocio tiene identificador {negocio.get_id_de_neg()} y fue creado por {created_by}.
         Hacé click en el botón de abajo para ver el nuevo negocio.
         """
         protocol = "http://"
         domain = Site.objects.get_current().domain
         full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id_de_neg,])
-        recipient_list = [negocio.vendedor.email, negocio.comprador.email]
-        context = {'titulo' : subject, 'color' : "", 'texto' : texto, 'obs' : observacion, 'url' : full_negociacion_url}
+        # recipient_list = [negocio.vendedor.email, negocio.comprador.email]
+        recipient_list = [settings.TEMP_TO_EMAIL]
+        context = {'titulo': subject, 'color': "", 'texto': texto, 'obs': observacion, 'url': full_negociacion_url, 'negocio': negocio}
 
         email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
 
@@ -1625,7 +1626,7 @@ def crear_propuesta(negocio,observacion,isComprador):
     propuesta = Propuesta(
         negocio=negocio,
         observaciones=observacion,
-        timestamp=timezone.now(),
+        timestamp=timezone.localtime(),
         envio_comprador=isComprador,
         visto=isComprador,
         )    
@@ -1955,7 +1956,7 @@ class NegocioView(View):
         if all(acc) and not itemsProp.count() == 0:
             if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
                 negocio.estado = "CONFIRMADO"
-                negocio.fecha_cierre = timezone.now()
+                negocio.fecha_cierre = timezone.localtime()
                 negocio.save()
             elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
                 if envio_comprador:
@@ -1972,12 +1973,12 @@ class NegocioView(View):
                     notif.save()
                 else:
                     negocio.estado = "CONFIRMADO"
-                    negocio.fecha_cierre = timezone.now()
+                    negocio.fecha_cierre = timezone.localtime()
                 negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.estado = "CANCELADO"
-            negocio.fecha_cierre = timezone.now()
+            negocio.fecha_cierre = timezone.localtime()
 
         # send email
 
@@ -1986,6 +1987,7 @@ class NegocioView(View):
         negocio_update = False
 
         fecha_cierre = negocio.fecha_cierre
+        print(fecha_cierre)
         if fecha_cierre is not None:
             fecha = formats.date_format(fecha_cierre, "SHORT_DATE_FORMAT")
             hora = formats.time_format(fecha_cierre, "TIME_FORMAT")
@@ -2028,9 +2030,10 @@ class NegocioView(View):
             match_comprador = email_comprador == settings.TEMP_TO_EMAIL
             if match_vendedor or match_comprador:
                 full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
-                recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
-                context = {'titulo' : titulo, 'texto' : texto, 'obs' : observaciones, 'url' : full_negociacion_url, 'articulos' : itemsProp, 'prop' : propuesta}
-                email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+                # recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
+                recipient_list = [settings.TEMP_TO_EMAIL]
+                context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
+                # email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
         else:
             if not negocio.estado == "ESP_CONF":
                 if envio_comprador:

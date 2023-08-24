@@ -19,18 +19,6 @@ DEBUG = strtobool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-
-EMAILJS_API_KEY = os.environ.get('EMAILJS_API_KEY')
-
-EMAILJS_SERVICE_ID = os.environ.get('EMAILJS_SERVICE_ID')
-
-EMAILJS_TEMPLATE_ID = os.environ.get('EMAILJS_TEMPLATE_ID')
-
-EMAILJS_USER_ID = os.environ.get('EMAILJS_USER_ID')
-
-TEMP_TO_EMAIL = os.environ.get('TEMP_TO_EMAIL')
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 AUTH_USER_MODEL = 'BAapp.MyUser'
@@ -127,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ar'
 
-TIME_ZONE = 'America/Buenos_Aires'
+TIME_ZONE = 'America/Argentina/Cordoba'
 
 USE_I18N = True
 
@@ -157,8 +145,17 @@ MEDIA_URL = '/'
 
 SITE_ID = 1
 
+TEMP_TO_EMAIL = os.environ.get('TEMP_TO_EMAIL')
+
 # When DEBUG is set to False
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = 465  # or 465 for SSL
+    EMAIL_USE_TLS = False  # Set to False if using SSL
+    EMAIL_USE_SSL = True  # Set to True if using SSL
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
     
