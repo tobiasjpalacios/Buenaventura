@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-import requests
 
 def email_send(
         subject_email : str, 
