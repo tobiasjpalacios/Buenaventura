@@ -101,7 +101,7 @@ Cotizar
 
         <div class="row">
           <div class="col s12 center-align" id="div-agr-btn">
-            <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila"
+            <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped disabled" data-tooltip="Añadir una fila"
               onclick="addRow()" >
               <i id="iconadd"class="material-icons small" style="display: none;">add</i>
               <span>Agregar Artículo</span>
@@ -233,6 +233,8 @@ Cotizar
     });
 
     hideSend();
+
+    $('#agr_art').removeClass('disabled');
   });
 
   $(document).ready(function () {

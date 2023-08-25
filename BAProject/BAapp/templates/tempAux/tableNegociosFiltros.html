@@ -14,7 +14,7 @@
         <td>{{negocio.get_tipo_de_negocio_display|default:'N/E'}}</td>
         <td>{{negocio.vendedor.get_full_name}}</td>
         {% if request.user.clase == "Vendedor"%}
-            {% if negocio.estado == "CONFIRMADO" %}
+            {% if negocio.is_confirmado %}
                 <td> 
                 {% if negocio.proveedores %}
                     <div style="overflow-y: scroll; height: 150px;" >
@@ -28,7 +28,7 @@
                     N/E
                 {% endif %}
                 </td>
-            {% elif negocio.estado == 'CANCELADO' %}
+            {% elif negocio.is_cancelado %}
                 <td>N/E</td>
             {% else %}
                 <td>Por Definir</td>

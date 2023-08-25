@@ -115,7 +115,7 @@
                     });
                   </script>
                 {% endfor %}
-                {% if not negocio.estado == "CONFIRMADO" and not negocio.estado == "ESP_CONF" %}
+                {% if not negocio.is_confirmado and not negocio.is_esp_conf %}
                   <tr id="extra">
                     <td>
                       <input class="art-search" type="text" name='articulo' id='artSearch0' list="artDatalist0" placeholder="Articulo">
@@ -173,7 +173,7 @@
             <textarea class="materialize-textarea" id="observaciones" name="observaciones" cols="30" rows="10" placeholder="No hay observaciones">{{ prop.observaciones }}</textarea>
             <br><br>
             <a class="send-btn no-shadow bv-green waves-effect waves-light btn" id="send-prop-btn" onclick="beforeSubmit(true);" disabled>Enviar</a>
-            {% if negocio.estado == "ESP_CONF" and request.user.clase == "Vendedor" %}
+            {% if negocio.is_esp_conf and request.user.clase == "Vendedor" %}
             <a class="send-btn no-shadow bv-green waves-effect waves-light btn" id="conf-neg-btn" onclick="beforeSubmit(false);">Confirmar negocio</a>
             {% endif %}
           </div>

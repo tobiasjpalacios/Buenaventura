@@ -56,7 +56,7 @@ Negociación {{ negocio.get_id_de_neg }}
 {% include "negocio/table_history.html" %}
 {% endif %}
  
-{% if not negocio.estado == "ESP_CONF" or not request.user.clase == "Comprador" %}
+{% if not negocio.is_esp_conf or not request.user.clase == "Comprador" %}
 {% if forloop.last %}
 {% include "negocio/table_edit.html" %}
 {% endif %}
@@ -64,20 +64,20 @@ Negociación {{ negocio.get_id_de_neg }}
 
 {% endfor %}
 
-{% if negocio.estado == "CANCELADO" %}
+{% if negocio.is_cancelado %}
 <div class="canceled" id="canceled">
   <h2>Negocio cancelado ✗</h2>
   <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
 </div>
 {% endif %}
-{% if negocio.estado == "ESP_CONF" and request.user.clase == "Comprador" %}
+{% if negocio.is_esp_conf and request.user.clase == "Comprador" %}
 <div class="approved" id="approved">
   <h2>Esperando confirmación del vendedor ◌</h2>
   <p><strong>El vendedor está chequeando los datos. En cuanto lo haga, serás notificado vía e-mail.</strong></p>
 </div>
 {% endif %}
 
-{% if negocio.estado == "CONFIRMADO" %}
+{% if negocio.is_confirmado %}
 <div class="approved" id="approved">
   <h2>Negocio confirmado ✓</h2>
   <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
@@ -102,7 +102,7 @@ Negociación {{ negocio.get_id_de_neg }}
   <ul>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.id_de_neg %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
-    {% if negocio.estado == "CONFIRMADO" %}
+    {% if negocio.is_confirmado %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
     {% endif %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
@@ -151,10 +151,10 @@ Negociación {{ negocio.get_id_de_neg }}
       edits.items[index].isNew = false;
     });
     
-    "{% if negocio.estado == 'CONFIRMADO' %}"
+    "{% if negocio.is_confirmado %}"
     isAccepted = true;
     "{% endif %}"
-    "{% if negocio.estado == 'CANCELADO' %}"
+    "{% if negocio.is_cancelado %}"
     isCanceled = true;
     "{% endif %}"
 
@@ -183,9 +183,9 @@ Negociación {{ negocio.get_id_de_neg }}
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
     var elId;
-    "{% if negocio.estado == 'CONFIRMADO' or negocio.estado == 'ESP_CONF' and request.user.clase == 'Comprador' %}"
+    "{% if negocio.is_confirmado or negocio.is_esp_conf and request.user.clase == 'Comprador' %}"
     elId = "#approved"
-    "{% elif negocio.estado == 'CANCELADO' %}"
+    "{% elif negocio.is_cancelado %}"
     elId = "#canceled"
     "{% else %}"
     elId = "#form-table-div"
@@ -349,8 +349,10 @@ Negociación {{ negocio.get_id_de_neg }}
       }
     });
 
-    unsavedChanges = false;
+    {% if not negocio.is_confirmado %}
     edits.items[index].aceptado = false;
+    {% endif %}
+    unsavedChanges = false;
     $tr.css('background-color', '');
     $tr.data('issaved', false);
     $("#accept-" + index).addClass("disabled");
@@ -361,7 +363,9 @@ Negociación {{ negocio.get_id_de_neg }}
 
     var $tr = $($("#form")[0].rows[index+1]);
     
+    {% if not negocio.is_confirmado %}
     edits.items[index].aceptado = false;
+    {% endif %}
     $tr.css('background-color', '');
     $tr.data('issaved', false);
     $("#save-" + index).addClass("blinkSave");
@@ -606,7 +610,7 @@ Negociación {{ negocio.get_id_de_neg }}
     var proc = {}
     var errors = false;
     var errorFields = [];
-    var esp_conf = {% if negocio.estado == "ESP_CONF" %} true {% else %} false {% endif %}
+    var esp_conf = {% if negocio.is_esp_conf %} true {% else %} false {% endif %}
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {

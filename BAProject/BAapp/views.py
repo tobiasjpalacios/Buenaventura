@@ -77,7 +77,7 @@ class Info_negocioView(View):
         if ("pk" in kwargs):
             idNeg = kwargs["pk"]
             negocio = Negocio.objects.get(id_de_neg=idNeg)
-            propuesta = Propuesta.objects.filter(negocio=negocio).first()
+            propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-pk').first()
             idProp = propuesta.id
             grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
@@ -432,6 +432,8 @@ def filtrarNegocios(request):
         filters &= Q(vendedor__pk__in=list_vendedores)
     if estados != 'todos':
         list_estados = ast.literal_eval(estados)
+        if "CONFIRMADO" in list_estados:
+            list_estados.append("YA_CONFIRMADO")
         filters &= Q(estado__in=list_estados)
     if tipo != 'todos':
         filters &= Q(tipo_de_negocio=tipo)
@@ -455,7 +457,7 @@ def filtrarNegocios(request):
             prop = Propuesta.objects.filter(negocio=neg).last()
             neg.id_prop = prop.id
 
-            if neg.estado == "CONFIRMADO":
+            if neg.is_confirmado():
                 item_prop_list = ItemPropuesta.objects.filter(propuesta=prop)
                 neg.proveedores = populate_proveedores(item_prop_list)
         except AttributeError:
@@ -1954,11 +1956,10 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
+            if negocio.is_esp_conf() and not envio_comprador and not isSend:
                 negocio.estado = "CONFIRMADO"
                 negocio.fecha_cierre = timezone.localtime()
-                negocio.save()
-            elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
+            elif not negocio.is_esp_conf() and not negocio.is_confirmado():
                 if envio_comprador:
                     negocio.estado = "ESP_CONF"
                     titulo = "Negocio pendiente de confirmación"
@@ -1974,7 +1975,10 @@ class NegocioView(View):
                 else:
                     negocio.estado = "CONFIRMADO"
                     negocio.fecha_cierre = timezone.localtime()
-                negocio.save()
+            elif negocio.is_confirmado():
+                negocio.estado = "YA_CONFIRMADO"
+                
+        negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.estado = "CANCELADO"
@@ -1987,7 +1991,6 @@ class NegocioView(View):
         negocio_update = False
 
         fecha_cierre = negocio.fecha_cierre
-        print(fecha_cierre)
         if fecha_cierre is not None:
             fecha = formats.date_format(fecha_cierre, "SHORT_DATE_FORMAT")
             hora = formats.time_format(fecha_cierre, "TIME_FORMAT")
@@ -1998,19 +2001,25 @@ class NegocioView(View):
         pos_text = "Hacé click en el botón de abajo para ver el historial de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
-        if negocio.estado == "CONFIRMADO":
+        if negocio.is_ya_confirmado():
+            titulo = f"El presupuesto confirmado de {request.user.get_full_name()} ha sido modificado"
+            texto = f"""
+            El negocio que cerró el día {formatted_fecha_cierre} fue modificado.
+            {pos_text}
+            """
+        elif negocio.is_confirmado():
             titulo = f"{pre_titulo} confirmado"
             texto = f"""
             {pre_text} confirmado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.estado == "CANCELADO":
+        elif negocio.is_cancelado():
             titulo = f"{pre_titulo} cancelado"
             texto = f"""
             {pre_text} cancelado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.estado == "ESP_CONF" and envio_comprador:
+        elif negocio.is_esp_conf() and envio_comprador:
             titulo = f"{pre_titulo} actualizado. El cliente está esperando tu confirmación"
             texto = f"""
             {pre_text} actualizado.
@@ -2019,8 +2028,6 @@ class NegocioView(View):
             """
         else:
             negocio_update = True
-
-        # print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
             # NOTE: se manda email de confirmacion solo para usuario TEMP_TO_EMAIL a pedido del cliente
@@ -2033,15 +2040,15 @@ class NegocioView(View):
                 # recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
                 recipient_list = [settings.TEMP_TO_EMAIL]
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
-                # email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+                email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
         else:
-            if not negocio.estado == "ESP_CONF":
+            if not negocio.is_esp_conf():
                 if envio_comprador:
                     negocio.estado = "RECIBIDO"
                 else:
                     negocio.estado = "NEGOCIACION"
                 negocio.save()
-            elif negocio.estado == "ESP_CONF" and not envio_comprador and isSend:
+            elif negocio.is_esp_conf() and not envio_comprador and isSend:
                 negocio.estado = "NEGOCIACION"
                 negocio.save()
                 

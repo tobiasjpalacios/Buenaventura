@@ -132,6 +132,24 @@ class Negocio(models.Model):
 
     def get_id_de_neg(self):
         return f"BVi-{self.id_de_neg}"
+    
+    def is_recibido(self):
+        return self.estado == "RECIBIDO"
+    
+    def is_negociacion(self):
+        return self.estado == "NEGOCIACION"
+    
+    def is_esp_conf(self):
+        return self.estado == "ESP_CONF"
+    
+    def is_confirmado(self):
+        return self.estado == "CONFIRMADO" or self.is_ya_confirmado()
+    
+    def is_cancelado(self):
+        return self.estado == "CANCELADO"
+    
+    def is_ya_confirmado(self):
+        return self.estado == "YA_CONFIRMADO"
 
 
 class Propuesta(models.Model):

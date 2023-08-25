@@ -104,7 +104,7 @@
   </div>
 </div>
 
-{% if negocio.estado == "CONFIRMADO" %}
+{% if negocio.is_confirmado %}
 <script>
   $(document).ready(function () {
     var isBeforeFechaCierre = false;
