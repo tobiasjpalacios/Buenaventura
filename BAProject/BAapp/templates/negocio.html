@@ -67,7 +67,7 @@ Negociación {{ negocio.get_id_de_neg }}
 {% if negocio.is_cancelado %}
 <div class="canceled" id="canceled">
   <h2>Negocio cancelado ✗</h2>
-  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre | date:'H:i' }} hs</strong></p>
 </div>
 {% endif %}
 {% if negocio.is_esp_conf and request.user.clase == "Comprador" %}
@@ -80,7 +80,7 @@ Negociación {{ negocio.get_id_de_neg }}
 {% if negocio.is_confirmado %}
 <div class="approved" id="approved">
   <h2>Negocio confirmado ✓</h2>
-  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre | date:'H:i' }} hs</strong></p>
   <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
 </div>
 
