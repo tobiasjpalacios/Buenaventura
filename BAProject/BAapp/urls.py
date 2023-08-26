@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from BAapp.views import *
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 apipatters = [
     path('articulos/',APIArticulos.as_view() , name="api_articulos"),
@@ -15,14 +16,14 @@ apipatters = [
 urlpatterns = [
     path('', landing_page, name='home'),
     path('administrar/', admin, name="admin"),
-    path('testeo/', testeo, name="testeo"),
+    path('testeo/', testeo, name="testeo") if settings.DEBUG else None,
     path('chat/', chat, name="chat"),
     path('cliente/', cliente, name="Cliente"),
     path('create-alerta-nv/', createAlertaNV, name="createAlertaNV"),
     path('password/',PasswordsChangeView.as_view(template_name="tempAux/changePassword.html")),
     path('success-password/', successPassword, name="successPassword"),
     path('vendedor/', vendedor, name="vendedor"),
-    path('router/', check_user_group_after_login, name="router"),
+    # path('router/', check_user_group_after_login, name="router"),
     path('vista-administrador/', vistaAdministrador, name="vistaAdministrador"),
     path('vista-logistica/', vistaLogistica, name="vistaLogistica"),
     path('vista-proveedor/', vistaProveedor, name="vistaProveedor"),
