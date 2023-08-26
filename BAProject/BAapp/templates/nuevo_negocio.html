@@ -751,7 +751,7 @@ Cotizar
   }
 
   function showAlert() {
-    swal({
+    Swal.fire({
       icon: "warning",
       title: "Advertencia",
       text: "¿Desea realizar una propuesta?",
@@ -915,6 +915,15 @@ Cotizar
   function submit() {
     var empTab = document.getElementById('empTable');
     if (validateData(rowCnt)) {
+      Swal.fire({
+        text: 'Creando negocio...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        }
+      });
       var dict = [];
       var inputComp = $('option[value="' + $('#inputComp').val() + '"]').attr('id');
       var vendedor = document.getElementById('vendedorSpanEmail');
@@ -990,7 +999,7 @@ Cotizar
       for (var i = 0; i < errors.length; i++) {
         print_errors = print_errors.concat('\n' + errors[i])
       }
-      swal({
+      Swal.fire({
         title: "Oops!",
         text: print_errors,
         buttons: false,

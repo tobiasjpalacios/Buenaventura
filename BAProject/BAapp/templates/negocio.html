@@ -650,7 +650,7 @@ Negociación {{ negocio.get_id_de_neg }}
       text = "Estás a punto de enviar una nueva propuesta.\n¿Deseas continuar con la operación?";
     }
     if (unsavedChanges) {
-      swal({
+      Swal.fire({
         title: "Cambios sin guardar",
         text: "Revisá si algún botón de guardado parpadea,\nsi es así, guardá los cambios.\n¿Deseas continuar?",
         buttons: {
@@ -668,7 +668,7 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function openSwalForSubmit(icon, title, text, isSend) {
-    swal({
+    Swal.fire({
       icon: icon,
       title: title,
       text: text,
@@ -736,7 +736,7 @@ Negociación {{ negocio.get_id_de_neg }}
       print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
-      swal({
+      Swal.fire({
         title: "Oops!",
         text: print_errors,
         buttons: {
@@ -746,6 +746,15 @@ Negociación {{ negocio.get_id_de_neg }}
       });
     }
     else {
+      Swal.fire({
+        text: 'Enviando propuesta...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        }
+      });
       fetch("",{
         method:'POST',
         headers: {
