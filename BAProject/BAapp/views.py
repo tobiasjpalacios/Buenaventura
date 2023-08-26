@@ -494,9 +494,25 @@ def getProveedoresNegocio(negocio):
 
 def testeo(request):
 
-    titulo = request.GET.get('titulo')
+    titulo = "Tu pedido ha sido recibido"
 
-    return render(request, 'email/negocio.html', {'titulo':titulo})
+    negocio = Negocio.objects.get(id_de_neg=2001)
+
+    texto = "jaja"
+
+    propuesta = Propuesta.objects.filter(negocio=negocio).last()
+    itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
+
+    observaciones = "jeje"
+
+    full_negociacion_url = "https://www.google.com"
+
+    recipient_list = [settings.TEMP_TO_EMAIL]
+
+    context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
+    # email_send("Testeando", recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+
+    return render(request, 'email/negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
