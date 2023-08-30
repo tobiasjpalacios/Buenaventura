@@ -66,7 +66,7 @@
   
     </style>
     <style type="text/css">
-    @media screen and (max-width: 479px) { .side-logo { display: none !important; } }
+    @media screen and (max-width: 479px) { .side-logo { display: none !important; } .product-column { padding: 10px 0px 10px 0px !important } } .product-column { padding: 40px 0px 40px 0px }
     </style>
     
   </head>
@@ -171,7 +171,8 @@
                   
       <div
          style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:600;line-height:1;text-align:left;color:#000000;"
-      ><h1>{{ titulo }}</h1></div>
+      ><h1>{{ titulo }}</h1>
+          <p><span style="text-decoration: underline">Identificador de negocio:</span> {{ negocio.get_id_de_neg }}</p></div>
     
                 </td>
               </tr>
@@ -204,12 +205,24 @@
               <a
                  href="{{ url }}" style="display:inline-block;background:#4FAD31;color:#ffffff;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"
               >
-                Ir a {{ categoria }}
+                Ir a negociación
               </a>
             </td>
           </tr>
         </tbody>
       </table>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="justify" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:justify;color:#000000;"
+      ><p>Observaciones: {{ obs | default:'No hay observaciones' }}</p></div>
     
                 </td>
               </tr>

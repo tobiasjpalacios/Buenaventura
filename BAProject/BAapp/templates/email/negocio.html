@@ -1,814 +1,615 @@
 {% load multiply %}
 {% load formatfloat %}
-<!DOCTYPE HTML
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:o="urn:schemas-microsoft-com:office:office">
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="x-apple-disable-message-reformatting">
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+  <head>
+    <title>
+      
+    </title>
+    <!--[if !mso]><!-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-
+    <!--<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;600&display=swap');
-
-        @media only screen and (min-width: 680px) {
-            .u-row {
-                width: 900px !important;
-            }
-
-            .u-row .card {
-                width: 50% !important;
-                float: left;
-            }
-
-            .u-row .u-col {
-                vertical-align: top;
-            }
-
-            .u-row .u-col-16p67 {
-                width: 60px !important;
-            }
-
-            .u-row .u-col-33p33 {
-                width: 200px !important;
-            }
-
-            .u-row .u-col-100 {
-                width: 900px !important;
-            }
-
-            .container__wrapper {
-                display: flex !important;
-                height: 100% !important;
-                width: 100% !important;
-            }
-            
-            .container__wrapper>img {
-                margin-left: 155px !important;
-                margin-top: 80px;
-                user-select: none !important;
-            }
-
-        }
-
-        @media (max-width: 680px) {
-            .u-row-container {
-                max-width: 100% !important;
-                padding-left: 0px !important;
-                padding-right: 0px !important;
-            }
-
-            .u-row .u-col {
-                min-width: 320px !important;
-                max-width: 100% !important;
-                display: block !important;
-            }
-
-            .u-row {
-                width: calc(100% - 40px) !important;
-            }
-
-            .u-col {
-                width: 100% !important;
-            }
-
-            .u-col>div {
-                margin: 0 auto;
-            }
-
-            .u-row .card {
-                width: 100% !important;
-            }
-
-            .container__wrapper {
-                display: none !important;
-            }
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        table,
-        tr,
-        td {
-            vertical-align: top;
-            border-collapse: collapse;
-        }
-
-        p {
-            margin: 0;
-        }
-
-        .ie-container table,
-        .mso-container table {
-            table-layout: fixed;
-        }
-
-        * {
-            line-height: inherit;
-        }
-
-        a[x-apple-data-detectors='true'] {
-            color: inherit !important;
-            text-decoration: none !important;
-        }
-
-        table,
-        td {
-            color: #000000;
-        }
-
-        #u_body a {
-            color: #0000ee;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
-            #u_content_image_5 .v-src-width {
-                width: auto !important;
-            }
-
-            #u_content_image_5 .v-src-max-width {
-                max-width: 35% !important;
-            }
-
-            #u_content_heading_1 .v-container-padding-padding {
-                padding: 60px 10px 0px !important;
-            }
-
-            #u_content_heading_1 .v-font-size {
-                font-size: 28px !important;
-            }
-
-            #u_content_image_1 .v-src-width {
-                width: auto !important;
-            }
-
-            #u_content_image_1 .v-src-max-width {
-                max-width: 90% !important;
-            }
-
-            #u_content_heading_2 .v-container-padding-padding {
-                padding: 0px 10px 5px !important;
-            }
-
-            #u_content_heading_2 .v-font-size {
-                font-size: 24px !important;
-            }
-
-            #u_content_heading_3 .v-font-size {
-                font-size: 20px !important;
-            }
-
-            #u_content_text_14 .v-container-padding-padding {
-                padding: 60px 10px 10px !important;
-            }
-
-            #u_content_heading_6 .v-font-size {
-                font-size: 24px !important;
-            }
-
-            #u_content_text_6 .v-container-padding-padding {
-                padding: 60px 10px 10px !important;
-            }
-
-            #u_content_text_9 .v-container-padding-padding {
-                padding: 30px 10px 60px !important;
-            }
-
-            #u_content_text_4 .v-container-padding-padding {
-                padding: 60px 10px 10px !important;
-            }
-
-            #u_content_text_7 .v-container-padding-padding {
-                padding: 30px 10px 60px !important;
-            }
-
-            #u_content_text_5 .v-container-padding-padding {
-                padding: 60px 10px 10px !important;
-            }
-
-            #u_content_text_8 .v-container-padding-padding {
-                padding: 30px 10px 60px !important;
-            }
-
-            #u_content_image_3 .v-src-width {
-                width: auto !important;
-            }
-
-            #u_content_image_3 .v-src-max-width {
-                max-width: 20% !important;
-            }
-
-            #u_content_text_12 .v-text-align {
-                text-align: left !important;
-            }
-
-            #u_content_text_13 .v-container-padding-padding {
-                padding: 5px 10px 0px !important;
-            }
-
-            #u_content_text_13 .v-text-align {
-                text-align: left !important;
-            }
-
-            #u_content_image_2 .v-container-padding-padding {
-                padding: 60px 10px 10px !important;
-            }
-
-            #u_content_image_2 .v-src-width {
-                width: auto !important;
-            }
-
-            #u_content_image_2 .v-src-max-width {
-                max-width: 22% !important;
-            }
-
-            #u_content_text_10 .v-text-align {
-                text-align: left !important;
-            }
-
-            #u_content_text_11 .v-container-padding-padding {
-                padding: 5px 10px 0px !important;
-            }
-
-            #u_content_text_11 .v-text-align {
-                text-align: left !important;
-            }
-
-            #u_content_text_3 .v-container-padding-padding {
-                padding: 0px 10px 10px !important;
-            }
-
-            #u_content_text_15 .v-container-padding-padding {
-                padding: 10px 10px 60px !important;
-            }
-        }
+      #outlook a { padding:0; }
+      body { margin:0;padding:0;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%; }
+      table, td { border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt; }
+      img { border:0;height:auto;line-height:100%; outline:none;text-decoration:none;-ms-interpolation-mode:bicubic; }
+      p { display:block;margin:13px 0; }
     </style>
+    <!--[if mso]>
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+    <!--[if lte mso 11]>
+    <style type="text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
+    
+      <!--[if !mso]><!-->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat" rel="stylesheet" type="text/css">
+        <style type="text/css">
+          @import url(https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700);
+@import url(https://fonts.googleapis.com/css2?family=Montserrat);
+        </style>
+      <!--<![endif]-->
 
+    
+    
+    <style type="text/css">
+      @media only screen and (min-width:480px) {
+        .mj-column-per-100 { width:100% !important; max-width: 100%; }
+.mj-column-per-50 { width:50% !important; max-width: 50%; }
+.mj-column-per-25 { width:25% !important; max-width: 25%; }
+      }
+    </style>
+    <style media="screen and (min-width:480px)">
+      .moz-text-html .mj-column-per-100 { width:100% !important; max-width: 100%; }
+.moz-text-html .mj-column-per-50 { width:50% !important; max-width: 50%; }
+.moz-text-html .mj-column-per-25 { width:25% !important; max-width: 25%; }
+    </style>
+    
+  
+    <style type="text/css">
+    
+    
 
-
-    <link href="https://fonts.googleapis.com/css?family=Rubik:400,700&display=swap" rel="stylesheet" type="text/css">
-
-</head>
-
-<body class="clean-body u_body"
-    style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #459A33; color: #000000">
-    <table id="u_body"
-        style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #459A33;width:100%"
-        cellpadding="0" cellspacing="0">
-        <tbody>
-            <tr style="vertical-align: top">
-                <td style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
-
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div
-                                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-
-                                <div class="u-col u-col-100"
-                                    style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                                    <div
-                                        style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <div
-                                            style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-
-                                            <table id="u_content_image_5" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <table width="100%" cellpadding="0" cellspacing="0"
-                                                                border="0">
-                                                                <tr>
-                                                                    <td class="v-text-align"
-                                                                        style="padding-right: 0px;padding-left: 0px;"
-                                                                        align="center">
-
-                                                                        <img src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/develop/BAProject/BAapp/static/images/Buenaventura-blanco.png" alt="" width="166" height="41">
-
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>        
+    @media only screen and (max-width:480px) {
+      table.mj-full-width-mobile { width: 100% !important; }
+      td.mj-full-width-mobile { width: auto !important; }
+    }
+  
+    </style>
+    <style type="text/css">
+    @media screen and (max-width: 479px) { .side-logo { display: none !important; } .product-column { padding: 10px 0px 10px 0px !important } } .product-column { padding: 40px 0px 40px 0px }
+    </style>
+    
+  </head>
+  <body style="word-spacing:normal;background-color:#4FAD31;">
+    
+    
+      <div
+         style="background-color:#4FAD31;"
+      >
+        
+      
+      <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#4FAD31" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    
+      
+      <div  style="background:#4FAD31;background-color:#4FAD31;margin:0px auto;max-width:600px;">
+        
+        <table
+           align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#4FAD31;background-color:#4FAD31;width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;"
+              >
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:600px;" ><![endif]-->
             
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div
-                                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: #ffffff;">
-
-                                <div class="u-col u-col-100"
-                                    style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                                    <div style="background-color: #ffffff;height: 100%;width: 100% !important;">
-                                        <div
-                                            style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;">
-
-                                            <table id="u_content_heading_1"
-                                                style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                                cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:50px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <h1 class="v-text-align v-font-size"
-                                                                style="margin-left: 20px; line-height: 100%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: 'Rubik',sans-serif; font-size: 30px;">
-                                                                <div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <div>
-                                                                                <div>
-                                                                                    <div>
-                                                                                        <div>
-                                                                                            <div>
-                                                                                                <div>
-                                                                                                    <div><strong> {{ titulo }}
-                                                                                                        </strong>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </h1>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-
-
-                                            <table id="u_content_heading_2"
-                                                style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                                cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 5px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <h1 class="v-text-align v-font-size"
-                                                                style="margin-left: 20px; line-height: 100%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: 'Rubik',sans-serif; font-size: 18px;">
-                                                                <div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <div><strong><u>Identificador de
-                                                                                        negocio:</u>
-                                                                                    {{ negocio.get_id_de_neg }}</strong></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </h1>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <table id="u_content_heading_3"
-                                                style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                                cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:0px 10px 60px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <h1 class="v-text-align v-font-size"
-                                                                style="margin-left: 20px; line-height: 100%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: 'Montserrat',sans-serif; font-size: 18px;">
-                                                                <div>
-                                                                    <div>
-                                                                        <div>{{ texto }}
-
-                                                                            <div class="v-text-align" align="left"
-                                                                                style="padding: 30px 30px 30px 0px;">
-                                                                                <a href="{{ url }}" target="_blank"
-                                                                                    class="v-button"
-                                                                                    style="box-sizing: border-box;display: inline-block;font-family:'Montserrat',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #459A33; border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
-                                                                                    <span
-                                                                                        style="display:block;padding:10px 20px;line-height:120%;"><span
-                                                                                            style="font-size: 14px; line-height: 16.8px;">Ir
-                                                                                            a negociación</span></span>
-                                                                                </a>
-                                                                            </div>
-
-                                                                            Observaciones: {{ obs | default:'No hay observaciones' }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </h1>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container__wrapper">
-                                    <img src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/error_fix/BAProject/BAapp/static/images/logo-BV-email.png" alt="" width="147" height="281">
-                                </div>
-                        </div>
-                    </div>
-                    {% if negocio.is_confirmado %}
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent;">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div
-                                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-
-                                <div class="u-col u-col-100"
-                                    style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                                    <div
-                                        style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <div
-                                            style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-
-                                            <table id="u_content_heading_6"
-                                                style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                                cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <h1 class="v-text-align v-font-size"
-                                                                style="margin: 0px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: normal; font-family: 'Rubik',sans-serif; font-size: 20px;color: white;">
-                                                                <div>
-                                                                    <div>
-                                                                        <div>
-                                                                            <div><strong><u>Resumen del
-                                                                                        pedido</u></strong>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </h1>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div
-                                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-
-                                <div class="u-col u-col-33p33"
-                                    style="max-width: 320px;min-width: 200px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;">
-                                        <div style="height: 100%; padding: 0px;">
-
-                                            <table id="u_content_text_6" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="color: #ffffff; line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong><span
-                                                                            style="font-family: Rubik, sans-serif; font-size: 24px;">
-                                                                            <span
-                                                                                style="font-size: 18px; line-height: 33.6px;"><span
-                                                                                    style="font-size: 18px;">Informacion
-                                                                                    de la facturacion</span></span>
-                                                                        </span></strong>
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <table id="u_content_text_9" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 60px;font-family: 'Montserrat',sans-serif;color: white;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="line-height: 180%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.get_full_name }}
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.get_razon_social }}
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 180%;">
-                                                                    {{ negocio.vendedor.empresa.domicilio_fiscal }}
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="u-col u-col-33p33"
-                                    style="max-width: 320px;min-width: 200px;display: table-cell;vertical-align: top;">
-                                    <div style="height: 100%;width: 100% !important;">
-                                        <div style="height: 100%; padding: 0px;">
-
-                                            <table id="u_content_text_4" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="color: #ffffff; line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong><span
-                                                                            style="font-family: Rubik, sans-serif; font-size: 18px; line-height: 33.6px;">
-                                                                            Resumen del pedido</span></strong>
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <table id="u_content_text_7" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;color: white;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="line-height: 180%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 180%;">Articulos
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 180%;">Tasas
-                                                                    aplicadas*</p>
-                                                                <p style="font-size: 14px; line-height: 180%;"> </p>
-                                                                <p style="font-size: 14px; line-height: 180%;"><span
-                                                                        style="font-size: 20px; line-height: 36px;"><strong>Total</strong></span>
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 10px;font-family: 'Montserrat',sans-serif;color: white;"
-                                                            align="rigth">
-
-                                                            <div class="v-text-align"
-                                                                style="line-height: 180%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 180%;">${{ prop.calcularPrecio }}</p>
-                                                                <p style="font-size: 14px; line-height: 180%;">+${% formatfloat prop.calcularTasa %}</p>
-                                                                <p style="font-size: 14px; line-height: 180%;"> </p>
-                                                                <p style="font-size: 14px; line-height: 180%;"><span
-                                                                        style="font-size: 20px; line-height: 36px;"><strong>${% formatfloat prop.calcularTotal %}</strong></span>
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            <table id="u_content_text_7" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:10px 10px 60px;font-family: 'Montserrat',sans-serif;color: white;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px"><small>*Ver detalles en
-                                                                        productos entregados</small></p>
-                                                            </div>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
-                            <div
-                                style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-
-                                <div class="u-col u-col-100"
-                                    style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                                    <div
-                                        style="background-color: #ffffff;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <div
-                                            style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-
-                                            <table style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                                cellpadding="0" cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <h1 class="v-text-align v-font-size"
-                                                                style="padding-left: 20px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: 600; font-family: 'Rubik',sans-serif; font-size: 20px;">
-                                                                <div>
-                                                                    <div><u>Productos entregados</u></div>
-                                                                </div>
-                                                            </h1>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="u-row-container"
-                        style="padding: 0px;margin-bottom: 60px;background-color: transparent;">
-                        <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;height: 100%;overflow: auto;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;">
-                            {% for art in articulos %}
-                            <div class="card"
-                                style="border-collapse: collapse;display: table;height: 100%;background-color: transparent;">
-                                <div class="u-col u-col-16p67"
-                                    style="display: table-cell;vertical-align: middle; min-width: 150px;background: #ffffff;">
-                                    <div style="background-color: #ffffff;height: 100%;width: 100% !important;">
-                                        <div style="height: 100%;display: flex;align-items: center;">
-
-                                            <table id="u_content_image_3" role="presentation" cellpadding="0"
-                                                cellspacing="0" width="100%" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:0px 0px;"
-                                                            align="left">
-
-                                                            <table width="100%" cellpadding="0" cellspacing="0"
-                                                                border="0">
-                                                                <tr>
-                                                                    <td class="v-text-align"
-                                                                        style="padding-right: 0px;padding-left: 0px;"
-                                                                        align="center">
-
-                                                                        <img align="center" border="0"
-                                                                            src="https://via.placeholder.com/150x150.png?text={{ forloop.counter }}"
-                                                                            alt="{{ art.articulo }}"
-                                                                            title="{{ art.articulo }}"
-                                                                            style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 80%;max-width: 150px;"
-                                                                            width="150" />
-
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="u-col u-col-33p33"
-                                    style="max-width: 320px;min-width: 200px;display: table-cell;vertical-align: top;">
-                                    <div
-                                        style="background-color: #ffffff;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                        <div
-                                            style="height: 100%; padding: 20px 20px 20px 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-
-                                            <table id="u_content_text_12" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:15px 10px 0px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 140%;"><span
-                                                                        style="font-size: 14px; line-height: 22.4px;"><strong>{{ art.articulo }}</strong></span></p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <table id="u_content_text_13" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:5px 10px 10px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <div class="v-text-align"
-                                                                style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                                                <p style="font-size: 14px; line-height: 140%;">${% multiply art.precio_venta art.cantidad %}</p>
-                                                                <br>
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Precio unitario:</strong> ${% formatfloat art.precio_venta %} x {% formatfloat art.cantidad %} u.
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Tipo de pago:</strong> {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %}
-                                                                    (tasa mensual del {{ art.tasa }}%)
-                                                                    {% endif %}
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Fecha de entrega:</strong> {{ art.fecha_entrega }}
-                                                                </p>
-                                                                <p style="font-size: 14px; line-height: 140%;">
-                                                                    <strong>Fecha de pago:</strong> {{ art.fecha_pago }}
-                                                                </p>
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-                </td>
-            </tr>
+      <div
+         class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"
+      >
+        <tbody>
+          <tr>
+            <td  style="width:166px;">
+              
+      <img
+         height="auto" src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/develop/BAProject/BAapp/static/images/Buenaventura-blanco.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="166"
+      />
+    
+            </td>
+          </tr>
         </tbody>
-    </table>
-</body>
+      </table>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    
+      
+      <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="white" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    
+      
+      <div  style="background:white;background-color:white;margin:0px auto;max-width:600px;">
+        
+        <table
+           align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:white;background-color:white;width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;"
+              >
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:300px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:600;line-height:1;text-align:left;color:#000000;"
+      ><h1>{{ titulo }}</h1>
+          <p><span style="text-decoration: underline">Identificador de negocio:</span> {{ negocio.get_id_de_neg }}</p></div>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="justify" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:justify;color:#000000;"
+      ><p>{{ texto }}</p></div>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="left" vertical-align="middle" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"
+      >
+        <tbody>
+          <tr>
+            <td
+               align="center" bgcolor="#4FAD31" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#4FAD31;" valign="middle"
+            >
+              <a
+                 href="{{ url }}" style="display:inline-block;background:#4FAD31;color:#ffffff;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"
+              >
+                Ir a negociación
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="justify" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:justify;color:#000000;"
+      ><p>Observaciones: {{ obs | default:'No hay observaciones' }}</p></div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:300px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="right" class="side-logo" style="font-size:0px;padding:10px 25px;padding-right:0px;word-break:break-word;"
+                >
+                  
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"
+      >
+        <tbody>
+          <tr>
+            <td  style="width:147px;">
+              
+      <img
+         height="281" src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/error_fix/BAProject/BAapp/static/images/logo-BV-email.png" style="border:0;display:block;outline:none;text-decoration:none;height:281px;width:100%;font-size:13px;" width="147"
+      />
+    
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    
+      
+      <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    
+      
+      <div  style="margin:0px auto;max-width:600px;">
+        
+        <table
+           align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;"
+              >
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:300px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="justify" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:600;line-height:1;text-align:justify;color:white;"
+      ><h2 style="text-decoration: underline">Resumen del pedido</h2>
+          <p>Información de facturación</p></div>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="justify" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:justify;color:white;"
+      ><p>{{ negocio.vendedor.get_full_name }}</p>
+          <p>{{ negocio.vendedor.get_razon_social }}</p>
+          <p>{{ negocio.vendedor.empresa.domicilio_fiscal }}</p></div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:300px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:600;line-height:1;text-align:left;color:white;"
+      ><br/>
+          <br/>
+          <p>Resumen del pedido</p></div>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <table
+         cellpadding="0" cellspacing="0" width="100%" border="0" style="color:white;font-family:'Montserrat', sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;"
+      >
+        <tr>
+            <td>Artículos</td>
+            <td>USD {{ prop.calcularPrecio }}</td>
+          </tr>
+          <tr>
+            <td>Tasas aplicadas*</td>
+            <td>+USD {% formatfloat prop.calcularTasa %}</td>
+          </tr>
+          <tr>
+            <td style="padding: 40px 0;font-weight:600; white-space:pre-line">Total 
+              <span style="font-weight:400">(incluye IVA)</span>
+            </td>
+            <td style="padding: 40px 0;font-weight:600">USD {% formatfloat prop.calcularTotal %}</td>
+          </tr>
+      </table>
+    
+                </td>
+              </tr>
+            
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:12px;font-weight:100;line-height:1;text-align:left;color:white;"
+      >*Ver detalles en productos entregados</div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    
+      
+      <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="white" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    
+      
+      <div  style="background:white;background-color:white;margin:0px auto;max-width:600px;">
+        
+        <table
+           align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:white;background-color:white;width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;"
+              >
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:600px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:600;line-height:1;text-align:left;color:#000000;"
+      ><h2 style="text-decoration: underline">Productos entregados</h2></div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td><![endif]-->
+    <!-- {% for art in articulos %} -->
+          <!--[if mso | IE]><td class="product-column-outlook" style="vertical-align:middle;width:150px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-25 mj-outlook-group-fix product-column" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;"
+      >
+        <tbody>
+          <tr>
+            <td  style="width:100px;">
+              
+      <img
+         height="auto" src="https://via.placeholder.com/100x100.png?text={{ forloop.counter }}" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;" width="100"
+      />
+    
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td><td class="product-column-outlook" style="vertical-align:middle;width:150px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-25 mj-outlook-group-fix product-column" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:middle;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="left" style="font-size:0px;padding:0px 10px 0px 10px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:left;color:#000000;"
+      ><p style="font-weight:600; white-space:pre-line">{{ art.articulo }} 
+            <span style="font-weight:400">USD {% multiply art.precio_venta art.cantidad %}</span>
+          </p>
+          <br/>
+          <span style="font-weight:600">Precio x Cantidad: </span> USD {% formatfloat art.precio_venta %} x {% formatfloat art.cantidad %} 
+          <br/>
+          <span style="font-weight:600">Tipo de pago:</span>
+          {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %} (tasa mensual del {{ art.tasa }}%) {% endif %}
+          <br/>
+          <span style="font-weight:600">Fecha de entrega:</span>
+          {{ art.fecha_entrega }}
+					<br/>
+          <span style="font-weight:600">Fecha de pago:</span>
+          {{ art.fecha_pago }}</div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td><![endif]-->
+    <!-- {% endfor %} -->
 
+      <!--[if mso | IE]></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    
+      
+      <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#4FAD31" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    
+      
+      <div  style="background:#4FAD31;background-color:#4FAD31;margin:0px auto;max-width:600px;">
+        
+        <table
+           align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#4FAD31;background-color:#4FAD31;width:100%;"
+        >
+          <tbody>
+            <tr>
+              <td
+                 style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;"
+              >
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:600px;" ><![endif]-->
+            
+      <div
+         class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;"
+      >
+        
+      <table
+         border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%"
+      >
+        <tbody>
+          
+              <tr>
+                <td
+                   align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;"
+                >
+                  
+      <div
+         style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:center;color:white;"
+      >Buenaventura Agronegocios</div>
+    
+                </td>
+              </tr>
+            
+        </tbody>
+      </table>
+    
+      </div>
+    
+          <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    
+      
+      <!--[if mso | IE]></td></tr></table><![endif]-->
+    
+    
+      </div>
+    
+  </body>
 </html>
+  

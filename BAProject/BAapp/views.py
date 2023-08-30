@@ -493,17 +493,17 @@ def getProveedoresNegocio(negocio):
     return proveedores
 
 def testeo(request):
-    titulo = "Tu pedido ha sido recibido"
+    titulo = "Testeando email confirmacion"
     negocio = Negocio.objects.get(id_de_neg=2001)
-    texto = "jaja"
+    texto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed nunc mauris. Suspendisse potenti. Nulla metus dui, facilisis mattis ultricies tincidunt, finibus eget risus. Nam tempus lorem non turpis finibus varius. Quisque sit amet feugiat lorem. Duis fringilla facilisis nibh, ac placerat metus venenatis eget. Maecenas eleifend libero eu pretium posuere. Duis eget purus ac ipsum malesuada suscipit."
     propuesta = Propuesta.objects.filter(negocio=negocio).last()
     itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
-    observaciones = "jeje"
-    full_negociacion_url = "https://www.google.com"
+    observaciones = "estamos testeando"
+    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
     recipient_list = [settings.TEMP_TO_EMAIL]
     context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
     # email_send("Testeando", recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-    return render(request, 'email/negocio.html', context)
+    return render(request, 'email/crear_negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -1626,7 +1626,9 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         recipient_list = [settings.TEMP_TO_EMAIL]
         context = {'titulo': subject, 'color': "", 'texto': texto, 'obs': observacion, 'url': full_negociacion_url, 'negocio': negocio}
 
-        email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
+
+        email_send(subject, recipient_list, 'email/negocio.txt', html_path, context)
 
     return negocio
     
@@ -2047,7 +2049,8 @@ class NegocioView(View):
                 # recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
                 recipient_list = [settings.TEMP_TO_EMAIL]
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
-                email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+                html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
+                email_send(categoria, recipient_list, 'email/negocio.txt', html_path, context)
         else:
             if not negocio.is_esp_conf():
                 if envio_comprador:
