@@ -380,13 +380,13 @@
           </tr>
           <tr>
             <td>Tasas aplicadas*</td>
-            <td>+USD {% formatfloat prop.calcularTasa %}</td>
+            <td>{% formatfloat prop.calcularTasa True %}</td>
           </tr>
           <tr>
             <td style="padding: 40px 0;font-weight:600; white-space:pre-line">Total 
               <span style="font-weight:400">(incluye IVA)</span>
             </td>
-            <td style="padding: 40px 0;font-weight:600">USD {% formatfloat prop.calcularTotal %}</td>
+            <td style="padding: 40px 0;font-weight:600">{% formatfloat prop.calcularTotal True %}</td>
           </tr>
       </table>
     
@@ -521,10 +521,10 @@
       <div
          style="font-family:'Montserrat', sans-serif;font-size:13px;font-weight:400;line-height:1;text-align:left;color:#000000;"
       ><p style="font-weight:600; white-space:pre-line">{{ art.articulo }} 
-            <span style="font-weight:400">USD {% multiply art.precio_venta art.cantidad %}</span>
+            <span style="font-weight:400">{% multiply art.precio_venta art.cantidad %}</span>
           </p>
           <br/>
-          <span style="font-weight:600">Precio x Cantidad: </span> USD {% formatfloat art.precio_venta %} x {% formatfloat art.cantidad %} 
+          <span style="font-weight:600">Precio x Cantidad: </span> {% formatfloat art.precio_venta True %} x {% formatfloat art.cantidad False %} 
           <br/>
           <span style="font-weight:600">Tipo de pago:</span>
           {{ art.tipo_pago.nombre }} {% if art.tipo_pago.nombre != 'CONTADO' %} (tasa mensual del {{ art.tasa }}%) {% endif %}

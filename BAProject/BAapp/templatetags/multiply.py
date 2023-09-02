@@ -6,5 +6,5 @@ register = template.Library()
 @register.simple_tag
 def multiply(a, b) -> float:
     mult = float(a) * float(b)
-    result = formatfloat(mult)
+    result = formatfloat(mult, True)
     return result

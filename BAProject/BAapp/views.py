@@ -34,6 +34,7 @@ import ast
 from functools import reduce
 from django.conf import settings
 from decimal import *
+from BAapp.utils.formatusd import to_input_string
 
 User = settings.AUTH_USER_MODEL
 
@@ -1875,6 +1876,9 @@ class NegocioView(View):
                     art[f.name] = val.id
                 else:
                     art[f.name] = val
+                if (f.name == "precio_venta" or f.name == "precio_compra"):
+                    art[f.name] = to_input_string(val)
+                    
             last['items'].append(art)
         context = {
             "negocio": negocio,
