@@ -211,26 +211,6 @@ Negociación {{ negocio.get_id_de_neg }}
 
   });
 
-  function formatForMoneyInput(input, inputValue) {
-    var split1 = inputValue.split(' ')[1];
-    var split2 = split1.split(/[,.]/);
-    var number = split2.join('') + '0';
-    input.dataset.currentValue = number;
-    input.value = number;
-    triggerEvent(input);
-    return number;
-  }
-
-  function getNumberFromInput(value) {
-    var split1 = value.split(' ')[1];
-    var split2 = split1.split(/[,.]/);
-    var len = split2.length;
-    var decimalPart = split2.pop(split2[len-1]);
-    var integerPart = split2.join('');
-    var number = integerPart + '.' + decimalPart;
-    return +number;
-  }
-
   function accept(index){
     console.log("accept");
     index = parseInt(index);
@@ -591,9 +571,9 @@ Negociación {{ negocio.get_id_de_neg }}
     <td><span name=\"distribuidor\" data-updateignore=\"true\">"+$("#distSearch")[0].value+"</span></td>\
     {% endif %}\
     <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input name=\"precio_venta\" class=\"input-money\" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input name=\"precio_venta\" class=\"input-money\" autocomplete=\"off\" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td><input name=\"precio_compra\" class=\"input-money\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input name=\"precio_compra\" class=\"input-money\" autocomplete=\"off\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" data-newrowselect=\"true\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
     <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" min=\"0\" max=\"100\" value=\""+n.tasa+"\" placeholder=\"Tasa Mensual\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
@@ -718,8 +698,6 @@ Negociación {{ negocio.get_id_de_neg }}
         confirmButtonText: 'Si',
         cancelButtonText: 'No',
         showCancelButton: true,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
         focusCancel: true
       }).then(res => {
         if (res.isConfirmed) openSwalForSubmit(icon, title, text, isSend);
@@ -739,8 +717,6 @@ Negociación {{ negocio.get_id_de_neg }}
       confirmButtonText: 'Si',
       cancelButtonText: 'No',
       showCancelButton: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
       focusConfirm: true
     }).then(res => {
       if (res.isConfirmed) submitProp(isSend);

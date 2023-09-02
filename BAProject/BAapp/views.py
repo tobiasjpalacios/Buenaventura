@@ -2214,16 +2214,10 @@ class APIArticulos(View):
             else:
                 tipo_pago = None
 
-            if len(actual.get("Precio venta").strip()) != 0:
-                precio_venta = actual.get("Precio venta")
-            else:
-                precio_venta = 0.0
+            precio_venta = actual.get("Precio venta")
+            precio_compra = actual.get("Precio compra")
 
             if isComprador:
-                precio_compra = 0.0
-            elif len(actual.get("Precio compra").strip()) != 0:
-                precio_compra = actual.get("Precio compra")
-            else:
                 precio_compra = 0.0
             
             item = ItemPropuesta(

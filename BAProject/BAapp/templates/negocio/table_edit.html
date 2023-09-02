@@ -79,9 +79,9 @@
                     </td>
                     {% endif %}
                     <td><input type="number" name="cantidad" min=".01" step=".01" value="{% formatfloat item.cantidad False %}" placeholder="Cantidad" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
-                    <td><input name="precio_venta" class="input-money" data-current-value="{% formatprecioforinput item.precio_venta %}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input name="precio_venta" class="input-money" autocomplete="off" data-current-value="{% formatprecioforinput item.precio_venta %}" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     {% if not request.user.clase == 'Comprador' %}
-                    <td><input name="precio_compra" class="input-money" data-current-value="{% formatprecioforinput item.precio_compra %}" placeholder="Precio compra" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input name="precio_compra" class="input-money" autocomplete="off" data-current-value="{% formatprecioforinput item.precio_compra %}" placeholder="Precio compra" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     {% endif %}
                     <td>
                       <select name="tipo_pago" onchange="contadoTasa('{{item.id}}'); removeUpdate('{{ forloop.counter0 }}')" id="tp{{item.id}}">
@@ -133,11 +133,11 @@
                     {% endif %}
                     <td><input type="number" name="cantidad" min=".01" step=".01" placeholder="Cantidad"></td>
                     <td>
-                      <input name="precio_venta" class="input-money" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}">
+                      <input name="precio_venta" class="input-money" autocomplete="off" placeholder="{% if request.user.clase == 'Comprador' %}Precio{% else %}Precio venta{% endif %}">
                     </td>
                     {% if not request.user.clase == 'Comprador' %}
                     <td>
-                      <input name="precio_compra" class="input-money" placeholder="Precio compra">
+                      <input name="precio_compra" class="input-money" autocomplete="off" placeholder="Precio compra">
                     </td>
                     {% endif %}
                     <td>

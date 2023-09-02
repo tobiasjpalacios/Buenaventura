@@ -157,3 +157,23 @@ function triggerEvent(input) {
   });
   input.dispatchEvent(inputEvent);
 }
+
+function formatForMoneyInput(input, inputValue) {
+  var split1 = inputValue.split(' ')[1];
+  var split2 = split1.split(/[,.]/);
+  var number = split2.join('') + '0';
+  input.dataset.currentValue = number;
+  input.value = number;
+  triggerEvent(input);
+  return number;
+}
+
+function getNumberFromInput(value) {
+  var split1 = value.split(' ')[1];
+  var split2 = split1.split(/[,.]/);
+  var len = split2.length;
+  var decimalPart = split2.pop(split2[len-1]);
+  var integerPart = split2.join('');
+  var number = integerPart + '.' + decimalPart;
+  return +number;
+}
