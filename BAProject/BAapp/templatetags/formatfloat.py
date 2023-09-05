@@ -4,10 +4,6 @@ register = template.Library()
 
 @register.simple_tag
 def formatfloat(value, is_precio):
-    """
-    Pasar False en is_precio cuando se quiera renderizar en el value
-    de un campo de texto así is_precio fuere True.
-    """
     if not value:
         return "Sin definir"
     
@@ -16,12 +12,16 @@ def formatfloat(value, is_precio):
     else:
         new_value = "{:.2f}".format(value)
 
-    result = f"$ {new_value} USD" if is_precio else new_value
+    result = f"USD {new_value}" if is_precio else new_value
 
     return result
 
 @register.simple_tag
 def formatprecioforinput(value):
+    """
+    Formateo de datos numericos para inputs
+    con clase .input-money
+    """
     if value.is_integer():
         new_integer = int(value)
         new_value = str(new_integer) + "00"

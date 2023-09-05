@@ -503,8 +503,9 @@ def testeo(request):
     full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
     recipient_list = [settings.TEMP_TO_EMAIL]
     context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
-    # email_send("Testeando", recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
-    return render(request, 'email/crear_negocio.html', context)
+    template = "negocio"
+    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context)
+    return render(request, f'email/{template}.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -1628,8 +1629,9 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         context = {'titulo': subject, 'color': "", 'texto': texto, 'obs': observacion, 'url': full_negociacion_url, 'negocio': negocio}
 
         html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
+        txt_path = 'email/negocio.txt' if negocio.is_confirmado() else 'email/crear_negocio.txt'
 
-        email_send(subject, recipient_list, 'email/negocio.txt', html_path, context)
+        email_send(subject, recipient_list, txt_path, html_path, context)
 
     return negocio
     
@@ -2054,7 +2056,8 @@ class NegocioView(View):
                 recipient_list = [settings.TEMP_TO_EMAIL]
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
                 html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
-                email_send(categoria, recipient_list, 'email/negocio.txt', html_path, context)
+                txt_path = 'email/negocio.txt' if negocio.is_confirmado() else 'email/crear_negocio.txt'
+                email_send(categoria, recipient_list, txt_path, html_path, context)
         else:
             if not negocio.is_esp_conf():
                 if envio_comprador:
