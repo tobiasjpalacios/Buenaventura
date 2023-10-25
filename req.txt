@@ -13,3 +13,5 @@ six==1.15.0
 sqlparse==0.4.1
 django-ses
 crispy-forms-materialize
+weasyprint
+PyPDF2

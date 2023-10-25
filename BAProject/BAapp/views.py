@@ -35,6 +35,14 @@ from functools import reduce
 from django.conf import settings
 from decimal import *
 from BAapp.utils.formatusd import to_input_string
+from django.template.loader import render_to_string
+from django.template.loader import get_template
+from io import BytesIO
+import weasyprint
+import os
+import tempfile
+import PyPDF2
+import shutil
 
 User = settings.AUTH_USER_MODEL
 
@@ -493,19 +501,99 @@ def getProveedoresNegocio(negocio):
                 proveedores.append(prov)
     return proveedores
 
+def merge_pdfs(input_pdfs, output_pdf):
+    pdf_merger = PyPDF2.PdfMerger()
+
+    for pdf in input_pdfs:
+        pdf_merger.append(pdf)
+
+    pdf_merger.write(output_pdf)
+    pdf_merger.close()
+
+def generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+    context_hoja1 = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'prop': propuesta, 'negocio': negocio}
+    hoja1_template = get_template('email/pdf_resumen_hoja1.html')
+    hoja1_html = hoja1_template.render(context_hoja1)
+
+    hoja1 = weasyprint.HTML(string=hoja1_html)
+
+    items_per_page = 12
+
+    output_directory = os.path.join(settings.MEDIA_ROOT, str(request.user.id))
+    os.makedirs(output_directory, exist_ok=True)
+
+    pdf_files = []
+
+    pdf_file_path = os.path.join(output_directory, 'page_0.pdf')
+    pdf_files.append(pdf_file_path)
+    hoja1.write_pdf(pdf_file_path)
+
+    for i in range (0, len(items_prop), items_per_page):
+        items_page = items_prop[i:i + items_per_page]
+        print(items_page)
+        context_hojax = {'articulos': items_page}
+
+        hojax_template = get_template('email/pdf_resumen_hojax.html')
+        hojax_html = hojax_template.render(context_hojax)
+
+        hojax = weasyprint.HTML(string=hojax_html)
+
+        pdf_file_path = os.path.join(output_directory, f'page_{(i // items_per_page) + 1}.pdf')
+        pdf_files.append(pdf_file_path)
+        hojax.write_pdf(pdf_file_path)
+
+    file_name = f'negocio_{negocio.id_de_neg}_{int(datetime.now().timestamp())}.pdf'
+    combined_pdf_path = os.path.join(settings.MEDIA_ROOT, file_name)
+    merge_pdfs(pdf_files, combined_pdf_path)
+
+    shutil.rmtree(output_directory)
+
+    return combined_pdf_path, file_name
+
+def consulta_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+    """
+    Descarga el archivo PDF en la computadora del usuario. El archivo se elimina dentro
+    de la funcion. Retorna un HttpResonse que solo realiza la descarga sin renderizar
+    nada en pantalla.
+    """
+    pdf_path, file_name = generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+
+    with open(pdf_path, 'rb') as pdf_file:
+        response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename={file_name}'
+    os.unlink(pdf_path)
+
+    return response
+
+def email_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+    """
+    Retorna el path del PDF generado. No elimina el archivo, pero se recomienda hacerlo
+    posteriormente.
+    """
+    pdf_path, _ = generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+    return pdf_path
+
 def testeo(request):
     titulo = "Testeando email confirmacion"
-    negocio = Negocio.objects.get(id_de_neg=2001)
+    negocio = Negocio.objects.get(id_de_neg=2010)
     texto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed nunc mauris. Suspendisse potenti. Nulla metus dui, facilisis mattis ultricies tincidunt, finibus eget risus. Nam tempus lorem non turpis finibus varius. Quisque sit amet feugiat lorem. Duis fringilla facilisis nibh, ac placerat metus venenatis eget. Maecenas eleifend libero eu pretium posuere. Duis eget purus ac ipsum malesuada suscipit."
     propuesta = Propuesta.objects.filter(negocio=negocio).last()
-    itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
+    items_prop = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
     observaciones = "estamos testeando"
     full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
     recipient_list = [settings.TEMP_TO_EMAIL]
-    context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
+    context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': items_prop, 'prop': propuesta, 'negocio': negocio}
     template = "negocio"
-    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context)
-    return render(request, f'email/{template}.html', context)
+
+    return consulta_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+
+    # pdf_path = email_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+
+    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
+
+    # os.unlink(pdf_path)
+
+    # return render(request, f'email/negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
