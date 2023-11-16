@@ -56,7 +56,7 @@ Negociación {{ negocio.get_id_de_neg }}
 {% include "negocio/table_history.html" %}
 {% endif %}
  
-{% if not negocio.estado == "ESP_CONF" or not request.user.clase == "Comprador" %}
+{% if not negocio.is_esp_conf or not request.user.clase == "Comprador" %}
 {% if forloop.last %}
 {% include "negocio/table_edit.html" %}
 {% endif %}
@@ -64,23 +64,23 @@ Negociación {{ negocio.get_id_de_neg }}
 
 {% endfor %}
 
-{% if negocio.estado == "CANCELADO" %}
+{% if negocio.is_cancelado %}
 <div class="canceled" id="canceled">
   <h2>Negocio cancelado ✗</h2>
-  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre | date:'H:i' }} hs</strong></p>
 </div>
 {% endif %}
-{% if negocio.estado == "ESP_CONF" and request.user.clase == "Comprador" %}
+{% if negocio.is_esp_conf and request.user.clase == "Comprador" %}
 <div class="approved" id="approved">
   <h2>Esperando confirmación del vendedor ◌</h2>
   <p><strong>El vendedor está chequeando los datos. En cuanto lo haga, serás notificado vía e-mail.</strong></p>
 </div>
 {% endif %}
 
-{% if negocio.estado == "CONFIRMADO" %}
+{% if negocio.is_confirmado %}
 <div class="approved" id="approved">
   <h2>Negocio confirmado ✓</h2>
-  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre.time }} hs</strong></p>
+  <p><strong>Negocio cerrado el {{negocio.fecha_cierre | date:"d/m/Y" }} a las {{negocio.fecha_cierre | date:'H:i' }} hs</strong></p>
   <a class="send-btn btn no-shadow waves-effect waves-effect waves-light" style="background-color: green;" id="modifyProp" onclick="addTable(); mScrollTo('#form');">Modificar propuesta</a>
 </div>
 
@@ -102,7 +102,7 @@ Negociación {{ negocio.get_id_de_neg }}
   <ul>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Info Negocio" href="{% url 'info_negocio' negocio.id_de_neg %}"><i class="material-icons">arrow_back</i></a></li>
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir arriba" id="btnScrollTop"><i class="material-icons">arrow_upward</i></a></li>
-    {% if negocio.estado == "CONFIRMADO" %}
+    {% if negocio.is_confirmado %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir a Negocio confirmado" onclick="mScrollTo('#approved');"><i class="material-icons">date_range</i></a></li>
     {% endif %}
     <li><a class="btn-floating bv-green tooltipped" data-position="left" data-tooltip="Ir abajo" id="btnScrollBottom"><i class="material-icons">arrow_downward</i></a></li>
@@ -151,10 +151,10 @@ Negociación {{ negocio.get_id_de_neg }}
       edits.items[index].isNew = false;
     });
     
-    "{% if negocio.estado == 'CONFIRMADO' %}"
+    "{% if negocio.is_confirmado %}"
     isAccepted = true;
     "{% endif %}"
-    "{% if negocio.estado == 'CANCELADO' %}"
+    "{% if negocio.is_cancelado %}"
     isCanceled = true;
     "{% endif %}"
 
@@ -183,9 +183,9 @@ Negociación {{ negocio.get_id_de_neg }}
 
     // scroll hasta tabla editable o en su defecto, a aviso de negocio aprobado o cancelado
     var elId;
-    "{% if negocio.estado == 'CONFIRMADO' or negocio.estado == 'ESP_CONF' and request.user.clase == 'Comprador' %}"
+    "{% if negocio.is_confirmado or negocio.is_esp_conf and request.user.clase == 'Comprador' %}"
     elId = "#approved"
-    "{% elif negocio.estado == 'CANCELADO' %}"
+    "{% elif negocio.is_cancelado %}"
     elId = "#canceled"
     "{% else %}"
     elId = "#form-table-div"
@@ -274,6 +274,16 @@ Negociación {{ negocio.get_id_de_neg }}
             edits.items[index]["proveedor"] = opt.data('value');
           }
         }
+        else if (element == "precio_compra" || element == "precio_venta") {
+          var number = formatForMoneyInput(input, inputValue);
+          if (!+number) {
+            isValid = false;
+            $input.addClass('invalid');
+          }
+          else {
+            edits.items[index][element] = inputValue
+          }
+        }
         else if (input.type == "number"){
           inputValue = parseFloat(inputValue);
 
@@ -307,6 +317,8 @@ Negociación {{ negocio.get_id_de_neg }}
           }
         }
       }
+
+      last.items[index] = Object.assign({}, edits.items[index]);
 
       return true;
     })
@@ -344,15 +356,21 @@ Negociación {{ negocio.get_id_de_neg }}
           input.val(artName);
         }
       }
+      else if (element == "precio_compra" || element == "precio_venta") {
+        formatForMoneyInput(input[0], edits.items[index][element]);
+      }
       else {
         input.val(edits.items[index][element]);
       }
     });
 
-    unsavedChanges = false;
+    {% if not negocio.is_confirmado %}
     edits.items[index].aceptado = false;
+    {% endif %}
+    unsavedChanges = false;
     $tr.css('background-color', '');
-    $tr.data('issaved', false);
+    $tr.data('issaved', true);
+    $("#save-" + index).removeClass("blinkSave");
     $("#accept-" + index).addClass("disabled");
   }
 
@@ -361,7 +379,9 @@ Negociación {{ negocio.get_id_de_neg }}
 
     var $tr = $($("#form")[0].rows[index+1]);
     
+    {% if not negocio.is_confirmado %}
     edits.items[index].aceptado = false;
+    {% endif %}
     $tr.css('background-color', '');
     $tr.data('issaved', false);
     $("#save-" + index).addClass("blinkSave");
@@ -463,25 +483,38 @@ Negociación {{ negocio.get_id_de_neg }}
           errors = true;
           $this.addClass('invalid');
         }
-
-        if (element == "articulo") {
-          n[element] = artId;
-        }
-        else if (element == "distribuidor") {
-          var opt = $("#distResults [value='"+inputValue+"']");
-          var dist = opt.data('value');
-          n["proveedor"] = dist;
+        else {
+          if (element == "articulo") {
+            n[element] = artId;
+          }
+          else if (element == "distribuidor") {
+            var opt = $("#distResults [value='"+inputValue+"']");
+            var dist = opt.data('value');
+            n["proveedor"] = dist;
+          }
         }
       }
-      else if (["cantidad", "precio_venta", "precio_compra"].indexOf(element) !== -1) { // index 2..4
-        if (inputValue === '0' || inputValue === '') {
+      else if (["precio_venta", "precio_compra"].indexOf(element) !== -1) {
+        var number = getNumberFromInput(inputValue);
+        if (!number) {
           errors = true;
           $this.addClass('invalid');
         }
-
-        if (userIsComprador && element == "precio_venta") {
-          n["precio_venta"] = parseFloat(inputValue);
-          n["precio_compra"] = 0;
+        else {
+          if (userIsComprador && element == "precio_venta") {
+            n["precio_venta"] = inputValue;
+            n["precio_compra"] = "USD 0.00";
+          }
+          else {
+            n[element] = inputValue;
+          }
+        }
+        
+      }
+      else if (element == "cantidad") { // index 2..4
+        if (inputValue === '0' || inputValue === '') {
+          errors = true;
+          $this.addClass('invalid');
         }
         else {
           n[element] = parseFloat(inputValue);
@@ -504,7 +537,9 @@ Negociación {{ negocio.get_id_de_neg }}
           errors = true;
           $this.addClass('invalid');
         }
-        n[element] = element == "tasa" ? parseFloat(inputValue) : inputValue;
+        else {
+          n[element] = element == "tasa" ? parseFloat(inputValue) : inputValue;
+        }
       }
 
       return true;
@@ -535,16 +570,16 @@ Negociación {{ negocio.get_id_de_neg }}
     {% if not request.user.clase == 'Comprador' %}\
     <td><span name=\"distribuidor\" data-updateignore=\"true\">"+$("#distSearch")[0].value+"</span></td>\
     {% endif %}\
-    <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"number\" name=\"precio_venta\" min=\".01\" step=\".01\" value="+n.precio_venta+" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"cantidad\" min=\".01\" step=\".01\" value=\""+n.cantidad+"\" placeholder=\"Cantidad\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input name=\"precio_venta\" class=\"input-money\" autocomplete=\"off\" placeholder=\"{% if not request.user.clase == 'Comprador' %}Precio venta{% else %}Precio{% endif %}\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% if not request.user.clase == 'Comprador' %}\
-    <td><input type=\"number\" name=\"precio_compra\" min=\".01\" step=\".01\" value=\""+n.precio_compra+"\" placeholder=\"Precio compra\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input name=\"precio_compra\" class=\"input-money\" autocomplete=\"off\" placeholder=\"Precio compra\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     {% endif %}\
     <td><select name=\"tipo_pago\" id=\"tp"+rowId+"\" data-newrowselect=\"true\" onchange=\"contadoTasa('"+rowId+"'); removeUpdate("+(table.rows.length-3)+")\"><option value=\""+n.tipo_pago+"\" selected disabled>"+tipo_pago+"</option>{% for tipo_pago in tipo_pagos %}<option value=\"{{ tipo_pago.id }}\">{{ tipo_pago.nombre }}</option>{% endfor %}</select></td>\
-    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" min=\"0\" max=\"100\" value=\""+n.tasa+"\" placeholder=\"Tasa Mensual\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
-    <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" oninput=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"number\" name=\"tasa\" id=\"tas"+rowId+"\" min=\"0\" max=\"100\" value=\""+n.tasa+"\" placeholder=\"Tasa Mensual\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_entrega\" value=\""+n.fecha_entrega+"\" placeholder=\"Fecha entrega\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"fecha_pago\" value=\""+n.fecha_pago+"\" placeholder=\"Fecha pago\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
+    <td><input type=\"text\" name=\"destino\" value=\""+n.destino+"\" placeholder=\"Destino\" onkeyup=\"removeUpdate("+(table.rows.length-3)+")\"></td>\
     <td class=\"ignore-op\">\
       <a class=\"action-btn btn-small bv-red btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Eliminar\" onclick=\"reject('"+(table.rows.length-3)+"')\"><i class=\"material-icons table-icons\">delete</i></a>\
       <a class=\"action-btn btn-small bv-yellow btn-floating waves-effect waves-light tooltipped\" data-position=\"top\" data-tooltip=\"Guardar Ediciones\" onclick=\"update('"+(table.rows.length-3)+"')\" id=\"save-"+(table.rows.length-3)+"\"><i class=\"material-icons table-icons\">save</i></a>\
@@ -579,19 +614,29 @@ Negociación {{ negocio.get_id_de_neg }}
     var colCount = $cell.length;
     var isShowMore = $table.data('isShowMore');
     $cell.each(function(index) {
+      const cellInput = $(this).find("input:first")[0];
       var condition = isShowMore ? index % colCount < showColumns : index % colCount >= showColumns;
       if (condition) {
         $(this).addClass('hide-column');
       }
+      if (cellInput?.name == "precio_compra" || cellInput?.name == "precio_venta") {
+        var inputValue = cellInput.name == "precio_compra" ? n.precio_compra : n.precio_venta;
+        var inputString = inputValue.toString();
+        var splitValue = inputString.split(/[,.]/);
+        var joinValue = splitValue.join('') + '0';
+        cellInput.dataset.currentValue = joinValue;
+        bindMoneyInput(cellInput);
+      }
     });
-    $row.attr('data-issaved', false)
     showMore($('.add-art'), true);
     var $showMoreBtn = $row.find('.ignore a');
     $showMoreBtn.click(function(e) {
       e.preventDefault();
-      
       showMore($(this));
     });
+    unsavedChanges = false;
+    $row.attr('data-issaved', true);
+    $("#save-" + (table.rows.length-3)).removeClass("blinkSave");
   }
 
   var obsOriginalValue = $("#observaciones").val();
@@ -606,7 +651,7 @@ Negociación {{ negocio.get_id_de_neg }}
     var proc = {}
     var errors = false;
     var errorFields = [];
-    var esp_conf = {% if negocio.estado == "ESP_CONF" %} true {% else %} false {% endif %}
+    var esp_conf = {% if negocio.is_esp_conf %} true {% else %} false {% endif %}
     proc.observaciones = $("#observaciones").val();
     proc.items = [];
     edits.items.forEach(element => {
@@ -646,16 +691,17 @@ Negociación {{ negocio.get_id_de_neg }}
       text = "Estás a punto de enviar una nueva propuesta.\n¿Deseas continuar con la operación?";
     }
     if (unsavedChanges) {
-      swal({
+      Swal.fire({
         title: "Cambios sin guardar",
         text: "Revisá si algún botón de guardado parpadea,\nsi es así, guardá los cambios.\n¿Deseas continuar?",
-        buttons: {
-          cancel: "No",
-          confirm: "Si",
-        },
-        icon: "info"
-      }).then(okay => {
-        if (okay) openSwalForSubmit(icon, title, text, isSend);
+        icon: "info",
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showCancelButton: true,
+        focusCancel: true
+      }).then(res => {
+        if (res.isConfirmed) openSwalForSubmit(icon, title, text, isSend);
+        else Swal.close();
       });
     }
     else {
@@ -664,16 +710,17 @@ Negociación {{ negocio.get_id_de_neg }}
   }
 
   function openSwalForSubmit(icon, title, text, isSend) {
-    swal({
+    Swal.fire({
       icon: icon,
       title: title,
       text: text,
-      buttons: {
-        cancel: "No",
-        confirm: "Si",
-      }
-    }).then(okay => {
-      if (okay) submitProp(isSend);
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No',
+      showCancelButton: true,
+      focusConfirm: true
+    }).then(res => {
+      if (res.isConfirmed) submitProp(isSend);
+      else Swal.close();
     });
   }
 
@@ -701,7 +748,7 @@ Negociación {{ negocio.get_id_de_neg }}
         if (!(jQuery.inArray(k, elems) != -1)) {
           if (element.hasOwnProperty(k) && k != "isNew") {
             var v = element[k];
-            k = k == "precio_venta" ? "precio" : k;
+            k = k == "precio_venta" && userIsComprador ? "precio" : k;
             var errorDesc = "\t- El campo \""+k+"\" contiene errores.\n"
             if ((!v && k != "articulo" && !userIsComprador) || (!v && userIsComprador)) {
               if (!(userIsComprador && ((k == "precio_compra") || (k == "proveedor")))) {
@@ -732,16 +779,32 @@ Negociación {{ negocio.get_id_de_neg }}
       print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
-      swal({
+      Swal.fire({
         title: "Oops!",
+        icon: "error",
         text: print_errors,
-        buttons: {
-          deny: "Ok",
-        },
-        icon: "error"
+        showDenyButton: true,
+        denyButtonText: 'Ok',
       });
     }
     else {
+      proc.items.forEach(element => {
+        for (k in element) {
+          if (k == "precio_venta" || k == "precio_compra" || k == "precio") {
+            element[k] = getNumberFromInput(element[k]);
+          }
+        }
+      })
+    
+      Swal.fire({
+        text: 'Enviando propuesta...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        }
+      });
       fetch("",{
         method:'POST',
         headers: {

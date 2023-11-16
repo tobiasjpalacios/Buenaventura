@@ -101,7 +101,7 @@ Cotizar
 
         <div class="row">
           <div class="col s12 center-align" id="div-agr-btn">
-            <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped" data-tooltip="Añadir una fila"
+            <a id="agr_art"class="boton green waves-effect waves-light btn tooltipped disabled" data-tooltip="Añadir una fila"
               onclick="addRow()" >
               <i id="iconadd"class="material-icons small" style="display: none;">add</i>
               <span>Agregar Artículo</span>
@@ -233,6 +233,8 @@ Cotizar
     });
 
     hideSend();
+
+    $('#agr_art').removeClass('disabled');
   });
 
   $(document).ready(function () {
@@ -491,13 +493,13 @@ Cotizar
         } else {
           var th = document.getElementById("th_" + headers[c] + rowCnt);
           var ele = document.createElement('input');
-          ele.setAttribute('type', 'text');
-          ele.setAttribute('size', '4');
+          ele.setAttribute('class', 'input-money');
 
           ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
           ele.setAttribute('autocomplete', 'off');
           ele.setAttribute('placeholder', "0.00");
           th.appendChild(ele);
+          bindMoneyInput(ele);
         };
       }
     }
@@ -533,13 +535,13 @@ Cotizar
         } else {
           var th = document.getElementById("th_" + headers[c] + rowCnt);
           var ele = document.createElement('input');
-          ele.setAttribute('type', 'text');
-          ele.setAttribute('size', '4');
+          ele.setAttribute('class', 'input-money');
 
           ele.setAttribute('id', 'input' + (c) + '.' + rowCnt);
           ele.setAttribute('autocomplete', 'off');
           ele.setAttribute('placeholder', "0.00");
           th.appendChild(ele);
+          bindMoneyInput(ele);
         };
       }
     }
@@ -749,16 +751,16 @@ Cotizar
   }
 
   function showAlert() {
-    swal({
+    Swal.fire({
       icon: "warning",
       title: "Advertencia",
       text: "¿Desea realizar una propuesta?",
-      buttons: {
-        cancel: "No",
-        confirm: "Si",
-      }
-    }).then(okay => {
-      if (okay) submit();
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) submit();
+      else Swal.close()
     });
   };
 
@@ -864,24 +866,24 @@ Cotizar
             }
           }
         } else if ((!userIsComprador && j == 4) || (userIsComprador && j == 2)) {
-          if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-            isValidated = true;
-          } else {
-            isValidated = false;
-            errors.push("El precio venta debe ser un número");
-            input.style.borderColor = '#CF0029';
-          }
+          // if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          //   isValidated = true;
+          // } else {
+          //   isValidated = false;
+          //   errors.push("El precio venta debe ser un número");
+          //   input.style.borderColor = '#CF0029';
+          // }
         } else if (!userIsComprador && j == 5) {
-          if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
-            isValidated = true;
-          } else {
-            isValidated = false;
-            var error = "El precio compra debe ser un número";
-            if (errors.indexOf(error) < 0) {
-              errors.push(error);
-            }
-            input.style.borderColor = '#CF0029';
-          }
+          // if (!isNaN(input.value) || input.value === null || input.value.match(/^ *$/) !== null) {
+          //   isValidated = true;
+          // } else {
+          //   isValidated = false;
+          //   var error = "El precio compra debe ser un número";
+          //   if (errors.indexOf(error) < 0) {
+          //     errors.push(error);
+          //   }
+          //   input.style.borderColor = '#CF0029';
+          // }
         } else if ((!userIsComprador && j == 6) || (userIsComprador && j == 3)) {
           if (all_tipoPago.indexOf(input.value) > -1 || input.value === null || input.value.match(/^ *$/) !== null) {
             isValidated = true;
@@ -913,6 +915,15 @@ Cotizar
   function submit() {
     var empTab = document.getElementById('empTable');
     if (validateData(rowCnt)) {
+      Swal.fire({
+        text: 'Creando negocio...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        }
+      });
       var dict = [];
       var inputComp = $('option[value="' + $('#inputComp').val() + '"]').attr('id');
       var vendedor = document.getElementById('vendedorSpanEmail');
@@ -932,9 +943,16 @@ Cotizar
         var tmp = {};
         for (var j = 0; j < headers.length; j++) {
           var input = document.getElementById('input' + j + '.' + i);
-          if (headers[j] == "Precio compra" && userIsComprador) {
-            input = 0;
-            tmp_dict[headers[j]] = input;
+          if (headers[j] == "Precio compra" || headers[j] == "Precio venta") {
+            if (userIsComprador) {
+              if (headers[j] != "Precio compra") {
+                tmp_dict["Precio compra"] = 0;
+                tmp_dict["Precio venta"] = getNumberFromInput(input.value);
+              }
+            }
+            else {
+              tmp_dict[headers[j]] = getNumberFromInput(input.value);
+            }
           }
           else if (headers[j] == "Distribuidor" && !userIsComprador) {
             var inputValue = input.value;
@@ -988,10 +1006,9 @@ Cotizar
       for (var i = 0; i < errors.length; i++) {
         print_errors = print_errors.concat('\n' + errors[i])
       }
-      swal({
+      Swal.fire({
         title: "Oops!",
         text: print_errors,
-        buttons: false,
         icon: "error"
       });
       errors = [];

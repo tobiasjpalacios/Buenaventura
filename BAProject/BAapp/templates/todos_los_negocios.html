@@ -209,8 +209,8 @@ Negocios
     var fechaDesde = $('#fechaDesde').val();
     var fechaHasta = $('#fechaHasta').val();
     var idDeNeg = $('#idDeNeg').val();
-    if (idDeNeg && idDeNeg < 1){
-        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 1.'});
+    if (idDeNeg && idDeNeg < 2000){
+        M.toast({html: 'Error! El identificador de negocio debe ser mayor o igual a 2000.'});
         errores = 1;
     }
     if (errores == 0){

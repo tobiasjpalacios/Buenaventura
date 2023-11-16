@@ -7,7 +7,7 @@
 {% block style%}
 {% endblock style%}
 {% block title %}
-Inf. de negocio {{ negocio.get_id_de_neg }}
+Info. de negocio {{ negocio.get_id_de_neg }}
 {% endblock title %}
 {%block body%}
 
@@ -106,12 +106,12 @@ Inf. de negocio {{ negocio.get_id_de_neg }}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
                             <td>{{item.proveedor.get_full_name|default:'N/E'}}</td>
                             {% endif %}
-                            <td>{% formatfloat item.cantidad %}</td>
+                            <td>{% formatfloat item.cantidad False %}</td>
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
-                            <td>${% formatfloat item.precio_venta %}</td>
+                            <td>{% formatfloat item.precio_venta True %}</td>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Proveedor' or request.user.clase == 'Logistica' or request.user.clase == 'Administrador'%}
-                            <td>${% formatfloat item.precio_compra %}</td>
+                            <td>{% formatfloat item.precio_compra True %}</td>
                             {% endif %}
                             {% if request.user.clase == 'Vendedor' or request.user.clase == 'Comprador' or request.user.clase == 'Gerente'%}
                             {% comment %} <td>{{item.divisa}}</td> {% endcomment %}

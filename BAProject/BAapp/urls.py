@@ -15,14 +15,14 @@ apipatters = [
 urlpatterns = [
     path('', landing_page, name='home'),
     path('administrar/', admin, name="admin"),
-    path('testeo/', testeo, name="testeo"),
+    # path('testeo/', testeo, name="testeo"),
     path('chat/', chat, name="chat"),
     path('cliente/', cliente, name="Cliente"),
     path('create-alerta-nv/', createAlertaNV, name="createAlertaNV"),
     path('password/',PasswordsChangeView.as_view(template_name="tempAux/changePassword.html")),
     path('success-password/', successPassword, name="successPassword"),
     path('vendedor/', vendedor, name="vendedor"),
-    path('router/', check_user_group_after_login, name="router"),
+    # path('router/', check_user_group_after_login, name="router"),
     path('vista-administrador/', vistaAdministrador, name="vistaAdministrador"),
     path('vista-logistica/', vistaLogistica, name="vistaLogistica"),
     path('vista-proveedor/', vistaProveedor, name="vistaProveedor"),
@@ -70,6 +70,7 @@ urlpatterns = [
     path('cuentas-corrientes/', login_required(login_url='/')(ComprobantesView.as_view()), name ="cuentasCorrientes"),
     path('facturas-comision/', login_required(login_url='/')(ComprobantesView.as_view()), name ="facturasComision"),
     path('notas/', login_required(login_url='/')(ComprobantesView.as_view()), name ="notas"),
+    path('generar-pdf/', generar_pdf, name="generar_pdf"),
 
 
 

@@ -369,8 +369,8 @@ function addTable() {
 
 function addTables(n, isBeforeFechaCierre) {
   if (!isBeforeFechaCierre) {
-    $("#div-table-"+n).detach().appendTo("#table-destination");
-    $("#div-table-"+n).show();
+    $("#div-table-"+n).parent().detach().appendTo("#table-destination");
+    $("#div-table-"+n).parent().show();
   }
 }
 

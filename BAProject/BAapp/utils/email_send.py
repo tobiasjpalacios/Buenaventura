@@ -7,7 +7,8 @@ def email_send(
         to_email : list, 
         path_to_text : str, 
         path_to_html : str, 
-        context : dict
+        context : dict,
+        pdf_file_path=None,
     ):
     try:
         subject = subject_email
@@ -17,6 +18,8 @@ def email_send(
         html_content = get_template(path_to_html).render(context) if path_to_html else "<h1>TESTING BVAGRO MAILING</h1>"
         msg = EmailMultiAlternatives(subject, text_content, from_email, to)
         msg.attach_alternative(html_content, "text/html")
+        if pdf_file_path:
+            msg.attach_file(pdf_file_path, 'application/pdf')
         msg.send()
     except Exception as e:
         print(f"Error enviando email: {e}")

@@ -34,6 +34,15 @@ import ast
 from functools import reduce
 from django.conf import settings
 from decimal import *
+from BAapp.utils.formatusd import to_input_string
+from django.template.loader import render_to_string
+from django.template.loader import get_template
+from io import BytesIO
+import weasyprint
+import os
+import tempfile
+import PyPDF2
+import shutil
 
 User = settings.AUTH_USER_MODEL
 
@@ -77,7 +86,7 @@ class Info_negocioView(View):
         if ("pk" in kwargs):
             idNeg = kwargs["pk"]
             negocio = Negocio.objects.get(id_de_neg=idNeg)
-            propuesta = Propuesta.objects.filter(negocio=negocio).first()
+            propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-pk').first()
             idProp = propuesta.id
             grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
@@ -432,6 +441,8 @@ def filtrarNegocios(request):
         filters &= Q(vendedor__pk__in=list_vendedores)
     if estados != 'todos':
         list_estados = ast.literal_eval(estados)
+        if "CONFIRMADO" in list_estados:
+            list_estados.append("YA_CONFIRMADO")
         filters &= Q(estado__in=list_estados)
     if tipo != 'todos':
         filters &= Q(tipo_de_negocio=tipo)
@@ -455,7 +466,7 @@ def filtrarNegocios(request):
             prop = Propuesta.objects.filter(negocio=neg).last()
             neg.id_prop = prop.id
 
-            if neg.estado == "CONFIRMADO":
+            if neg.is_confirmado():
                 item_prop_list = ItemPropuesta.objects.filter(propuesta=prop)
                 neg.proveedores = populate_proveedores(item_prop_list)
         except AttributeError:
@@ -490,11 +501,103 @@ def getProveedoresNegocio(negocio):
                 proveedores.append(prov)
     return proveedores
 
+def merge_pdfs(input_pdfs, output_pdf):
+    pdf_merger = PyPDF2.PdfMerger()
+
+    for pdf in input_pdfs:
+        pdf_merger.append(pdf)
+
+    pdf_merger.write(output_pdf)
+    pdf_merger.close()
+
+def generar_pdf(context, request):
+    titulo = context.get('titulo')
+    texto = context.get('texto')
+    observaciones = context.get('obs')
+    propuesta = context.get('prop')
+    items_prop = context.get('articulos')
+    negocio = context.get('negocio')
+    
+    context_hoja1 = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'prop': propuesta, 'negocio': negocio}
+    hoja1_template = get_template('email/pdf_resumen_hoja1.html')
+    hoja1_html = hoja1_template.render(context_hoja1)
+
+    hoja1 = weasyprint.HTML(string=hoja1_html)
+
+    items_per_page = 12
+
+    output_directory = os.path.join(settings.MEDIA_ROOT, str(request.user.id))
+    os.makedirs(output_directory, exist_ok=True)
+
+    pdf_files = []
+
+    pdf_file_path = os.path.join(output_directory, 'page_0.pdf')
+    pdf_files.append(pdf_file_path)
+    hoja1.write_pdf(pdf_file_path)
+
+    for i in range (0, len(items_prop), items_per_page):
+        items_page = items_prop[i:i + items_per_page]
+        print(items_page)
+        context_hojax = {'articulos': items_page}
+
+        hojax_template = get_template('email/pdf_resumen_hojax.html')
+        hojax_html = hojax_template.render(context_hojax)
+
+        hojax = weasyprint.HTML(string=hojax_html)
+
+        pdf_file_path = os.path.join(output_directory, f'page_{(i // items_per_page) + 1}.pdf')
+        pdf_files.append(pdf_file_path)
+        hojax.write_pdf(pdf_file_path)
+
+    file_name = f'resumen_negocio_bvi_{negocio.id_de_neg}.pdf'
+    combined_pdf_path = os.path.join(settings.MEDIA_ROOT, file_name)
+    merge_pdfs(pdf_files, combined_pdf_path)
+
+    shutil.rmtree(output_directory)
+
+    return combined_pdf_path, file_name
+
+def consulta_pdf(context, request):
+    """
+    Descarga el archivo PDF en la computadora del usuario. El archivo se elimina dentro
+    de la funcion. Retorna un HttpResonse que solo realiza la descarga sin renderizar
+    nada en pantalla.
+    """
+    pdf_path, file_name = generar_pdf(context, request)
+
+    with open(pdf_path, 'rb') as pdf_file:
+        response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = f'filename={file_name}'
+
+    return response
+
+def get_pdf_path(context, request):
+    """
+    Genera y retorna el path del PDF generado. No elimina el archivo, pero se recomienda hacerlo
+    posteriormente.
+    """
+    pdf_path, _ = generar_pdf(context, request)
+    return pdf_path
+
 def testeo(request):
+    titulo = "Testeando email confirmacion"
+    negocio = Negocio.objects.get(id_de_neg=2010)
+    texto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed nunc mauris. Suspendisse potenti. Nulla metus dui, facilisis mattis ultricies tincidunt, finibus eget risus. Nam tempus lorem non turpis finibus varius. Quisque sit amet feugiat lorem. Duis fringilla facilisis nibh, ac placerat metus venenatis eget. Maecenas eleifend libero eu pretium posuere. Duis eget purus ac ipsum malesuada suscipit."
+    propuesta = Propuesta.objects.filter(negocio=negocio).last()
+    items_prop = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
+    observaciones = "estamos testeando"
+    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
+    recipient_list = [settings.TEMP_TO_EMAIL]
+    context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': items_prop, 'prop': propuesta, 'negocio': negocio}
+    template = "negocio"
 
-    titulo = request.GET.get('titulo')
+    return consulta_pdf(context, request)
 
-    return render(request, 'email/negocio.html', {'titulo':titulo})
+    # pdf_path = get_pdf_path(context, request)
+
+    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
+
+    # return render(request, f'email/negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -1617,7 +1720,10 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         recipient_list = [settings.TEMP_TO_EMAIL]
         context = {'titulo': subject, 'color': "", 'texto': texto, 'obs': observacion, 'url': full_negociacion_url, 'negocio': negocio}
 
-        email_send(subject, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+        html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
+        txt_path = 'email/negocio.txt' if negocio.is_confirmado() else 'email/crear_negocio.txt'
+
+        email_send(subject, recipient_list, txt_path, html_path, context)
 
     return negocio
     
@@ -1864,6 +1970,9 @@ class NegocioView(View):
                     art[f.name] = val.id
                 else:
                     art[f.name] = val
+                if (f.name == "precio_venta" or f.name == "precio_compra"):
+                    art[f.name] = to_input_string(val)
+                    
             last['items'].append(art)
         context = {
             "negocio": negocio,
@@ -1954,11 +2063,10 @@ class NegocioView(View):
             acc.append(i.aceptado)
         
         if all(acc) and not itemsProp.count() == 0:
-            if negocio.estado == "ESP_CONF" and not envio_comprador and not isSend:
+            if negocio.is_esp_conf() and not envio_comprador and not isSend:
                 negocio.estado = "CONFIRMADO"
                 negocio.fecha_cierre = timezone.localtime()
-                negocio.save()
-            elif not negocio.estado == "ESP_CONF" and not negocio.estado == "CONFIRMADO":
+            elif not negocio.is_esp_conf() and not negocio.is_confirmado():
                 if envio_comprador:
                     negocio.estado = "ESP_CONF"
                     titulo = "Negocio pendiente de confirmación"
@@ -1974,7 +2082,10 @@ class NegocioView(View):
                 else:
                     negocio.estado = "CONFIRMADO"
                     negocio.fecha_cierre = timezone.localtime()
-                negocio.save()
+            elif negocio.is_confirmado():
+                negocio.estado = "YA_CONFIRMADO"
+                
+        negocio.save()
 
         if len(data.get('items')) == 0:
             negocio.estado = "CANCELADO"
@@ -1987,7 +2098,6 @@ class NegocioView(View):
         negocio_update = False
 
         fecha_cierre = negocio.fecha_cierre
-        print(fecha_cierre)
         if fecha_cierre is not None:
             fecha = formats.date_format(fecha_cierre, "SHORT_DATE_FORMAT")
             hora = formats.time_format(fecha_cierre, "TIME_FORMAT")
@@ -1998,19 +2108,25 @@ class NegocioView(View):
         pos_text = "Hacé click en el botón de abajo para ver el historial de la negociación."
         pos_cierre_text = f"El negocio cerró el día {formatted_fecha_cierre}."
 
-        if negocio.estado == "CONFIRMADO":
+        if negocio.is_ya_confirmado():
+            titulo = f"El presupuesto confirmado de {request.user.get_full_name()} ha sido modificado"
+            texto = f"""
+            El negocio que cerró el día {formatted_fecha_cierre} fue modificado.
+            {pos_text}
+            """
+        elif negocio.is_confirmado():
             titulo = f"{pre_titulo} confirmado"
             texto = f"""
             {pre_text} confirmado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.estado == "CANCELADO":
+        elif negocio.is_cancelado():
             titulo = f"{pre_titulo} cancelado"
             texto = f"""
             {pre_text} cancelado. {pos_cierre_text}
             {pos_text}
             """
-        elif negocio.estado == "ESP_CONF" and envio_comprador:
+        elif negocio.is_esp_conf() and envio_comprador:
             titulo = f"{pre_titulo} actualizado. El cliente está esperando tu confirmación"
             texto = f"""
             {pre_text} actualizado.
@@ -2019,8 +2135,6 @@ class NegocioView(View):
             """
         else:
             negocio_update = True
-
-        # print(not negocio.estado == "ESP_CONF", negocio.estado == "ESP_CONF" and not envio_comprador and isSend)
 
         if not negocio_update:
             # NOTE: se manda email de confirmacion solo para usuario TEMP_TO_EMAIL a pedido del cliente
@@ -2033,15 +2147,19 @@ class NegocioView(View):
                 # recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
                 recipient_list = [settings.TEMP_TO_EMAIL]
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
-                # email_send(categoria, recipient_list, 'email/negocio.txt', 'email/negocio.html', context)
+                html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
+                txt_path = 'email/negocio.txt' if negocio.is_confirmado() else 'email/crear_negocio.txt'
+                pdf_path = get_pdf_path(context, request)
+                email_send(categoria, recipient_list, txt_path, html_path, context, pdf_path)
+                os.unlink(pdf_path)
         else:
-            if not negocio.estado == "ESP_CONF":
+            if not negocio.is_esp_conf():
                 if envio_comprador:
                     negocio.estado = "RECIBIDO"
                 else:
                     negocio.estado = "NEGOCIACION"
                 negocio.save()
-            elif negocio.estado == "ESP_CONF" and not envio_comprador and isSend:
+            elif negocio.is_esp_conf() and not envio_comprador and isSend:
                 negocio.estado = "NEGOCIACION"
                 negocio.save()
                 
@@ -2193,16 +2311,10 @@ class APIArticulos(View):
             else:
                 tipo_pago = None
 
-            if len(actual.get("Precio venta").strip()) != 0:
-                precio_venta = actual.get("Precio venta")
-            else:
-                precio_venta = 0.0
+            precio_venta = actual.get("Precio venta")
+            precio_compra = actual.get("Precio compra")
 
             if isComprador:
-                precio_compra = 0.0
-            elif len(actual.get("Precio compra").strip()) != 0:
-                precio_compra = actual.get("Precio compra")
-            else:
                 precio_compra = 0.0
             
             item = ItemPropuesta(

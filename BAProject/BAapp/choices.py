@@ -87,6 +87,7 @@ ESTADO_DE_NEGOCIO_CHOICES = (
 	("NEGOCIACION","En Negociación"),
 	("ESP_CONF","Esperando confirmación"),
 	("CONFIRMADO","Confirmado"),
+	("YA_CONFIRMADO","Confirmado"),
 	("CANCELADO","Cancelado"),
 )
 

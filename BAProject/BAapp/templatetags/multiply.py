@@ -1,7 +1,10 @@
 from django import template
+from .formatfloat import formatfloat
 
 register = template.Library()
 
 @register.simple_tag
 def multiply(a, b) -> float:
-    return float(a) * float(b)
+    mult = float(a) * float(b)
+    result = formatfloat(mult, True)
+    return result

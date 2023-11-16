@@ -107,12 +107,12 @@
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}
                         <td>{{item.empresa.razon_social}}</td>
                     {% endif %}
-                    <td>{% formatfloat item.cantidad %}</td>
+                    <td>{% formatfloat item.cantidad False %}</td>
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
-                        <td>${% formatfloat item.precio_venta %}</td>
+                        <td>{% formatfloat item.precio_venta True %}</td>
                     {% endif %}
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Proveedor" or request.user|has_group:"Logistica" or request.user|has_group:"Administracion"%}  
-                        <td>${% formatfloat item.precio_compra %}</td>
+                        <td>{% formatfloat item.precio_compra True %}</td>
                     {% endif %}
                     {% if request.user|has_group:"Vendedor" or  request.user|has_group:"Comprador" or request.user|has_group:"Gerente"%}  
                         <td>{{item.divisa}}</td>

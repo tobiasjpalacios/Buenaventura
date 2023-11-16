@@ -15,78 +15,46 @@
     <style type="text/css">
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;600&display=swap');
 
-        @media only screen and (min-width: 680px) {
-            .u-row {
-                width: 900px !important;
-            }
-
-            .u-row .card {
-                width: 50% !important;
-                float: left;
-            }
-
-            .u-row .u-col {
-                vertical-align: top;
-            }
-
-            .u-row .u-col-16p67 {
-                width: 60px !important;
-            }
-
-            .u-row .u-col-33p33 {
-                width: 200px !important;
-            }
-
-            .u-row .u-col-100 {
-                width: 900px !important;
-            }
-
-            .container__wrapper {
-                display: flex !important;
-                height: 100% !important;
-                width: 100% !important;
-            }
-            
-            .container__wrapper>img {
-                margin-left: 155px !important;
-                margin-top: 80px;
-                user-select: none !important;
-            }
-
+        @page {
+            size: A3;
+            margin: 0mm;
         }
 
-        @media (max-width: 680px) {
-            .u-row-container {
-                max-width: 100% !important;
-                padding-left: 0px !important;
-                padding-right: 0px !important;
-            }
+        .u-row {
+            min-width: 900px !important;
+        }
 
-            .u-row .u-col {
-                min-width: 320px !important;
-                max-width: 100% !important;
-                display: block !important;
-            }
+        .u-row .card {
+            width: 50% !important;
+            float: left;
+        }
 
-            .u-row {
-                width: calc(100% - 40px) !important;
-            }
+        .u-row .u-col {
+            vertical-align: top;
+        }
 
-            .u-col {
-                width: 100% !important;
-            }
+        .u-row .u-col-16p67 {
+            width: 60px !important;
+        }
 
-            .u-col>div {
-                margin: 0 auto;
-            }
+        .u-row .u-col-33p33 {
+            width: 200px !important;
+        }
 
-            .u-row .card {
-                width: 100% !important;
-            }
+        .u-row .u-col-100 {
+            width: 900px !important;
+        }
 
-            .container__wrapper {
-                display: none !important;
-            }
+        .container__wrapper {
+            display: flex !important;
+            height: 100% !important;
+            width: 100% !important;
+            justify-content: flex-end;
+        }
+        
+        .container__wrapper>img {
+            margin-top: 80px;
+            user-select: none !important;
         }
 
         body {
@@ -269,7 +237,7 @@
 
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">
                         <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
+                            style="Margin: 0 auto;min-width: 320px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
                             <div
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
 
@@ -278,45 +246,20 @@
                                     <div
                                         style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
                                         <div
-                                            style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                            style="height: 100%; padding: 20px 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
 
-                                            <table id="u_content_image_5" style="font-family: 'Montserrat',sans-serif;"
-                                                role="presentation" cellpadding="0" cellspacing="0" width="100%"
-                                                border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="v-container-padding-padding"
-                                                            style="overflow-wrap:break-word;word-break:break-word;padding:20px 0px;font-family: 'Montserrat',sans-serif;"
-                                                            align="left">
-
-                                                            <table width="100%" cellpadding="0" cellspacing="0"
-                                                                border="0">
-                                                                <tr>
-                                                                    <td class="v-text-align"
-                                                                        style="padding-right: 0px;padding-left: 0px;"
-                                                                        align="center">
-
-                                                                        <img src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/develop/BAProject/BAapp/static/images/Buenaventura-blanco.png" alt="" width="166" height="41">
-
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <img src="https://raw.githubusercontent.com/tobiasjpalacios/Buenaventura/develop/BAProject/BAapp/static/images/Buenaventura-blanco.png" alt="" style="height: 50px; display: block; margin: auto; text-align: center;">
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>        
+                    </div>       
             
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">
                         <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+                            style="Margin: 0 auto;min-width: 320px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: #ffffff;">
 
@@ -409,17 +352,7 @@
                                                                     <div>
                                                                         <div>{{ texto }}
 
-                                                                            <div class="v-text-align" align="left"
-                                                                                style="padding: 30px 30px 30px 0px;">
-                                                                                <a href="{{ url }}" target="_blank"
-                                                                                    class="v-button"
-                                                                                    style="box-sizing: border-box;display: inline-block;font-family:'Montserrat',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #459A33; border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
-                                                                                    <span
-                                                                                        style="display:block;padding:10px 20px;line-height:120%;"><span
-                                                                                            style="font-size: 14px; line-height: 16.8px;">Ir
-                                                                                            a negociación</span></span>
-                                                                                </a>
-                                                                            </div>
+                                                                            <br><br>
 
                                                                             Observaciones: {{ obs | default:'No hay observaciones' }}
                                                                         </div>
@@ -444,7 +377,7 @@
                     
                     <div class="u-row-container" style="padding: 0px;background-color: transparent;">
                         <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
+                            style="Margin: 0 auto;min-width: 320px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
                             <div
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
 
@@ -491,7 +424,7 @@
 
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">
                         <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
+                            style="Margin: 0 auto;min-width: 320px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
                             <div
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
 
@@ -649,9 +582,9 @@
                         </div>
                     </div>
 
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent">
+                    <div class="u-row-container" style="padding: 0px;background-color: transparent;">
                         <div class="u-row"
-                            style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+                            style="Margin: 0 auto;min-width: 320px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
                             <div
                                 style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
 
@@ -671,11 +604,18 @@
                                                             align="left">
 
                                                             <h1 class="v-text-align v-font-size"
-                                                                style="padding-left: 20px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: 400; font-family: 'Rubik',sans-serif; font-size: 14px;">
+                                                                style="padding-left: 20px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: 600; font-family: 'Rubik',sans-serif; font-size: 20px;">
                                                                 <div>
-                                                                    <div>El resumen de los productos confirmados aparecerán en el archivo PDF adjunto.</div>
+                                                                    <div><u>Productos confirmados</u></div>
                                                                 </div>
                                                             </h1>
+
+                                                            <div class="v-text-align v-font-size"
+                                                                style="padding-left: 20px; line-height: 140%; text-align: left; word-wrap: break-word; font-weight: 400; font-family: 'Rubik',sans-serif; font-size: 16px;">
+                                                                <div>
+                                                                    <div>Los productos confirmados se muestran a partir de la siguiente página.</div>
+                                                                </div>
+                                                            </div>
 
                                                         </td>
                                                     </tr>
@@ -688,52 +628,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="u-row-container" style="padding: 0px;background-color: transparent;">
-                      <div class="u-row"
-                          style="Margin: 0 auto;min-width: 320px;max-width: 900px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #459A33;">
-                          <div
-                              style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
-
-                              <div class="u-col u-col-100"
-                                  style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
-                                  <div
-                                      style="height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-                                      <div
-                                          style="height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
-
-                                          <table id="u_content_heading_6"
-                                              style="font-family: 'Montserrat',sans-serif;" role="presentation"
-                                              cellpadding="0" cellspacing="0" width="100%" border="0">
-                                              <tbody>
-                                                  <tr>
-                                                      <td class="v-container-padding-padding"
-                                                          style="overflow-wrap:break-word;word-break:break-word;padding:20px;font-family: 'Montserrat',sans-serif;"
-                                                          align="center">
-
-                                                          <h1 class="v-text-align v-font-size"
-                                                              style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: 'Rubik',sans-serif; font-size: 14px;color: white;">
-                                                              <div>
-                                                                  <div>
-                                                                      <div>
-                                                                          <div>Buenaventura Agronegocios
-                                                                          </div>
-                                                                      </div>
-                                                                  </div>
-                                                              </div>
-                                                          </h1>
-
-                                                      </td>
-                                                  </tr>
-                                              </tbody>
-                                          </table>
-
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
                     
                 </td>
             </tr>

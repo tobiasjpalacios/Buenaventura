@@ -67,10 +67,10 @@
                   {% if not request.user.clase == 'Comprador' %}
                   <td class="clientView">{{ item.proveedor.get_full_name|default:'N/E' }}</td>
                   {% endif %}
-                  <td>{% formatfloat item.cantidad %}</td>
-                  <td>{% formatfloat item.precio_venta %}</td>
+                  <td>{% formatfloat item.cantidad False %}</td>
+                  <td>{% formatfloat item.precio_venta True %}</td>
                   {% if not request.user.clase == 'Comprador' %}
-                  <td class="clientView">{% formatfloat item.precio_compra %}</td>
+                  <td class="clientView">{% formatfloat item.precio_compra True %}</td>
                   {% endif %}
                   <td class="clientView">{{ item.tipo_pago.nombre|default:"Sin definir" }}</td>
                   <td class="clientView">
@@ -104,7 +104,7 @@
   </div>
 </div>
 
-{% if negocio.estado == "CONFIRMADO" %}
+{% if negocio.is_confirmado %}
 <script>
   $(document).ready(function () {
     var isBeforeFechaCierre = false;
