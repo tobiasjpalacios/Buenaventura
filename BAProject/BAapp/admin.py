@@ -126,7 +126,7 @@ class MyUserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = MyUserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ('email', 'empresa', 'is_staff')
+    list_display = ('email', 'clase', 'empresa', 'is_staff')
     list_filter = ('is_active',)
     search_fields = ('email', 'empresa__razon_social', 'empresa__nombre_comercial')
     ordering = ('email',)

@@ -510,7 +510,14 @@ def merge_pdfs(input_pdfs, output_pdf):
     pdf_merger.write(output_pdf)
     pdf_merger.close()
 
-def generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+def generar_pdf(context, request):
+    titulo = context.get('titulo')
+    texto = context.get('texto')
+    observaciones = context.get('obs')
+    propuesta = context.get('prop')
+    items_prop = context.get('articulos')
+    negocio = context.get('negocio')
+    
     context_hoja1 = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'prop': propuesta, 'negocio': negocio}
     hoja1_template = get_template('email/pdf_resumen_hoja1.html')
     hoja1_html = hoja1_template.render(context_hoja1)
@@ -542,7 +549,7 @@ def generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, re
         pdf_files.append(pdf_file_path)
         hojax.write_pdf(pdf_file_path)
 
-    file_name = f'negocio_{negocio.id_de_neg}_{int(datetime.now().timestamp())}.pdf'
+    file_name = f'resumen_negocio_bvi_{negocio.id_de_neg}.pdf'
     combined_pdf_path = os.path.join(settings.MEDIA_ROOT, file_name)
     merge_pdfs(pdf_files, combined_pdf_path)
 
@@ -550,27 +557,26 @@ def generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, re
 
     return combined_pdf_path, file_name
 
-def consulta_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+def consulta_pdf(context, request):
     """
     Descarga el archivo PDF en la computadora del usuario. El archivo se elimina dentro
     de la funcion. Retorna un HttpResonse que solo realiza la descarga sin renderizar
     nada en pantalla.
     """
-    pdf_path, file_name = generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+    pdf_path, file_name = generar_pdf(context, request)
 
     with open(pdf_path, 'rb') as pdf_file:
         response = HttpResponse(pdf_file.read(), content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename={file_name}'
-    os.unlink(pdf_path)
+        response['Content-Disposition'] = f'filename={file_name}'
 
     return response
 
-def email_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request):
+def get_pdf_path(context, request):
     """
-    Retorna el path del PDF generado. No elimina el archivo, pero se recomienda hacerlo
+    Genera y retorna el path del PDF generado. No elimina el archivo, pero se recomienda hacerlo
     posteriormente.
     """
-    pdf_path, _ = generar_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+    pdf_path, _ = generar_pdf(context, request)
     return pdf_path
 
 def testeo(request):
@@ -585,13 +591,11 @@ def testeo(request):
     context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': items_prop, 'prop': propuesta, 'negocio': negocio}
     template = "negocio"
 
-    return consulta_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+    return consulta_pdf(context, request)
 
-    # pdf_path = email_pdf(titulo, texto, observaciones, items_prop, propuesta, negocio, request)
+    # pdf_path = get_pdf_path(context, request)
 
     # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
-
-    # os.unlink(pdf_path)
 
     # return render(request, f'email/negocio.html', context)
 
@@ -2145,7 +2149,9 @@ class NegocioView(View):
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
                 html_path = 'email/negocio.html' if negocio.is_confirmado() else 'email/crear_negocio.html'
                 txt_path = 'email/negocio.txt' if negocio.is_confirmado() else 'email/crear_negocio.txt'
-                email_send(categoria, recipient_list, txt_path, html_path, context)
+                pdf_path = get_pdf_path(context, request)
+                email_send(categoria, recipient_list, txt_path, html_path, context, pdf_path)
+                os.unlink(pdf_path)
         else:
             if not negocio.is_esp_conf():
                 if envio_comprador:
