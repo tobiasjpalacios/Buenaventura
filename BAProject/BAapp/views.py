@@ -595,9 +595,9 @@ def testeo(request):
 
     # return consulta_pdf(context, request)
 
-    # pdf_path = get_pdf_path(context, request)
+    pdf_path = get_pdf_path(context, request)
 
-    email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context)
+    email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
 
     return render(request, f'email/crear_negocio.html', context)
 
