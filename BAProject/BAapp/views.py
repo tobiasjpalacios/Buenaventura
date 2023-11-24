@@ -582,22 +582,24 @@ def get_pdf_path(context, request):
 def testeo(request):
     titulo = "Testeando email confirmacion"
     negocio = Negocio.objects.get(id_de_neg=2010)
-    texto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed nunc mauris. Suspendisse potenti. Nulla metus dui, facilisis mattis ultricies tincidunt, finibus eget risus. Nam tempus lorem non turpis finibus varius. Quisque sit amet feugiat lorem. Duis fringilla facilisis nibh, ac placerat metus venenatis eget. Maecenas eleifend libero eu pretium posuere. Duis eget purus ac ipsum malesuada suscipit."
+    texto = "Buenos dias!"
     propuesta = Propuesta.objects.filter(negocio=negocio).last()
     items_prop = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
     observaciones = "estamos testeando"
-    full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
+    protocol = "https://"
+    domain = Site.objects.get_current().domain
+    full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id_de_neg,])
     recipient_list = [settings.TEMP_TO_EMAIL]
     context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': items_prop, 'prop': propuesta, 'negocio': negocio}
     template = "negocio"
 
-    return consulta_pdf(context, request)
+    # return consulta_pdf(context, request)
 
-    # pdf_path = get_pdf_path(context, request)
+    pdf_path = get_pdf_path(context, request)
 
-    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
+    email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
 
-    # return render(request, f'email/negocio.html', context)
+    return render(request, f'email/crear_negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
@@ -1713,7 +1715,7 @@ def crear_negocio(request, comprador, vendedor, isComprador, observacion):
         El nuevo negocio tiene identificador {negocio.get_id_de_neg()} y fue creado por {created_by}.
         Hacé click en el botón de abajo para ver el nuevo negocio.
         """
-        protocol = "http://"
+        protocol = "https://"
         domain = Site.objects.get_current().domain
         full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id_de_neg,])
         # recipient_list = [negocio.vendedor.email, negocio.comprador.email]
@@ -2143,7 +2145,9 @@ class NegocioView(View):
             match_vendedor = email_vendedor == settings.TEMP_TO_EMAIL
             match_comprador = email_comprador == settings.TEMP_TO_EMAIL
             if match_vendedor or match_comprador:
-                full_negociacion_url = request.build_absolute_uri(reverse('negocio', args=[negocio.id_de_neg,]))
+                protocol = "https://"
+                domain = Site.objects.get_current().domain
+                full_negociacion_url =  protocol + domain + reverse('negocio', args=[negocio.id_de_neg,])
                 # recipient_list = [negocio.vendedor.email] if envio_comprador else [negocio.comprador.email]
                 recipient_list = [settings.TEMP_TO_EMAIL]
                 context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': itemsProp, 'prop': propuesta, 'negocio': negocio}
