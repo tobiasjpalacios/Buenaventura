@@ -149,13 +149,13 @@ TEMP_TO_EMAIL = os.environ.get('TEMP_TO_EMAIL')
 
 # When DEBUG is set to False
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = 465  # or 465 for SSL
-EMAIL_USE_TLS = False  # Set to False if using SSL
-EMAIL_USE_SSL = True  # Set to True if using SSL
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 if not DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = 465  # or 465 for SSL
+    EMAIL_USE_TLS = False  # Set to False if using SSL
+    EMAIL_USE_SSL = True  # Set to True if using SSL
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     

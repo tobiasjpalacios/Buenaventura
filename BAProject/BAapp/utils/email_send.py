@@ -27,7 +27,7 @@ def email_send(
     try:
         subject = subject_email
         from_email = f'"Buenaventura Agronegocios" <{settings.EMAIL_HOST_USER}>'
-        to = ['juanluduena23@outlook.com']
+        to = to_email
         text_content = get_template(path_to_text).render(context) if path_to_text else "TESTING BVAGRO MAILING"
         msg = EmailMultiAlternatives(subject, text_content, from_email, to)
         new_context = attach_images(context, msg)
