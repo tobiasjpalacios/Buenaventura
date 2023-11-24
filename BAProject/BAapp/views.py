@@ -582,7 +582,7 @@ def get_pdf_path(context, request):
 def testeo(request):
     titulo = "Testeando email confirmacion"
     negocio = Negocio.objects.get(id_de_neg=2010)
-    texto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed nunc mauris. Suspendisse potenti. Nulla metus dui, facilisis mattis ultricies tincidunt, finibus eget risus. Nam tempus lorem non turpis finibus varius. Quisque sit amet feugiat lorem. Duis fringilla facilisis nibh, ac placerat metus venenatis eget. Maecenas eleifend libero eu pretium posuere. Duis eget purus ac ipsum malesuada suscipit."
+    texto = "Buenos dias!"
     propuesta = Propuesta.objects.filter(negocio=negocio).last()
     items_prop = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
     observaciones = "estamos testeando"
@@ -591,13 +591,13 @@ def testeo(request):
     context = {'titulo': titulo, 'texto': texto, 'obs': observaciones, 'url': full_negociacion_url, 'articulos': items_prop, 'prop': propuesta, 'negocio': negocio}
     template = "negocio"
 
-    return consulta_pdf(context, request)
+    # return consulta_pdf(context, request)
 
     # pdf_path = get_pdf_path(context, request)
 
-    # email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context, pdf_path)
+    email_send("Testeando", recipient_list, f'email/{template}.txt', f'email/{template}.html', context)
 
-    # return render(request, f'email/negocio.html', context)
+    return render(request, f'email/crear_negocio.html', context)
 
 def cliente(request):
     return render(request, 'cliente.html')
