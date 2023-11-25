@@ -53,7 +53,7 @@
                 {% for item in prop.items.all %}
                   <tr {% if item.aceptado %}style="background-color: rgba(76, 184, 72, 0.29);"{% endif %} data-issaved="false">
                     <td>
-                      {% if not request.user.clase == 'Comprador' %}
+                      {% if not request.user.clase == 'Comprador' and not negocio.is_confirmado %}
                       <input class="art-search" type="text" name="articulo" id='artSearch{{ forloop.counter }}' list="artDatalist{{ forloop.counter }}" placeholder="Articulo" value="{{ item.articulo|default_if_none:'' }}" onkeyup="removeUpdate('{{ forloop.counter0 }}')">
                       <datalist id="artDatalist{{ forloop.counter }}"></datalist>
                       {% else %}

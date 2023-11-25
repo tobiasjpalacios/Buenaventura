@@ -776,6 +776,7 @@ Negociación {{ negocio.get_id_de_neg }}
     // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
+      console.log(errorFields[key])
       print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
