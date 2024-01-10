@@ -1,20 +1,17 @@
 from django.contrib import admin
-from django.http.request import HttpRequest
 from .models import *
 
 
-from django.contrib.auth.models import User, Group
-from django.conf import settings
+from django.contrib.auth.models import Group
 from django.contrib import admin, messages
 from django.contrib.admin.options import IS_POPUP_VAR
 from django.contrib.admin.utils import unquote
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import (
-    AdminPasswordChangeForm, UserChangeForm, UserCreationForm,
+    AdminPasswordChangeForm, UserChangeForm,
 )
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
-from django.db import router, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -23,15 +20,8 @@ from django.utils.html import escape
 from django.utils.translation import gettext, gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count
-from django.db.models.functions import TruncDay
-import json
 from django.contrib.auth.forms import *
-from django.contrib.auth.models import Permission
 from django.contrib.auth.admin import UserAdmin
-from django.shortcuts import redirect
-from datetime import datetime
 
 
 class ItemPropuestaInline(admin.TabularInline):

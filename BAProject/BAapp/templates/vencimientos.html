@@ -57,7 +57,7 @@ Vencimientos
                   <tbody>
                     {% for vence in vencidos%}
                     <tr style="border-bottom: 0px;">
-                      <td class="opcion center"> {{vence.fecha|date:"M d, Y"}} {{vence.empresa}} </td>
+                      <td class="opcion center"> {{vence.fecha}} - {{vence.comprador}} de {{vence.empresa}}  </td>
                       <td><a href="{% url 'info_negocio' vence.id_de_neg %}"
                           class="btn-floating btn-small waves-effect waves-light red no-shadows"><i
                             class=" small material-icons ">search</i></a></td>
@@ -87,7 +87,7 @@ Vencimientos
                   <tbody>
                     {% for semanal in vencimiento_semanal %}
                     <tr style="border-bottom: 0px; ">
-                      <td class="opcion center"> {{semanal.fecha|date:"M d, Y"}} {{semanal.empresa}}</td>
+                      <td class="opcion center"> {{semanal.fecha}} - {{semanal.comprador}} de {{semanal.empresa}} </td>
                       <td><a href="{% url 'info_negocio' semanal.id_de_neg %}"
                           class="btn-floating btn-small waves-effect waves-light yellow no-shadows"><i
                             class=" small material-icons ">search</i></a></td>
@@ -119,7 +119,7 @@ Vencimientos
                   <tbody>
                     {% for futuro in vencimiento_futuro %}
                     <tr style="border-bottom: 0px; ">
-                      <td class="opcion center"> {{futuro.fecha|date:"M d, Y"}} {{futuro.empresa}} </td>
+                      <td class="opcion center"> {{futuro.fecha}} - {{futuro.comprador}} de {{futuro.empresa}} </td>
                       <td><a href="{% url 'info_negocio' futuro.id_de_neg %}"
                           class="btn-floating btn-small waves-effect waves-light green no-shadows"><i
                             class=" small material-icons ">search</i></a></td>
@@ -136,62 +136,4 @@ Vencimientos
   </div>
   {% endif %}
 </body>
-<script>
-
-  function sendFechaPagoSemaforo(){
-    var titulo = document.getElementById("tituloAlertaSem").value;
-    var descri = document.getElementById("descriAlertaSem").value;
-    var tocadoAlerta = document.getElementById("idPideAlertaSem").value;
-    var idNegocio = document.getElementById("idNegocioSem").value;
-    if (tocadoAlerta == "1" && titulo === ""){
-      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
-    } else {
-      var ids = [];
-      var grid = document.getElementById("tableFechaPagoS");
-      var checkBoxes = grid.getElementsByTagName("INPUT");
-      for (var i = 0; i < checkBoxes.length; i++) {
-          if (checkBoxes[i].checked) {
-              var row = checkBoxes[i];
-              var id = $(row).data("id");
-              ids.push(id);
-          };
-      };
-      var jsonText = JSON.stringify(ids);
-      var vacio = 0
-      if (ids.length == 0){
-        vacio = 1
-      };
-      $.ajax({
-          url: "{% url 'setFechaPagoReal' %}",
-          type: 'POST',
-          data: {'jsonText':jsonText,'idNegocio':idNegocio,'titulo':titulo,
-            'descri':descri,'vacio':vacio,'tocadoAlerta':tocadoAlerta,
-              csrfmiddlewaretoken: '{{ csrf_token }}'},
-          success: function(data){
-            if (data.estado){
-              console.log(data.estado);
-              $('#modalSemaforoNegocio').modal('close');     
-            } 
-            M.toast({html: data.result});
-            $.ajax({
-              url: "{% url 'reloadSem' %}",
-              type: 'GET',
-              data: {
-                  csrfmiddlewaretoken: '{{ csrf_token }}'},
-                  success: function(data){
-                      $('#tablesSem').html(data);
-                  },
-                  error: function (data) {
-                    console.log(data.result)
-                }
-            });
-            
-          },
-          error: function (data) {
-              console.log(data.result)
-          }
-      })      
-    };
-  };
-</script>
 {% endblock body %}

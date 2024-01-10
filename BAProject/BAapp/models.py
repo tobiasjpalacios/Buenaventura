@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.db import models, transaction
-from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
 from .utils.email_send import email_send
 from django.db.models import signals
-from django.dispatch import dispatcher
 from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site

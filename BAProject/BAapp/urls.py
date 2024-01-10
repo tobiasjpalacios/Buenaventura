@@ -18,28 +18,13 @@ urlpatterns = [
     # path('testeo/', testeo, name="testeo"),
     path('chat/', chat, name="chat"),
     path('cliente/', cliente, name="Cliente"),
-    path('create-alerta-nv/', createAlertaNV, name="createAlertaNV"),
     path('password/',PasswordsChangeView.as_view(template_name="tempAux/changePassword.html")),
     path('success-password/', successPassword, name="successPassword"),
-    path('vendedor/', vendedor, name="vendedor"),
-    # path('router/', check_user_group_after_login, name="router"),
-    path('vista-administrador/', vistaAdministrador, name="vistaAdministrador"),
-    path('vista-logistica/', vistaLogistica, name="vistaLogistica"),
-    path('vista-proveedor/', vistaProveedor, name="vistaProveedor"),
-    path('vista-gerente/', vistaGerente, name="vistaGerente"),
-    path('vista-gliente/', vistaCliente, name="vistaCliente"),
     path('detalle-alerta/', detalleAlerta, name="detalleAlerta"),
-    path('detalle-logistica/', detalleLogistica, name="detalleLogistica"),
     path('detalle-negocio/', detalleNegocio, name="detalleNegocio"),
     path('detalle-notis/', detalleNotis, name="detalleNotis"),
     path('detalle-item/', detalleItem, name="detalleItem"),
-    path('send-alerta-log/', sendAlertaLog, name="sendAlertaLog"),
-    path('reload-log/', reloadLog, name="reloadLog"),
-    path('send-alerta-modal/', sendAlertaModal, name="sendAlertaModal"),
-    path('set-logistica/', setLogistica, name="setLogistica"),
-    path('detalle-semaforo/', detalleSemaforo, name="detalleSemaforo"),
-    path('set-fecha-pago-real/', setFechaPagoReal, name="setFechaPagoReal"),
-    path('reload-sem/', reloadSem, name="reloadSem"),   
+    path('send-alerta-modal/', sendAlertaModal, name="sendAlertaModal"), 
     path('carga-excel/', login_required(login_url='/')(carga_excel.as_view()), name="carga_excel"),
     path('descarga-db-excel/', login_required(login_url='/')(descarga_db_excel), name="descarga_db_excel"),
     path('filtrar-negocios/', filtrarNegocios, name ="filtrarNegocios"),
@@ -73,15 +58,6 @@ urlpatterns = [
     path('generar-pdf/', generar_pdf, name="generar_pdf"),
 
 
-
-    path('compradores/', ListCompradorView.as_view(), name="mostrar_compradores"),
-    path('comprador/<int:pk>', CompradorView.as_view(), name="comprador"),
-    path('comprador/', CompradorView.as_view(), name="registrar_comprador"),
-        
-    path('proveedores/', ListProveedorView.as_view(), name = "mostrar_proveedores"),
-    path('proveedor/<int:pk>', ProveedorView.as_view(), name="proveedor"),
-    path('proveedor/', ProveedorView.as_view(), name="crear_proveedor"),
-
     path('articulos/', ListArticuloView.as_view(), name = "mostrar_articulos"),
     path('articulo/<int:pk>', ArticuloView.as_view(), name="articulo"),
     path('articulo/', ArticuloView.as_view(), name="crear_articulo"),
@@ -90,11 +66,6 @@ urlpatterns = [
     path('presupuesto/<int:pk>', PresupuestoView.as_view(), name="presupuesto"),
     path('presupuesto/', PresupuestoView.as_view(), name="crear_presupuesto"),
 
-    #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
-    path('propuesta/<int:pk>', PropuestaView.as_view(), name="propuesta"),
-    path('propuesta/', PropuestaView.as_view(), name="crear_propuesta"),
-
-    #path('propuesta/', ListPropuestaView.as_view(), name = "mostrar_propuestas"),
     path('negocio/<int:id_de_neg>', login_required(login_url='/')(NegocioView.as_view()), name="negocio"),
     path('negocio/', login_required(login_url='/')(NegocioView.as_view()), name="crear_negocio"),
 
