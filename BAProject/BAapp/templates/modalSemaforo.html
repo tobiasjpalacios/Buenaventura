@@ -57,7 +57,7 @@
                   <td>{{item.articulo.ingrediente}}</td>
                   <td>{% formatfloat item.cantidad False %}</td>
                   <td>{% formatfloat item.precio_venta True %}</td>
-                  <td>{{item.fecha_pago}}</td>
+                  <td>{{item.fecha_pago_str}}</td>
                   <td>{{item.estado}}</td>
                   <td><a onclick="detalleArticuloNegocio('{{item.id}}', 1)" class="btn-floating btn-small waves-effect waves-light modal-trigger modal-close red "><i class=" small material-icons ">search</i></a></td>
               </tr>

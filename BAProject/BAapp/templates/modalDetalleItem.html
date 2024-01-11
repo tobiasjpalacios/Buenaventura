@@ -102,7 +102,7 @@
           <td>{{item.tipo_pago.nombre}}</td>
           <td>{{item.tasa}}%</td>
         {% endif %}
-        <td>{{item.fecha_pago}}</td>
+        <td>{{item.fecha_pago_str}}</td>
           {% if item.fecha_real_pago != None %}
             <td>{{item.fecha_real_pago|date:"d/m/y"}}</td>
           {% else %}

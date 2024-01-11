@@ -64,14 +64,33 @@ b{
   background-color: rgba(254,206,8,255)
 }
 
+.material-icons.atrasados {
+  color: rgba(238,29,35,255);
+}
+
+.material-icons.futuros {
+  color: rgba(76,184,72,255);
+}
+
+.material-icons.proximos {
+  color: rgba(254,206,8,255);
+}
+
 .totalh{
   height: 100%;
 }
 
-.tableVen{
+.tableVen {
   height: 100%;
   background-color: white;
   border-radius: 0px 0px 19px 19px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tableVen::-webkit-scrollbar {
+  display: none;
 }
 
 #tablesSem{
@@ -81,5 +100,8 @@ b{
 @media only screen and (max-width: 992px) {
   .totalh {
     margin-bottom: 15vh;
+  }
+  .opcion {
+    font-size: 24px;
   }
 }

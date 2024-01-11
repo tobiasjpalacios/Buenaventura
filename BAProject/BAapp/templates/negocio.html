@@ -307,6 +307,8 @@ Negociación {{ negocio.get_id_de_neg }}
           else {
             edits.items[index][element] = getArtId(index+1);
           }
+        } else if (element == "fecha_pago") {
+          edits.items[index]["fecha_pago_str"] = inputValue;
         } else {
           if (!inputValue) {
             isValid = false;
@@ -441,8 +443,9 @@ Negociación {{ negocio.get_id_de_neg }}
     // default values
     n["aceptado"] = false;
     n["pagado"] = false;
-    n["fecha_real_entrega"] = null;
+    n["fecha_pago_date"] = null;
     n["fecha_real_pago"] = null;
+    n["fecha_real_entrega"] = null;
     n["fecha_salida_entrega"] = null;
     n["divisa"] = 'USD';
     n["isNew"] = true;
@@ -736,7 +739,7 @@ Negociación {{ negocio.get_id_de_neg }}
         proc.items.push(element)
       }
     })
-    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
+    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_pago_date", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
     var artName = "";
     var listOfErrors = []
     var listOfElems = []
@@ -776,7 +779,7 @@ Negociación {{ negocio.get_id_de_neg }}
     // console.log(proc);
     var print_errors = "";
     for (var key in errorFields) {
-      console.log(errorFields[key])
+      // console.log(errorFields[key])
       print_errors = print_errors.concat(key + ':\n' + errorFields[key].join('') +'\n');
     }
     if (errors) {
@@ -784,6 +787,7 @@ Negociación {{ negocio.get_id_de_neg }}
         title: "Oops!",
         icon: "error",
         text: print_errors,
+        showConfirmButton: false,
         showDenyButton: true,
         denyButtonText: 'Ok',
       });
@@ -792,11 +796,16 @@ Negociación {{ negocio.get_id_de_neg }}
       proc.items.forEach(element => {
         for (k in element) {
           if (k == "precio_venta" || k == "precio_compra" || k == "precio") {
-            element[k] = getNumberFromInput(element[k]);
+            try {
+              element[k] = getNumberFromInput(element[k]);
+            }
+            catch(error) {
+              // pass
+            }
           }
         }
       })
-    
+
       Swal.fire({
         text: 'Enviando propuesta...',
         allowEscapeKey: false,
@@ -814,8 +823,24 @@ Negociación {{ negocio.get_id_de_neg }}
         },
         body: JSON.stringify(proc),
       })
-        .then(a => {location.reload()})
-        .catch(a => {console.log(a)})
+        .then(
+          response => {
+            if (!response.ok) {
+              throw new Error(`Error status: ${response.status}`);
+            }
+            location.reload()
+          }
+        )
+        .catch(error => {
+            console.error(error.message)
+            Swal.fire({
+              title: error.message,
+              icon: "error",
+              showConfirmButton: false,
+            });
+          }
+        );
+          
     }
   }
 </script>

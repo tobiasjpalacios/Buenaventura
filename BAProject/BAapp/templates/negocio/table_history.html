@@ -81,7 +81,7 @@
                     {% endif %}
                   </td>
                   <td class="clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
-                  <td>{{ item.fecha_pago|default:"Sin definir" }}</td>
+                  <td>{{ item.fecha_pago_str|default:"Sin definir" }}</td>
                   <td class="clientView">{{ item.destino|default:"Sin definir" }}</td>
                   <td class="ignore">
                     <a class="action-btn btn-floating btn waves-effect waves-green transparent no-shadows show-more-btn"><i class="material-icons table-icons" style="color: #459A33;">search</i></a>

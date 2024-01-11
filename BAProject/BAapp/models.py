@@ -246,10 +246,14 @@ class ItemPropuesta(models.Model):
     )
     aceptado = models.BooleanField()
     pagado = models.BooleanField(default=False)
-    fecha_pago = models.CharField(
+    fecha_pago_str = models.CharField(
         null=True,
         blank=True,
-        max_length=12
+        max_length=12,
+    )
+    fecha_pago_date = models.DateField(
+        null=True,
+        blank=True
     )
     fecha_real_pago = models.DateTimeField(
         null=True,

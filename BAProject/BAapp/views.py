@@ -30,6 +30,7 @@ from decimal import *
 from BAapp.utils.formatusd import to_input_string
 from django.template.loader import get_template
 from BAapp.utils.negocios_helper import listasNA, listaNL, semaforoVencimiento, calcularVencAtr
+from BAapp.utils.date_parser import date_parser
 import weasyprint
 import os
 import PyPDF2
@@ -1047,39 +1048,49 @@ class NegocioView(View):
                 envio_comprador=envio_comprador
             )
             prop.save()
-            for item in data["items"]:
-                tmp = ItemPropuesta()
-                for f in tmp._meta.get_fields():
-                    key = f.name
-                    if key=="propuesta" or key=="id" or key == "isNew":
-                        continue
-                    is_new = item["isNew"]
-                    value = item[key]
-                    if key == "proveedor" and value == None:
-                        setattr(tmp, key, None)
-                    if f.is_relation and not (key == "proveedor" and value == None):
-                        if key == "articulo" and envio_comprador and is_new:
-                            art = Articulo.objects.get(pk=value)
-                            try:
-                                obj = Articulo.objects.get(ingrediente=art.ingrediente, empresa=None)
-                            except:
-                                obj = Articulo(ingrediente=art.ingrediente, empresa=None)
-                                obj.save()
-                        else:
-                            obj = get_object_or_404(
-                                f.related_model,
-                                pk=value
-                            )
-                        setattr(tmp, key, obj)
-                    else:
-                        setattr(
-                            tmp, 
-                            key, 
-                            value
-                        )
-                tmp.propuesta = prop
-                tmp.save()
-                completed &= tmp.aceptado
+            items = data.get("items", [])
+            for item in items:
+                item_prop = ItemPropuesta()
+                item_is_new = item.get('isNew')
+                fecha_pago_str = item.get('fecha_pago') if item_is_new else item.get('fecha_pago_str')
+                fecha_pago_date = parse_date(fecha_pago_str)
+                
+                try:
+                    user_proveedor = MyUser.objects.get(id=item.get('proveedor'))
+                except MyUser.DoesNotExist:
+                    user_proveedor = None
+                    
+                articulo = Articulo.objects.get(pk=item.get('articulo'))
+                if envio_comprador and item_is_new:
+                    try:
+                        articulo = Articulo.objects.get(ingrediente=articulo.ingrediente, empresa=None)
+                    except:
+                        articulo = Articulo(ingrediente=articulo.ingrediente, empresa=None)
+                        articulo.save()
+                        
+                tipo_pago = TipoPago.objects.get(id=item.get('tipo_pago'))
+                    
+                item_prop.articulo = articulo
+                item_prop.proveedor = user_proveedor
+                item_prop.tipo_pago = tipo_pago
+                item_prop.fecha_pago_str = fecha_pago_str
+                item_prop.fecha_pago_date = fecha_pago_date
+                item_prop.propuesta = prop
+                item_prop.precio_venta = item.get('precio_venta')
+                item_prop.precio_compra = item.get('precio_compra')
+                item_prop.cantidad = item.get('cantidad')
+                item_prop.divisa = item.get('divisa')
+                item_prop.tasa = item.get('tasa')
+                item_prop.destino = item.get('destino')
+                item_prop.aceptado = item.get('aceptado')
+                item_prop.pagado = item.get('pagado')
+                item_prop.fecha_entrega = item.get('fecha_entrega')
+                item_prop.fecha_real_entrega = item.get('fecha_real_entrega')
+                item_prop.fecha_salida_entrega = item.get('fecha_salida_entrega')
+                item_prop.fecha_real_pago = item.get('fecha_real_pago')
+                item_prop.save()
+                
+                completed &= item_prop.aceptado
 
         titulo = "Presupuesto de {} {}".format(
             request.user.get_full_name(),
@@ -1364,6 +1375,8 @@ class APIArticulos(View):
 
             if isComprador:
                 precio_compra = 0.0
+                
+            fecha_pago = actual.get("Fecha de pago"),
             
             item = ItemPropuesta(
                 articulo=articulo, 
@@ -1377,8 +1390,10 @@ class APIArticulos(View):
                 tasa=tasa,
                 destino=domicilio,
                 aceptado=False,
-                fecha_pago=actual.get("Fecha de pago"),
-                fecha_entrega=actual.get("Fecha de entrega"),)
+                fecha_pago_str=fecha_pago,
+                fecha_pago_date=date_parser(fecha_pago),
+                fecha_entrega=actual.get("Fecha de entrega"),
+            )
             item.save()
         return JsonResponse(negocio.id_de_neg, safe=False)
 

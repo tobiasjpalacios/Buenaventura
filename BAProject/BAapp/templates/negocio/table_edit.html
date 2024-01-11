@@ -93,7 +93,7 @@
                     </td>
                     <td><input type="number" name="tasa" step=".01" id="tas{{item.id}}" min="0" max="100" value="{% decimaltofloat item.tasa %}" placeholder="Tasa Mensual" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td><input class="datepicker" autocomplete="off" type="text" name="fecha_entrega" value="{{ item.fecha_entrega|default:'' }}" placeholder="Fecha entrega" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
-                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
+                    <td><input class="datepicker" autocomplete="off" type="text" name="fecha_pago" value="{{ item.fecha_pago_str|default:'' }}" placeholder="Fecha pago" onkeyup="removeUpdate('{{ forloop.counter0 }}')"></td>
                     <td>
                       <input type="text" name="destino" value="{{item.destino}}" placeholder="Destino" onkeyup="removeUpdate('{{ forloop.counter0 }}')"/>
                     </td>

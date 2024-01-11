@@ -62,11 +62,17 @@ body {
   color: #005221 !important;
 }
 
-.tableBlock{
+.tableBlock {
   /* overflow-y: scroll;  */
   height: 100%;
   background-color: white;
   overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tableBlock::-webkit-scrollbar {
+  display: none;
 }
 
 .headBlock{
@@ -334,6 +340,13 @@ textarea {
 
 .swal2-loader {
   border-color: #459A33 #ffffff00 #459A33 #ffffff00 !important;
+}
+
+.opcion {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
 }
 
 /* Change autocomplete styles in WebKit */

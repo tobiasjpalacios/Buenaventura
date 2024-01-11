@@ -181,18 +181,18 @@ def listaNL(request,negocioFilter):
 
 def get_articulos_vencidos(id_prop):
     now = timezone.localtime(timezone.now()).date()
-    articulos_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago__lt=now)
+    articulos_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now)
     return articulos_vencidos
 
 def get_articulos_proximos_a_vencer(id_prop):
     now = timezone.localtime(timezone.now()).date()
     seven_days_later = now + timezone.timedelta(days=7)
-    articulos_proximos_a_vencer = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago__range=[now, seven_days_later])
+    articulos_proximos_a_vencer = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__range=[now, seven_days_later])
     return articulos_proximos_a_vencer
 
 def get_articulos_futuros(id_prop):
     now = timezone.localtime(timezone.now()).date()
-    articulos_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago__gt=now + timezone.timedelta(days=7))
+    articulos_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
     return articulos_futuros
 
 def create_articulo_dict(fecha_pago, comprador, id_de_neg, razon_social):
@@ -206,7 +206,7 @@ def create_articulo_dict(fecha_pago, comprador, id_de_neg, razon_social):
 def create_lista_articulos(articulos, negocio):
     return [
         create_articulo_dict(
-            articulo.fecha_pago,
+            articulo.fecha_pago_str,
             negocio.comprador.get_full_name(),
             negocio.id_de_neg,
             negocio.comprador.empresa.razon_social
@@ -236,74 +236,3 @@ def semaforoVencimiento(negocioFilter):
         lista_futuros.extend(create_lista_articulos(articulos_futuros, negocio))
     
     return lista_vencidos, lista_proximos, lista_futuros
-        # if (not propuesta):
-        #     pass
-        # else:
-        #     id_prop = propuesta[0][0]
-        #     fecha_p = propuesta[0][1]
-        #     articulos_vencidos(id_prop)
-        #     articulos_proximos_a_vencer(id_prop)
-        #     articulos_futuros(id_prop)
-            # items = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True).values_list('articulo__ingrediente', 'fecha_pago')
-            # if (items.count() > 0):
-            #     comprador = negocio.comprador.apellido +" "+negocio.comprador.nombre
-            #     id_propuesta = id_prop        
-            #     vencidos = False
-            #     esta_semana = False
-            #     futuros = False
-            #     for a in items:                    
-            #         date_time_obj = datetime.strptime(a[1], "%d/%m/%Y")
-            #         if (date_time_obj < today2):
-            #             vencidos = True
-            #         else:
-            #             difDias = (today2 - date_time_obj).days                        
-            #             if ((difDias * (-1)) <= 7):
-            #                 esta_semana = True
-            #             else:
-            #                 futuros = True
-            #         """
-            #         diaP = int(a[1][0:2])
-            #         mesP = int(a[1][3:5])
-            #         añoP = int(a[1][6:10])
-            #         difD = (diaP - diaA)
-            #         difM = (mesP - mesA)
-            #         difA = (añoP - añoA)
-            #         proxMes = (diaP + 30 - diaA)
-            #         if ((mesA == 12 and mesP == 1) and (difA == 1)):
-            #             difM = 1
-            #         if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-            #             vencidos = True 
-            #         elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
-            #             esta_semana = True
-            #         elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
-            #             esta_semana = True
-            #         else:
-            #             futuros = True
-            #         """
-            #     if (vencidos):
-            #         lista = {
-            #             'fecha':fecha_p,
-            #             'comprador': comprador,
-            #             'id_de_neg': negocio.id_de_neg,
-            #             'empresa':negocio.comprador.empresa.razon_social
-            #         }
-            #         lista_vencidos.append(lista)
-            #     elif (esta_semana):
-            #         lista = {
-            #             'fecha':fecha_p,
-            #             'comprador': comprador,
-            #             'id_de_neg': negocio.id_de_neg,
-            #             'empresa':negocio.comprador.empresa.razon_social
-            #         }
-            #         lista_semanas.append(lista)
-            #     else:
-            #         lista = {
-            #             'fecha':fecha_p,
-            #             'comprador': comprador,
-            #             'id_de_neg': negocio.id_de_neg,
-            #             'empresa':negocio.comprador.empresa.razon_social
-            #         }
-            #         lista_futuros.append(lista)
-            #     vencidos = False
-            #     esta_semana = False
-            #     futuros = False
