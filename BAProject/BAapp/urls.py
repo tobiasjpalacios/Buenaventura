@@ -30,6 +30,7 @@ urlpatterns = [
     path('filtrar-negocios/', filtrarNegocios, name ="filtrarNegocios"),
     path('todos-filtro/<tipo>', todosFiltro, name='todosFiltro'),
     path('cuentas/', cuentas, name="cuentas"),
+    path('redirect-hyperlink/<int:id>', notisHyperlinkRedirect, name='redirect_hyperlink'),
 
 
     #nuevas urls

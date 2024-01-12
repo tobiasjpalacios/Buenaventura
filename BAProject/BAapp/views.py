@@ -243,11 +243,11 @@ class MenuComprobantesView(View):
 class NotificacionesView(View):
     def get(self, request, *args, **kwargs):
         #lpn = Lista Presupuesto Notificaciones
-        lpn = Notificacion.objects.filter(user=request.user, categoria__contains='Presupuesto').order_by('-timestamp')
+        lpn = Notificacion.objects.filter(user=request.user, visto=False, categoria__contains='Presupuesto').order_by('-timestamp')
         #lln = Lista Logistica Notificaciones
-        lln = Notificacion.objects.filter(user=request.user, categoria__contains='Logistica').order_by('-timestamp')
+        lln = Notificacion.objects.filter(user=request.user, visto=False, categoria__contains='Logistica').order_by('-timestamp')
         #lvn = Lista Vencimiento Notificaciones
-        lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
+        lvn = Notificacion.objects.filter(user=request.user, visto=False, categoria__contains='Vencimiento').order_by('-timestamp')
         context = {
             'lista_vencimiento': lvn,
             'lista_logistica_noti': lln,
@@ -303,16 +303,24 @@ def detalleNotis(request):
         idNoti = request.POST['idNoti']        
         notificacion = Notificacion.objects.get(id=int(idNoti))        
         first = notificacion.hyperlink.split("/",1)[1]
-        idNegocio = first.split("/",1)[1]
-        negocio = Negocio.objects.get(id=int(idNegocio))
+        id_de_neg = first.split("/",1)[1]
+        negocio = Negocio.objects.get(id_de_neg=int(id_de_neg))
         propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','envio_comprador')[:1])
-        if (not propuesta):
-            return render (request, 'modalnotis.html')
+        if not propuesta:
+            return render(request, 'modalnotis.html')
         else:
             id_prop = propuesta[0][0]
             negocio.id_prop = id_prop
-            return render (request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
-    return render (request, 'modalnotis.html')
+            return render(request, 'modalnotis.html', {'notificacion':notificacion,'negocio':negocio})
+    return render(request, 'modalnotis.html')
+
+def notisHyperlinkRedirect(request, id):
+    notificacion = Notificacion.objects.get(id=id)
+    notificacion.visto = True
+    notificacion.save()
+    first = notificacion.hyperlink.split("/",1)[1]
+    id_de_neg = first.split("/",1)[1]
+    return redirect('negocio', id_de_neg=int(id_de_neg))
 
 
 #lo viejo xd

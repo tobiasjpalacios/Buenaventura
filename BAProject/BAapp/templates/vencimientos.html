@@ -57,7 +57,7 @@ Vencimientos
                   <tbody>
                     {% for vence in vencidos%}
                     <tr style="border-bottom: 0px;">
-                      <td class="opcion center"> {{vence.fecha}} - {{vence.comprador}} de {{vence.empresa}}  </td>
+                      <td class="opcion center"> {{vence.fecha}} - {{vence.articulo}} de {{vence.comprador}} de {{vence.empresa}}  </td>
                       <td>
                         <a href="{% url 'info_negocio' vence.id_de_neg %}" 
                           class="btn-floating btn waves-effect waves-light transparent no-shadows"><i
@@ -89,7 +89,7 @@ Vencimientos
                   <tbody>
                     {% for semanal in vencimiento_semanal %}
                     <tr style="border-bottom: 0px; ">
-                      <td class="opcion center"> {{semanal.fecha}} - {{semanal.comprador}} de {{semanal.empresa}} </td>
+                      <td class="opcion center"> {{semanal.fecha}} - {{semanal.articulo}} de {{semanal.comprador}} de {{semanal.empresa}} </td>
                       <td>
                         <a href="{% url 'info_negocio' semanal.id_de_neg %}" 
                           class="btn-floating btn waves-effect waves-light transparent no-shadows"><i
@@ -123,7 +123,7 @@ Vencimientos
                   <tbody>
                     {% for futuro in vencimiento_futuro %}
                     <tr style="border-bottom: 0px; ">
-                      <td class="opcion center"> {{futuro.fecha}} - {{futuro.comprador}} de {{futuro.empresa}} </td>
+                      <td class="opcion center"> {{futuro.fecha}} - {{futuro.articulo}} de {{futuro.comprador}} de {{futuro.empresa}} </td>
                       <td>
                         <a href="{% url 'info_negocio' futuro.id_de_neg %}" 
                           class="btn-floating btn waves-effect waves-light transparent no-shadows"><i

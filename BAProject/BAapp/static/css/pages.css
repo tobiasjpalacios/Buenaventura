@@ -345,7 +345,7 @@ textarea {
 .opcion {
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: default;
   user-select: none;
 }
 

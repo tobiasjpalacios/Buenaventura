@@ -195,9 +195,10 @@ def get_articulos_futuros(id_prop):
     articulos_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
     return articulos_futuros
 
-def create_articulo_dict(fecha_pago, comprador, id_de_neg, razon_social):
+def create_articulo_dict(fecha_pago, articulo, comprador, id_de_neg, razon_social):
     return {
         'fecha':fecha_pago,
+        'articulo': articulo,
         'comprador': comprador,
         'id_de_neg': id_de_neg,
         'empresa': razon_social
@@ -207,6 +208,7 @@ def create_lista_articulos(articulos, negocio):
     return [
         create_articulo_dict(
             articulo.fecha_pago_str,
+            articulo.articulo,
             negocio.comprador.get_full_name(),
             negocio.id_de_neg,
             negocio.comprador.empresa.razon_social
