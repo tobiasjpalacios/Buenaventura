@@ -186,73 +186,6 @@ function sendAlertaModal(){
     };
 };
 
-function formAlertaLog(){
-    $("#btnAlertaLog").hide();
-    $("#divFormSendAlertaLog").show();
-    $("#btnsendAlertaLog").show();
-    document.getElementById("idPideAlertaLog").value = 1;
-  };
-
-  function sendAlertaLog(){
-    var titulo = document.getElementById("tituloAlertaLog").value;
-    if (titulo === ""){
-      M.toast({html: 'Error! El Titulo no puede estar en blanco.'});
-    } else {
-      var descri = document.getElementById("descriAlertaLog").value;
-      var categoria = "Logistica";
-      var idNegocio = document.getElementById("idNegocioLog").value;
-      $.ajax({
-          url: "{% url 'sendAlertaLog' %}",
-          type: 'POST',
-          data: {'titulo':titulo,'descri':descri,'categoria':categoria,'idNegocio':idNegocio,
-            csrfmiddlewaretoken: '{{ csrf_token }}'},
-          success: function(data){ 
-              M.toast({html: data.result});
-              if (data.estado){
-                $('#modalDetalleLogistica').modal('close');
-              };  
-          },
-          error: function (data) {
-              console.log(data.result)
-          }
-      });
-    }
-    
-  };
-
-  function formAlertaSem(){
-    $("#btnAlertaSem").hide();
-    $("#divFormSendAlertaSemaforo").show();
-    document.getElementById("idPideAlertaSem").value = 1;
-  };
-  
-  function formAlertaSemCA(origen){
-    var titulo = document.getElementById("tituloAlertaSem").value;
-    var descri = document.getElementById("descriAlertaSem").value;    
-    var idNegocio = document.getElementById("idNegocioSem").value;
-    $.ajax({
-        url: "{% url 'createAlertaNV' %}",
-        type: 'POST',
-        data: {'titulo':titulo,'descri':descri,
-            'idNegocio':idNegocio,csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: function(data){
-          console.log(data.result);
-          if (data.estado){
-            if (origen=='Sem'){
-              $('#modalSemaforoNegocio').modal('close');
-            }else{
-              $('#modalDetalleLogistica').modal('close'); 
-            }
-                 
-          } 
-          M.toast({html: data.result});
-        },
-        error: function (data) {
-            console.log(data.result)
-        }
-    })      
-  }
-
   function ocultarEstadoLog(){
     $(".textEstado").hide();
     $(".selecEstado").show();
@@ -289,32 +222,6 @@ function formAlertaLog(){
           var value_log = estado +"-"+ id
           estadosId.push(value_log);
       };
-      var jsonText = JSON.stringify(estadosId);      
-      $.ajax({
-        url: "{% url 'setLogistica' %}",
-        type: 'POST',
-        data: {'jsonText':jsonText,'titulo':titulo,'descri':descri,'receptor':receptor,'envio':idPideAlertaLog,
-          csrfmiddlewaretoken: '{{ csrf_token }}'},
-        success: function(data){
-          $('#modalDetalleLogistica').modal('close'); 
-          M.toast({html: data.result})
-          $.ajax({
-            url: "{% url 'reloadLog' %}",
-            type: 'GET',
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success: function(data){
-                    $('#tableLogisticaR').html(data);
-                },
-                error: function (data) {
-                  console.log(data.result)
-              }
-            });
-        },
-        error: function (data) {
-            M.toast({html: data.result})
-        }
-      });
     }
          
   };

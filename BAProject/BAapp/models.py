@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.db import models, transaction
-from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from .choices import *
 from .utils.fulltext import SearchManager
 from .utils.email_send import email_send
 from django.db.models import signals
-from django.dispatch import dispatcher
 from django.urls import reverse
 from django.utils import formats
 from django.contrib.sites.models import Site
@@ -248,10 +246,14 @@ class ItemPropuesta(models.Model):
     )
     aceptado = models.BooleanField()
     pagado = models.BooleanField(default=False)
-    fecha_pago = models.CharField(
+    fecha_pago_str = models.CharField(
         null=True,
         blank=True,
-        max_length=12
+        max_length=12,
+    )
+    fecha_pago_date = models.DateField(
+        null=True,
+        blank=True
     )
     fecha_real_pago = models.DateTimeField(
         null=True,
@@ -272,16 +274,16 @@ class ItemPropuesta(models.Model):
     #     )
 
     tasa = models.DecimalField(
-                max_digits=4, 
-                decimal_places=2, 
-                validators=[
-                        MaxValueValidator(100),
-                        MinValueValidator(0)],
-                default=1,
-                blank=True,
-                null=True,
-                verbose_name='Tasa Mensual'
-            )
+        max_digits=4, 
+        decimal_places=2, 
+        validators=[
+                MaxValueValidator(100),
+                MinValueValidator(0)],
+        default=1,
+        blank=True,
+        null=True,
+        verbose_name='Tasa Mensual'
+    )
 
     fecha_salida_entrega = models.DateTimeField(
         null=True,
@@ -350,6 +352,9 @@ class Notificacion(models.Model):
 
     class Meta:
         ordering = ('-timestamp',)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.titulo}"
 
 class Factura(models.Model):
     #id 
