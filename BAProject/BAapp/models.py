@@ -274,16 +274,16 @@ class ItemPropuesta(models.Model):
     #     )
 
     tasa = models.DecimalField(
-                max_digits=4, 
-                decimal_places=2, 
-                validators=[
-                        MaxValueValidator(100),
-                        MinValueValidator(0)],
-                default=1,
-                blank=True,
-                null=True,
-                verbose_name='Tasa Mensual'
-            )
+        max_digits=4, 
+        decimal_places=2, 
+        validators=[
+                MaxValueValidator(100),
+                MinValueValidator(0)],
+        default=1,
+        blank=True,
+        null=True,
+        verbose_name='Tasa Mensual'
+    )
 
     fecha_salida_entrega = models.DateTimeField(
         null=True,
@@ -352,6 +352,9 @@ class Notificacion(models.Model):
 
     class Meta:
         ordering = ('-timestamp',)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.titulo}"
 
 class Factura(models.Model):
     #id 

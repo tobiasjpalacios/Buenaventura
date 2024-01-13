@@ -31,6 +31,7 @@ from BAapp.utils.formatusd import to_input_string
 from django.template.loader import get_template
 from BAapp.utils.negocios_helper import listasNA, listaNL, semaforoVencimiento, calcularVencAtr
 from BAapp.utils.date_parser import date_parser
+from BAapp.utils.notificaciones import crear_notificacion
 import weasyprint
 import os
 import PyPDF2
@@ -778,25 +779,25 @@ def sendAlertaModal(request):
             elif (ourid2[a] == "]"):
                 negocio = Negocio.objects.get(id=int(id_carga))
                 user = negocio.comprador
-                notif = Notificacion(
-                    titulo=titulo,
-                    descripcion = descri,
-                    categoria=categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
-                    user=user)
-                notif.save()
+                crear_notificacion(
+                    titulo=titulo, 
+                    descripcion=descri,
+                    categoria=categoria, 
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
+                    user=user
+                )
             elif (ourid2[a] != ","):
                 id_carga += str(ourid2[a])
             else:    
                 negocio = Negocio.objects.get(id=int(id_carga))
                 user = negocio.comprador
-                notif = Notificacion(
-                    titulo=titulo,
-                    descripcion = descri,
-                    categoria=categoria,
-                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
-                    user=user)
-                notif.save()
+                crear_notificacion(
+                    titulo=titulo, 
+                    descripcion=descri,
+                    categoria=categoria, 
+                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
+                    user=user
+                )
                 id_carga = ""
         data = {
             'result' : 'Alerta/s Enviada/s con éxito.',
@@ -1112,13 +1113,12 @@ class NegocioView(View):
             user=negocio.comprador
         else:
             user=negocio.vendedor
-        notif = Notificacion(
-            titulo=titulo,
-            categoria=categoria,
-            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
+        crear_notificacion(
+            titulo=titulo, 
+            categoria=categoria, 
+            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
             user=user
         )
-        notif.save()
 
         propuesta = Propuesta.objects.filter(negocio=negocio).last()
         itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
@@ -1137,13 +1137,12 @@ class NegocioView(View):
                     titulo = "Negocio pendiente de confirmación"
                     categoria = "Presupuesto"
                     user = negocio.vendedor
-                    notif = Notificacion(
-                        titulo=titulo,
-                        categoria=categoria,
-                        hyperlink=reverse('negocio', args=[negocio.id_de_neg,]),
+                    crear_notificacion(
+                        titulo=titulo, 
+                        categoria=categoria, 
+                        hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
                         user=user
                     )
-                    notif.save()
                 else:
                     negocio.estado = "CONFIRMADO"
                     negocio.fecha_cierre = timezone.localtime()
