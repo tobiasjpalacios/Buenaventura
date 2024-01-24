@@ -179,47 +179,47 @@ def listaNL(request,negocioFilter):
                 atrasado = False
     return lista_negocios
 
-def get_articulos_vencidos_ayer(id_prop):
+def get_item_propuestas_vencidos_ayer(id_prop):
     now = timezone.localtime(timezone.now()).date()
     yesterday = now - timedelta(days=1)
-    articulos_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now, fecha_pago_date__gte=yesterday)
-    return articulos_vencidos
+    item_propuestas_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now, fecha_pago_date__gte=yesterday)
+    return item_propuestas_vencidos
 
-def get_articulos_vencidos(id_prop):
+def get_item_propuestas_vencidos(id_prop):
     now = timezone.localtime(timezone.now()).date()
-    articulos_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now)
-    return articulos_vencidos
+    item_propuestas_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now)
+    return item_propuestas_vencidos
 
-def get_articulos_proximos_a_vencer(id_prop):
+def get_item_propuestas_proximos_a_vencer(id_prop):
     now = timezone.localtime(timezone.now()).date()
     seven_days_later = now + timezone.timedelta(days=7)
-    articulos_proximos_a_vencer = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__range=[now, seven_days_later])
-    return articulos_proximos_a_vencer
+    item_propuestas_proximos_a_vencer = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__range=[now, seven_days_later])
+    return item_propuestas_proximos_a_vencer
 
-def get_articulos_futuros(id_prop):
+def get_item_propuestas_futuros(id_prop):
     now = timezone.localtime(timezone.now()).date()
-    articulos_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
-    return articulos_futuros
+    item_propuestas_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
+    return item_propuestas_futuros
 
-def create_articulo_dict(fecha_pago, articulo, comprador, id_de_neg, razon_social):
+def create_item_propuesta_dict(fecha_pago, item_propuesta, comprador, id_de_neg, razon_social):
     return {
         'fecha':fecha_pago,
-        'articulo': articulo,
+        'item_propuesta': item_propuesta,
         'comprador': comprador,
         'id_de_neg': id_de_neg,
         'empresa': razon_social
     }
     
-def create_lista_articulos(articulos, negocio):
+def create_lista_item_propuestas(item_propuestas, negocio):
     return [
-        create_articulo_dict(
-            articulo.fecha_pago_str,
-            articulo.articulo,
+        create_item_propuesta_dict(
+            item_propuesta.fecha_pago_str,
+            item_propuesta.articulo,
             negocio.comprador.get_full_name(),
             negocio.id_de_neg,
             negocio.comprador.empresa.razon_social
         ) 
-        for articulo in articulos
+        for item_propuesta in item_propuestas
     ]
 
 def semaforoVencimiento(negocioFilter):
@@ -235,12 +235,12 @@ def semaforoVencimiento(negocioFilter):
         except Exception as e:
             print(e)
             
-        articulos_vencidos = get_articulos_vencidos(propuesta.id)
-        articulos_proximos = get_articulos_proximos_a_vencer(propuesta.id)
-        articulos_futuros = get_articulos_futuros(propuesta.id)
+        item_propuestas_vencidos = get_item_propuestas_vencidos(propuesta.id)
+        item_propuestas_proximos = get_item_propuestas_proximos_a_vencer(propuesta.id)
+        item_propuestas_futuros = get_item_propuestas_futuros(propuesta.id)
         
-        lista_vencidos.extend(create_lista_articulos(articulos_vencidos, negocio))
-        lista_proximos.extend(create_lista_articulos(articulos_proximos, negocio))
-        lista_futuros.extend(create_lista_articulos(articulos_futuros, negocio))
+        lista_vencidos.extend(create_lista_item_propuestas(item_propuestas_vencidos, negocio))
+        lista_proximos.extend(create_lista_item_propuestas(item_propuestas_proximos, negocio))
+        lista_futuros.extend(create_lista_item_propuestas(item_propuestas_futuros, negocio))
     
     return lista_vencidos, lista_proximos, lista_futuros
