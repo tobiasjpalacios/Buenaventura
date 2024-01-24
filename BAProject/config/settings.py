@@ -2,6 +2,7 @@ from distutils.util import strtobool
 from pathlib import Path
 import django.db.models.options as options
 import os
+import warnings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,8 +34,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    
     'crispy_forms',
     'crispy_forms_materialize',
+    
     'BAapp',
 ]
 
@@ -115,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ar'
 
-TIME_ZONE = 'America/Argentina/Cordoba'
+TIME_ZONE = os.environ.get('TZ')
 
 USE_I18N = True
 
@@ -146,6 +149,14 @@ MEDIA_URL = '/'
 SITE_ID = 1
 
 TEMP_TO_EMAIL = os.environ.get('TEMP_TO_EMAIL')
+
+# Suprime la advertencia de fuente no configurada de weasyprint
+warnings.filterwarnings(
+    "ignore",
+    category=UserWarning,
+    message="No fonts configured in FontConfig. Expect ugly output.",
+    module="weasyprint.text.fonts",
+)
 
 # When DEBUG is set to False
 

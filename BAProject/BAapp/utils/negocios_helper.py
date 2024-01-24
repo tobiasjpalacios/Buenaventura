@@ -1,5 +1,5 @@
 from BAapp.models import Negocio, Propuesta, ItemPropuesta
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.utils.timezone import activate
 
@@ -178,6 +178,12 @@ def listaNL(request,negocioFilter):
                 entregado = False
                 atrasado = False
     return lista_negocios
+
+def get_articulos_vencidos_ayer(id_prop):
+    now = timezone.localtime(timezone.now()).date()
+    yesterday = now - timedelta(days=1)
+    articulos_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now, fecha_pago_date__gte=yesterday)
+    return articulos_vencidos
 
 def get_articulos_vencidos(id_prop):
     now = timezone.localtime(timezone.now()).date()
