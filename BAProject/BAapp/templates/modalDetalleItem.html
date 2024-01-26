@@ -114,17 +114,17 @@
   </table>
   <div class="col s12" style="border-bottom: 2px grey solid; padding-top: ;"></div>
   <div style="height: 10px;"></div>
-  {% if estado_pago == 'Atrasado' %}
+  {% if estado_pago == 'vencido' %}
       <div class="row" style="border-radius: 2em; background-color: red; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-        <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{estado_pago}} </span>
+        <span class="col s4 offset-s4 center white-text" style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);"> {{estado_pago|title}} </span>
       </div>
-    {% elif estado_pago == 'Vence esta Semana' %}
+    {% elif 'vence en' in estado_pago %}
       <div class="row" style="border-radius: 2em; background-color: rgb(112, 191, 223); box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago}}</span>
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago|title}}</span>
       </div>
     {% else %}
       <div class="row" style="border-radius: 2em; background-color: green; box-shadow: 2px; box-shadow: 0 .5rem 1rem rgba(0,0,0,.15); height: 50px; ">
-        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago}}</span>
+        <span class="col s4 offset-s4 center " style="font-size: 20px; padding-top: 10px; text-shadow: 0 .5rem 1rem rgba(0,0,0,.15);">{{estado_pago|title}}</span>
       </div>
     {% endif %}
   </div>

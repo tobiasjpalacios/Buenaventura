@@ -1,22 +1,9 @@
 from django.core.management.base import BaseCommand
 from BAapp.models import Negocio, Propuesta
-from BAapp.utils.negocios_helper import get_vencidos_ayer_pago, get_proximos_vencer_pago
+from BAapp.utils.negocios_helper import get_vencidos_ayer_pago, get_proximos_vencer_pago, get_pago_estado
 from BAapp.utils.notificaciones import crear_notificacion
 from django.utils import timezone
 from django.urls import reverse
-
-
-def get_vencimiento_notificacion(fecha_pago):
-    now = timezone.localtime(timezone.now()).date()
-    diferencia = fecha_pago - now
-    days = diferencia.days
-    if days > 1:
-        message = f"vence en {days} días"
-    elif days == 1:
-        message = "vence mañana"
-    elif days < 1:
-        message = "vence hoy"
-    return message
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
@@ -65,14 +52,14 @@ class Command(BaseCommand):
             hyperlink = reverse('negocio', kwargs={'id_de_neg': item_propuesta.propuesta.negocio.id_de_neg})
             # para vendedor
             crear_notificacion(
-                titulo=f"Pago del artículo {item_propuesta.articulo} de {comprador.get_full_name()} {get_vencimiento_notificacion(item_propuesta.fecha_pago_date)}.",
+                titulo=f"Pago del artículo {item_propuesta.articulo} de {comprador.get_full_name()} {get_pago_estado(item_propuesta)}.",
                 categoria=categoria,
                 hyperlink=hyperlink,
                 user=vendedor
             )
             # para comprador
             crear_notificacion(
-                titulo=f"Pago del artículo {item_propuesta.articulo} {get_vencimiento_notificacion(item_propuesta.fecha_pago_date)}.",
+                titulo=f"Pago del artículo {item_propuesta.articulo} {get_pago_estado(item_propuesta)}.",
                 categoria=categoria,
                 hyperlink=hyperlink,
                 user=comprador

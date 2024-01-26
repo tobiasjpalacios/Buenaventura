@@ -29,7 +29,7 @@ from django.conf import settings
 from decimal import *
 from BAapp.utils.formatusd import to_input_string
 from django.template.loader import get_template
-from BAapp.utils.negocios_helper import listasNA, listaNL, semaforoVencimiento, calcularVencAtr
+from BAapp.utils.negocios_helper import listasNA, listaNL, semaforoVencimiento, get_entrega_estado, get_pago_estado
 from BAapp.utils.date_parser import date_parser
 from BAapp.utils.notificaciones import crear_notificacion
 import weasyprint
@@ -707,55 +707,10 @@ def detalleNegocio(request):
 
 def detalleItem(request):
     if request.method == 'POST':
-        idItem = request.POST['idItem']        
-        item = ItemPropuesta.objects.get(id = idItem)
-        today = datetime.today()
-        fechaEntrega = datetime.strptime(item.fecha_entrega, "%d/%m/%Y")
-        resultado = calcularVencAtr(fechaEntrega, today)
-        logistica = "Atrasado"
-        if (item.fecha_real_entrega is not None):
-            logistica = "Entregado"
-        else:
-            if (not resultado):
-                if (item.fecha_salida_entrega is None):                    
-                    logistica = "A Tiempo"
-                else:                    
-                    logistica = "En Tránsito"
-        """
-        diaA = int(d1[0:2])
-        mesA = int(d1[3:5])
-        añoA = int(d1[6:10])
-        diaP = int(item.fecha_pago[0:2])
-        mesP = int(item.fecha_pago[3:5])
-        añoP = int(item.fecha_pago[6:10])
-        difD = (diaP - diaA)
-        difM = (mesP - mesA)
-        difA = (añoP - añoA)
-        proxMes = (diaP + 30 - diaA)
-        estado_pago = "Pago Realizado"
-        if (item.fecha_real_pago is None):
-            if ((mesA == 12 and mesP == 1) and (difA == 1)):
-                difM = 1
-            if ((difA < 0) or (difM < 0 and difA == 0) or ((((diaP > diaA) and (mesP < mesA)) or ((diaP < diaA) and (mesP == mesA))))):
-                estado_pago = "Atrasado" 
-            elif ((diaP==diaA) and (mesP==mesA) and (añoP==añoA)):
-                estado_pago = "Vence esta Semana"
-            elif (((mesP == mesA) and (difD < 8 and difD > 0)) or ((difM == 1) and ((proxMes < 8 and proxMes > 0) and (diaP < 7)))):
-                estado_pago = "Vence esta Semana"
-            else:
-                estado_pago = "Vencimiento Futuro"
-        """
-        estado_pago = "Pago Realizado"
-        if (item.fecha_real_pago is None):                
-            date_time_obj = datetime.strptime(item.fecha_pago, "%d/%m/%Y")
-            if (date_time_obj < today):
-                estado_pago = "Atrasado" 
-            else:
-                difDias = (today - date_time_obj).days                        
-                if ((difDias * (-1)) <= 7):
-                    estado_pago = "Vence esta Semana"
-                else:
-                    estado_pago = "Vencimiento Futuro"
+        id_item = request.POST['idItem']        
+        item = ItemPropuesta.objects.get(id=id_item)
+        logistica = get_entrega_estado(item)
+        estado_pago = get_pago_estado(item)
         return render (request, 'modalDetalleItem.html', {'item':item, 'logistica':logistica, 'estado_pago':estado_pago})
     return render (request, 'modalDetalleItem.html')
 

@@ -1,7 +1,7 @@
 from BAapp.models import Negocio, Propuesta, ItemPropuesta
-from datetime import datetime, timedelta
+from datetime import  timedelta
 from django.utils import timezone
-from django.utils.timezone import activate
+from BAapp.utils.date_parser import is_before_today
 
 def calcularVencAtr(a, b):
     if (a < b):
@@ -39,14 +39,28 @@ def listasNA(negocioFilter, tipo):
                 pass
     return lista_negocios
 
-def get_entrega_estado(item_propuesta):
-    estado = None
+def get_pago_estado(item_propuesta: ItemPropuesta):
     now = timezone.localtime(timezone.now()).date()
+    diferencia = item_propuesta.fecha_entrega_date - now
+    days = diferencia.days
+    print(days)
+    if days > 1:
+        estado = f"vence en {days} días"
+    elif days == 1:
+        estado = "vence mañana"
+    elif days == 0:
+        estado = "vence hoy"
+    else:
+        estado = "vencido"
+    return estado
+
+def get_entrega_estado(item_propuesta: ItemPropuesta):
+    estado = None
     
     try:
-        if item_propuesta.fecha_entrega_date and item_propuesta.fecha_entrega_date < now:
+        if item_propuesta.fecha_entrega_date and is_before_today(item_propuesta.fecha_entrega_date):
             estado = "Atrasado"
-        elif item_propuesta.fecha_entrega_date and item_propuesta.fecha_entrega_date >= now:
+        elif item_propuesta.fecha_entrega_date and not is_before_today(item_propuesta.fecha_entrega_date):
             estado = "A tiempo"
         else:
             raise ValueError(f"Propuesta {item_propuesta.propuesta.id}, {item_propuesta} no tiene fecha_entrega_date")
@@ -64,9 +78,12 @@ def get_entrega_estado(item_propuesta):
         
     return estado
 
-def create_item_propuesta_dict(fecha_pago, item_propuesta, comprador, id_de_neg, razon_social, destino, estado):
+def create_item_propuesta_dict(fecha_pago_str, fecha_pago_date, fecha_entrega_str, fecha_entrega_date, item_propuesta, comprador, id_de_neg, razon_social, destino, estado):
     return {
-        'fecha':fecha_pago,
+        'fecha_pago_str':fecha_pago_str,
+        'fecha_pago_date': fecha_pago_date,
+        'fecha_entrega_str':fecha_entrega_str,
+        'fecha_entrega_date': fecha_entrega_date,
         'item_propuesta': item_propuesta,
         'comprador': comprador,
         'id_de_neg': id_de_neg,
@@ -79,6 +96,9 @@ def create_lista_item_propuestas(item_propuestas, negocio):
     return [
         create_item_propuesta_dict(
             item_propuesta.fecha_pago_str,
+            item_propuesta.fecha_pago_date,
+            item_propuesta.fecha_entrega_str,
+            item_propuesta.fecha_entrega_date,
             item_propuesta.articulo,
             negocio.comprador.get_full_name(),
             negocio.id_de_neg,
@@ -104,7 +124,9 @@ def listaNL(request, negocioFilter):
             
         lista_items.extend(create_lista_item_propuestas(item_propuestas, negocio))
         
-    return lista_items
+    sorted_lista_items = sorted(lista_items, key=lambda x: x['fecha_entrega_date'], reverse=True)
+    
+    return sorted_lista_items
 
 def get_vencidos_ayer_pago(propuesta):
     now = timezone.localtime(timezone.now()).date()
@@ -148,5 +170,9 @@ def semaforoVencimiento(negocioFilter):
         lista_vencidos.extend(create_lista_item_propuestas(item_propuestas_vencidos, negocio))
         lista_proximos.extend(create_lista_item_propuestas(item_propuestas_proximos, negocio))
         lista_futuros.extend(create_lista_item_propuestas(item_propuestas_futuros, negocio))
+        
+    sorted_lista_vencidos = sorted(lista_vencidos, key=lambda x: x['fecha_pago_date'], reverse=True)
+    sorted_lista_proximos = sorted(lista_proximos, key=lambda x: x['fecha_pago_date'], reverse=False)
+    sorted_lista_futuros = sorted(lista_futuros, key=lambda x: x['fecha_pago_date'], reverse=False)
     
-    return lista_vencidos, lista_proximos, lista_futuros
+    return sorted_lista_vencidos, sorted_lista_proximos, sorted_lista_futuros
