@@ -39,175 +39,40 @@ def listasNA(negocioFilter, tipo):
                 pass
     return lista_negocios
 
-def listaNL(request,negocioFilter):
-    lista_negocios = []
-    en_tiempo = False
-    en_transito = False
-    entregado = False
-    atrasado = False
-    for a in negocioFilter:
-        negocio = Negocio.objects.get(id=a)
-        propuesta = list(Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').values_list('id','timestamp')[:1])
-        if (not propuesta):
-            pass
+def get_entrega_estado(item_propuesta):
+    estado = None
+    now = timezone.localtime(timezone.now()).date()
+    
+    try:
+        if item_propuesta.fecha_entrega_date and item_propuesta.fecha_entrega_date < now:
+            estado = "Atrasado"
+        elif item_propuesta.fecha_entrega_date and item_propuesta.fecha_entrega_date >= now:
+            estado = "A tiempo"
         else:
-            id_prop = propuesta[0][0]
-            comprador = negocio.comprador.apellido +" "+negocio.comprador.nombre        
-            modulo = request.user.clase
-            #P = Proveedor 4
-            if (modulo == 'Proveedor'):    
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, proveedor__id=request.user.id)
-            #L = Logistica 6
-            elif (modulo == 'Logistica'):
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=request.user.id)
-            #A = Administrador 1
-            elif (modulo == 'Administrador'):
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, empresa__id=request.user.id)
-            #C = Comprador 2
-            elif (modulo == 'Comprador'):
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop, propuesta__negocio__comprador__id=request.user.id)
-            #V = Vendedor 3
-            elif (modulo == 'Vendedor'):
-                items = ItemPropuesta.objects.filter(propuesta__id = id_prop)
-            else:
-                items = []
-            
-            
-            if (items.count() < 1):
-                pass
-            else:
-                destino = ""
-                estado = ""
-                destino_tiempo = ""
-                fecha_tiempo = "00/00/0000"
-                destino_transito = ""
-                fecha_transito = "00/00/0000"
-                destino_entregado = ""
-                fecha_entregado = "00/00/0000"
-                destino_atrasado = ""
-                fecha_atrasado = "00/00/0000"
-                primero_tiempo = True
-                primero_transito = True
-                primero_entregado = True
-                primero_atrasado = True
-                today = datetime.today()
-                for b in items:
-                    fechaEntrega = datetime.strptime(b.fecha_entrega, "%d/%m/%Y")
-                    resultado = calcularVencAtr(fechaEntrega, today)
-                    print (resultado)
-                    if (b.fecha_real_entrega is not None):
-                        #Entregado
-                        entregado = True
-                        if (primero_entregado):
-                            fecha_entregado = b.fecha_entrega
-                            destino_entregado = b.destino
-                            primero_entregado = False
-                        else:
-                            fechaEntregado = datetime.strptime(fecha_entregado, "%d/%m/%Y")
-                            res = calcularVencAtr(b.fecha_entrega, fecha_entregado)
-                            if (not res):
-                                fecha_entregado = b.fecha_entrega
-                                destino_entregado = b.destino
-                    else:
-                        if (not resultado):
-                            if (b.fecha_salida_entrega is None):
-                                #A Tiempo
-                                en_tiempo = True
-                                if (primero_tiempo):
-                                    fecha_tiempo = b.fecha_entrega
-                                    destino_tiempo = b.destino
-                                    primero_tiempo = False
-                                else:
-                                    fechaTiempo = datetime.strptime(fecha_tiempo, "%d/%m/%Y")
-                                    res = calcularVencAtr(fechaEntrega, fechaTiempo)
-                                    if (not res):
-                                        fecha_tiempo = b.fecha_entrega
-                                        destino_tiempo = b.destino
-                            else:
-                                #En Transito
-                                en_transito = True
-                                if (primero_transito):
-                                    fecha_transito = b.fecha_entrega
-                                    destino_transito = b.destino
-                                    primero_transito = False
-                                else:
-                                    res = calcularVencAtr(b.fecha_entrega, fecha_transito)
-                                    if (not res):
-                                        fecha_transito = b.fecha_entrega
-                                        destino_transito = b.destino
-                        else:
-                            #Atrasado
-                            atrasado = True
-                            if (primero_atrasado):
-                                    fecha_atrasado = b.fecha_entrega    
-                                    destino_atrasado = b.destino
-                                    primero_atrasado = False
-                            else:
-                                fechaAtrasado = datetime.strptime(fecha_atrasado, "%d/%m/%Y")
-                                res = calcularVencAtr(b.fecha_entrega, fecha_atrasado)
-                                if (not res):
-                                    fecha_atrasado = b.fecha_entrega
-                                    destino_atrasado = b.destino
-                if (atrasado):
-                    estado = "Atrasado"
-                    destino = destino_atrasado
-                    fecha = fecha_atrasado
-                elif (en_tiempo):
-                    estado = "A Tiempo"
-                    destino = destino_tiempo
-                    fecha = fecha_tiempo
-                elif (en_transito):
-                    estado = "En Tránsito"
-                    destino = destino_transito
-                    fecha = fecha_transito
-                else:
-                    estado = "Entregado"
-                    destino = destino_entregado
-                    fecha = fecha_entregado      
-                lista = {
-                    'fecha':fecha,
-                    'destinatario': comprador,
-                    'destino': destino,
-                    'id_de_neg':negocio.id_de_neg,
-                    'empresa':negocio.comprador.empresa.razon_social,
-                    'estado':estado
-                }
-                lista_negocios.append(lista)
-                en_tiempo = False
-                en_transito = False
-                entregado = False
-                atrasado = False
-    return lista_negocios
+            raise ValueError(f"Propuesta {item_propuesta.propuesta.id}, {item_propuesta} no tiene fecha_entrega_date")
+        
+        if item_propuesta.fecha_salida_entrega and not item_propuesta.fecha_real_entrega:
+            estado = "En Tránsito"
+        elif item_propuesta.fecha_salida_entrega and item_propuesta.fecha_real_entrega:
+            estado = "Entregado"
+        elif not item_propuesta.fecha_salida_entrega and item_propuesta.fecha_real_entrega:
+            raise ValueError(f"Propuesta {item_propuesta.propuesta.id}, {item_propuesta} no puede tener valor nulo en fecha_entrega_salida mientras fecha_real_entrega tenga valor")
+        else:
+            pass
+    except ValueError as e:
+        print(e)
+        
+    return estado
 
-def get_item_propuestas_vencidos_ayer(id_prop):
-    now = timezone.localtime(timezone.now()).date()
-    yesterday = now - timedelta(days=1)
-    item_propuestas_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now, fecha_pago_date__gte=yesterday)
-    return item_propuestas_vencidos
-
-def get_item_propuestas_vencidos(id_prop):
-    now = timezone.localtime(timezone.now()).date()
-    item_propuestas_vencidos = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__lt=now)
-    return item_propuestas_vencidos
-
-def get_item_propuestas_proximos_a_vencer(id_prop):
-    now = timezone.localtime(timezone.now()).date()
-    seven_days_later = now + timezone.timedelta(days=7)
-    item_propuestas_proximos_a_vencer = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__range=[now, seven_days_later])
-    return item_propuestas_proximos_a_vencer
-
-def get_item_propuestas_futuros(id_prop):
-    now = timezone.localtime(timezone.now()).date()
-    item_propuestas_futuros = ItemPropuesta.objects.filter(propuesta__id = id_prop, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
-    return item_propuestas_futuros
-
-def create_item_propuesta_dict(fecha_pago, item_propuesta, comprador, id_de_neg, razon_social):
+def create_item_propuesta_dict(fecha_pago, item_propuesta, comprador, id_de_neg, razon_social, destino, estado):
     return {
         'fecha':fecha_pago,
         'item_propuesta': item_propuesta,
         'comprador': comprador,
         'id_de_neg': id_de_neg,
-        'empresa': razon_social
+        'empresa': razon_social,
+        'destino': destino,
+        'estado': estado
     }
     
 def create_lista_item_propuestas(item_propuestas, negocio):
@@ -217,10 +82,51 @@ def create_lista_item_propuestas(item_propuestas, negocio):
             item_propuesta.articulo,
             negocio.comprador.get_full_name(),
             negocio.id_de_neg,
-            negocio.comprador.empresa.razon_social
+            negocio.comprador.empresa.razon_social,
+            item_propuesta.destino,
+            get_entrega_estado(item_propuesta)
         ) 
         for item_propuesta in item_propuestas
     ]
+
+def listaNL(request, negocioFilter):
+    lista_items = []
+    
+    for id in negocioFilter:
+        negocio = Negocio.objects.get(id=id)
+        
+        try:
+            propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-timestamp').first()
+        except Exception as e:
+            print(e)
+            
+        item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta, proveedor__empresa=request.user.empresa)
+            
+        lista_items.extend(create_lista_item_propuestas(item_propuestas, negocio))
+        
+    return lista_items
+
+def get_vencidos_ayer_pago(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    yesterday = now - timedelta(days=1)
+    vencidos_ayer_pago = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_real_pago__isnull=True, fecha_pago_date__lt=now, fecha_pago_date__gte=yesterday)
+    return vencidos_ayer_pago
+
+def get_vencidos_pago(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    vencidos_pago = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_real_pago__isnull=True, fecha_pago_date__lt=now)
+    return vencidos_pago
+
+def get_proximos_vencer_pago(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    seven_days_later = now + timezone.timedelta(days=7)
+    proximos_vencer_pago = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_real_pago__isnull=True, fecha_pago_date__range=[now, seven_days_later])
+    return proximos_vencer_pago
+
+def get_futuros_pago(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    futuros_pago = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_real_pago__isnull=True, fecha_pago_date__gt=now + timezone.timedelta(days=7))
+    return futuros_pago
 
 def semaforoVencimiento(negocioFilter):
     lista_vencidos = []
@@ -231,13 +137,13 @@ def semaforoVencimiento(negocioFilter):
         negocio = Negocio.objects.get(id=id)
         
         try:
-            propuesta = Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').first()
+            propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-timestamp').first()
         except Exception as e:
             print(e)
             
-        item_propuestas_vencidos = get_item_propuestas_vencidos(propuesta.id)
-        item_propuestas_proximos = get_item_propuestas_proximos_a_vencer(propuesta.id)
-        item_propuestas_futuros = get_item_propuestas_futuros(propuesta.id)
+        item_propuestas_vencidos = get_vencidos_pago(propuesta)
+        item_propuestas_proximos = get_proximos_vencer_pago(propuesta)
+        item_propuestas_futuros = get_futuros_pago(propuesta)
         
         lista_vencidos.extend(create_lista_item_propuestas(item_propuestas_vencidos, negocio))
         lista_proximos.extend(create_lista_item_propuestas(item_propuestas_proximos, negocio))

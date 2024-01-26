@@ -80,7 +80,7 @@
                       {{item.tasa}}
                     {% endif %}
                   </td>
-                  <td class="clientView">{{ item.fecha_entrega|default:"Sin definir" }}</td>
+                  <td class="clientView">{{ item.fecha_entrega_str|default:"Sin definir" }}</td>
                   <td>{{ item.fecha_pago_str|default:"Sin definir" }}</td>
                   <td class="clientView">{{ item.destino|default:"Sin definir" }}</td>
                   <td class="ignore">

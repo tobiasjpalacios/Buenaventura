@@ -81,16 +81,15 @@ class Info_negocioView(View):
             negocio = Negocio.objects.get(id_de_neg=idNeg)
             propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-pk').first()
             idProp = propuesta.id
+            comprobantes = None
             grupo_activo = request.user.clase
             envio = propuesta.envio_comprador
             if (grupo_activo == 'Comprador' or grupo_activo == 'Gerente'):
                 envio = not envio
             items = None
             persona = request.user
-            if (grupo_activo == 'Logistica'):
-                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
-            elif (grupo_activo == 'Administrador'):
-                items = ItemPropuesta.objects.filter(propuesta__id = idProp, empresa__id=persona.empresa.id)
+            if (grupo_activo == 'Administrador' or grupo_activo == 'Logistica'):
+                items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__empresa__id=persona.empresa.id)
             elif (grupo_activo == 'Proveedor'):
                 items = ItemPropuesta.objects.filter(propuesta__id = idProp, proveedor__id=persona.id) 
             else:
@@ -269,25 +268,30 @@ class PresupuestosView(View):
             'todos_vendedores': vendedores
         }
         return render(request, 'presupuestos.html', context)
-
-def get_negocios_bygroup(request, fcn):
+    
+def get_negocios_logistica(request):
     clase_usuario = request.user.clase
-    #A = Administrador 
-    if (clase_usuario == "Administrador"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__empresa=request.user.empresa).values_list('id', flat=True).order_by('-timestamp').distinct())
-    #C = Comprador
-    elif (clase_usuario == "Comprador"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
-    #V = Vendedor
-    elif (clase_usuario == "Vendedor"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=fcn).values_list('id', flat=True).order_by('-timestamp').distinct())
+    if clase_usuario == "Administrador" or clase_usuario == "Logistica":
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=False).values_list('id', flat=True).order_by('-timestamp').distinct())
     else:
         negociosAbiertos = []
     return negociosAbiertos
 
+def get_negocios_bygroup(request, is_fecha_cierre_null: bool):
+    clase_usuario = request.user.clase
+    #Administrador 
+    if (clase_usuario == "Administrador"):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__empresa=request.user.empresa).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #Comprador
+    elif (clase_usuario == "Comprador"):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    #Vendedor
+    elif (clase_usuario == "Vendedor"):
+        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    return negociosAbiertos
+
 class VencimientosView(View):
     def get(self, request, *args, **kwargs):
-        #negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, aprobado=True).values_list('id', flat=True).order_by('-timestamp').distinct())                    
         negociosCerrConf = get_negocios_bygroup(request, False)
         lista_vencidos,lista_semanas,lista_futuros = semaforoVencimiento(negociosCerrConf)
         lvn = Notificacion.objects.filter(user=request.user, categoria__contains='Vencimiento').order_by('-timestamp')
@@ -295,7 +299,7 @@ class VencimientosView(View):
 
 class LogisticaView(View):
     def get(self, request, *args, **kwargs):
-        negociosCerrConf = list(Negocio.objects.filter(fecha_cierre__isnull=False, estado="CONFIRMADO").values_list('id', flat=True).order_by('-timestamp').distinct())    
+        negociosCerrConf = get_negocios_logistica(request)
         lnl = listaNL(request, negociosCerrConf)
         return render(request, 'logistica.html',{'lista_logistica':lnl})
 
@@ -1063,6 +1067,8 @@ class NegocioView(View):
                 item_is_new = item.get('isNew')
                 fecha_pago_str = item.get('fecha_pago') if item_is_new else item.get('fecha_pago_str')
                 fecha_pago_date = parse_date(fecha_pago_str)
+                fecha_entrega_str = item.get('fecha_entrega') if item_is_new else item.get('fecha_entrega_str')
+                fecha_entrega_date = parse_date(fecha_entrega_str)
                 
                 try:
                     user_proveedor = MyUser.objects.get(id=item.get('proveedor'))
@@ -1084,6 +1090,8 @@ class NegocioView(View):
                 item_prop.tipo_pago = tipo_pago
                 item_prop.fecha_pago_str = fecha_pago_str
                 item_prop.fecha_pago_date = fecha_pago_date
+                item_prop.fecha_entrega_str = fecha_entrega_str
+                item_prop.fecha_entrega_date = fecha_entrega_date
                 item_prop.propuesta = prop
                 item_prop.precio_venta = item.get('precio_venta')
                 item_prop.precio_compra = item.get('precio_compra')
@@ -1383,7 +1391,8 @@ class APIArticulos(View):
             if isComprador:
                 precio_compra = 0.0
                 
-            fecha_pago = actual.get("Fecha de pago"),
+            fecha_pago = actual.get("Fecha de pago")
+            fecha_entrega = actual.get("Fecha de entrega")
             
             item = ItemPropuesta(
                 articulo=articulo, 
@@ -1399,7 +1408,8 @@ class APIArticulos(View):
                 aceptado=False,
                 fecha_pago_str=fecha_pago,
                 fecha_pago_date=date_parser(fecha_pago),
-                fecha_entrega=actual.get("Fecha de entrega"),
+                fecha_entrega_str=fecha_entrega,
+                fecha_entrega_date=date_parser(fecha_entrega),
             )
             item.save()
         return JsonResponse(negocio.id_de_neg, safe=False)

@@ -10,6 +10,7 @@ class Command(BaseCommand):
         for item in items:
             try:
                 item.fecha_pago_date = date_parser(item.fecha_pago_str)
-                item.save(update_fields=['fecha_pago_date'])
+                item.fecha_entrega_date = date_parser(item.fecha_entrega_str)
+                item.save(update_fields=['fecha_pago_date', 'fecha_entrega_date'])
             except ValueError:
                 pass

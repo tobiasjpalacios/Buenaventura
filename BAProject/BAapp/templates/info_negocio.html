@@ -20,7 +20,6 @@ Info. de negocio {{ negocio.get_id_de_neg }}
 
 <body>
 
-    {% if request.user.clase != 'Logistica' %}
     <!-- Esto es el semaforo de vencimientos -->
     <div class="row" style="height: 100%;">
 
@@ -127,6 +126,7 @@ Info. de negocio {{ negocio.get_id_de_neg }}
             </div>
 
 
+            {% if request.user.clase != 'Logistica' %}
             <div class="space-info">
 
                 <div style="height: 60px; justify-content: flex-start; " class="clv">
@@ -423,6 +423,8 @@ Info. de negocio {{ negocio.get_id_de_neg }}
 
 
             </div>
+            {% endif %}
+
         </div></div>
     </div>
 
@@ -482,8 +484,6 @@ Info. de negocio {{ negocio.get_id_de_neg }}
         <div id="modalNegocio" class="modal-content">
         </div>
     </div>
-
-    {% endif %}
 
 </body>
 <script>

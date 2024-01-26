@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from BAapp.models import Negocio, Propuesta
-from BAapp.utils.negocios_helper import get_item_propuestas_vencidos_ayer, get_item_propuestas_proximos_a_vencer
+from BAapp.utils.negocios_helper import get_vencidos_ayer_pago, get_proximos_vencer_pago
 from BAapp.utils.notificaciones import crear_notificacion
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.utils import timezone
 from django.urls import reverse
 
@@ -29,12 +28,12 @@ class Command(BaseCommand):
         for negocio in negocios_cerrados_conf:
             
             try:
-                propuesta = Propuesta.objects.filter(negocio__id = negocio.id).order_by('-timestamp').first()
+                propuesta = Propuesta.objects.filter(negocio=negocio).order_by('-timestamp').first()
             except Exception as e:
                 print(e)
                 
-            item_propuestas_vencidos = get_item_propuestas_vencidos_ayer(propuesta.id)
-            item_propuestas_proximos = get_item_propuestas_proximos_a_vencer(propuesta.id)
+            item_propuestas_vencidos = get_vencidos_ayer_pago(propuesta)
+            item_propuestas_proximos = get_proximos_vencer_pago(propuesta)
             
             lista_vencidos.extend(item_propuestas_vencidos)
             lista_proximos.extend(item_propuestas_proximos)

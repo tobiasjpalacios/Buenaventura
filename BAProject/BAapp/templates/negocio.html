@@ -309,7 +309,9 @@ Negociación {{ negocio.get_id_de_neg }}
           }
         } else if (element == "fecha_pago") {
           edits.items[index]["fecha_pago_str"] = inputValue;
-        } else {
+        } else if (element == "fecha_entrega") {
+          edits.items[index]["fecha_entrega_str"] = inputValue;
+        }else {
           if (!inputValue) {
             isValid = false;
             $input.addClass('invalid');
@@ -444,6 +446,7 @@ Negociación {{ negocio.get_id_de_neg }}
     n["aceptado"] = false;
     n["pagado"] = false;
     n["fecha_pago_date"] = null;
+    n["fecha_entrega_date"] = null;
     n["fecha_real_pago"] = null;
     n["fecha_real_entrega"] = null;
     n["fecha_salida_entrega"] = null;
@@ -739,7 +742,7 @@ Negociación {{ negocio.get_id_de_neg }}
         proc.items.push(element)
       }
     })
-    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_pago_date", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
+    var elems = ["id", "propuesta", "aceptado", "pagado", "fecha_pago_date", "fecha_entrega_date", "fecha_real_pago", "fecha_salida_entrega", "fecha_real_entrega", "divisa", "tasa"];
     var artName = "";
     var listOfErrors = []
     var listOfElems = []

@@ -239,10 +239,14 @@ class ItemPropuesta(models.Model):
         null=True,
         default=""
     )
-    fecha_entrega = models.CharField(
+    fecha_entrega_str = models.CharField(
         null=True,
         blank=True,
         max_length=12
+    )
+    fecha_entrega_date = models.DateField(
+        null=True,
+        blank=True
     )
     aceptado = models.BooleanField()
     pagado = models.BooleanField(default=False)
