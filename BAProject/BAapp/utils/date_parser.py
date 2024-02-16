@@ -9,8 +9,11 @@ def date_parser(date: str):
     :param date_str: debe ser 'dd/mm/yyyy'
     :return: Devuelve la fecha formateada a timezone
     """
-    fecha = datetime.strptime(date, '%d/%m/%Y')
-    fecha_timezone = timezone.make_aware(fecha, timezone.get_current_timezone())
+    try:
+        fecha = datetime.strptime(date, '%d/%m/%Y')
+        fecha_timezone = timezone.make_aware(fecha, timezone.get_current_timezone())
+    except ValueError:
+        fecha_timezone = None
     return fecha_timezone
 
 def get_date(date):

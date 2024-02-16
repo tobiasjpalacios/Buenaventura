@@ -41,9 +41,8 @@ def listasNA(negocioFilter, tipo):
 
 def get_pago_estado(item_propuesta: ItemPropuesta):
     now = timezone.localtime(timezone.now()).date()
-    diferencia = item_propuesta.fecha_entrega_date - now
+    diferencia = item_propuesta.fecha_pago_date - now
     days = diferencia.days
-    print(days)
     if days > 1:
         estado = f"vence en {days} días"
     elif days == 1:
@@ -77,6 +76,24 @@ def get_entrega_estado(item_propuesta: ItemPropuesta):
         print(e)
         
     return estado
+
+def get_entrega_dias_restantes(item_propuesta: ItemPropuesta):
+    now = timezone.localtime(timezone.now()).date()
+    diferencia = item_propuesta.fecha_entrega_date - now
+    days = diferencia.days
+    return days
+
+def get_atrasados_ayer_entrega(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    yesterday = now - timedelta(days=1)
+    atrasados_ayer_entrega = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_salida_entrega__isnull=True, fecha_entrega_date__lt=now, fecha_entrega_date__gte=yesterday)
+    return atrasados_ayer_entrega
+
+def get_a_tiempo_entrega(propuesta):
+    now = timezone.localtime(timezone.now()).date()
+    seven_days_later = now + timezone.timedelta(days=7)
+    a_tiempo_entrega = ItemPropuesta.objects.filter(propuesta=propuesta, fecha_salida_entrega__isnull=True, fecha_entrega_date__range=[now, seven_days_later])
+    return a_tiempo_entrega
 
 def create_item_propuesta_dict(fecha_pago_str, fecha_pago_date, fecha_entrega_str, fecha_entrega_date, item_propuesta, comprador, id_de_neg, razon_social, destino, estado):
     return {

@@ -738,25 +738,27 @@ def sendAlertaModal(request):
             elif (ourid2[a] == "]"):
                 negocio = Negocio.objects.get(id=int(id_carga))
                 user = negocio.comprador
-                crear_notificacion(
-                    titulo=titulo, 
-                    descripcion=descri,
-                    categoria=categoria, 
-                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
-                    user=user
-                )
+                context_noti = {
+                    "titulo": titulo, 
+                    "descripcion": descri,
+                    "categoria": categoria, 
+                    "hyperlink": reverse('negocio', args=[negocio.id_de_neg,]), 
+                    "user": user
+                }
+                crear_notificacion(context_noti)
             elif (ourid2[a] != ","):
                 id_carga += str(ourid2[a])
             else:    
                 negocio = Negocio.objects.get(id=int(id_carga))
                 user = negocio.comprador
-                crear_notificacion(
-                    titulo=titulo, 
-                    descripcion=descri,
-                    categoria=categoria, 
-                    hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
-                    user=user
-                )
+                context_noti = {
+                    "titulo": titulo, 
+                    "descripcion": descri,
+                    "categoria": categoria, 
+                    "hyperlink": reverse('negocio', args=[negocio.id_de_neg,]), 
+                    "user": user
+                }
+                crear_notificacion(context_noti)
                 id_carga = ""
         data = {
             'result' : 'Alerta/s Enviada/s con éxito.',
@@ -1076,12 +1078,13 @@ class NegocioView(View):
             user=negocio.comprador
         else:
             user=negocio.vendedor
-        crear_notificacion(
-            titulo=titulo, 
-            categoria=categoria, 
-            hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
-            user=user
-        )
+        context_noti = {
+            "titulo": titulo, 
+            "categoria": categoria, 
+            "hyperlink": reverse('negocio', args=[negocio.id_de_neg,]), 
+            "user": user
+        }
+        crear_notificacion(context_noti)
 
         propuesta = Propuesta.objects.filter(negocio=negocio).last()
         itemsProp = ItemPropuesta.objects.all().filter(propuesta=propuesta.id)
@@ -1100,12 +1103,13 @@ class NegocioView(View):
                     titulo = "Negocio pendiente de confirmación"
                     categoria = "Presupuesto"
                     user = negocio.vendedor
-                    crear_notificacion(
-                        titulo=titulo, 
-                        categoria=categoria, 
-                        hyperlink=reverse('negocio', args=[negocio.id_de_neg,]), 
-                        user=user
-                    )
+                    context_noti = {
+                        "titulo": titulo,
+                        "categoria": categoria, 
+                        "hyperlink": reverse('negocio', args=[negocio.id_de_neg,]), 
+                        "user": user
+                    }
+                    crear_notificacion(context_noti)
                 else:
                     negocio.estado = "CONFIRMADO"
                     negocio.fecha_cierre = timezone.localtime()
