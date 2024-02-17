@@ -270,25 +270,23 @@ class PresupuestosView(View):
         return render(request, 'presupuestos.html', context)
     
 def get_negocios_logistica(request):
-    clase_usuario = request.user.clase
-    if clase_usuario == "Administrador" or clase_usuario == "Logistica":
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=False).values_list('id', flat=True).order_by('-timestamp').distinct())
-    else:
-        negociosAbiertos = []
-    return negociosAbiertos
+    negocios = list(Negocio.objects.filter(fecha_cierre__isnull=False).values_list('id', flat=True).order_by('-timestamp').distinct())
+    return negocios
 
 def get_negocios_bygroup(request, is_fecha_cierre_null: bool):
     clase_usuario = request.user.clase
     #Administrador 
     if (clase_usuario == "Administrador"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__empresa=request.user.empresa).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negocios = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__empresa=request.user.empresa).values_list('id', flat=True).order_by('-timestamp').distinct())
     #Comprador
     elif (clase_usuario == "Comprador"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+        negocios = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, comprador__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
     #Vendedor
     elif (clase_usuario == "Vendedor"):
-        negociosAbiertos = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
-    return negociosAbiertos
+        negocios = list(Negocio.objects.filter(fecha_cierre__isnull=is_fecha_cierre_null, vendedor__id=request.user.id).values_list('id', flat=True).order_by('-timestamp').distinct())
+    else:
+        negocios = []
+    return negocios
 
 class VencimientosView(View):
     def get(self, request, *args, **kwargs):

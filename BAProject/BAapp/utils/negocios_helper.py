@@ -128,6 +128,7 @@ def create_lista_item_propuestas(item_propuestas, negocio):
 
 def listaNL(request, negocioFilter):
     lista_items = []
+    clase_usuario = request.user.clase
     
     for id in negocioFilter:
         negocio = Negocio.objects.get(id=id)
@@ -137,7 +138,16 @@ def listaNL(request, negocioFilter):
         except Exception as e:
             print(e)
             
-        item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta, proveedor__empresa=request.user.empresa)
+        if clase_usuario == "Administrador":
+            item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta)
+        elif clase_usuario == "Logistica":
+            item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta, proveedor__empresa=request.user.empresa)
+        elif clase_usuario == "Comprador":
+            item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta, propuesta__negocio__comprador=request.user)
+        elif clase_usuario == "Vendedor":
+            item_propuestas = ItemPropuesta.objects.filter(propuesta=propuesta, propuesta__negocio__vendedor=request.user)
+        else:
+            item_propuestas = []
             
         lista_items.extend(create_lista_item_propuestas(item_propuestas, negocio))
         
